@@ -76,7 +76,7 @@
 Name:      xrootd
 Epoch:     1
 Version:   5.6.1
-Release:   1.1%{?dist}%{?_with_clang:.clang}%{?_with_asan:.asan}
+Release:   1.2%{?dist}%{?_with_clang:.clang}%{?_with_asan:.asan}
 Summary:   Extended ROOT file server
 Group:     System Environment/Daemons
 License:   LGPLv3+
@@ -99,6 +99,13 @@ Patch0: 1819-Actually-include-XrdSecEntity-moninfo-field-in-trace.patch
 # OSDF S3 demo work: needs to be applied to the central OSG redirector
 # (SOFTWARE-5414/SOFTWARE-5418)
 Patch3: 1868-env-hostname-override.patch
+
+# https://github.com/xrootd/xrootd/pull/2059
+Patch2059: 2059-XrdHttp-Add-back-parsing-of-Transfer-Encoding-header.patch
+
+# https://github.com/xrootd/xrootd/pull/2059
+Patch2064: 2064-Fix-logic-error-in-user-mapping.patch
+
 
 #Patch101: 0001-DEBUG-Add-some-debug-lines-to-XrdVomsMapfile.patch
 #Patch102: 0002-DEBUG-Catch-and-log-exception-launching-voms-mapfile.patch
@@ -516,6 +523,8 @@ This package contains compatibility binaries for xrootd 4 servers.
 cd xrootd
 %patch0 -p2
 %patch3 -p1
+%patch2059 -p1
+%patch2064 -p1
 #patch101 -p1
 #patch102 -p1
 cd ..
@@ -1169,6 +1178,10 @@ fi
 # Changelog
 #-------------------------------------------------------------------------------
 %changelog
+* Mon Aug 14 2023 Matt Westphall <westphall@wisc.edu> - 5.6.1-1.2
+- Add patch for PR 2059: Add back parsing of Transfer-Encoding header (SOFTWARE-5623)
+- Add patch for PR 2064: Fix logic error in user mapping (SOFTWARE-5623)
+
 * Mon Jul 17 2023 Mátyás Selmeci <matyas@cs.wisc.edu> - 5.6.1-1.1
 - Update to 5.6.1-1 from upstream and merge OSG changes (SOFTWARE-5623)
   - Drop 2026-Switch-to-a-fixed-set-of-DH-parameters-compatible-with-older-OpenSSL.patch (upstreamed)
