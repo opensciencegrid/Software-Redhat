@@ -1,5 +1,5 @@
 Name:           pegasus
-Version:        5.0.1
+Version:        5.0.6
 Release:        1.1%{?dist}
 Summary:        Workflow management system for HTCondor, grids, and clouds
 Group:          Applications/System
@@ -88,6 +88,9 @@ rm -f %{buildroot}/%{_datadir}/%{name}/java/NOTICE.*
 
 
 %changelog
+* Mon Aug 14 2023 Matt Westphall <westphall@wisc.edu> - 5.0.6-1.1
+- Build from upstream 5.0.6 (SOFTWARE-5648)
+
 * Fri Nov 12 2021 Mátyás Selmeci <matyas@cs.wisc.edu> - 5.0.1-1.1
 - Build for OSG; add setuptools_scm build dependency (SOFTWARE-4877)
   Ignore byte-compile errors: they fail on Python 2 code in the examples
