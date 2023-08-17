@@ -70,7 +70,7 @@
 Summary: CernVM File System
 Name: cvmfs
 Version: 2.11.0
-Release: 1%{?dist}
+Release: 1.1%{?dist}
 URL: https://cernvm.cern.ch/fs/
 Source0: https://ecsft.cern.ch/dist/cvmfs/%{name}-%{version}/%{name}-%{version}.tar.gz
 %if 0%{?selinux_cvmfs}
@@ -113,6 +113,7 @@ BuildRequires: zlib-devel
 %if 0%{?rhel} >= 7 || 0%{?fedora} || 0%{?sle12} || 0%{?sle15}
 BuildRequires: systemd
 %endif
+BuildRequires: git
 
 Requires: bash
 Requires: coreutils
@@ -706,6 +707,8 @@ systemctl daemon-reload
 %endif
 
 %changelog
+* Thu Aug 17 2023 Dave Dykstra <dwd@fnal.gov> - 2.11.0-1.1
+- Add git as a BuildRequires on the main package
 * Wed Nov 16 2022 Jakob Blomer <jblomer@cern.ch> - 2.11.0
 - Make cvmfs-libs a dependency of the cvmfs package
 * Mon May 16 2022 Jakob Blomer <jblomer@cern.ch> - 2.10.0
