@@ -76,7 +76,7 @@
 Name:      xrootd
 Epoch:     1
 Version:   5.6.1
-Release:   1.2%{?dist}%{?_with_clang:.clang}%{?_with_asan:.asan}
+Release:   1.3.unpatched%{?dist}%{?_with_clang:.clang}%{?_with_asan:.asan}
 Summary:   Extended ROOT file server
 Group:     System Environment/Daemons
 License:   LGPLv3+
@@ -521,10 +521,10 @@ This package contains compatibility binaries for xrootd 4 servers.
 
 %setup -c -n xrootd
 cd xrootd
-%patch0 -p2
-%patch3 -p1
-%patch2059 -p1
-%patch2064 -p1
+#%%patch0 -p2
+#%%patch3 -p1
+#%%patch2059 -p1
+#%%patch2064 -p1
 #patch101 -p1
 #patch102 -p1
 cd ..
