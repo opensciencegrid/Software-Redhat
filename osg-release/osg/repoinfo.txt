@@ -1,25 +1,25 @@
 #YUMREPO                  SERIES        REPO         TEMPLATE  TITLE
 
-osg                       3.6           release      standard
-osg-development           3.6           development  standard  Development
-osg-testing               3.6           testing      standard  Testing
-osg-contrib               3.6           contrib      standard  Contributed
-osg-empty                 3.6           empty        basic     Empty_Packages
-osg-minefield             3.6           development  koji      Build_Repository
-osg-prerelease            3.6           prerelease   koji      Prerelease_Repository_for_Internal_Use
+osg                       23            release      standard
+osg-development           23            development  standard  Development
+osg-testing               23            testing      standard  Testing
+osg-contrib               23            contrib      standard  Contributed
+osg-empty                 23            empty        basic     Empty_Packages
+osg-minefield             23            development  koji      Build_Repository
+osg-prerelease            23            prerelease   koji      Prerelease_Repository_for_Internal_Use
 
-osg-upcoming              3.6-upcoming  release      standard  Upcoming
-osg-upcoming-development  3.6-upcoming  development  standard  Upcoming_Development
-osg-upcoming-testing      3.6-upcoming  testing      standard  Upcoming_Testing
-osg-upcoming-minefield    3.6-upcoming  development  koji      Upcoming_Build_Repository
-osg-upcoming-prerelease   3.6-upcoming  prerelease   koji      Upcoming_Prerelease_Repository_for_Internal_Use
+internal-development      23            development  direct    Internal_Development
+internal                  23            release      direct    Internal
+internal-minefield        23            development  koji      Internal_build_Repository
 
-osg-next                  3.7           release      standard  Next_Release_Series
-osg-next-development      3.7           development  standard  Next_Development_Series
-osg-next-testing          3.7           testing      standard  Next_Testing_Series
-osg-next-minefield        3.7           development  koji      Next_Build_Repository_Series
+osg-upcoming              23-upcoming   release      standard  Upcoming
+osg-upcoming-development  23-upcoming   development  standard  Upcoming_Development
+osg-upcoming-testing      23-upcoming   testing      standard  Upcoming_Testing
+osg-upcoming-minefield    23-upcoming   development  koji      Upcoming_Build_Repository
+osg-upcoming-prerelease   23-upcoming   prerelease   koji      Upcoming_Prerelease_Repository_for_Internal_Use
 
-devops-itb                devops        itb          direct    Developer_and_Operations_ITB
-devops                    devops        production   direct    Developer_and_Operations_Production
-devops-minefield          devops        itb          koji      Developer_and_Operations_Build_Repository
+osg-next                  24            release      standard  Next_Release_Series
+osg-next-development      24            development  standard  Next_Development_Series
+osg-next-testing          24            testing      standard  Next_Testing_Series
+osg-next-minefield        24            development  koji      Next_Build_Repository_Series
 

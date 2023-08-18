@@ -1,6 +1,6 @@
 Name:           osg-release
-Version:        3.6
-Release:        13%{?dist}
+Version:        23
+Release:        1%{?dist}
 Summary:        OSG Software for Enterprise Linux repository configuration
 
 License:        GPL
@@ -69,6 +69,9 @@ sed -i -e 's/gpgcheck=1/gpgcheck=0/' $RPM_BUILD_ROOT%{_sysconfdir}/yum.repos.d/*
 
 
 %changelog
+* Fri Aug 18 2023 Brian Lin <blin@cs.wisc.edu> - 23-1
+- Initial OSG 23 release (SOFTWARE-5503)
+
 * Wed Dec 28 2022 Mátyás Selmeci <matyas@cs.wisc.edu> - 3.6-13
 - rebuild
 
