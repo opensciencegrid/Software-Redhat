@@ -1,7 +1,7 @@
 Summary: Scitokens mapfile for OSG
 Name: osg-scitokens-mapfile
 Version: 12
-Release: 1%{?dist}
+Release: 2%{?dist}
 License: ASL 2.0
 Source0: https://github.com/opensciencegrid/topology/archive/data-%{version}.tar.gz
 Source1: https://vdt.cs.wisc.edu/upstream/osg-scitokens-mapfile/pydeps/icalendar-4.0.7-py2.py3-none-any.whl

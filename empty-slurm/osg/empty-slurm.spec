@@ -1,6 +1,6 @@
 Name:		empty-slurm
 Version:	1.0
-Release:	1%{?dist}
+Release:	2%{?dist}
 Summary:	An empty slurm package
 License:	Apache 2.0
 BuildArch:	noarch

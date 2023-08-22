@@ -1,6 +1,6 @@
 Name:           osg-release
 Version:        23
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        OSG Software for Enterprise Linux repository configuration
 
 License:        GPL

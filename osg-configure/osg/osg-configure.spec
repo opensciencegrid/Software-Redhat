@@ -1,7 +1,7 @@
 Summary: Configuration tool for the OSG Software Stack
 Name: osg-configure
 Version: 4.1.1
-Release: 1%{?dist}
+Release: 2%{?dist}
 Source0: %{name}-%{version}.tar.gz
 License: Apache 2.0
 BuildArch: noarch

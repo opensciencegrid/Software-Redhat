@@ -1,6 +1,6 @@
 Name:           osg-update-vos
 Version:        1.4.1
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        VO data updater for OSG
 
 License:        Apache 2.0

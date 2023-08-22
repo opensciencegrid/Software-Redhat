@@ -1,6 +1,6 @@
 Name:           cilogon-openid-ca-cert
 Version:        1.1
-Release:        6%{?dist}
+Release:        7%{?dist}
 Summary:        OSG Packaging of the CILogon CA Certs, in new OpenSSL 0.9.8/1.0.0 format
 
 License:        Unknown

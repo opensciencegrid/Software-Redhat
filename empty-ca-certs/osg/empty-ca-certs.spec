@@ -1,6 +1,6 @@
 Name:           empty-ca-certs
 Version:        1.0
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        An empty grid CA cert package
 
 License:        Unknown

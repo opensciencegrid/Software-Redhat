@@ -1,6 +1,6 @@
 Name:           empty-condor
 Version:        1.1
-Release:        12%{?dist}
+Release:        13%{?dist}
 Summary:        An empty HTCondor package
 
 License:        Unknown

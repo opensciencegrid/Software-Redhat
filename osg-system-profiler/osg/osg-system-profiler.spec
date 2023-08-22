@@ -1,7 +1,7 @@
 Summary:   Profiles your system for debugging
 Name:      osg-system-profiler
 Version:   1.6.0
-Release:   2%{?dist}
+Release:   3%{?dist}
 License:   Apache License, 2.0
 Source0:   %{name}-%{version}.tar.gz
 BuildArch: noarch

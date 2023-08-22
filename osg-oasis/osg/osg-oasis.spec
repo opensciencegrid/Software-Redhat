@@ -1,7 +1,7 @@
 Summary: OSG metapackage for OASIS and CVMFS
 Name: osg-oasis
 Version: 19
-Release: 3%{?dist}
+Release: 4%{?dist}
 License: ASL 2.0
 BuildArch: noarch
 # Note: cannot require an exact release number (after a dash) unless 

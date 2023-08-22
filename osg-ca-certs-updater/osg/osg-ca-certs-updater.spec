@@ -1,6 +1,6 @@
 Name:           osg-ca-certs-updater
 Version:        2.0
-Release:        1.2%{?dist}
+Release:        1.3%{?dist}
 Summary:        Automatic CA certs updates for OSG
 
 Group:          System Environment/Tools

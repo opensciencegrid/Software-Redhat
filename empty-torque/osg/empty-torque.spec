@@ -1,6 +1,6 @@
 Name:           empty-torque
 Version:        2.0
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        An empty Torque/PBS package
 
 License:        Unknown
