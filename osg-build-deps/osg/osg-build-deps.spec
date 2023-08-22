@@ -1,6 +1,6 @@
 Name:           osg-build-deps
-Version:        2
-Release:        1%{?dist}
+Version:        3
+Release:        3%{?dist}
 Summary:        Dependencies for build tools for the OSG
 
 License:        Apache 2.0
@@ -8,6 +8,7 @@ URL:            https://github.com/opensciencegrid/osg-build
 
 BuildArch:      noarch
 
+Source1:        install-osg-build.sh
 Requires:       %{name}-base = %{version}
 Requires:       %{name}-mock = %{version}
 Requires:       %{name}-koji = %{version}
@@ -36,6 +37,7 @@ Requires:       rpmlint
 Requires:       subversion
 Requires:       wget
 Requires:       epel-rpm-macros
+Requires:       make
 %if 0%{?rhel} < 8
 Requires:       python >= 2.6
 Requires:       python-six
@@ -64,6 +66,7 @@ Requires:       %{name}-base = %{version}
 Requires:       openssl
 Requires:       koji >= 1.13.0
 Requires:       voms-clients-cpp
+Requires:       grid-certificates
 Summary:        osg-build-deps for the Koji plugin and Koji-based tools
 
 %description koji
@@ -77,10 +80,28 @@ and the following tools:
 
 
 
+%install
+install -d %{buildroot}/usr/sbin
+install -m 0755 %{SOURCE1} %{buildroot}/usr/sbin/install-osg-build.sh
+
+
+
 %files
+%files base
+/usr/sbin/install-osg-build.sh
+%files mock
+%files koji
 
 
 %changelog
+* Sun Jul 30 2023 Mátyás Selmeci <matyas@cs.wisc.edu> - 3-3
+- voms-proxy-init needs grid certificates
+- install script needs make
+
+* Sun Jul 30 2023 Mátyás Selmeci <matyas@cs.wisc.edu> - 3-1
+- Fix creation of subpackages
+- Add an install script
+
 * Thu Jun 10 2021 Mátyás Selmeci <matyas@cs.wisc.edu> - 2-1
 - Initial release, based on osg-build 1.18.0  (SOFTWARE-4659)
 
