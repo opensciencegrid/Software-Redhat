@@ -7,7 +7,7 @@
 %define dver   8
 
 %define osgver 23
-%define dist .osg%{osgver}.el%{dver}
+%define dist .osg%{osgver}int.el%{dver}
 
 Name:		buildsys-macros
 Summary:	Macros for the OSG Buildsystem
@@ -43,6 +43,9 @@ printf %s%b "%" "_smp_ncpus_max 12\n" >> $RPM_BUILD_ROOT/etc/rpm/macros.kojibuil
 /etc/rpm/macros.kojibuilder
 
 %changelog
+* Tue Aug 22 2023 Mátyás Selmeci <matyas@cs.wisc.edu> - 9-10.osg23int.el8
+- osg-23-internal-el8 (SOFTWARE-5657)
+
 * Thu Jul 27 2023 Matt Westphall <westphall@wisc.edu> - 9-8.osg23.el8
 - osg 23 el8 version
 
