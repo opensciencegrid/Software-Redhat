@@ -1,7 +1,7 @@
 
 Name: xrootd-multiuser
 Version: 2.1.4
-Release: 1%{?dist}
+Release: 2%{?dist}
 
 Summary: Multiuser filesystem writing plugin for xrootd
 
@@ -12,7 +12,6 @@ URL: https://github.com/opensciencegrid/xrootd-multiuser
 # git archive v%{version} --prefix=xrootd-multiuser-%{version}/ | gzip -7 > ~/rpmbuild/SOURCES/xrootd-multiuser-%{version}.tar.gz
 Source0: %{name}-%{version}.tar.gz
 
-Patch0: 47-thread-specific-supplementary-groups.patch
 Patch1: 48-gsi-clients-may-use-tokens.patch
 
 %define xrootd_current_major 5
@@ -47,7 +46,6 @@ Requires: xrootd-server <  1:%{xrootd_next_major}.0.0-1
 
 %prep
 %setup -q
-%patch0 -p1
 %patch1 -p1
 
 %build
@@ -81,6 +79,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_sysconfdir}/xrootd/config.d/60-osg-multiuser.cfg
 
 %changelog
+* Tue Aug 22 2023 Matt Westphall <westphall@wisc.edu> - 2.1.4-2
+- Move thread-specific suplementary groups from patch to upstream (SOFTWARE-5647)
+
 * Fri Aug 11 2023 Matt Westphall <westphall@wisc.edu> - 2.1.4-1
 - Add support for extended listings (SOFTWARE-5647)
 
