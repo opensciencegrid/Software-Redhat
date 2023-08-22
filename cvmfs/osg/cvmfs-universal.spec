@@ -69,15 +69,14 @@
 
 Summary: CernVM File System
 Name: cvmfs
-Version: 2.10.1
-Release: 1.3%{?dist}
+Version: 2.11.0
+Release: 1.1%{?dist}
 URL: https://cernvm.cern.ch/fs/
 Source0: https://ecsft.cern.ch/dist/cvmfs/%{name}-%{version}/%{name}-%{version}.tar.gz
 %if 0%{?selinux_cvmfs}
 Source1: cvmfs.te
 Source2: cvmfs.fc
 %endif
-Patch0: https://github.com/cvmfs/cvmfs/pull/3291.patch
 Group: Applications/System
 License: BSD
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -114,6 +113,7 @@ BuildRequires: zlib-devel
 %if 0%{?rhel} >= 7 || 0%{?fedora} || 0%{?sle12} || 0%{?sle15}
 BuildRequires: systemd
 %endif
+BuildRequires: git
 
 Requires: bash
 Requires: coreutils
@@ -166,6 +166,7 @@ Requires: util-linux
   %endif
 %endif
 Requires: cvmfs-config
+Requires: cvmfs-libs = %{version}
 
 # SELinux integration
 # These are needed to build the selinux policy module.
@@ -204,7 +205,7 @@ Shared libraries implementing the CernVM-FS fuse module based on libfuse3
 %package devel
 Summary: CernVM-FS static client library
 Group: Applications/System
-Requires: openssl
+Requires: cvmfs-libs = %{version}
 %description devel
 CernVM-FS static client library for pure user-space use
 
@@ -260,6 +261,7 @@ CernVM-FS tools to maintain Stratum 0/1 repositories
 %package shrinkwrap
 Summary: CernVM-FS shrinkwrap utility to export /cvmfs file system trees
 Group: Application/System
+Requires: cvmfs-libs = %{version}
 %description shrinkwrap
 CernVM-FS shrinkwrap utility to export /cvmfs file system trees into container
 images.
@@ -267,6 +269,7 @@ images.
 %package unittests
 Summary: CernVM-FS unit tests binary
 Group: Application/System
+Requires: cvmfs-libs = %{version}
 %description unittests
 CernVM-FS unit tests binary.  This RPM is not required except for testing.
 
@@ -292,7 +295,6 @@ Daemon to automatically unpack and expose containers images into CernVM-FS
 
 %prep
 %setup -q
-%patch0 -p1
 
 %if 0%{?selinux_cvmfs}
 mkdir SELinux
@@ -616,6 +618,10 @@ systemctl daemon-reload
 
 %files libs
 %defattr(-,root,root)
+%{_libdir}/libcvmfs_cache.so
+%{_libdir}/libcvmfs_cache.so.%{version}
+%{_libdir}/libcvmfs_client.so
+%{_libdir}/libcvmfs_client.so.%{version}
 %{_libdir}/libcvmfs_crypto.so
 %{_libdir}/libcvmfs_crypto.so.%{version}
 %{_libdir}/libcvmfs_crypto_debug.so
@@ -640,8 +646,6 @@ systemctl daemon-reload
 
 %files devel
 %defattr(-,root,root)
-%{_libdir}/libcvmfs.a
-%{_libdir}/libcvmfs_cache.a
 %{_includedir}/libcvmfs.h
 %{_includedir}/libcvmfs_cache.h
 %doc COPYING AUTHORS README.md ChangeLog
@@ -703,15 +707,10 @@ systemctl daemon-reload
 %endif
 
 %changelog
-* Thu Jun 22 2023 Dave Dykstra <dwd@fnal.gov> - 2.10.1-1.3
-- Apply patch from cvmfs PR #3291 to fix stuck garbage collections.
-* Wed Feb 22 2023 Carl Vuosalo <covuosalo@wisc.edu> - 2.10.1-1.2
-- Minor bug fixes and improvements
-* Thu Jan 26 2023 Carl Edquist <edquist@cs.wisc.edu> - 2.10.0-1.2
-- Bump to rebuild (SOFTWARE-5457)
-* Tue Oct 11 2022 Dave Dykstra <dwd@fnal.gov> - 2.10.0-1.1
-- Re-apply fix for el8 pacparser build error by requiring python3, from
-  https://github.com/cvmfs/cvmfs/pull/2986
+* Thu Aug 17 2023 Dave Dykstra <dwd@fnal.gov> - 2.11.0-1.1
+- Add git as a BuildRequires on the main package
+* Wed Nov 16 2022 Jakob Blomer <jblomer@cern.ch> - 2.11.0
+- Make cvmfs-libs a dependency of the cvmfs package
 * Mon May 16 2022 Jakob Blomer <jblomer@cern.ch> - 2.10.0
 - Add /var/log/cvmfs to cvmfs-server package, set its SElinux label
 * Thu Sep 30 2021 Jakob Blomer <jblomer@cern.ch> - 2.9.0
