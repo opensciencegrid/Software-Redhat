@@ -75,8 +75,8 @@
 #-------------------------------------------------------------------------------
 Name:      xrootd
 Epoch:     1
-Version:   5.6.1
-Release:   1.1%{?dist}%{?_with_clang:.clang}%{?_with_asan:.asan}
+Version:   5.5.5
+Release:   1.2%{?dist}%{?_with_clang:.clang}%{?_with_asan:.asan}
 Summary:   Extended ROOT file server
 Group:     System Environment/Daemons
 License:   LGPLv3+
@@ -1169,10 +1169,6 @@ fi
 # Changelog
 #-------------------------------------------------------------------------------
 %changelog
-* Mon Jul 17 2023 Mátyás Selmeci <matyas@cs.wisc.edu> - 5.6.1-1.1
-- Update to 5.6.1-1 from upstream and merge OSG changes (SOFTWARE-5623)
-  - Drop 2026-Switch-to-a-fixed-set-of-DH-parameters-compatible-with-older-OpenSSL.patch (upstreamed)
-
 * Mon Jun 12 2023 Mátyás Selmeci <matyas@cs.wisc.edu> - 5.5.5-1.2
 - Add 2026-Switch-to-a-fixed-set-of-DH-parameters-compatible-with-older-OpenSSL.patch (SOFTWARE-5594)
   for compatibility between EL7 clients and EL9 servers
