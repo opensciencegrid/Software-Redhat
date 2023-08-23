@@ -1,7 +1,7 @@
 Name:      osg-ce
 Summary:   OSG Compute Element
-Version:   3.6
-Release:   10%{?dist}
+Version:   23
+Release:   1%{?dist}
 License:   Apache 2.0
 URL:       http://www.opensciencegrid.org
 
@@ -140,6 +140,9 @@ install -m 644 %{SOURCE0} $RPM_BUILD_ROOT/%{_datadir}/condor-ce/config.d
 %files slurm
 
 %changelog
+* Wed Aug 23 2023 Matt Westphall <westphall@wisc.edu> - 23-1
+- Version bump for OSG 23
+
 * Fri Mar 24 2023 Mátyás Selmeci <matyas@cs.wisc.edu> - 3.6-10
 - Add Squid dependency back for EL9 (SOFTWARE-5498)
 
