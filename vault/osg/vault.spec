@@ -2,7 +2,7 @@
 
 Name: vault
 Version: 1.13.2
-Release: 1%{?dist}
+Release: 2%{?dist}
 Summary: Vault is a tool for securely accessing secrets
 License: MPL
 Source0: https://github.com/opensciencegrid/%{name}-rpm/archive/v%{version}/%{name}-rpm-%{version}.tar.gz
