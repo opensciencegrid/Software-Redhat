@@ -11,7 +11,7 @@
 
 Name:		voms
 Version:	2.1.0
-Release:	0.14.%{_rc}.6%{?dist}
+Release:	0.14.%{_rc}.7%{?dist}
 Summary:	Virtual Organization Membership Service
 
 License:	ASL 2.0
