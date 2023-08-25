@@ -1,0 +1,112 @@
+From 14059b6667503a211897bd1e9ccacb1dd4bf802b Mon Sep 17 00:00:00 2001
+From: Brian Bockelman <bbockelman@morgridge.org>
+Date: Tue, 6 Jun 2023 07:59:28 -0500
+Subject: [PATCH] Switch to a fixed set of DH parameters compatible with older
+ OpenSSL.
+
+OpenSSL 3 started generating DH parameters that are not considered
+valid by `DH_check` for older OpenSSL 1.0.2.
+
+Since we can't change clients in the wild, I generated a set of DH
+params (`openssl dhparam 2048`) on an older OpenSSL 1.0.2 which appears
+to be considered acceptable by both versions of OpenSSL.
+
+This fixes the set of DH parameters (instead of generating them each time),
+which is fairly typical, and also increases the size from 512 (insecure)
+to 2048.
+---
+ src/XrdCrypto/XrdCryptosslCipher.cc | 49 +++++++++++++++++++++++++++++
+ src/XrdCrypto/XrdCryptosslCipher.hh |  7 ++++-
+ 2 files changed, 55 insertions(+), 1 deletion(-)
+
+diff --git a/src/XrdCrypto/XrdCryptosslCipher.cc b/src/XrdCrypto/XrdCryptosslCipher.cc
+index e0bb5f5a67a..a0f5de82f8b 100644
+--- a/src/XrdCrypto/XrdCryptosslCipher.cc
++++ b/src/XrdCrypto/XrdCryptosslCipher.cc
+@@ -47,6 +47,26 @@
+ #include <openssl/param_build.h>
+ #endif
+ 
++// Hardcoded DH parameters that are acceptable to both OpenSSL 3.0 (RHEL9)
++// and 1.0.2 (RHEL7).  OpenSSL 3.0 reworked the DH parameter generation algorithm
++// and now produces DH params that don't pass OpenSSL 1.0.2's parameter verification
++// function (`DH_check`).  Accordingly, since these are safe to reuse, we generated
++// a single set of parameters for the server to always utilize.
++static const char dh_param_enc[] =
++R"(
++-----BEGIN DH PARAMETERS-----
++MIIBiAKCAYEAzcEAf3ZCkm0FxJLgKd1YoT16Hietl7QV8VgJNc5CYKmRu/gKylxT
++MVZJqtUmoh2IvFHCfbTGEmZM5LdVaZfMLQf7yXjecg0nSGklYZeQQ3P0qshFLbI9
++u3z1XhEeCbEZPq84WWwXacSAAxwwRRrN5nshgAavqvyDiGNi+GqYpqGPb9JE38R3
++GJ51FTPutZlvQvEycjCbjyajhpItBB+XvIjWj2GQyvi+cqB0WrPQAsxCOPrBTCZL
++OjM0NfJ7PQfllw3RDQev2u1Q+Rt8QyScJQCFUj/SWoxpw2ydpWdgAkrqTmdVYrev
++x5AoXE52cVIC8wfOxaaJ4cBpnJui3Y0jZcOQj0FtC0wf4WcBpHnLLBzKSOQwbxts
++WE8LkskPnwwrup/HqWimFFg40bC9F5Lm3CTDCb45mtlBxi3DydIbRLFhGAjlKzV3
++s9G3opHwwfgXpFf3+zg7NPV3g1//HLgWCvooOvMqaO+X7+lXczJJLMafEaarcAya
++Kyo8PGKIAORrAgEF
++-----END DH PARAMETERS-----
++)";
++
+ // ---------------------------------------------------------------------------//
+ //
+ // Cipher interface
+@@ -507,12 +527,41 @@ XrdCryptosslCipher::XrdCryptosslCipher(bool padded, int bits, char *pub,
+       static EVP_PKEY *dhparms = [] {
+          DEBUG("generate DH parameters");
+          EVP_PKEY *dhParam = 0;
++
++//
++// Important historical context:
++// - We used to generate DH params on every server startup (commented
++//   out below).  This was prohibitively costly to do on startup for
++//   DH parameters large enough to be considered secure.
++// - OpenSSL 3.0 improved the DH parameter generation to avoid leaking
++//   the first bit of the session key (see https://github.com/openssl/openssl/issues/9792
++//   for more information).  However, a side-effect is that the new
++//   parameters are not recognized as valid in OpenSSL 1.0.2.
++// - Since we can't control old client versions and new servers can't
++//   generate compatible DH parameters, we switch to a fixed, much stronger
++//   set of DH parameters (3072 bits).
++//
++// The impact is that we continue leaking the first bit of the session key
++// (meaning it's effectively 127 bits not 128 bits -- still plenty secure)
++// but upgrade the DH parameters to something more modern (3072; previously,
++// it was 512 bits which was not considered secure).  The downside
++// of fixed DH parameters is that if a nation-state attacked our selected
++// parameters (using technology not currently available), we would have
++// to upgrade all servers with a new set of DH parameters.
++//
++
++/*
+          EVP_PKEY_CTX *pkctx = EVP_PKEY_CTX_new_id(EVP_PKEY_DH, 0);
+          EVP_PKEY_paramgen_init(pkctx);
+          EVP_PKEY_CTX_set_dh_paramgen_prime_len(pkctx, kDHMINBITS);
+          EVP_PKEY_CTX_set_dh_paramgen_generator(pkctx, 5);
+          EVP_PKEY_paramgen(pkctx, &dhParam);
+          EVP_PKEY_CTX_free(pkctx);
++*/
++         BIO *biop = BIO_new(BIO_s_mem());
++         BIO_write(biop, dh_param_enc, strlen(dh_param_enc));
++         PEM_read_bio_Parameters(biop, &dhParam);
++         BIO_free(biop);
+          DEBUG("generate DH parameters done");
+          return dhParam;
+       }();
+diff --git a/src/XrdCrypto/XrdCryptosslCipher.hh b/src/XrdCrypto/XrdCryptosslCipher.hh
+index f24fc01508b..853716a6e99 100644
+--- a/src/XrdCrypto/XrdCryptosslCipher.hh
++++ b/src/XrdCrypto/XrdCryptosslCipher.hh
+@@ -39,7 +39,12 @@
+ #include <openssl/evp.h>
+ #include <openssl/dh.h>
+ 
+-#define kDHMINBITS 512
++// This is not used as we no longer dynamically generate the DH parameters;
++// see the comments in XrdCryptosslCipher.cc for more context.
++// Purposely keeping it around to help make the issue visible to future readers
++// of the code.
++//
++// #define kDHMINBITS 512
+ 
+ // ---------------------------------------------------------------------------//
+ //
