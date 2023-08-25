@@ -76,7 +76,7 @@
 Name:      xrootd
 Epoch:     1
 Version:   5.5.5
-Release:   1.2%{?dist}%{?_with_clang:.clang}%{?_with_asan:.asan}
+Release:   1.3%{?dist}%{?_with_clang:.clang}%{?_with_asan:.asan}
 Summary:   Extended ROOT file server
 Group:     System Environment/Daemons
 License:   LGPLv3+
@@ -104,6 +104,9 @@ Patch4: 2026-Switch-to-a-fixed-set-of-DH-parameters-compatible-with-older-OpenSS
 
 #Patch101: 0001-DEBUG-Add-some-debug-lines-to-XrdVomsMapfile.patch
 #Patch102: 0002-DEBUG-Catch-and-log-exception-launching-voms-mapfile.patch
+
+Patch1978: 1978-Implement-ability-to-have-the-token-username-as-a-se.patch
+Patch2064: 2064-Fix-logic-error-in-user-mapping.patch
 
 BuildRoot: %{_tmppath}/%{name}-root
 
@@ -518,6 +521,9 @@ cd xrootd
 %patch0 -p2
 %patch3 -p1
 %patch4 -p1
+
+%patch1978 -p1
+%patch2064 -p1
 #patch101 -p1
 #patch102 -p1
 cd ..
@@ -1160,6 +1166,9 @@ fi
 # Changelog
 #-------------------------------------------------------------------------------
 %changelog
+* Fri Aug 25 2023 Matt Westphall <westphall@wisc.edu> - 5.5.5-1.3
+- Backport username mapping bugfix to XRootD 5.5.5 (SOFTWARE-5658)
+
 * Mon Jun 12 2023 Mátyás Selmeci <matyas@cs.wisc.edu> - 5.5.5-1.2
 - Add 2026-Switch-to-a-fixed-set-of-DH-parameters-compatible-with-older-OpenSSL.patch (SOFTWARE-5594)
   for compatibility between EL7 clients and EL9 servers
