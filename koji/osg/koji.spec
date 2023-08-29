@@ -78,8 +78,8 @@
 %endif
 
 Name: koji
-Version: 1.20.1
-Release: 2.4%{?dist}
+Version: 1.21.1
+Release: 1.1%{?dist}
 # the included arch lib from yum's rpmUtils is GPLv2+
 License: LGPLv2 and GPLv2+
 Summary: Build system tools
@@ -87,12 +87,8 @@ URL: https://pagure.io/koji/
 Source0: https://releases.pagure.org/koji/koji-%{version}.tar.bz2
 
 # Patches already upstream
-Patch1: https://pagure.io/koji/pull-request/2075.patch
 
-# Adjust xz params to favor speed
-Patch15: https://pagure.io/koji/pull-request/1576.patch
-
-# Upstreamed in newer versions
+# Upstreamed in 1.23.1
 Patch16: 2652-web-input-validation.patch
 Patch17: 2652a-python2.patch
 
@@ -443,6 +439,8 @@ exit 1
 # python2 build
 %if 0%{py2_support} > 1
 make DESTDIR=$RPM_BUILD_ROOT PYTHON=%{__python2} %{?install_opt} install
+# koji-sidetag-cleanup has a python3 shbang, fix for python2
+sed -i 's|#!/usr/bin/python3|#!/usr/bin/python2|' $RPM_BUILD_ROOT/usr/sbin/koji-sidetag-cleanup
 %else
 %if 0%{py2_support}
 for d in koji cli plugins ; do
@@ -597,6 +595,7 @@ rm -f %{buildroot}/%{_libexecdir}/kojid/mergerepos
 %config(noreplace) /etc/koji-gc/email.tpl
 %{_sbindir}/koji-shadow
 %dir /etc/koji-shadow
+%{_sbindir}/koji-sidetag-cleanup
 %config(noreplace) /etc/koji-shadow/koji-shadow.conf
 
 %files web
@@ -716,6 +715,9 @@ fi
 %endif
 
 %changelog
+* Tue Aug 29 2023 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.21.1-1.1.osg
+- Update to 1.21.1 and merge OSG changes
+
 * Fri Dec 30 2022 Carl Edquist <edquist@cs.wisc.edu> - 1.20.1-2.4.osg
 - **** OSG CHANGELOG ****
     * Fri Dec 30 2022 Carl Edquist <edquist@cs.wisc.edu> - 1.20.1-2.4.osg
@@ -861,11 +863,24 @@ fi
     - Cache passwords to decrypt SSL key in memory.
       (koji_passwd_cache.patch)
 
+* Fri Jun 12 2020 Kevin Fenzi <kevin@scrye.com> - 1.21.1-1
+- Update to 1.21.1. (really this time!)
+
+* Sun May 24 2020 Miro Hrončok <mhroncok@redhat.com> - 1.21.0-3
+- Rebuilt for Python 3.9
+
+* Thu Apr 30 2020 Kevin Fenzi <kevin@scrye.com> - 1.21.0-2
+- Add patch to fix issue with admins not being able to force tagging. 
+- Fixes https://pagure.io/koji/issue/2202 upstream.
+
+* Tue Apr 21 2020 Kevin Fenzi <kevin@scrye.com> - 1.21.0-1
+- Update to 1.21.0. Fixes bug #1826406
+
 * Tue Mar 10 2020 Kevin Fenzi <kevin@scrye.com> - 1.20.1-2
 - Add patch to fix date issue. 
 
 * Fri Mar 06 2020 Kevin Fenzi <kevin@scrye.com> - 1.20.1-1
-- Update to 1.20.1
+- Update to 1.20.0
 
 * Wed Jan 29 2020 Fedora Release Engineering <releng@fedoraproject.org> - 1.20.0-2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_32_Mass_Rebuild

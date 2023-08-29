@@ -1,4 +1,4 @@
-From b39ceb6ff20325b0ea7e41af3fdc5845fd6f5768 Mon Sep 17 00:00:00 2001
+From a10a948228e47095a1be85bdbf66f445a5a8f26c Mon Sep 17 00:00:00 2001
 From: Matyas Selmeci <matyas@cs.wisc.edu>
 Date: Mon, 23 Mar 2020 17:00:53 -0500
 Subject: [PATCH] kojira add sleeptime to conf
@@ -10,10 +10,10 @@ not mentioned in the default config file so fix that.
  1 file changed, 3 insertions(+)
 
 diff --git a/util/kojira.conf b/util/kojira.conf
-index 6cf509e..2588b86 100644
+index 4d70695..2531b84 100644
 --- a/util/kojira.conf
 +++ b/util/kojira.conf
-@@ -43,6 +43,9 @@ with_src=no
+@@ -40,6 +40,9 @@ logfile=/var/log/kojira.log
  ;certificate of the CA that issued the HTTP server certificate
  ;serverca = /etc/kojira/serverca.crt
  
