@@ -1,19 +1,19 @@
-From 303deea005d04363c522dedce42d54d65754650c Mon Sep 17 00:00:00 2001
+From 692376bf8a81ebfa9c7148a95f3b0f6b9153f09a Mon Sep 17 00:00:00 2001
 From: Matyas Selmeci <matyas@cs.wisc.edu>
-Date: Wed, 23 Aug 2017 10:58:17 -0500
-Subject: [PATCH] Fix 'type' in 'add-group-pkg'
+Date: Tue, 29 Aug 2023 14:28:54 -0500
+Subject: [PATCH] Fix-type-in-add-group-pkg
 
 ---
  hub/kojihub.py | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/hub/kojihub.py b/hub/kojihub.py
-index 6a39619..dd53b41 100644
+index d65a5f0..92f2c49 100644
 --- a/hub/kojihub.py
 +++ b/hub/kojihub.py
-@@ -1855,7 +1855,7 @@ def _grp_pkg_add(taginfo, grpinfo, pkg_name, block, force, **opts):
+@@ -1924,7 +1924,7 @@ def _grp_pkg_add(taginfo, grpinfo, pkg_name, block, force, **opts):
          if not changed and not force:
-             #no point in adding it again with the same data (unless force is on)
+             # no point in adding it again with the same data (unless force is on)
              return
 -    opts.setdefault('type', 'mandatory')
 +    opts.setdefault('type', 'default')

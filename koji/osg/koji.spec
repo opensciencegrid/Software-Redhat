@@ -94,7 +94,6 @@ Patch17: 2652a-python2.patch
 
 # OSG patches
 Patch103: kojid_scmbuild_check_spec_after_running_sourcecmd.patch
-Patch106: kojicli_setup_dns.patch
 Patch112: Fix-type-in-add-group-pkg.patch
 Patch113: kojira-add-sleeptime-to-conf.patch
 
@@ -717,6 +716,7 @@ fi
 %changelog
 * Tue Aug 29 2023 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.21.1-1.1.osg
 - Update to 1.21.1 and merge OSG changes
+- Drop kojicli_setup_dns.patch (don't need that feature anymore)
 
 * Fri Dec 30 2022 Carl Edquist <edquist@cs.wisc.edu> - 1.20.1-2.4.osg
 - **** OSG CHANGELOG ****
