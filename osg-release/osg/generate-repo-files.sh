@@ -25,9 +25,9 @@ mkrepofile () {
     return
   fi
 
-  case $EL in
-    9 ) GPGKEY=RPM-GPG-KEY-OSG-4 ;;
-    * ) GPGKEY=RPM-GPG-KEY-OSG-2 ;;
+  case $REPO in
+    development ) GPGKEY=RPM-GPG-KEY-OSG-23-auto ;;
+    *           ) GPGKEY=RPM-GPG-KEY-OSG-23-developer ;;
   esac
 
   REPOFILE=$YUMREPO.repo

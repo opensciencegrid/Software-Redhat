@@ -1,16 +1,16 @@
 #YUMREPO                  SERIES        REPO         TEMPLATE  TITLE
 
-osg                       23            release      standard
-osg-development           23            development  standard  Development
-osg-testing               23            testing      standard  Testing
-osg-contrib               23            contrib      standard  Contributed
-osg-empty                 23            empty        basic     Empty_Packages
-osg-minefield             23            development  koji      Build_Repository
-osg-prerelease            23            prerelease   koji      Prerelease_Repository_for_Internal_Use
+osg                       23-main       release      standard
+osg-development           23-main       development  standard  Development
+osg-testing               23-main       testing      standard  Testing
+osg-contrib               23-contrib    contrib      contrib   Contributed
+osg-empty                 23-empty      empty        basic     Empty_Packages
+osg-minefield             23-main       development  koji      Build_Repository
+osg-prerelease            23-main       prerelease   koji      Prerelease_Repository_for_Internal_Use
 
-internal-development      23            development  direct    Internal_Development
-internal                  23            release      direct    Internal
-internal-minefield        23            development  koji      Internal_build_Repository
+internal-development      23-internal   development  direct    Internal_Development
+internal                  23-internal   release      direct    Internal
+internal-minefield        23-internal   development  koji      Internal_build_Repository
 
 osg-upcoming              23-upcoming   release      standard  Upcoming
 osg-upcoming-development  23-upcoming   development  standard  Upcoming_Development

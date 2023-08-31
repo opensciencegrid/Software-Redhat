@@ -17,9 +17,10 @@ Source2:        template.repo.standard
 Source3:        template.repo.basic
 Source4:        template.repo.koji
 Source5:        template.repo.direct
+Source6:        template.repo.contrib
 
-Source41:       RPM-GPG-KEY-OSG-2
-Source42:       RPM-GPG-KEY-OSG-4
+Source41:       RPM-GPG-KEY-OSG-23-auto
+Source42:       RPM-GPG-KEY-OSG-23-developer
 
 
 BuildArch:      noarch
@@ -44,13 +45,10 @@ exit 0
 
 #GPG Key
 mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/pki/rpm-gpg
-%if 0%{?rhel} < 9
 install -pm 644 %{SOURCE41} \
-    $RPM_BUILD_ROOT%{_sysconfdir}/pki/rpm-gpg/RPM-GPG-KEY-OSG-2
-%else
+    $RPM_BUILD_ROOT%{_sysconfdir}/pki/rpm-gpg/RPM-GPG-KEY-OSG-auto
 install -pm 644 %{SOURCE42} \
-    $RPM_BUILD_ROOT%{_sysconfdir}/pki/rpm-gpg/RPM-GPG-KEY-OSG-4
-%endif
+    $RPM_BUILD_ROOT%{_sysconfdir}/pki/rpm-gpg/RPM-GPG-KEY-OSG-developer
 
 # yum
 mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/yum.repos.d
@@ -61,14 +59,14 @@ sed -i -e 's/gpgcheck=1/gpgcheck=0/' $RPM_BUILD_ROOT%{_sysconfdir}/yum.repos.d/*
 %files
 %defattr(-,root,root,-)
 %config(noreplace) /etc/yum.repos.d/*
-%if 0%{?rhel} < 9
-/etc/pki/rpm-gpg/RPM-GPG-KEY-OSG-2
-%else
-/etc/pki/rpm-gpg/RPM-GPG-KEY-OSG-4
-%endif
+/etc/pki/rpm-gpg/RPM-GPG-KEY-OSG-23-auto
+/etc/pki/rpm-gpg/RPM-GPG-KEY-OSG-23-developer
 
 
 %changelog
+* Thu Aug 31 2023 Matt Westphall <westphall@wisc.edu> - 23-2
+- Update with new OSG repo name conventions, add new GPG keys (SOFTWARE-5667)
+
 * Fri Aug 18 2023 Brian Lin <blin@cs.wisc.edu> - 23-1
 - Initial OSG 23 release (SOFTWARE-5503)
 
