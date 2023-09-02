@@ -17,7 +17,7 @@
 # For Release Candidate builds, check with Software team on release string
 # ------------------------------------------------------------------------------
 %define version 3.10.3
-%define release 0.1.rc1
+%define release 0.2.rc2
 
 %define frontend_xml frontend.xml
 %define factory_xml glideinWMS.xml
@@ -185,11 +185,13 @@ Requires: python3-pyyaml
 Requires: python3-jwt
 Requires: python3-cryptography
 Requires: python3-m2crypto
+#Requires: python3-structlog
 %else
 Requires: PyYAML
 Requires: python36-jwt
 Requires: python36-cryptography
 Requires: python36-m2crypto
+Requires: python36-structlog
 %endif
 Requires: python3-rrdtool
 %description libs
@@ -1042,10 +1044,10 @@ rm -rf $RPM_BUILD_ROOT
 #%config(noreplace) %{_sysconfdir}/condor/scripts/frontend_condortoken
 
 %changelog
-* Tue Jun 20 2023 Marco Mambelli <marcom@fnal.gov> - 3.10.3
+* Tue Sep 2 2023 Marco Mambelli <marcom@fnal.gov> - 3.10.3
 - Glideinwms v3.10.3
 - Release Notes: http://glideinwms.fnal.gov/doc.v3_10_3/history.html
-- Release candidates 3.10.2-01.rc1 to 3.10.2-01.rc1
+- Release candidates 3.10.3-01.rc1 to 3.10.3-02.rc2
 
 * Wed May 10 2023 Marco Mambelli <marcom@fnal.gov> - 3.10.2
 - Glideinwms v3.10.2
