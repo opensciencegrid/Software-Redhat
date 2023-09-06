@@ -4,7 +4,7 @@
 
 Name:           igtf-ca-certs
 Version:        %{igtf_version}
-Release:        1%{?dist}
+Release:        1.1%{?dist}
 Summary:        OSG Packaging of the IGTF CA Certs, in the OpenSSL 1.0.* format, in the OpenSSL 1.0.* format, with SHA-1 certs patched for EL9. 
 
 License:        Unknown
