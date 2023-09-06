@@ -1,6 +1,6 @@
 Name:           osg-update-vos
-Version:        1.4.1
-Release:        2%{?dist}
+Version:        1.4.2
+Release:        1%{?dist}
 Summary:        VO data updater for OSG
 
 License:        Apache 2.0
@@ -39,6 +39,9 @@ make install DESTDIR=%{buildroot}
 %{_sbindir}/osg-update-data
 
 %changelog
+* Wed Sep 6 2023 Matt Westphall <westphall@wisc.edu> - 1.4.2-1
+- Fix hardcoded OSG GPG key path (SOFTWARE-5640)
+
 * Fri May 26 2023 Matt Westphall <westphall@wisc.edu> - 1.4.1-1
 - Updated Python dependency to 3 on all EL version (SOFTWARE-5545)
 
