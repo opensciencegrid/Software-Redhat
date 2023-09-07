@@ -1,18 +1,56 @@
-Name: oidc-agent
-Version: 4.2.4
-Release: 1.1%{?dist}
+# MIT License
+# 
+# Copyright (c) 2017 - 2023 Karlsruhe Institute of Technology - Steinbuch Centre for Computing
+# 
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+# 
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+# 
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
 
+Name: oidc-agent
+Version: 4.5.2
+Release: 1.1%{?dist}
+%define VersionNoTilde %(echo %{version} | sed s/~pr/-pr/)
 Summary: Command-line tool for obtaining OpenID Connect access tokens
+%define commented_out 0
 
 %if 0%{?suse_version} > 0
 Group: Misc
 %endif
+
+# The entire source is MIT except:
+#   - src/oidc-prompt/mustache/ is ISC; it is used in oidc-prompt, which is
+#     in the -desktop subpackage
+#     The ISC license is include in src/oidc-prompt/mustache/LICENSE.txt
+#   - src/oidc-gen/qr.c is GPLv2+; it is ussed in oidc-gen, which is in the
+#     -cli package
+#   - src/utils/disableTracing.* src/utils/printer.h is ISC; it is used in
+#     oidc-agent oidc-token, oidc-gen and oidc-add , which are in the -cli
+#     subpackage and by oidc-prompt, which is in the -destkop subpackage
+
+
 License: MIT
 URL: https://github.com/indigo-dc/oidc-agent
 # use `make rpmsource` to generate the required tarball
-#Source0: https://github.com/indigo-dc/oidc-agent/archive/refs/heads/master.zip
-#Source0: https://github.com/indigo-dc/oidc-agent/archive/refs/heads/docker-builds.zip
-Source0: oidc-agent-4.2.4.tar.gz
+#Source0:
+#https://github.com/indigo-dc/oidc-agent/archive/refs/heads/master.zip
+#Source0:
+#https://github.com/indigo-dc/oidc-agent/archive/refs/heads/docker-builds.zip
+Source0: https://github.com/indigo-dc/oidc-agent/archive/v%{version}/oidc-agent-%{version}.tar.gz
+#DO_NOT_REPLACE_THIS_LINE
 
 # OSG:
 Patch0: Check-for-DT_REG-macro.patch
@@ -26,27 +64,46 @@ BuildRequires: unzip >= 6
 %if 0%{?suse_version} > 0
 BuildRequires: libsodium23 >= 1.0.14
 %else
-BuildRequires: libsodium-static >= 1.0.16
+#BuildRequires: libsodium-static >= 1.0.16
+BuildRequires: libsodium-devel >= 1.0.16
 %endif
 BuildRequires: libmicrohttpd-devel >= 0.9.33
-BuildRequires: libseccomp-devel >= 2.3
 BuildRequires: help2man >= 1.41
 BuildRequires: libsecret-devel >= 0.18.4
 BuildRequires: desktop-file-utils
 BuildRequires: qrencode-devel >= 3
+BuildRequires: gtk3-devel
+%if 0%{?fedora} >= 1
+BuildRequires: cjson-devel >= 1.7.12
+%endif
 
-Requires: oidc-agent-desktop == %{version}-%{release}
-BuildRoot:	%{_tmppath}/%{name}
+# webkit2gtk3
+%if 0%{?suse_version} > 0
+%if 0%{?sle_version} > 150300
+# 15.4 and larger
+BuildRequires: webkit2gtk3-soup2-devel
+%else
+# 15.3 and tumbleweed
+%if 0%{?suse_version} > 1590
+# tumbleweed
+BuildRequires: webkit2gtk3-soup2-devel
+%else
+# 15.3 and lower
+BuildRequires: webkit2gtk3-devel
+%endif
+%endif
+# non suse
+%else
+BuildRequires: webkitgtk4-devel
+%endif
 
-#cp /home/build/oidc-agent/rpm/oidc-agent.spec rpm && rpmbuild --define "_topdir /tmp/build/oidc-agent/rpm/rpmbuild" -bb rpm/oidc-agent.spec
-%files
-%defattr(-,root,root,-)
-%doc %{_defaultdocdir}/%{name}-%{version}
-%doc %{_defaultdocdir}/%{name}-%{version}/README.md
-%license LICENSE
+BuildRequires: gcc-c++
+
+Requires: %{name}-desktop%{?_isa} = %{version}-%{release}
 
 
 %package -n oidc-agent-cli
+License: MIT and LGPL-2.1+ and ISC
 Summary: Command-line tool for obtaining OpenID Connect Access tokens
 Requires: liboidc-agent4 == %{version}-%{release}
 Requires: libsecret >= 0.18.6
@@ -57,17 +114,17 @@ Requires: libqrencode4 >= 4
 Requires: libsodium23 >= 1.0.16
 Requires: libcurl4 >= 7.29
 Requires: libmicrohttpd12 >= 0.9
-Requires: libseccomp2 >= 2.3.1
 %else
 Requires: qrencode-libs >= 3
 Requires: libsodium >= 1.0.18
 Requires: libcurl >= 7.29
 Requires: libmicrohttpd >= 0.9
-Requires: libseccomp >= 2.3.1
 %endif
+Provides: oidc-agent >= 4.0
 
 %package -n liboidc-agent4
-Summary: oidc-agent library
+License: MIT
+Summary: Library for oidc-agent
 %if 0%{?suse_version} > 0
 Requires: libsodium23 >= 1.0.16
 %else
@@ -75,14 +132,25 @@ Requires: libsodium >= 1.0.18
 %endif
 
 %package -n liboidc-agent-devel
-Summary: oidc-agent library development files
-Requires: liboidc-agent4 == %{version}-%{release}
+License: MIT
+Summary: Library development files for oidc-agent
+Requires: liboidc-agent4%{?_isa} = %{version}-%{release}
 
+%if 0%{?commented_out} != 1
 %package -n oidc-agent-desktop
+License: MIT and ISC
 Summary: GUI integration for obtaining OpenID Connect Access tokens on the command-line
 Requires: oidc-agent-cli == %{version}-%{release}
-Requires: yad
-Requires: xterm 
+Requires: xterm
+%if 0%{?suse_version} > 0
+Requires: webkit2gtk3
+Requires: gtk3
+%else
+#Requires: webkit2gtk3-minibrowser
+Requires: webkitgtk4
+Requires: gtk3
+%endif
+%endif
 
 
 %description
@@ -119,6 +187,7 @@ This package provides the development files (static library and headers)
 required for building applications with liboidc-agent, a library for
 communicating with oidc-agent.
 
+%if 0%{?commented_out} != 1
 %description -n oidc-agent-desktop
 Desktop integration files for oidc-gen and oidc-agent and for creating the user
 dialog.
@@ -131,24 +200,32 @@ The Xsession file to consistently set the environment variables necessary to
 for client tools to connect to the oidc-agent daemon.
 
 This package also provides a bash script as an interface to create different
-dialog windows. It uses yad to create windows.
+dialog windows.
+%endif
 
 
 %prep
+rm -rf windows
+%if 0%{?fedora} >= 1
+rm -rf lib/cJSON
+%endif
+#rm -rf lib/list
 %setup -q
 %if 0%{?el7}
 %patch0 -p1
 %endif
 
 %build
-export USE_CJSON_SO=0
-export USE_LIST_SO=0
+%if 0%{?fedora} >= 1
+export USE_CJSON_SO=1
+#export USE_LIST_SO=1
+%endif
 make 
 
 %install
 echo "Buildroot: %{buildroot}"
 make install install_lib install_lib-dev \
-    BIN_AFTER_INST_PATH=%{buildroot}%{_prefix}\
+    BIN_AFTER_INST_PATH=%{_bindir}\
     BIN_PATH=%{buildroot}%{_prefix}\
     MAN_PATH=%{buildroot}%{_mandir}\
     CONFIG_PATH=%{buildroot}%{_sysconfdir}\
@@ -161,24 +238,22 @@ make install install_lib install_lib-dev \
     LIB_PATH=%{buildroot}%{_libdir}\
     LIBDEV_PATH=%{buildroot}%{_libdir}\
     INCLUDE_PATH=%{buildroot}%{_includedir}
-# FIXME: This ought to be fixed elsewhere!
-# fix paths in installed files
-sed -i -e "s!%{buildroot}!!g" %{buildroot}%{_sysconfdir}/X11/Xsession.d/91oidc-agent
-sed -i -e "s!%{buildroot}!!g" %{buildroot}%{_datarootdir}/applications/oidc-gen.desktop 
 mkdir -p %{buildroot}/%{_defaultdocdir}/%{name}-%{version}
 cp README.md %{buildroot}/%{_defaultdocdir}/%{name}-%{version}/README.md
 
 %check
 desktop-file-validate %{buildroot}/%{_datadir}/applications/oidc-gen.desktop 
 
-%files -n oidc-agent-cli
-%defattr(-,root,root,-)
+%files -n oidc-agent
 %license LICENSE
-%config(noreplace) /etc/oidc-agent/privileges/
-%config(noreplace) /etc/oidc-agent/issuer.config
-%config(noreplace) /etc/oidc-agent/oidc-agent-service.options
-%config(noreplace) /etc/oidc-agent/pubclients.config
-/usr/share/bash-completion/completions/
+
+%files -n oidc-agent-cli
+%dir %{_sysconfdir}/oidc-agent
+%doc %{_defaultdocdir}/%{name}-%{version}
+%config(noreplace) %{_sysconfdir}/oidc-agent/issuer.config
+%config(noreplace) %{_sysconfdir}/oidc-agent/oidc-agent-service.options
+%config(noreplace) %{_sysconfdir}/oidc-agent/pubclients.config
+/usr/share/bash-completion/completions/*
 %attr(0644, root, root) %doc /usr/share/man/man1/oidc-agent.1.gz
 %attr(0644, root, root) %doc /usr/share/man/man1/oidc-gen.1.gz
 %attr(0644, root, root) %doc /usr/share/man/man1/oidc-add.1.gz
@@ -193,28 +268,41 @@ desktop-file-validate %{buildroot}/%{_datadir}/applications/oidc-gen.desktop
 %{_bindir}/oidc-token
 
 %files -n liboidc-agent4
-%defattr(-,root,root,-)
 %license LICENSE
 %{_libdir}/liboidc-agent.so.4
-%{_libdir}/liboidc-agent.so.%{version}
+%{_libdir}/liboidc-agent.so.%{VersionNoTilde}
 
 %files -n liboidc-agent-devel
-%defattr(-,root,root,-)
-%license LICENSE
 %{_includedir}/oidc-agent
 %{_libdir}/liboidc-agent.so
-%attr(0644, root, root) %{_libdir}/liboidc-agent.a
+%exclude %attr(0644, root, root) %{_libdir}/liboidc-agent.a
+# Strange that this one was actually included:
+%exclude /usr/lib/.build-id/44/*
 
+# exclude desktop files
+%exclude %{_bindir}/oidc-prompt
+%exclude %attr(0644, root, root) %doc /usr/share/man/man1/oidc-prompt.1.gz
+%exclude %dir %{_sysconfdir}/X11/Xsession.d/
+%exclude %config(noreplace) %{_sysconfdir}/X11/Xsession.d/91oidc-agent
+%exclude /usr/share/applications/oidc-gen.desktop
+
+%if 0%{?commented_out} != 1
 %files -n oidc-agent-desktop
-%defattr(-,root,root,-)
-%license LICENSE
 %{_bindir}/oidc-prompt
-%doc /usr/share/man/man1/oidc-prompt.1.gz
-%config(noreplace) /etc/X11/Xsession.d/91oidc-agent
+%attr(0644, root, root) %doc /usr/share/man/man1/oidc-prompt.1.gz
+%dir %{_sysconfdir}/X11/Xsession.d/
+%config(noreplace) %{_sysconfdir}/X11/Xsession.d/91oidc-agent
 /usr/share/applications/oidc-gen.desktop
+%endif
 
 
 %changelog
+* Thu Sep 7 2023 Matt Westphall <westphall@wisc.edu> - 4.5.2-1.1
+- Update upstream to 4.5.2-1 (SOFTWARE-5385)
+
+* Mon Jul 25 2022 Marcus Hardt <hardt@kit.edu> - 4.3.2-1
+- Restructured rpm packages to fix fedora bugzilla #1997994
+
 * Wed Nov 24 2021 Mátyás Selmeci <matyas@cs.wisc.edu> - 4.2.4-1.1
 - Update to 4.2.4-1 and merge OSG changes (SOFTWARE-4885)
 
