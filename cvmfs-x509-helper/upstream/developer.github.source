@@ -1,1 +1,1 @@
-type=github repo=cvmfs-contrib/cvmfs-x509-helper spec=packaging/rpm/cvmfs-x509-helper.spec tag=2.2-3 hash=cd07742fe9d2b34f99c295fd313e0b3664c75957
+type=github repo=cvmfs-contrib/cvmfs-x509-helper spec=packaging/rpm/cvmfs-x509-helper.spec tag=2.3 hash=8be6d985cc2d1f1eecca58363d521951499d3ff9
