@@ -1,18 +1,18 @@
 %define igtf_version 1.123
 %define osg_version  1.114
-%define vtag         %{osg_version}.igtf.%{igtf_version}
+%define release_number 2
+%define vtag         %{osg_version}.igtf.%{igtf_version}-%{release_number}
 
 Name:           igtf-ca-certs
 Version:        %{igtf_version}
-Release:        1.1%{?dist}
-Summary:        OSG Packaging of the IGTF CA Certs, in the OpenSSL 1.0.* format, in the OpenSSL 1.0.* format, with SHA-1 certs patched for EL9. 
+Release:        %{release_number}%{?dist}
+Summary:        OSG Packaging of the IGTF CA Certs, in the OpenSSL 1.0.* format. 
 
 License:        Unknown
-URL:            https://repo.opensciencegrid.org/cadist/
+URL:            http://repo.opensciencegrid.org/cadist/
 
 Source0:        https://github.com/opensciencegrid/osg-certificates/archive/v%{vtag}/osg-certificates-%{vtag}.tar.gz
 Source1:        https://dist.eugridpma.info/distribution/igtf/current/igtf-policy-installation-bundle-%{igtf_version}.tar.gz
-Source3:        certs-to-transform.txt
 
 BuildArch:      noarch
 
@@ -46,17 +46,6 @@ export PKG_NAME=%{name}
 
 ./build-certificates-dir.sh
 
-pushd certificates
-# change the certificate header/footer of SHA1-signed certificates to mark them as trusted
-xargs -a %{SOURCE3} sed -r -i.orig -e 's/(BEGIN|END) CERTIFICATE/\1 TRUSTED CERTIFICATE/'
-# then append the originals to the certificate files so the files will contain both
-for orig in *.orig; do
-    new=${orig%.orig}
-    (echo; cat "$orig") >> "$new" && rm "$orig"
-done
-sha256sum *.0 *.pem > cacerts_sha256sum.txt  # recompute checksums since we sed'ed a bunch of files
-popd
-
 %install
 mkdir -p $RPM_BUILD_ROOT/etc/grid-security/certificates
 mv certificates/* $RPM_BUILD_ROOT/etc/grid-security/certificates/
@@ -72,7 +61,10 @@ sha256sum -c cacerts_sha256sum.txt
 %doc
 
 %changelog
-* Mon Aug 07 2023 Matt Westphall <westphall@wisc.edu> - 1.123-1
+* Fri Sep 08 2023 Matt Westphall <westphall@wisc.edu> - 1.123-2
+- Bump version to remove el9 cert changes
+
+* Tue Sep 05 2023 Matt Westphall <westphall@wisc.edu> - 1.123-1
 - Update to IGTF 1.123 (SOFTWARE-5677)
 
 * Mon Aug 07 2023 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.122-1
@@ -389,3 +381,5 @@ Fix conflicts line.
 
 * Mon Aug 15 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 1.40-1
 - Initial packaging of the IGTF CA certs (new format) from OSG.
+
+

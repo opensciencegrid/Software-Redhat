@@ -1,25 +1,25 @@
 %define igtf_version 1.123
 %define osg_version  1.114
-%define vtag         %{osg_version}.igtf.%{igtf_version}
+%define release_number 2
+%define vtag         %{osg_version}.igtf.%{igtf_version}-%{release_number}
 
 Name:           osg-ca-certs
 Version:        %{osg_version}
-Release:        1.1%{?dist}
-Summary:        OSG Packaging of the IGTF CA Certs and OSG-specific CAs, in the OpenSSL 1.0.* format, with SHA-1 certs patched for EL9.
+Release:        %{release_number}%{?dist}
+Summary:        OSG Packaging of the IGTF CA Certs and OSG-specific CAs, in the OpenSSL 1.0.* format. 
 
 License:        Unknown
-URL:            https://repo.opensciencegrid.org/cadist/
+URL:            http://repo.opensciencegrid.org/cadist/
 
 Source0:        https://github.com/opensciencegrid/osg-certificates/archive/v%{vtag}/osg-certificates-%{vtag}.tar.gz
 Source1:        https://dist.eugridpma.info/distribution/igtf/current/igtf-policy-installation-bundle-%{igtf_version}.tar.gz
 Source2:        https://github.com/opensciencegrid/letsencrypt-certificates/archive/v0.3.2/letsencrypt-certificates.tar.gz
-Source3:        certs-to-transform.txt
 # can obtain latest letsencrypt-certificates.tar.gz with a github.source line:
 # type=github repo=cilogon/letsencrypt-certificates tarball=letsencrypt-certificates.tar.gz tag=master hash=...
 
 BuildArch:      noarch
 
-BuildRequires:  openssl >= 1.1
+BuildRequires:  openssl
 
 BuildRequires:  perl(File::Basename)
 BuildRequires:  perl(File::Find)
@@ -28,9 +28,9 @@ BuildRequires:  perl(Getopt::Long)
 Provides:       grid-certificates = 7
 
 Conflicts:      osg-ca-scripts
-Conflicts:      osg-ca-certs
-Conflicts:      igtf-ca-certs
 
+Obsoletes:      vdt-ca-certs
+Obsoletes:      osg-ca-certs-experimental
 Obsoletes:      osg-ca-certs-compat <= 1:1.37
 
 %description
@@ -46,20 +46,9 @@ export IGTF_CERTS_VERSION=%{igtf_version}
 export OSG_CERTS_VERSION=%{osg_version}
 export OUR_CERTS_VERSION=${OSG_CERTS_VERSION}NEW
 export CADIST=$PWD/certificates
-export PKG_NAME=osg-ca-certs
+export PKG_NAME=%{name}
 
 ./build-certificates-dir.sh
-
-pushd certificates
-# change the certificate header/footer of SHA1-signed certificates to mark them as trusted
-xargs -a %{SOURCE3} sed -r -i.orig -e 's/(BEGIN|END) CERTIFICATE/\1 TRUSTED CERTIFICATE/'
-# then append the originals to the certificate files so the files will contain both
-for orig in *.orig; do
-    new=${orig%.orig}
-    (echo; cat "$orig") >> "$new" && rm "$orig"
-done
-sha256sum *.0 *.pem > cacerts_sha256sum.txt  # recompute checksums since we sed'ed a bunch of files
-popd
 
 %install
 mkdir -p $RPM_BUILD_ROOT/etc/grid-security/certificates
@@ -76,25 +65,29 @@ sha256sum -c cacerts_sha256sum.txt
 %doc
 
 %changelog
-* Wed Sep 6 2023 Matt Westphall <westphall@wisc.edu> - 1.114-1
+* Fri Sep 08 2023 Matt Westphall <westphall@wisc.edu> - 1.114-2
+- Bump version to remove el9 cert changes
+
+* Tue Sep 05 2023 Matt Westphall <westphall@wisc.edu> - 1.114-1
 - Update to IGTF 1.123 (SOFTWARE-5677)
 
-* Tue Aug 01 2023 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.112-1.1
-- Require lower openssl so we can build on EL8 (SOFTWARE-5365)
-- Update to osg-ca-certs 1.112-1
-- Drop Replace-openssl-version-check-with-an-existence-chec.patch (upstreamed)
+* Mon Aug 07 2023 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.113-1
+- Update to IGTF 1.122 (SOFTWARE-5643)
 
-* Sun Jun 11 2023 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.110-1.2
-- Make the transformed cert files have _both_ the old block and the new block (SOFTWARE-5365)
+* Fri Jun 16 2023 Matt Westphall <westphall@wisc.edu> - 1.112-1
+- Update to IGTF 1.121 (SOFTWARE-5584)
 
-* Tue May 23 2023 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.110-1.1
-- Add mk-index.pl patch
-
-* Fri May 05 2023 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.110-1
-- Forked from osg-ca-certs 1.110-1 (SOFTWARE-5365)
+* Wed May 31 2023 Matt Westphall <westphall@wisc.edu> - 1.111-1
+- Update to IGTF 1.120 (SOFTWARE-5584)
 
 * Mon Mar 13 2023 Tim Theisen <tim@cs.wisc.edu> - 1.110-1
 - Update to IGTF 1.119 (SOFTWARE-5524)
+
+* Tue Jan 03 2023 Carl Edquist <edquist@cs.wisc.edu> - 1.109-1.2
+- Rebuild again for el9 rpm signing (SOFTWARE-5396)
+
+* Mon Dec 19 2022 Carl Edquist <edquist@cs.wisc.edu> - 1.109-1.1
+- Rebuild for el9 rpm signing (SOFTWARE-5396)
 
 * Mon Aug 29 2022 Tim Theisen <tim@cs.wisc.edu> - 1.109-1
 - Update to IGTF 1.117 (SOFTWARE-5309)
@@ -419,4 +412,3 @@ Fix conflicts line.
 
 * Mon Aug 15 2011 Brian Bockelman <bbockelm@cse.unl.edu> - 1.20-1
 - Initial version, based on osg-ca-certs spec file.
-
