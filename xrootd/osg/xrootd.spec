@@ -75,8 +75,8 @@
 #-------------------------------------------------------------------------------
 Name:      xrootd
 Epoch:     1
-Version:   5.5.5
-Release:   1.3%{?dist}%{?_with_clang:.clang}%{?_with_asan:.asan}
+Version:   5.6.2
+Release:   2.1%{?dist}%{?_with_clang:.clang}%{?_with_asan:.asan}
 Summary:   Extended ROOT file server
 Group:     System Environment/Daemons
 License:   LGPLv3+
@@ -87,7 +87,7 @@ URL:       http://xrootd.org/
 # git clone http://xrootd.org/repo/xrootd.git xrootd
 # cd xrootd
 # git-archive master | gzip -9 > ~/rpmbuild/SOURCES/xrootd.tgz
-Source0:   xrootd.tar.gz
+Source0:   xrootd-%{version}.tar.gz
 
 # always include the tarball in the SRPM even if we don't build it because the
 # SRPM build may have a different build environment than the RPM build
@@ -102,11 +102,10 @@ Patch3: 1868-env-hostname-override.patch
 # Patch to fix EL7<->EL9 compatibility (SOFTWARE-5594)
 Patch4: 2026-Switch-to-a-fixed-set-of-DH-parameters-compatible-with-older-OpenSSL.patch
 
+
 #Patch101: 0001-DEBUG-Add-some-debug-lines-to-XrdVomsMapfile.patch
 #Patch102: 0002-DEBUG-Catch-and-log-exception-launching-voms-mapfile.patch
-
-Patch1978: 1978-Implement-ability-to-have-the-token-username-as-a-se.patch
-Patch2064: 2064-Fix-logic-error-in-user-mapping.patch
+Patch103: 0003-DEBUG-unset-use-pep517.patch
 
 BuildRoot: %{_tmppath}/%{name}-root
 
@@ -517,15 +516,14 @@ This package contains compatibility binaries for xrootd 4 servers.
 %endif
 
 %setup -c -n xrootd
-cd xrootd
-%patch0 -p2
-%patch3 -p1
-%patch4 -p1
-
-%patch1978 -p1
-%patch2064 -p1
+cd xrootd-%{version}
+#%%patch0 -p2
+#%%patch3 -p1
+#%%patch2059 -p1
+#%%patch2064 -p1
 #patch101 -p1
 #patch102 -p1
+%patch103 -p1
 cd ..
 
 %build
@@ -534,7 +532,7 @@ cd ..
 . /opt/rh/devtoolset-7/enable
 %endif
 
-cd xrootd
+cd xrootd-%{version}
 
 %if %{?_with_clang:1}%{!?_with_clang:0}
 export CC=clang
@@ -620,6 +618,14 @@ pushd build/bindings/python
 %endif
 popd
 
+%check
+cd xrootd-%{version}/build
+%if %{use_cmake3}
+ctest3 --output-on-failure
+%else
+ctest --output-on-failure
+%endif
+
 #-------------------------------------------------------------------------------
 # Installation
 #-------------------------------------------------------------------------------
@@ -655,7 +661,7 @@ popd
 #-------------------------------------------------------------------------------
 # Install 5.x.y
 #-------------------------------------------------------------------------------
-pushd xrootd
+pushd xrootd-%{version}
 pushd  build
 make install DESTDIR=$RPM_BUILD_ROOT
 popd

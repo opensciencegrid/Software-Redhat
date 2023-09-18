@@ -1,0 +1,23 @@
+From e5b979a2bc303fee2bde37de024f28d3cdd97ff6 Mon Sep 17 00:00:00 2001
+From: Matthew Westphall <westphall@wisc.edu>
+Date: Mon, 18 Sep 2023 11:41:35 -0500
+Subject: [PATCH] unset pip option that's not supported in koji's python
+
+---
+ bindings/python/CMakeLists.txt | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/bindings/python/CMakeLists.txt b/bindings/python/CMakeLists.txt
+index 032a7337c..4849625cd 100644
+--- a/bindings/python/CMakeLists.txt
++++ b/bindings/python/CMakeLists.txt
+@@ -19,7 +19,6 @@ else()
+   option(INSTALL_PYTHON_BINDINGS "Install Python bindings" TRUE)
+ 
+   if(INSTALL_PYTHON_BINDINGS)
+-    set(PIP_OPTIONS "--use-pep517" CACHE STRING "Install options for pip")
+ 
+     install(CODE "
+       execute_process(COMMAND ${Python_EXECUTABLE} -m pip install ${PIP_OPTIONS}
+-- 
+2.34.1
