@@ -1174,6 +1174,9 @@ fi
 # Changelog
 #-------------------------------------------------------------------------------
 %changelog
+* Tue Sep 19 2023 Matt Westphall <westphall@wisc.edu> - 5.6.2-2.1
+- Update to 5.6.2-2 from upstream
+
 * Mon Aug 14 2023 Matt Westphall <westphall@wisc.edu> - 5.6.1-1.2
 - Add patch for PR 2059: Add back parsing of Transfer-Encoding header (SOFTWARE-5623)
 - Add patch for PR 2064: Fix logic error in user mapping (SOFTWARE-5623)
