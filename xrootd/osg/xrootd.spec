@@ -99,8 +99,6 @@ Patch0: 1819-Actually-include-XrdSecEntity-moninfo-field-in-trace.patch
 # OSDF S3 demo work: needs to be applied to the central OSG redirector
 # (SOFTWARE-5414/SOFTWARE-5418)
 Patch3: 1868-env-hostname-override.patch
-# Patch to fix EL7<->EL9 compatibility (SOFTWARE-5594)
-Patch4: 2026-Switch-to-a-fixed-set-of-DH-parameters-compatible-with-older-OpenSSL.patch
 
 
 #Patch101: 0001-DEBUG-Add-some-debug-lines-to-XrdVomsMapfile.patch
@@ -147,6 +145,7 @@ BuildRequires: selinux-policy-devel
 
 %if %{?_with_tests:1}%{!?_with_tests:0}
 BuildRequires: cppunit-devel
+BuildRequires: gtest-devel
 %endif
 
 %if %{?_with_ceph:1}%{!?_with_ceph:0}
@@ -566,7 +565,8 @@ cmake  \
 %if %{?_with_isal:1}%{!?_with_isal:0}
       -DENABLE_XRDEC=TRUE \
 %endif
-      -DUSER_VERSION=v%{version} \
+      -DXRootD_VERSION_STRING=v%{version} \
+      -DINSTALL_PYTHON_BINDINGS=FALSE \
       ../
 
 make -i VERBOSE=1 %{?_smp_mflags}
@@ -606,6 +606,8 @@ make -i VERBOSE=1 %{?_smp_mflags}
 popd
 popd
 %endif
+
+%undefine _hardened_build
 
 pushd build/bindings/python
 # build python2 bindings
@@ -1172,8 +1174,13 @@ fi
 # Changelog
 #-------------------------------------------------------------------------------
 %changelog
-* Fri Aug 25 2023 Matt Westphall <westphall@wisc.edu> - 5.5.5-1.3
-- Backport username mapping bugfix to XRootD 5.5.5 (SOFTWARE-5658)
+* Mon Aug 14 2023 Matt Westphall <westphall@wisc.edu> - 5.6.1-1.2
+- Add patch for PR 2059: Add back parsing of Transfer-Encoding header (SOFTWARE-5623)
+- Add patch for PR 2064: Fix logic error in user mapping (SOFTWARE-5623)
+
+* Mon Jul 17 2023 Mátyás Selmeci <matyas@cs.wisc.edu> - 5.6.1-1.1
+- Update to 5.6.1-1 from upstream and merge OSG changes (SOFTWARE-5623)
+  - Drop 2026-Switch-to-a-fixed-set-of-DH-parameters-compatible-with-older-OpenSSL.patch (upstreamed)
 
 * Mon Jun 12 2023 Mátyás Selmeci <matyas@cs.wisc.edu> - 5.5.5-1.2
 - Add 2026-Switch-to-a-fixed-set-of-DH-parameters-compatible-with-older-OpenSSL.patch (SOFTWARE-5594)
