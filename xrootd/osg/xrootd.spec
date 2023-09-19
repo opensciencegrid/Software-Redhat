@@ -76,7 +76,7 @@
 Name:      xrootd
 Epoch:     1
 Version:   5.6.2
-Release:   2.1%{?dist}%{?_with_clang:.clang}%{?_with_asan:.asan}
+Release:   2.2%{?dist}%{?_with_clang:.clang}%{?_with_asan:.asan}
 Summary:   Extended ROOT file server
 Group:     System Environment/Daemons
 License:   LGPLv3+
@@ -1174,7 +1174,7 @@ fi
 # Changelog
 #-------------------------------------------------------------------------------
 %changelog
-* Tue Sep 19 2023 Matt Westphall <westphall@wisc.edu> - 5.6.2-2.1
+* Tue Sep 19 2023 Matt Westphall <westphall@wisc.edu> - 5.6.2-2.2
 - Update to 5.6.2-2 from upstream
 
 * Mon Aug 14 2023 Matt Westphall <westphall@wisc.edu> - 5.6.1-1.2
