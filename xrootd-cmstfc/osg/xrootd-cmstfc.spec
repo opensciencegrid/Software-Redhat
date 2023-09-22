@@ -6,6 +6,12 @@ Summary: CMS TFC plugin for xrootd
 Group: System Environment/Daemons
 License: BSD
 URL: https://github.com/CMSCompOps/xrootd-cmstfc
+
+%if %{rhel} == 7
+%define CMAKE cmake3
+%else
+%define CMAKE cmake
+%endif
 # Generated from:
 # git-archive master | gzip -7 > ~/rpmbuild/SOURCES/xrootd-lcmaps.tar.gz
 Source0: %{name}.tar.gz
@@ -27,7 +33,7 @@ BuildRoot: %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 
 BuildRequires: xrootd-devel >= 1:%{xrootd_current_major}.0.0-1
 BuildRequires: xrootd-devel <  1:%{xrootd_next_major}.0.0-1
-BuildRequires: cmake pcre-devel xerces-c-devel jsoncpp >= 1.9.4 jsoncpp-devel >= 1.9.4
+BuildRequires: %{CMAKE} pcre-devel xerces-c-devel jsoncpp >= 1.9.4 jsoncpp-devel >= 1.9.4
 
 Requires: /usr/bin/xrootd pcre xerces-c jsoncpp >= 1.9.4
 
@@ -56,7 +62,11 @@ cd ..
 
 %build
 cd %{name}-%{version}
+%if %{rhel} == 7
+%cmake3 -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_INSTALL_LIBDIR=%{_lib} .
+%else
 %cmake -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_INSTALL_LIBDIR=%{_lib} .
+%endif
 make VERBOSE=1 %{?_smp_mflags}
 
 %install
