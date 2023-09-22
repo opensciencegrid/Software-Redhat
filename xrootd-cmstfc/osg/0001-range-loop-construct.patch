@@ -1,0 +1,25 @@
+diff --git a/src/json/XrdCmsJson.cc b/src/json/XrdCmsJson.cc
+index d7f6aa7..6c74ccc 100644
+--- a/src/json/XrdCmsJson.cc
++++ b/src/json/XrdCmsJson.cc
+@@ -40,11 +40,11 @@ XrdCmsJson::PathTranslation::PathTranslation(XrdSysError *lp, const char * url_t
+ int XrdCmsJson::PathTranslation::testCMSNamespaces ()
+ {
+     // Test all "required" paths so site admins can see if there is any wrong configuration
+-    for(const auto lfn_area : CMS_ALL_NAMESPACES)
++    for(const std::string& lfn_area : CMS_ALL_NAMESPACES)
+     {
+         int blen = 4096;
+         char* buff = (char*) malloc(blen);
+-        const char* n_lfn =  lfn_area.c_str();
++        const char* n_lfn =  (lfn_area).c_str();
+         this->lfn2pfn(n_lfn, buff, blen);
+     }
+     return 0;
+@@ -326,4 +326,4 @@ int XrdCmsJson::PathTranslation::pfn2lfn(const char *pfn, char *buff, int blen)
+ int XrdCmsJson::PathTranslation::lfn2rfn(const char *lfn, char *buff, int blen)
+ {
+     return lfn2pfn(lfn, buff, blen);
+-}
+\ No newline at end of file
++}

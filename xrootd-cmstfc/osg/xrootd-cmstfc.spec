@@ -1,15 +1,16 @@
 Name: xrootd-cmstfc
-Version: 1.5.2
-Release: 7%{?dist}
+Version: 2.0.0
+Release: 2%{?dist}
 Summary: CMS TFC plugin for xrootd
 
 Group: System Environment/Daemons
 License: BSD
-URL: https://github.com/bbockelm/xrootd-cmstfc
+URL: https://github.com/CMSCompOps/xrootd-cmstfc
 # Generated from:
 # git-archive master | gzip -7 > ~/rpmbuild/SOURCES/xrootd-lcmaps.tar.gz
 Source0: %{name}.tar.gz
-Patch0: buff_size.patch
+
+Patch0: 0001-range-loop-construct.patch
 
 BuildRoot: %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 
@@ -26,15 +27,9 @@ BuildRoot: %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 
 BuildRequires: xrootd-devel >= 1:%{xrootd_current_major}.0.0-1
 BuildRequires: xrootd-devel <  1:%{xrootd_next_major}.0.0-1
-BuildRequires: pcre-devel
+BuildRequires: cmake pcre-devel xerces-c-devel jsoncpp >= 1.9.4 jsoncpp-devel >= 1.9.4
 
-BuildRequires: xerces-c-devel
-
-BuildRequires: cmake
-#BuildRequires: xrootd-compat-libs
-
-Requires: /usr/bin/xrootd pcre xerces-c
-#Requires: xrootd-compat-libs
+Requires: /usr/bin/xrootd pcre xerces-c jsoncpp >= 1.9.4
 
 #%if 0%%{?rhel} < 7
 #Requires: xrootd4 >= 1:4.1.0
@@ -55,8 +50,10 @@ Group: System Environment/Development
 
 %prep
 %setup -q -c -n %{name}-%{version}
+cd %{name}-%{version}
 %patch0 -p1
- 
+cd ..
+
 %build
 cd %{name}-%{version}
 %cmake -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_INSTALL_LIBDIR=%{_lib} .
@@ -73,14 +70,23 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %defattr(-,root,root,-)
 %{_libdir}/libXrdCmsTfc.so
+%{_libdir}/libXrdCmsJson.so
 %if 0%{?rhel} < 8
 %{_libdir}/libXrdCmsTfc.so.*
+%{_libdir}/libXrdCmsJson.so.*
 %endif
 %files devel
 %defattr(-,root,root,-)
 %{_includedir}/XrdCmsTfc.hh
+%{_includedir}/XrdCmsJson.hh
 
 %changelog
+* Fri Sep 22 2023 Matt Westphall <westphall@wisc.edu> - 2.0.0-2
+- OSG build of 2.0.0-1 (SOFTWARE-5652)
+
+* Fri Aug 11 2023 Sarun Nuntaviriyakul <sarun.nuntaviriyakul@cern.ch> - 2.0.0-1
+- Add JSON module (libXrdCmsJson.so)
+
 * Fri Jul 28 2023 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.5.2-7
 - Fix cmake build fail on EL9 (SOFTWARE-5631)
 
@@ -145,4 +151,3 @@ rm -rf $RPM_BUILD_ROOT
 
 * Tue Aug 24 2010 Brian Bockelman <bbockelm@cse.unl.edu> 1.4.0-1
 - Break xrootd-cmstfc off into its own standalone RPM.
-
