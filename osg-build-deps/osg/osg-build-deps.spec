@@ -1,6 +1,6 @@
 Name:           osg-build-deps
-Version:        3
-Release:        3%{?dist}
+Version:        4
+Release:        1%{?dist}
 Summary:        Dependencies for build tools for the OSG
 
 License:        Apache 2.0
@@ -94,6 +94,9 @@ install -m 0755 %{SOURCE1} %{buildroot}/usr/sbin/install-osg-build.sh
 
 
 %changelog
+* Tue Sep 19 2023 Mátyás Selmeci <matyas@cs.wisc.edu> - 4-1
+- Allow selecting osg-build branch and repo in install script
+
 * Sun Jul 30 2023 Mátyás Selmeci <matyas@cs.wisc.edu> - 3-3
 - voms-proxy-init needs grid certificates
 - install script needs make
@@ -104,4 +107,3 @@ install -m 0755 %{SOURCE1} %{buildroot}/usr/sbin/install-osg-build.sh
 
 * Thu Jun 10 2021 Mátyás Selmeci <matyas@cs.wisc.edu> - 2-1
 - Initial release, based on osg-build 1.18.0  (SOFTWARE-4659)
-
