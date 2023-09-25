@@ -1,6 +1,6 @@
 Name: xrootd-cmstfc
 Version: 2.0.0
-Release: 2%{?dist}
+Release: 3%{?dist}
 Summary: CMS TFC plugin for xrootd
 
 Group: System Environment/Daemons
@@ -31,6 +31,12 @@ BuildRoot: %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 %define xrootd_current_major 5
 %define xrootd_next_major 6
 
+%if %{?rhel} == 7
+BuildRequires: devtoolset-7
+%else
+BuildRequires: gcc-c++
+%endif
+
 BuildRequires: xrootd-devel >= 1:%{xrootd_current_major}.0.0-1
 BuildRequires: xrootd-devel <  1:%{xrootd_next_major}.0.0-1
 BuildRequires: %{CMAKE} pcre-devel xerces-c-devel jsoncpp >= 1.9.4 jsoncpp-devel >= 1.9.4
@@ -55,15 +61,21 @@ Group: System Environment/Development
 %{summary}
 
 %prep
+
 %setup -q -c -n %{name}-%{version}
 cd %{name}-%{version}
 %patch0 -p1
 cd ..
 
 %build
+
+%if %{?rhel}%{!?rhel:0} == 7
+. /opt/rh/devtoolset-7/enable
+%endif
+
 cd %{name}-%{version}
 %if %{rhel} == 7
-%cmake3 -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_INSTALL_LIBDIR=%{_lib} .
+%cmake3 -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_INSTALL_LIBDIR=%{_lib} -DCMAKE_CXX_STANDARD=11 .
 %else
 %cmake -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_INSTALL_LIBDIR=%{_lib} .
 %endif
@@ -81,16 +93,15 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(-,root,root,-)
 %{_libdir}/libXrdCmsTfc.so
 %{_libdir}/libXrdCmsJson.so
-%if 0%{?rhel} < 8
-%{_libdir}/libXrdCmsTfc.so.*
-%{_libdir}/libXrdCmsJson.so.*
-%endif
 %files devel
 %defattr(-,root,root,-)
 %{_includedir}/XrdCmsTfc.hh
 %{_includedir}/XrdCmsJson.hh
 
 %changelog
+* Fri Sep 22 2023 Matt Westphall <westphall@wisc.edu> - 2.0.0-3
+- Support for EL7 for 2.0.0-1 (SOFTWARE-5652)
+
 * Fri Sep 22 2023 Matt Westphall <westphall@wisc.edu> - 2.0.0-2
 - OSG build of 2.0.0-1 (SOFTWARE-5652)
 
