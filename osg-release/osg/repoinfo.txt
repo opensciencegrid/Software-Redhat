@@ -8,9 +8,9 @@ osg-empty                 23-empty      empty        basic     Empty_Packages
 osg-minefield             23-main       development  koji      Build_Repository
 osg-prerelease            23-main       prerelease   koji      Prerelease_Repository_for_Internal_Use
 
-internal-development      23-internal   development  direct    Internal_Development
-internal                  23-internal   release      direct    Internal
-internal-minefield        23-internal   development  koji      Internal_build_Repository
+osg-internal-development      23-internal   development  direct    Internal_Development
+osg-internal                  23-internal   release      direct    Internal
+osg-internal-minefield        23-internal   development  koji      Internal_build_Repository
 
 osg-upcoming              23-upcoming   release      standard  Upcoming
 osg-upcoming-development  23-upcoming   development  standard  Upcoming_Development
