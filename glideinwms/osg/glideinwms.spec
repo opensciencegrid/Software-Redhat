@@ -16,7 +16,7 @@
 # ------------------------------------------------------------------------------
 # For Release Candidate builds, check with Software team on release string
 # ------------------------------------------------------------------------------
-%define version 3.10.3
+%define version 3.10.5
 %define release 1
 
 %define frontend_xml frontend.xml
@@ -1045,6 +1045,14 @@ rm -rf $RPM_BUILD_ROOT
 #%config(noreplace) %{_sysconfdir}/condor/scripts/frontend_condortoken
 
 %changelog
+* Wed Sep 27 2023 Marco Mambelli <marcom@fnal.gov> - 3.10.5
+- Glideinwms v3.10.5
+- Release Notes: http://glideinwms.fnal.gov/doc.v3_10_5/history.html
+
+* Thu Sep 14 2023 Marco Mambelli <marcom@fnal.gov> - 3.10.4
+- Glideinwms v3.10.4
+- Release Notes: http://glideinwms.fnal.gov/doc.v3_10_4/history.html
+
 * Mon Sep 11 2023 Marco Mambelli <marcom@fnal.gov> - 3.10.3
 - Glideinwms v3.10.3
 - Release Notes: http://glideinwms.fnal.gov/doc.v3_10_3/history.html
