@@ -1,7 +1,7 @@
 Summary: osg-pki-tools
 Name: osg-pki-tools
 Version: 3.6.1
-Release: 1%{?dist}
+Release: 2%{?dist}
 Source: osg-pki-tools-%{version}.tar.gz
 License: Apache 2.0
 Group: Grid
@@ -43,6 +43,9 @@ mv %{buildroot}/%{_prefix}/config/ca-issuer.conf %{buildroot}%{_sysconfdir}/osg/
 %config(noreplace) %{_sysconfdir}/osg/pki/ca-issuer.conf
 
 %changelog
+* Mon Oct 02 2023 Mátyás Selmeci <matyas@cs.wisc.edu> - 3.6.1-2
+- Bump to rebuild
+
 * Wed Sep 6 2023 Brian Lin <blin@cs.wisc.edu> - 3.6.1
 - Fix bug with default CA config file option (SOFTWARE-5668)
 - Update default InCommon IGTF CA IDs to point to CA 3
