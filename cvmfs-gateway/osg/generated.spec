@@ -8,7 +8,7 @@ Summary: CernVM-FS Repository Gateway
 Version: 1.2.0
 
 # The release number of your package
-Release: 1.1%{?dist}
+Release: 1.2%{?dist}
 
 # Any license you wish to list
 License: BSD-3-Clause
@@ -115,6 +115,9 @@ fi
 #%triggerun
 
 %changelog
+* Wed Oct 04 2023 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.2.0-1.2
+- Bump to rebuild
+
 * Mon Dec 12 2022 Carl Edquist <edquist@cs.wisc.edu> - 1.2.0-1.1
 - Bump to rebuild (SOFTWARE-5384)
 
