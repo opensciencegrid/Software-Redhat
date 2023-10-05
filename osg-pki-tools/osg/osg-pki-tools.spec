@@ -1,7 +1,7 @@
 Summary: osg-pki-tools
 Name: osg-pki-tools
 Version: 3.6.1
-Release: 2%{?dist}
+Release: 3%{?dist}
 Source: osg-pki-tools-%{version}.tar.gz
 License: Apache 2.0
 Group: Grid
@@ -43,6 +43,9 @@ mv %{buildroot}/%{_prefix}/config/ca-issuer.conf %{buildroot}%{_sysconfdir}/osg/
 %config(noreplace) %{_sysconfdir}/osg/pki/ca-issuer.conf
 
 %changelog
+* Thu Oct 05 2023 Matt Westphall <westphall@wisc.edu> - 3.6.1-3
+- Bump to rebuild
+
 * Mon Oct 02 2023 Mátyás Selmeci <matyas@cs.wisc.edu> - 3.6.1-2
 - Bump to rebuild
 
