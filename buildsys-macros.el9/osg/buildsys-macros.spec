@@ -3,15 +3,16 @@
 # "osg-koji import" the resulting rpm and osg-koji tag-pkg the build into the
 # appropriate osg-*-development tag
 # This will require koji admin permissions.
+%define osg_version 23
 %define dver   9
 
-%define osgver devops
-%define dist .osg%{osgver}.el%{dver}
+%define osgver 23
+%define dist .osg%{osgver}int.el%{dver}
 
 Name:		buildsys-macros
 Summary:	Macros for the OSG Buildsystem
 Version:        %{dver}
-Release:	2%{dist}
+Release:	12%{dist}
 License:	GPL
 BuildArch:      noarch
 Requires:	rpmdevtools
@@ -42,8 +43,20 @@ printf %s%b "%" "_smp_ncpus_max 12\n" >> $RPM_BUILD_ROOT/etc/rpm/macros.kojibuil
 /etc/rpm/macros.kojibuilder
 
 %changelog
-* Fri Dec 30 2022 Carl Edquist <edquist@cs.wisc.edu> - 9-2.osg36.el9
+* Tue Aug 22 2023 Mátyás Selmeci <matyas@cs.wisc.edu> - 9-11.osg23int.el9
+- osg-23-internal-el9 (SOFTWARE-5657)
+
+* Thu Jul 27 2023 Matt Westphall <westphall@wisc.edu> - 9-9.osg23.el9
+- osg 23 el9 version
+
+* Fri Dec 30 2022 Carl Edquist <edquist@cs.wisc.edu> - 9-8.osg36.el7
 - Cap _smp_ncpus_max to 12 (SOFTWARE-4728)
 
-* Fri Dec 23 2022 Carl Edquist <edquist@cs.wisc.edu> - 9-1.osgdevops.el9
-- devops el9 version (SOFTWARE-4736)
+* Mon Dec 12 2022 Mátyás Selmeci <matyas@cs.wisc.edu> - 9-3.osg36.el9
+- Bump to rebuild
+
+* Thu Dec 08 2022 Carl Edquist <edquist@cs.wisc.edu> - 9-1.osg36.el9
+- 3.6 el9 version (SOFTWARE-5395)
+
+* Wed Feb 03 2021 Mátyás Selmeci <matyas@cs.wisc.edu> - 8-7.osg36.el8
+- 3.6 el8 version
