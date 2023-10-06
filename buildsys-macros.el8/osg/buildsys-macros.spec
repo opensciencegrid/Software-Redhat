@@ -12,7 +12,7 @@
 Name:		buildsys-macros
 Summary:	Macros for the OSG Buildsystem
 Version:        %{dver}
-Release:	14%{dist}
+Release:	15%{dist}
 License:	GPL
 BuildArch:      noarch
 Requires:	rpmdevtools
@@ -43,7 +43,7 @@ printf %s%b "%" "_smp_ncpus_max 12\n" >> $RPM_BUILD_ROOT/etc/rpm/macros.kojibuil
 /etc/rpm/macros.kojibuilder
 
 %changelog
-* Fri Oct 6 2023 Matt Westphall <westphall@wisc.edu> - 8-14.osg23.el8
+* Fri Oct 6 2023 Matt Westphall <westphall@wisc.edu> - 8-15.osg23.el8
 - Revert osg-23-internal-el8
 
 * Tue Aug 22 2023 Mátyás Selmeci <matyas@cs.wisc.edu> - 8-11.osg23int.el8
