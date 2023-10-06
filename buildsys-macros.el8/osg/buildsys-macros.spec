@@ -7,7 +7,7 @@
 %define dver   8
 
 %define osgver 23
-%define dist .osg%{osgver}int.el%{dver}
+%define dist .osg%{osgver}.el%{dver}
 
 Name:		buildsys-macros
 Summary:	Macros for the OSG Buildsystem
