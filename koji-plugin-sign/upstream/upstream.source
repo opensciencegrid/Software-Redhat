@@ -1,2 +1,1 @@
-koji-plugin-sign/1.4.0/sign.conf sha1sum=d1f24627d8d3888c123d99321a66f538008f59f1
-koji-plugin-sign/1.4.0/sign.py sha1sum=afed3020960da86f2628936d9dd269b5f7c1a97c
+type=github repo=osg-htc/koji-plugin-sign tag=v1.4.0-12 hash=1193414414f5d0b5916095c22c11c678f92fc44f
