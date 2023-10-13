@@ -76,7 +76,7 @@
 Name:      xrootd
 Epoch:     1
 Version:   5.6.2
-Release:   2.2%{?dist}%{?_with_clang:.clang}%{?_with_asan:.asan}
+Release:   2.3%{?dist}%{?_with_clang:.clang}%{?_with_asan:.asan}
 Summary:   Extended ROOT file server
 Group:     System Environment/Daemons
 License:   LGPLv3+
@@ -99,6 +99,13 @@ Patch0: 1819-Actually-include-XrdSecEntity-moninfo-field-in-trace.patch
 # OSDF S3 demo work: needs to be applied to the central OSG redirector
 # (SOFTWARE-5414/SOFTWARE-5418)
 Patch3: 1868-env-hostname-override.patch
+
+# Patches from upstream 5.6.2-2 
+#               https://github.com/xrootd/xrootd/pull/2087
+Patch4:         0001-Fix-spelling-errors-reported-by-lintian.patch
+#               https://github.com/xrootd/xrootd/issues/2088
+Patch5:         0002-Server-Fix-incorrect-patch-for-authfile-that-made-5..patch
+
 
 
 #Patch101: 0001-DEBUG-Add-some-debug-lines-to-XrdVomsMapfile.patch
@@ -522,6 +529,8 @@ cd xrootd-%{version}
 #%%patch2064 -p1
 #patch101 -p1
 #patch102 -p1
+%patch4 -p1
+%patch5 -p1
 %patch103 -p1
 cd ..
 
