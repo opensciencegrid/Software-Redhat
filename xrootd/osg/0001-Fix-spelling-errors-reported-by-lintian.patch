@@ -1,0 +1,159 @@
+From ec4946fad83a88f508bdb4b826ade88b73580e45 Mon Sep 17 00:00:00 2001
+From: Mattias Ellert <mattias.ellert@physics.uu.se>
+Date: Sat, 16 Sep 2023 13:19:23 +0200
+Subject: [PATCH] Fix spelling errors reported by lintian
+
+---
+ src/XrdApps/XrdClRecordPlugin/README.md             | 8 ++++----
+ src/XrdApps/XrdClRecordPlugin/XrdClActionMetrics.hh | 2 +-
+ src/XrdApps/XrdClRecordPlugin/XrdClReplay.cc        | 8 ++++----
+ src/XrdApps/XrdClRecordPlugin/XrdClReplayArgs.hh    | 4 ++--
+ src/XrdFfs/XrdFfsPosix.cc                           | 2 +-
+ src/XrdOuc/XrdOucProg.cc                            | 4 ++--
+ 6 files changed, 14 insertions(+), 14 deletions(-)
+
+diff --git a/src/XrdApps/XrdClRecordPlugin/README.md b/src/XrdApps/XrdClRecordPlugin/README.md
+index 8ba35867f..5e878a5c0 100644
+--- a/src/XrdApps/XrdClRecordPlugin/README.md
++++ b/src/XrdApps/XrdClRecordPlugin/README.md
+@@ -32,7 +32,7 @@ _________________
+ 
+ The **xrdreplay** application provides the following operation modes:
+ * <em>print</em> mode (-p)           : display runtime and IO statistics for a record file
+-* <em>verify</em> mode (-v)          : verify the existance of the required input files for a record file
++* <em>verify</em> mode (-v)          : verify the existence of the required input files for a record file
+ * <em>creation</em> mode (-c,-t)     : create the required input data using file creation and write the minimal required size (-c) or truncate files to the minimal required size (-t)
+ * <em>playback</em> mode (default)   : replay a given record file
+ 
+@@ -113,7 +113,7 @@ xrdreplay -v recording.cvs
+ # size: 536.87 MB [ 0 B out of 536.87 MB ]  ( 0.00% )
+ # ---> info: file exists and has sufficient size
+ ```
+-On success the shell returns 0, if there was a missing, too small or inaccesible file it returns -5 (251).
++On success the shell returns 0, if there was a missing, too small or inaccessible file it returns -5 (251).
+ 
+ ```bash
+ Warning: xrdreplay considers a file only as an input file if it has no bytes written.
+@@ -250,12 +250,12 @@ usage: xrdreplay [-p|--print] [-c|--create-data] [t|--truncate-data] [-l|--long]
+                 -p | --print            : print only mode - shows all the IO for the given replay file without actually running any IO
+                 -s | --summary          : print summary - shows all the aggregated IO counter summed for all files
+                 -l | --long             : print long - show all file IO counter for each individual file
+-                -v | --verify           : verify the existance of all input files
++                -v | --verify           : verify the existence of all input files
+                 -x | --speed <x>        : change playback speed by factor <x> [ <x> > 0.0 ]
+                 -r | --replace <a>:=<b> : replace in the argument list the string <a> with <b> 
+                                           - option is usable several times e.g. to change storage prefixes or filenames
+ 
+-             [recordfilename]          : if a file is given, it will be used as record input otherwhise STDIN is used to read records!
++             [recordfilename]          : if a file is given, it will be used as record input otherwise STDIN is used to read records!
+ example:        ...  --replace file:://localhost:=root://xrootd.eu/        : redirect local file to remote
+ ```
+ 
+diff --git a/src/XrdApps/XrdClRecordPlugin/XrdClActionMetrics.hh b/src/XrdApps/XrdClRecordPlugin/XrdClActionMetrics.hh
+index e5802b771..6d7351257 100644
+--- a/src/XrdApps/XrdClRecordPlugin/XrdClActionMetrics.hh
++++ b/src/XrdApps/XrdClRecordPlugin/XrdClActionMetrics.hh
+@@ -65,7 +65,7 @@ struct ActionMetrics
+ 
+       std::string cnt = i + "::n";  // IOPS
+       std::string vol = i + "::b";  // number of bytes
+-      std::string err = i + "::e";  // number of unsuccessfull IOs
++      std::string err = i + "::e";  // number of unsuccessful IOs
+       std::string off = i + "::o";  // maximum offset seen
+ 
+       ios[cnt] = 0;
+diff --git a/src/XrdApps/XrdClRecordPlugin/XrdClReplay.cc b/src/XrdApps/XrdClRecordPlugin/XrdClReplay.cc
+index b5abbd7b3..4e884dcb4 100644
+--- a/src/XrdApps/XrdClRecordPlugin/XrdClReplay.cc
++++ b/src/XrdApps/XrdClRecordPlugin/XrdClReplay.cc
+@@ -247,7 +247,7 @@ bool AssureFile(const std::string& url, uint64_t size, bool viatruncate, bool ve
+ 
+   if (verify)
+   {
+-    std::cerr << "Verify: file is missing or inaccesible: " << url << std::endl;
++    std::cerr << "Verify: file is missing or inaccessible: " << url << std::endl;
+     return false;
+   }
+ 
+@@ -1079,7 +1079,7 @@ void usage()
+     << "                -f | --suppress         : force to run all IO with all successful result status - suppress all others"
+     << std::endl;
+   std::cerr
+-    << "                                          - by default the player won't run with an unsuccessfull recorded IO"
++    << "                                          - by default the player won't run with an unsuccessfully recorded IO"
+     << std::endl;
+   std::cerr << std::endl;
+   std::cerr
+@@ -1145,10 +1145,10 @@ int main(int argc, char** argv)
+ 
+     if (sampling_error)
+     {
+-      std::cerr << "Warning: IO file contains unsuccessfull samples!" << std::endl;
++      std::cerr << "Warning: IO file contains unsuccessful samples!" << std::endl;
+       if (!opt.suppress_error())
+       {
+-        std::cerr << "... run with [-f] or [--suppress] option to suppress unsuccessfull IO events!"
++        std::cerr << "... run with [-f] or [--suppress] option to suppress unsuccessful IO events!"
+                   << std::endl;
+         exit(-1);
+       }
+diff --git a/src/XrdApps/XrdClRecordPlugin/XrdClReplayArgs.hh b/src/XrdApps/XrdClRecordPlugin/XrdClReplayArgs.hh
+index 04edb34fb..898386b93 100644
+--- a/src/XrdApps/XrdClRecordPlugin/XrdClReplayArgs.hh
++++ b/src/XrdApps/XrdClRecordPlugin/XrdClReplayArgs.hh
+@@ -163,7 +163,7 @@ class ReplayArgs
+     std::cerr
+       << "                -l | --long             : print long - show all file IO counter for each individual file"
+       << std::endl;
+-    std::cerr << "                -v | --verify           : verify the existance of all input files"
++    std::cerr << "                -v | --verify           : verify the existence of all input files"
+               << std::endl;
+     std::cerr
+       << "                -x | --speed <x>        : change playback speed by factor <x> [ <x> > 0.0 ]"
+@@ -176,7 +176,7 @@ class ReplayArgs
+       << std::endl;
+     std::cerr << std::endl;
+     std::cerr
+-      << "             [recordfilename]          : if a file is given, it will be used as record input otherwhise STDIN is used to read records!"
++      << "             [recordfilename]          : if a file is given, it will be used as record input otherwise STDIN is used to read records!"
+       << std::endl;
+     std::cerr
+       << "example:        ...  --replace file:://localhost:=root://xrootd.eu/        : redirect local file to remote"
+diff --git a/src/XrdFfs/XrdFfsPosix.cc b/src/XrdFfs/XrdFfsPosix.cc
+index b6615db36..209734467 100644
+--- a/src/XrdFfs/XrdFfsPosix.cc
++++ b/src/XrdFfs/XrdFfsPosix.cc
+@@ -439,7 +439,7 @@ struct XrdFfsPosixX_readdirall_args {
+    NULL in this case.
+ 
+    Do we need some protection here? We are not in trouble so far
+-   because FUSE's _getattr will test the existance of the dir
++   because FUSE's _getattr will test the existence of the dir
+    so we know that at least one data server has the directory.
+  */
+ void* XrdFfsPosix_x_readdirall(void* x)
+diff --git a/src/XrdOuc/XrdOucProg.cc b/src/XrdOuc/XrdOucProg.cc
+index 9a258d804..39a552932 100644
+--- a/src/XrdOuc/XrdOucProg.cc
++++ b/src/XrdOuc/XrdOucProg.cc
+@@ -313,7 +313,7 @@ int XrdOucProg::Setup(const char *prog, XrdSysError *errP,
+    if (rc <= 0)
+       {if (errP)
+           {if (!rc || !argV[0])
+-              {const char *pgm =  (Proc ? "proceedure" : "program");
++              {const char *pgm =  (Proc ? "procedure" : "program");
+                errP->Emsg("Run", pgm, "name not specified.");
+               } else errP->Emsg("Run", rc, "set up", argV[0]);
+           }
+@@ -321,7 +321,7 @@ int XrdOucProg::Setup(const char *prog, XrdSysError *errP,
+       }
+ 
+ // Record the arguments including the phamtom null pointer. We must have
+-// atleast one, the program or proceedure name.
++// atleast one, the program or procedure name.
+ //
+    numArgs = rc;
+    Arg = new char*[rc+1];
+-- 
+2.41.0
+
