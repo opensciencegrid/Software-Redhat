@@ -1,7 +1,7 @@
 Summary: OSG metapackage for OASIS and CVMFS
 Name: osg-oasis
 Version: 20
-Release: 4%{?dist}
+Release: 5%{?dist}
 License: ASL 2.0
 BuildArch: noarch
 # Note: cannot require an exact release number (after a dash) unless 
@@ -26,6 +26,9 @@ exit 0
 %files
 
 %changelog
+* Mon Oct 16 2023 Matt Westphall <westphall@wisc.edu> 20-5
+- Rebuild for osg 3.6 el9 signing key bug
+
 * Fri Oct 13 2023 Dave Dykstra <dwd@fnal.gov> 20-4
 - Update to cvmfs-2.11.1
 
