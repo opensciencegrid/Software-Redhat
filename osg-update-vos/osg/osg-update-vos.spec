@@ -1,6 +1,6 @@
 Name:           osg-update-vos
 Version:        1.4.2
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        VO data updater for OSG
 
 License:        Apache 2.0
@@ -10,7 +10,7 @@ Source0:        %{name}-%{version}.tar.gz
 BuildArch:      noarch
 
 Requires:       yum-utils
-Requires:       osg-release
+Requires:       osg-release cpio
 
 %description
 %{summary}
@@ -39,6 +39,9 @@ make install DESTDIR=%{buildroot}
 %{_sbindir}/osg-update-data
 
 %changelog
+* Tue Oct 17 2023 Matt Westphall <westphall@wisc.edu> - 1.4.2-2
+- Include cpio runtime dependency (SOFTWARE-5721)
+
 * Wed Sep 6 2023 Matt Westphall <westphall@wisc.edu> - 1.4.2-1
 - Fix hardcoded OSG GPG key path (SOFTWARE-5640)
 
