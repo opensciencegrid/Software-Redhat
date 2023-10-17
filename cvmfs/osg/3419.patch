@@ -1,0 +1,23 @@
+From da22da806dcfcd2fa5ea101585cb10fd1ddf18ed Mon Sep 17 00:00:00 2001
+From: Dave Dykstra <2129743+DrDaveD@users.noreply.github.com>
+Date: Mon, 16 Oct 2023 21:04:05 -0500
+Subject: [PATCH] fix conversion from PathString to string, avoid path
+ corruption
+
+---
+ cvmfs/cvmfs.cc | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/cvmfs/cvmfs.cc b/cvmfs/cvmfs.cc
+index 9314343924..6f5b7a1000 100644
+--- a/cvmfs/cvmfs.cc
++++ b/cvmfs/cvmfs.cc
+@@ -1279,7 +1279,7 @@ static void cvmfs_open(fuse_req_t req, fuse_ino_t ino,
+     ? mount_point_->external_fetcher()
+     : mount_point_->fetcher();
+   CacheManager::Label label;
+-  label.path = path.GetChars(), path.GetLength();
++  label.path = path.ToString();
+   label.size = dirent.size();
+   label.zip_algorithm = dirent.compression_algorithm();
+   if (mount_point_->catalog_mgr()->volatile_flag())
