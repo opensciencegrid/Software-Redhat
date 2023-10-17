@@ -70,7 +70,7 @@
 Summary: CernVM File System
 Name: cvmfs
 Version: 2.11.1
-Release: 1.1%{?dist}
+Release: 1.3%{?dist}
 URL: https://cernvm.cern.ch/fs/
 Source0: https://ecsft.cern.ch/dist/cvmfs/%{name}-%{version}/%{name}-%{version}.tar.gz
 %if 0%{?selinux_cvmfs}
@@ -710,8 +710,10 @@ systemctl daemon-reload
 %endif
 
 %changelog
-* Mon Oct 16 2023 Dave Dykstra <dwd@fnal.gov> - 2.11.1-1.1
+* Tue Oct 16 2023 Dave Dykstra <dwd@fnal.gov> - 2.11.1-1.3
 - Add patch from https://github.com/cvmfs/cvmfs/pull/3419
+* Mon Oct 16 2023 Matt Westphall <westphall@wisc.edu> - 2.11.0-1.2
+- Bump release number for OSG 3.6 el9 signing bug
 * Wed Nov 16 2022 Jakob Blomer <jblomer@cern.ch> - 2.11.0
 - Make cvmfs-libs a dependency of the cvmfs package
 * Mon May 16 2022 Jakob Blomer <jblomer@cern.ch> - 2.10.0
