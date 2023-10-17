@@ -710,7 +710,7 @@ systemctl daemon-reload
 %endif
 
 %changelog
-* Tue Oct 16 2023 Dave Dykstra <dwd@fnal.gov> - 2.11.1-1.3
+* Tue Oct 17 2023 Dave Dykstra <dwd@fnal.gov> - 2.11.1-1.3
 - Add patch from https://github.com/cvmfs/cvmfs/pull/3419
 * Mon Oct 16 2023 Matt Westphall <westphall@wisc.edu> - 2.11.0-1.2
 - Bump release number for OSG 3.6 el9 signing bug
