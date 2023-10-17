@@ -70,13 +70,14 @@
 Summary: CernVM File System
 Name: cvmfs
 Version: 2.11.1
-Release: 1.2%{?dist}
+Release: 1.1%{?dist}
 URL: https://cernvm.cern.ch/fs/
 Source0: https://ecsft.cern.ch/dist/cvmfs/%{name}-%{version}/%{name}-%{version}.tar.gz
 %if 0%{?selinux_cvmfs}
 Source1: cvmfs.te
 Source2: cvmfs.fc
 %endif
+Patch0: https://github.com/cvmfs/cvmfs/pull/3419.patch
 Group: Applications/System
 License: BSD
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -296,6 +297,7 @@ Daemon to automatically unpack and expose containers images into CernVM-FS
 
 %prep
 %setup -q
+%patch0 -p1
 
 %if 0%{?selinux_cvmfs}
 mkdir SELinux
@@ -708,8 +710,8 @@ systemctl daemon-reload
 %endif
 
 %changelog
-* Mon Oct 16 2023 Matt Westphall <westphall@wisc.edu> - 2.11.0-1.2
-- Bump release number for OSG 3.6 el9 signing bug
+* Mon Oct 16 2023 Dave Dykstra <dwd@fnal.gov> - 2.11.1-1.1
+- Add patch from https://github.com/cvmfs/cvmfs/pull/3419
 * Wed Nov 16 2022 Jakob Blomer <jblomer@cern.ch> - 2.11.0
 - Make cvmfs-libs a dependency of the cvmfs package
 * Mon May 16 2022 Jakob Blomer <jblomer@cern.ch> - 2.10.0
@@ -847,3 +849,4 @@ systemctl daemon-reload
 - Small adjustments to run with continueous integration
 * Thu Jan 12 2012 Brian Bockelman <bbockelm@cse.unl.edu> - 2.0.13
 - Addition of SELinux support.
+
