@@ -26,7 +26,9 @@ mkrepofile () {
   fi
 
   case $REPO in
-    development ) GPGKEY=RPM-GPG-KEY-OSG-23-auto ;;
+    development|prerelease ) GPGKEY=RPM-GPG-KEY-OSG-23-auto ;;
+    # ^^ we need the 'auto' key for prerelease because 'regen-repo' does not
+    #    apply detached keys to RPMs
     *           ) GPGKEY=RPM-GPG-KEY-OSG-23-developer ;;
   esac
 

@@ -1,6 +1,6 @@
 Name:           osg-release
 Version:        23
-Release:        4%{?dist}
+Release:        5%{?dist}
 Summary:        OSG Software for Enterprise Linux repository configuration
 
 License:        GPL
@@ -64,6 +64,9 @@ sed -i -e 's/gpgcheck=1/gpgcheck=0/' $RPM_BUILD_ROOT%{_sysconfdir}/yum.repos.d/*
 
 
 %changelog
+* Wed Oct 18 2023 Mátyás Selmeci <matyas@cs.wisc.edu> - 23-5
+- Use 'auto' key for prerelease repo
+
 * Thu Sep 28 2023 Matt Westphall <westphall@wisc.edu> - 23-4
 - Prefix internal repos with 'osg-' (SOFTWARE-5691)
 
