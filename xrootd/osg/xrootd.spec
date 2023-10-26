@@ -76,7 +76,7 @@
 Name:      xrootd
 Epoch:     1
 Version:   5.6.2
-Release:   2.4%{?dist}%{?_with_clang:.clang}%{?_with_asan:.asan}
+Release:   2.5%{?dist}%{?_with_clang:.clang}%{?_with_asan:.asan}
 Summary:   Extended ROOT file server
 Group:     System Environment/Daemons
 License:   LGPLv3+
@@ -1175,7 +1175,7 @@ fi
 # Changelog
 #-------------------------------------------------------------------------------
 %changelog
-* Thu Oct 26 2023 Matt Westphall <westphall@wisc.edu> - 5.6.2-2.4
+* Thu Oct 26 2023 Matt Westphall <westphall@wisc.edu> - 5.6.2-2.5
 - Apply patches for supporting chunked PUT requests from devel (SOFTWARE-5733)
 
 * Tue Sep 19 2023 Matt Westphall <westphall@wisc.edu> - 5.6.2-2.2
