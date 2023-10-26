@@ -93,24 +93,20 @@ Source0:   xrootd-%{version}.tar.gz
 # SRPM build may have a different build environment than the RPM build
 Source1:   xrootd-%{compat_version}.tar.gz
 
-# https://github.com/xrootd/xrootd/pull/1819
-Patch0: 1819-Actually-include-XrdSecEntity-moninfo-field-in-trace.patch
-
-# OSDF S3 demo work: needs to be applied to the central OSG redirector
-# (SOFTWARE-5414/SOFTWARE-5418)
-Patch3: 1868-env-hostname-override.patch
-
 # Patches from upstream 5.6.2-2 
 #               https://github.com/xrootd/xrootd/pull/2087
-Patch4:         0001-Fix-spelling-errors-reported-by-lintian.patch
+Patch0:         0001-Fix-spelling-errors-reported-by-lintian.patch
 #               https://github.com/xrootd/xrootd/issues/2088
-Patch5:         0002-Server-Fix-incorrect-patch-for-authfile-that-made-5..patch
+Patch1:         0002-Server-Fix-incorrect-patch-for-authfile-that-made-5..patch
+
+# Patches from upstream devel
+Patch2:         2102-XrdHttp-Fix-parsing-of-chunked-PUT-lengths.patch
+Patch3:         2103-XrdHttp-Fix-max-to-min-when-reading-chunk-length.patch
 
 
 
-#Patch101: 0001-DEBUG-Add-some-debug-lines-to-XrdVomsMapfile.patch
-#Patch102: 0002-DEBUG-Catch-and-log-exception-launching-voms-mapfile.patch
-Patch103: 0003-DEBUG-unset-use-pep517.patch
+# Debug Patches
+Patch101: 0003-DEBUG-unset-use-pep517.patch
 
 BuildRoot: %{_tmppath}/%{name}-root
 
@@ -523,15 +519,11 @@ This package contains compatibility binaries for xrootd 4 servers.
 
 %setup -c -n xrootd
 cd xrootd-%{version}
-#%%patch0 -p2
-#%%patch3 -p1
-#%%patch2059 -p1
-#%%patch2064 -p1
-#patch101 -p1
-#patch102 -p1
-%patch4 -p1
-%patch5 -p1
-%patch103 -p1
+%patch0 -p1
+%patch1 -p1
+%patch2 -p1
+%patch3 -p1
+%patch101 -p1
 cd ..
 
 %build
@@ -1183,6 +1175,9 @@ fi
 # Changelog
 #-------------------------------------------------------------------------------
 %changelog
+* Thu Oct 26 2023 Matt Westphall <westphall@wisc.edu> - 5.6.2-2.4
+- Apply patches for supporting chunked PUT requests from devel (SOFTWARE-5733)
+
 * Tue Sep 19 2023 Matt Westphall <westphall@wisc.edu> - 5.6.2-2.2
 - Update to 5.6.2-2 from upstream
 
