@@ -1,7 +1,7 @@
 Summary:   Profiles your system for debugging
 Name:      osg-system-profiler
-Version:   1.6.0
-Release:   2%{?dist}
+Version:   1.7.0
+Release:   1%{?dist}
 License:   Apache License, 2.0
 Source0:   %{name}-%{version}.tar.gz
 BuildArch: noarch
@@ -16,11 +16,7 @@ you will ask for the output of the profiler.
 
 %package viewer
 Summary:   Views the output of %{name}
-%if 0%{?rhel} >= 8
-Requires:  python2-tkinter
-%else
-Requires:  tkinter
-%endif
+Requires:  python3-tkinter
 
 %description viewer
 A GUI for viewing the output of %{name} in a structured manner.
@@ -40,6 +36,12 @@ make install DESTDIR=$RPM_BUILD_ROOT
 %{_bindir}/%{name}-viewer
 
 %changelog
+* Fri Oct 27 2023 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.7.0-1
+- Convert osg-system-profiler-viewer to Python 3
+- Add XRootD cconfig dumps (SOFTWARE-4933)
+- Print crypto policy if available (SOFTWARE-5330)
+- Fix email address in help message
+
 * Mon Dec 12 2022 Carl Edquist <edquist@cs.wisc.edu> - 1.6.0-2
 - Bump to rebuild (SOFTWARE-5384)
 
