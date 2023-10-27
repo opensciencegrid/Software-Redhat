@@ -75,8 +75,8 @@
 #-------------------------------------------------------------------------------
 Name:      xrootd
 Epoch:     1
-Version:   5.6.2
-Release:   2.5%{?dist}%{?_with_clang:.clang}%{?_with_asan:.asan}
+Version:   5.6.3
+Release:   1.1%{?dist}%{?_with_clang:.clang}%{?_with_asan:.asan}
 Summary:   Extended ROOT file server
 Group:     System Environment/Daemons
 License:   LGPLv3+
@@ -87,23 +87,11 @@ URL:       http://xrootd.org/
 # git clone http://xrootd.org/repo/xrootd.git xrootd
 # cd xrootd
 # git-archive master | gzip -9 > ~/rpmbuild/SOURCES/xrootd.tgz
-Source0:   xrootd-%{version}.tar.gz
+Source0:   xrootd.tar.gz
 
 # always include the tarball in the SRPM even if we don't build it because the
 # SRPM build may have a different build environment than the RPM build
 Source1:   xrootd-%{compat_version}.tar.gz
-
-# Patches from upstream 5.6.2-2 
-#               https://github.com/xrootd/xrootd/pull/2087
-Patch0:         0001-Fix-spelling-errors-reported-by-lintian.patch
-#               https://github.com/xrootd/xrootd/issues/2088
-Patch1:         0002-Server-Fix-incorrect-patch-for-authfile-that-made-5..patch
-
-# Patches from upstream devel
-Patch2:         2102-XrdHttp-Fix-parsing-of-chunked-PUT-lengths.patch
-Patch3:         2103-XrdHttp-Fix-max-to-min-when-reading-chunk-length.patch
-
-
 
 # Debug Patches
 Patch101: 0003-DEBUG-unset-use-pep517.patch
@@ -518,12 +506,8 @@ This package contains compatibility binaries for xrootd 4 servers.
 %endif
 
 %setup -c -n xrootd
-cd xrootd-%{version}
-%patch0 -p1
-%patch1 -p1
-%patch2 -p1
-%patch3 -p1
-%patch101 -p1
+cd xrootd
+# %patch101 -p1
 cd ..
 
 %build
@@ -532,7 +516,7 @@ cd ..
 . /opt/rh/devtoolset-7/enable
 %endif
 
-cd xrootd-%{version}
+cd xrootd
 
 %if %{?_with_clang:1}%{!?_with_clang:0}
 export CC=clang
@@ -622,7 +606,7 @@ pushd build/bindings/python
 popd
 
 %check
-cd xrootd-%{version}/build
+cd xrootd
 %if %{use_cmake3}
 ctest3 --output-on-failure
 %else
@@ -664,7 +648,7 @@ popd
 #-------------------------------------------------------------------------------
 # Install 5.x.y
 #-------------------------------------------------------------------------------
-pushd xrootd-%{version}
+pushd xrootd
 pushd  build
 make install DESTDIR=$RPM_BUILD_ROOT
 popd
@@ -1175,6 +1159,9 @@ fi
 # Changelog
 #-------------------------------------------------------------------------------
 %changelog
+* Fri Oct 27 2023 Matt Westphall <westphall@wisc.edu> - 5.6.3-1.1
+- Initial OSG release of upstream 5.6.3-1 (SOFTWARE-5733)
+
 * Thu Oct 26 2023 Matt Westphall <westphall@wisc.edu> - 5.6.2-2.5
 - Apply patches for supporting chunked PUT requests from devel (SOFTWARE-5733)
 
