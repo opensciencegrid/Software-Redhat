@@ -1,1 +1,1 @@
-type=github repo=opensciencegrid/osg-certificates name=osg-ca-certs tag=v1.114.igtf.1.123-2 tarball=osg-certificates-1.114.igtf.1.123-2.tar.gz hash=a16665393ed387df7975ebe1e20fb508ff7bc315
+type=github repo=opensciencegrid/osg-certificates name=osg-ca-certs tag=v1.115.igtf.1.124 tarball=osg-certificates-1.115.igtf.1.124.tar.gz hash=6cbb0720b11030fb05be2309994cffdbc9a742a2
