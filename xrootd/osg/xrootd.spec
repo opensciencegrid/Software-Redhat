@@ -76,7 +76,7 @@
 Name:      xrootd
 Epoch:     1
 Version:   5.6.3
-Release:   1.1%{?dist}%{?_with_clang:.clang}%{?_with_asan:.asan}
+Release:   1.2%{?dist}%{?_with_clang:.clang}%{?_with_asan:.asan}
 Summary:   Extended ROOT file server
 Group:     System Environment/Daemons
 License:   LGPLv3+
@@ -92,6 +92,10 @@ Source0:   xrootd.tar.gz
 # always include the tarball in the SRPM even if we don't build it because the
 # SRPM build may have a different build environment than the RPM build
 Source1:   xrootd-%{compat_version}.tar.gz
+
+# OSG Patches not merged into upstream
+Patch0: 1819-Actually-include-XrdSecEntity-moninfo-field-in-trace.patch
+Patch1: osg/1868-env-hostname-override.patch
 
 # Debug Patches
 Patch101: 0003-DEBUG-unset-use-pep517.patch
@@ -507,6 +511,8 @@ This package contains compatibility binaries for xrootd 4 servers.
 
 %setup -c -n xrootd
 cd xrootd
+# %patch0 -p1
+%patch1 -p1
 # %patch101 -p1
 cd ..
 
@@ -1159,6 +1165,9 @@ fi
 # Changelog
 #-------------------------------------------------------------------------------
 %changelog
+* Mon Oct 30 2023 Matt Westphall <westphall@wisc.edu> - 5.6.3-1.2
+- Re-add removed OSG patches (SOFTWARE-5733)
+
 * Fri Oct 27 2023 Matt Westphall <westphall@wisc.edu> - 5.6.3-1.1
 - Initial OSG release of upstream 5.6.3-1 (SOFTWARE-5733)
 
