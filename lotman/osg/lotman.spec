@@ -4,7 +4,7 @@
 %global srcname lotman
 
 Name: %srcname
-Version: 0.0.1
+Version: 0.0.2
 Release: 1%{?dist}
 Summary: C++ Implementation of the LotMan Library
 License: Apache-2.0
@@ -66,6 +66,10 @@ cd build
 %dir %{_includedir}/lotman
 
 %changelog
+* Wed Oct 18 2023 Justin Hiemstra <jhiemstra@wisc.edu> - 0.0.2-1
+- v0.0.2 release of LotMan -- adds the ability to set sqlite timeouts
+  and enables WAL mode for better concurrency.
+
 * Tue Jun 27 2023 Justin Hiemstra <jhiemstra@morgridge.org> - 0.0.1-1
 - Initial release of the LotMan C++ RPM.
 
