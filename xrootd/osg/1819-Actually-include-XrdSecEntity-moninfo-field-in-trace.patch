@@ -1,0 +1,24 @@
+From 1ea7575f323796db4250b435ae9aea02cfdc0721 Mon Sep 17 00:00:00 2001
+From: Brian Bockelman <bbockelman@morgridge.org>
+Date: Thu, 3 Nov 2022 09:30:19 -0500
+Subject: [PATCH] Actually include XrdSecEntity moninfo field in trace
+
+---
+ xrootd/src/XrdSec/XrdSecEntity.cc | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/xrootd/src/XrdSec/XrdSecEntity.cc b/xrootd/src/XrdSec/XrdSecEntity.cc
+index 8262e54..d26aa30 100644
+--- a/xrootd/src/XrdSec/XrdSecEntity.cc
++++ b/xrootd/src/XrdSec/XrdSecEntity.cc
+@@ -92,6 +92,7 @@ void XrdSecEntity::Display(XrdSysError &mDest)
+    mDest.Say(tident, " Grps '", (grps ? grps : ""), "'");
+    mDest.Say(tident, " Caps '", (caps ? caps : ""), "'");
+    mDest.Say(tident, " Pidn '", (pident ? pident : ""), "'");
++   mDest.Say(tident, " Mon  '", (moninfo ? moninfo : ""), "'");
+ 
+    mDest.Say(tident, " Crlen ", std::to_string((LLint)credslen).c_str());
+    mDest.Say(tident, " ueid  ", std::to_string((ULint)ueid).c_str());
+-- 
+2.6.3
+
