@@ -1,7 +1,8 @@
 Name:      osg-ce
 Summary:   OSG Compute Element
+# Note: the verison must match the OSG release series
 Version:   3.6
-Release:   10%{?dist}
+Release:   11%{?dist}
 License:   Apache 2.0
 URL:       http://www.opensciencegrid.org
 
@@ -126,7 +127,7 @@ exit 0
 
 %install
 install -m 755         -d $RPM_BUILD_ROOT/%{_datadir}/condor-ce/config.d
-install -m 644 %{SOURCE0} $RPM_BUILD_ROOT/%{_datadir}/condor-ce/config.d
+sed -e 's/@@SERIES@@/%{version}/' %{SOURCE0} > $RPM_BUILD_ROOT/%{_datadir}/condor-ce/config.d/01-osg-ce.conf
 
 
 %files
@@ -140,6 +141,9 @@ install -m 644 %{SOURCE0} $RPM_BUILD_ROOT/%{_datadir}/condor-ce/config.d
 %files slurm
 
 %changelog
+* Mon Nov 13 2023 Mátyás Selmeci <matyas@cs.wisc.edu> - 3.6-11
+- Set value of OSG_SERIES attribute based on RPM version (SOFTWARE-5747)
+
 * Fri Mar 24 2023 Mátyás Selmeci <matyas@cs.wisc.edu> - 3.6-10
 - Add Squid dependency back for EL9 (SOFTWARE-5498)
 
