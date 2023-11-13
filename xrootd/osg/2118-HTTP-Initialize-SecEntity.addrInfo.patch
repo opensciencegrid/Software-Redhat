@@ -1,0 +1,23 @@
+From 7454c6e59b738fb28e92e593d0e2f49e37e92c10 Mon Sep 17 00:00:00 2001
+From: David Smith <David.Smith@cern.ch>
+Date: Thu, 2 Nov 2023 09:46:54 +0100
+Subject: [PATCH] [HTTP] Initialize SecEntity.addrInfo in fresh protocol
+ object; Fixes #2114
+
+---
+ src/XrdHttp/XrdHttpProtocol.cc | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/src/XrdHttp/XrdHttpProtocol.cc b/src/XrdHttp/XrdHttpProtocol.cc
+index 8c7e76cd79b..f459a9f4540 100644
+--- a/src/XrdHttp/XrdHttpProtocol.cc
++++ b/src/XrdHttp/XrdHttpProtocol.cc
+@@ -282,7 +282,7 @@ XrdProtocol *XrdHttpProtocol::Match(XrdLink *lp) {
+   // that is is https without invoking TLS on the actual link. Eventually,
+   // we should just use the link's TLS native implementation.
+   //
+-  SecEntity.addrInfo = lp->AddrInfo();
++  hp->SecEntity.addrInfo = lp->AddrInfo();
+   XrdNetAddr *netP = const_cast<XrdNetAddr*>(lp->NetAddr());
+   netP->SetDialect("https");
+   netP->SetTLS(true);
