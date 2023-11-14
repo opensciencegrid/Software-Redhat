@@ -1,0 +1,11 @@
+[Unit]
+Description=OSPool Backfill Container Service
+
+[Service]
+Type=simple
+Restart=on-success
+ExecStart=/usr/sbin/start_ospool_ep_container.sh
+EnvironmentFile=/etc/osg/ospool-ep-container.cfg
+
+[Install]
+WantedBy=multi-user.target
