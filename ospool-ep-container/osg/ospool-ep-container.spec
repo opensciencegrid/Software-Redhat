@@ -2,7 +2,7 @@
 
 Name: ospool-ep-container
 Version: 1.0
-Release: 1%{?dist}
+Release: 2%{?dist}
 Summary: Systemd service for the OSPool Backfill Container
 
 License: Unknown
@@ -38,3 +38,8 @@ mv %{SOURCE2} %{buildroot}/etc/osg/
 /usr/lib/systemd/system/ospool-ep-container.service
 /etc/osg/ospool-ep-container.cfg 
 %attr(0755,root,root) /usr/sbin/start_ospool_ep_container.sh
+
+%changelog
+
+* Tue Nov 14 2023 Matt Westphall <westphall@wisc.edu> 1.0-1
+- Initial version

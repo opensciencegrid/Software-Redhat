@@ -79,12 +79,9 @@ if [ -n "$MEMORY" ]; then
 fi
 
 
-# Timeout the docker command after the accept jobs time plus its retirement time
-TIMEOUT="$(($ACCEPT_JOBS_FOR_HOURS + $RETIREMENT_HOURS))h"
 
 # TODO passing the whole source env file into docker pollutes the environment to some extent
-timeout $TIMEOUT \
-  docker run -it --rm --user $USER --name osg-worker \
+docker run -it --rm --user $USER --name osg-worker \
     --pull=always            \
     --security-opt seccomp=unconfined \
     --security-opt systempaths=unconfined \
