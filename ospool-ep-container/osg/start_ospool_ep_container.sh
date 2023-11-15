@@ -25,7 +25,7 @@ exit_with_error () {
 }
 
 # Check that required parameters are non-empty
-REQUIRED_ENV_VARS=(GLIDEIN_Site GLIDEIN_ResourceName OSG_SQUID_LOCATION ACCEPT_JOBS_FOR_HOURS RETIREMENT_HOURS)
+REQUIRED_ENV_VARS=(GLIDEIN_Site GLIDEIN_ResourceName ACCEPT_JOBS_FOR_HOURS RETIREMENT_HOURS)
 for var in "${REQUIRED_ENV_VARS[@]}"; do
   if [ -z "${!var}" ]; then
     exit_with_error "Required environment variable $var not set."
