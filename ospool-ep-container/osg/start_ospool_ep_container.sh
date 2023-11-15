@@ -1,6 +1,6 @@
 #!/bin/bash
 
-DOCKER_ARGS=""
+DOCKER_ARGS=()
 USER=1000
 ENV_FILE=/etc/osg/ospool-ep-container.cfg
 # explicitly true:
@@ -16,7 +16,7 @@ is_true () {
 }
 
 add_docker_arg() {
-  DOCKER_ARGS=$DOCKER_ARGS" $@"
+  DOCKER_ARGS+=("$@")
 }
 
 exit_with_error () {
@@ -25,7 +25,7 @@ exit_with_error () {
 }
 
 # Check that required parameters are non-empty
-REQUIRED_ENV_VARS=(GLIDEIN_Site GLIDEIN_ResourceName OSG_SQUID_LOCATION ACCEPT_JOBS_FOR_HOURS RETIREMENT_HOURS)
+REQUIRED_ENV_VARS=(GLIDEIN_Site GLIDEIN_ResourceName ACCEPT_JOBS_FOR_HOURS RETIREMENT_HOURS)
 for var in "${REQUIRED_ENV_VARS[@]}"; do
   if [ -z "${!var}" ]; then
     exit_with_error "Required environment variable $var not set."
@@ -33,39 +33,39 @@ for var in "${REQUIRED_ENV_VARS[@]}"; do
 done
 
 # Verify that TOKEN_LOCATION is set and a file
-if [ -n "$TOKEN_LOCATION" ] && test -f $TOKEN_LOCATION; then
+if [ -n "$TOKEN_LOCATION" ] && test -f "$TOKEN_LOCATION"; then
   add_docker_arg "-v ${TOKEN_LOCATION}:/etc/condor/tokens-orig.d/flock.opensciencegrid.org"
 else
   exit_with_error "TOKEN_LOCATION must be a file"
 fi
 
 # Verify that WORK_TEMP_DIR is either a directory or is unset
-if [ -n "$WORK_TEMP_DIR" ] && ! test -d $WORK_TEMP_DIR; then
+if [ -n "$WORK_TEMP_DIR" ] && ! test -d "$WORK_TEMP_DIR"; then
   exit_with_error "WORK_TEMP_DIR must be empty or a directory"
 fi
 
-if [ -n "$WORK_TEMP_DIR" ] && test -d $WORK_TEMP_DIR; then
-  add_docker_arg "-v ${WORK_TEMP_DIR}:/pilot"
+if [ -n "$WORK_TEMP_DIR" ] && test -d "$WORK_TEMP_DIR"; then
+  add_docker_arg -v "${WORK_TEMP_DIR}:/pilot"
 fi
 
 # Verify that only one of BIND_MOUNT_CVMFS and CVMFSEXEC_REPOS is set
-if is_true $BIND_MOUNT_CVMFS && [ -n "$CVMFSEXEC_REPOS" ]; then 
+if is_true "$BIND_MOUNT_CVMFS" && [ -n "$CVMFSEXEC_REPOS" ]; then
   exit_with_error "Only one of BIND_MOUNT_CVMFS and CVMFSEXEC_REPOS should be set"
 fi
 
-if is_true $BIND_MOUNT_CVMFS; then 
-  add_docker_arg "-v /cvmfs:/cvmfs:shared"
+if is_true "$BIND_MOUNT_CVMFS"; then
+  add_docker_arg -v "/cvmfs:/cvmfs:shared"
 fi
 
 if [ -n "$CVMFSEXEC_REPOS" ]; then
-  # Need to run in priviledged mode 
-  add_docker_arg "--priviledged"
+  # Need to run in privileged mode
+  add_docker_arg "--privileged"
 fi
 
 
 # Mount /etc/OpenCl/vendors if providing NVIDIA GPU resources
-if is_true $PROVIDE_NVIDIA_GPU; then
-  add_docker_arg "-v /etc/OpenCL/vendors:/etc/OpenCL/vendors:ro"
+if is_true "$PROVIDE_NVIDIA_GPU"; then
+  add_docker_arg -v "/etc/OpenCL/vendors:/etc/OpenCL/vendors:ro"
 fi
 
 # Limit docker's CPU usage if the NUM_CPUS condor config param is set
@@ -81,11 +81,11 @@ fi
 
 
 # TODO passing the whole source env file into docker pollutes the environment to some extent
-docker run -it --rm --user $USER --name osg-worker \
+docker run -it --rm --user $USER --name ospool-ep-container \
     --pull=always            \
     --security-opt seccomp=unconfined \
     --security-opt systempaths=unconfined \
     --security-opt no-new-privileges \
     --env-file $ENV_FILE \
-    $DOCKER_ARGS \
+    "${DOCKER_ARGS[@]}" \
     hub.opensciencegrid.org/opensciencegrid/osgvo-docker-pilot:%{OSGVER}-release
