@@ -34,7 +34,7 @@ done
 
 # Verify that TOKEN_LOCATION is set and a file
 if [ -n "$TOKEN_LOCATION" ] && test -f "$TOKEN_LOCATION"; then
-  add_docker_arg "-v ${TOKEN_LOCATION}:/etc/condor/tokens-orig.d/flock.opensciencegrid.org"
+  add_docker_arg -v "${TOKEN_LOCATION}:/etc/condor/tokens-orig.d/flock.opensciencegrid.org"
 else
   exit_with_error "TOKEN_LOCATION must be a file"
 fi
