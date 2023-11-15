@@ -33,27 +33,27 @@ for var in "${REQUIRED_ENV_VARS[@]}"; do
 done
 
 # Verify that TOKEN_LOCATION is set and a file
-if [ -n "$TOKEN_LOCATION" ] && test -f $TOKEN_LOCATION; then
+if [ -n "$TOKEN_LOCATION" ] && test -f "$TOKEN_LOCATION"; then
   add_docker_arg "-v ${TOKEN_LOCATION}:/etc/condor/tokens-orig.d/flock.opensciencegrid.org"
 else
   exit_with_error "TOKEN_LOCATION must be a file"
 fi
 
 # Verify that WORK_TEMP_DIR is either a directory or is unset
-if [ -n "$WORK_TEMP_DIR" ] && ! test -d $WORK_TEMP_DIR; then
+if [ -n "$WORK_TEMP_DIR" ] && ! test -d "$WORK_TEMP_DIR"; then
   exit_with_error "WORK_TEMP_DIR must be empty or a directory"
 fi
 
-if [ -n "$WORK_TEMP_DIR" ] && test -d $WORK_TEMP_DIR; then
+if [ -n "$WORK_TEMP_DIR" ] && test -d "$WORK_TEMP_DIR"; then
   add_docker_arg -v "${WORK_TEMP_DIR}:/pilot"
 fi
 
 # Verify that only one of BIND_MOUNT_CVMFS and CVMFSEXEC_REPOS is set
-if is_true $BIND_MOUNT_CVMFS && [ -n "$CVMFSEXEC_REPOS" ]; then 
+if is_true "$BIND_MOUNT_CVMFS" && [ -n "$CVMFSEXEC_REPOS" ]; then
   exit_with_error "Only one of BIND_MOUNT_CVMFS and CVMFSEXEC_REPOS should be set"
 fi
 
-if is_true $BIND_MOUNT_CVMFS; then 
+if is_true "$BIND_MOUNT_CVMFS"; then
   add_docker_arg -v "/cvmfs:/cvmfs:shared"
 fi
 
@@ -64,7 +64,7 @@ fi
 
 
 # Mount /etc/OpenCl/vendors if providing NVIDIA GPU resources
-if is_true $PROVIDE_NVIDIA_GPU; then
+if is_true "$PROVIDE_NVIDIA_GPU"; then
   add_docker_arg -v "/etc/OpenCL/vendors:/etc/OpenCL/vendors:ro"
 fi
 
