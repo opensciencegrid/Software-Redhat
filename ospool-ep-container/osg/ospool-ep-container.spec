@@ -2,7 +2,7 @@
 
 Name: ospool-ep-container
 Version: 1.0
-Release: 2%{?dist}
+Release: 3%{?dist}
 Summary: Systemd service for the OSPool Backfill Container
 
 License: Unknown
@@ -14,7 +14,7 @@ Source1: start_ospool_ep_container.sh
 Source2: ospool-ep-container.cfg
 
 BuildArch: noarch
-Requires: docker systemd
+Requires: /usr/bin/docker systemd
 
 %description
 Systemd service for the OSPool Backfill Container
