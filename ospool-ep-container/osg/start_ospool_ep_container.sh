@@ -1,6 +1,6 @@
 #!/bin/bash
 
-DOCKER_ARGS=""
+DOCKER_ARGS=()
 USER=1000
 ENV_FILE=/etc/osg/ospool-ep-container.cfg
 # explicitly true:
@@ -16,7 +16,7 @@ is_true () {
 }
 
 add_docker_arg() {
-  DOCKER_ARGS=$DOCKER_ARGS" $@"
+  DOCKER_ARGS+=("$@")
 }
 
 exit_with_error () {
@@ -45,7 +45,7 @@ if [ -n "$WORK_TEMP_DIR" ] && ! test -d $WORK_TEMP_DIR; then
 fi
 
 if [ -n "$WORK_TEMP_DIR" ] && test -d $WORK_TEMP_DIR; then
-  add_docker_arg "-v ${WORK_TEMP_DIR}:/pilot"
+  add_docker_arg -v "${WORK_TEMP_DIR}:/pilot"
 fi
 
 # Verify that only one of BIND_MOUNT_CVMFS and CVMFSEXEC_REPOS is set
@@ -54,7 +54,7 @@ if is_true $BIND_MOUNT_CVMFS && [ -n "$CVMFSEXEC_REPOS" ]; then
 fi
 
 if is_true $BIND_MOUNT_CVMFS; then 
-  add_docker_arg "-v /cvmfs:/cvmfs:shared"
+  add_docker_arg -v "/cvmfs:/cvmfs:shared"
 fi
 
 if [ -n "$CVMFSEXEC_REPOS" ]; then
@@ -65,7 +65,7 @@ fi
 
 # Mount /etc/OpenCl/vendors if providing NVIDIA GPU resources
 if is_true $PROVIDE_NVIDIA_GPU; then
-  add_docker_arg "-v /etc/OpenCL/vendors:/etc/OpenCL/vendors:ro"
+  add_docker_arg -v "/etc/OpenCL/vendors:/etc/OpenCL/vendors:ro"
 fi
 
 # Limit docker's CPU usage if the NUM_CPUS condor config param is set
@@ -85,5 +85,5 @@ docker run -it --rm --user $USER --name osg-worker \
     --security-opt systempaths=unconfined \
     --security-opt no-new-privileges \
     --env-file $ENV_FILE \
-    $DOCKER_ARGS \
+    "${DOCKER_ARGS[@]}" \
     hub.opensciencegrid.org/opensciencegrid/osgvo-docker-pilot:%{OSGVER}-release
