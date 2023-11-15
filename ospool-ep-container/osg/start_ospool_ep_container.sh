@@ -58,8 +58,8 @@ if is_true $BIND_MOUNT_CVMFS; then
 fi
 
 if [ -n "$CVMFSEXEC_REPOS" ]; then
-  # Need to run in priviledged mode 
-  add_docker_arg "--priviledged"
+  # Need to run in privileged mode
+  add_docker_arg "--privileged"
 fi
 
 
