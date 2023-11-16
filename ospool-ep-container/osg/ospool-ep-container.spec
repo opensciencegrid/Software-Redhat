@@ -36,7 +36,7 @@ mv %{SOURCE2} %{buildroot}/etc/osg/
 %files
 %defattr(0644,root,root,-)
 /usr/lib/systemd/system/ospool-ep-container.service
-/etc/osg/ospool-ep-container.cfg 
+%config(noreplace) /etc/osg/ospool-ep-container.cfg 
 %attr(0755,root,root) /usr/sbin/start_ospool_ep_container.sh
 
 %changelog
