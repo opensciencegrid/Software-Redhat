@@ -2,7 +2,7 @@
 
 Name: ospool-ep-container
 Version: 1.0
-Release: 3%{?dist}
+Release: 4%{?dist}
 Summary: Systemd service for the OSPool Backfill Container
 
 License: Unknown
