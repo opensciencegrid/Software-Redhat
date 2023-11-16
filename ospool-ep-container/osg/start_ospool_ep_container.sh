@@ -78,14 +78,12 @@ if [ -n "$MEMORY" ]; then
   add_docker_arg "--memory=$(( ($MEMORY + 100) * 1024 * 1024 ))"
 fi
 
-
-
 # TODO passing the whole source env file into docker pollutes the environment to some extent
-docker run -it --rm --user $USER --name ospool-ep-container \
+docker run --user $USER --name ospool-ep-container \
     --pull=always            \
     --security-opt seccomp=unconfined \
     --security-opt systempaths=unconfined \
     --security-opt no-new-privileges \
     --env-file $ENV_FILE \
     "${DOCKER_ARGS[@]}" \
-    hub.opensciencegrid.org/opensciencegrid/osgvo-docker-pilot:%{OSGVER}-release
+    hub.opensciencegrid.org/opensciencegrid/osgvo-docker-pilot:3.6-release > /dev/null
