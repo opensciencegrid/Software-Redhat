@@ -84,6 +84,7 @@ docker run --user $USER --name ospool-ep-container \
     --security-opt seccomp=unconfined \
     --security-opt systempaths=unconfined \
     --security-opt no-new-privileges \
+    --ulimit nofile=2048:2048 \
     --env-file $ENV_FILE \
     "${DOCKER_ARGS[@]}" \
-    hub.opensciencegrid.org/opensciencegrid/osgvo-docker-pilot:3.6-release > /dev/null
+    hub.opensciencegrid.org/opensciencegrid/osgvo-docker-pilot:%{OSGVER}-release > /dev/null
