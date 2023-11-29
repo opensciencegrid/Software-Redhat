@@ -1,0 +1,32 @@
+From 453314b1f02132f348725a9b3b460df3f88fe761 Mon Sep 17 00:00:00 2001
+From: Brian Bockelman <bbockelman@morgridge.org>
+Date: Sun, 19 Nov 2023 21:50:29 -0600
+Subject: [PATCH] Switch from using a cert file to a cert chain file
+
+Outside most grid contexts, we need to present the certificate chain
+in the TLS handshake for the verification path through the intermediate
+CA to the root.
+
+This commit switches over to the corresponding OpenSSL function call.
+
+Fixes the ability to use most CAB CAs with XRootD.
+---
+ src/XrdTls/XrdTlsContext.cc | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/src/XrdTls/XrdTlsContext.cc b/src/XrdTls/XrdTlsContext.cc
+index 6f7227a92..d48a2b598 100644
+--- a/src/XrdTls/XrdTlsContext.cc
++++ b/src/XrdTls/XrdTlsContext.cc
+@@ -745,7 +745,7 @@ XrdTlsContext::XrdTlsContext(const char *cert,  const char *key,
+ 
+ // Load certificate
+ //
+-   if (SSL_CTX_use_certificate_file(pImpl->ctx, cert, SSL_FILETYPE_PEM) != 1)
++   if (SSL_CTX_use_certificate_chain_file(pImpl->ctx, cert) != 1)
+       FATAL_SSL("Unable to create TLS context; invalid certificate.");
+ 
+ // Load the private key
+-- 
+2.34.1
+
