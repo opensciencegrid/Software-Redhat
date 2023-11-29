@@ -2,7 +2,6 @@
 %define osg_version  1.116
 %define release_num  1
 %define vtag         %{osg_version}.igtf.%{igtf_version}-%{release_num}
-%define enable_trusted_sha1_certs 0
 
 Name:           osg-ca-certs
 Version:        %{osg_version}
@@ -33,18 +32,8 @@ Conflicts:      osg-ca-scripts
 Obsoletes:      vdt-ca-certs
 Obsoletes:      osg-ca-certs-experimental
 Obsoletes:      osg-ca-certs-compat <= 1:1.37
-RemovePathPostfixes: .trusted-cert
 
 %description
-For details about the current certificate release, see https://repo.opensciencegrid.org/cadist/ and change log at https://repo.opensciencegrid.org/cadist/CHANGES.
-
-%package java
-Summary: Java-compatible SHA1 certs for %{name}
-BuildArch: noarch
-Conflicts: osg-ca-scripts
-RemovePathPostfixes: .java-cert
-
-%description java
 For details about the current certificate release, see https://repo.opensciencegrid.org/cadist/ and change log at https://repo.opensciencegrid.org/cadist/CHANGES.
 
 %prep
@@ -60,14 +49,6 @@ export CADIST=$PWD/certificates
 export PKG_NAME=%{name}
 
 ./build-certificates-dir.sh
-
-%if 0%{?enable_trusted_sha1_certs}
-./add-trusted-sha1-certs.sh certificates trusted-cert java-cert
-%else
-# We still want to make the osg-ca-certs and osg-ca-certs-java RPMs
-find certificates -name "*.pem" -exec cp '{}' '{}.java-cert' ';'
-find certificates -name "*.pem" -exec mv '{}' '{}.trusted-cert' ';'
-%endif
 
 %install
 mkdir -p $RPM_BUILD_ROOT/etc/grid-security/certificates
@@ -85,11 +66,6 @@ mv certificates/* $RPM_BUILD_ROOT/etc/grid-security/certificates/
 /etc/grid-security/certificates/*
 %doc
 
-%files java
-%defattr(0644,root,root,-)
-%dir %attr(0755,root,root) /etc/grid-security/certificates
-/etc/grid-security/certificates/*
-%doc
 
 %changelog
 * Wed Nov 29 2023 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.116-1
