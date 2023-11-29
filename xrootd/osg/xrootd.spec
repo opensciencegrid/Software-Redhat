@@ -76,7 +76,7 @@
 Name:      xrootd
 Epoch:     1
 Version:   5.6.3
-Release:   1.3%{?dist}%{?_with_clang:.clang}%{?_with_asan:.asan}
+Release:   1.4%{?dist}%{?_with_clang:.clang}%{?_with_asan:.asan}
 Summary:   Extended ROOT file server
 Group:     System Environment/Daemons
 License:   LGPLv3+
@@ -97,6 +97,7 @@ Source1:   xrootd-%{compat_version}.tar.gz
 Patch0: 1819-Actually-include-XrdSecEntity-moninfo-field-in-trace.patch
 Patch1: 1868-env-hostname-override.patch
 Patch2: 2118-HTTP-Initialize-SecEntity.addrInfo.patch
+Patch3: 2127-Switch-from-using-a-cert-file-to-a-cert-chain-file.patch
 
 # Debug Patches
 Patch101: 0003-DEBUG-unset-use-pep517.patch
@@ -515,6 +516,7 @@ cd xrootd
 %patch1 -p1
 # %%patch101 -p1
 %patch2 -p1
+%patch3 -p1
 cd ..
 
 %build
@@ -1166,6 +1168,9 @@ fi
 # Changelog
 #-------------------------------------------------------------------------------
 %changelog
+* Wed Nov 29 2023 Matt Westphall <westphall@wisc.edu> - 5.6.3-1.4
+- Add 2127-Switch-from-using-a-cert-file-to-a-cert-chain-file.patch (SOFTWARE-5763)
+
 * Mon Nov 13 2023 Mátyás Selmeci <matyas@cs.wisc.edu> - 5.6.3-1.3
 - Add 2118-HTTP-Initialize-SecEntity.addrInfo.patch (SOFTWARE-5748)
 
