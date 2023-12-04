@@ -11,6 +11,8 @@ Source0: make-services.sh
 %define subpackage() %{expand:
 %%package -n %1
 Summary: Service file for %1
+Requires: xrootd-server
+Requires: pelican
 
 %%description -n %1
 Service file for %1
