@@ -1,9 +1,10 @@
 Summary: Service files for Pelican
 Name: pelican-server
 Version: 7.2.0
-Release: 1%{?dist}
+Release: 2%{?dist}
 License: ASL 2.0
 Url: https://github.com/PelicanPlatform/pelican
+BuildArch: noarch
 Source0: make-services.sh
 
 %define services pelican-registry pelican-director pelican-origin pelican-cache osdf-registry osdf-director osdf-origin osdf-cache
