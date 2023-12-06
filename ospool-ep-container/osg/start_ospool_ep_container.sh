@@ -2,7 +2,7 @@
 
 DOCKER_ARGS=()
 USER=1000
-ENV_FILE=/etc/osg/ospool-ep-container.cfg
+ENV_FILE=/etc/osg/ospool-ep.cfg
 # explicitly true:
 # y(es), t(rue), 1, on; uppercase or lowercase
 is_true () {

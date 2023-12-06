@@ -1,17 +1,17 @@
 %define osgver 23
 
-Name: ospool-ep-container
+Name: ospool-ep
 Version: 1.0
-Release: 5%{?dist}
+Release: 1%{?dist}
 Summary: Systemd service for the OSPool Backfill Container
 
 License: Unknown
 URL: https://github.com/opensciencegrid/osgvo-docker-pilot
 
 
-Source0: ospool-ep-container.service
+Source0: ospool-ep.service
 Source1: start_ospool_ep_container.sh
-Source2: ospool-ep-container.cfg
+Source2: ospool-ep.cfg
 
 BuildArch: noarch
 Requires: /usr/bin/docker systemd
@@ -35,8 +35,8 @@ mv %{SOURCE2} %{buildroot}/etc/osg/
 
 %files
 %defattr(0644,root,root,-)
-/usr/lib/systemd/system/ospool-ep-container.service
-%config(noreplace) /etc/osg/ospool-ep-container.cfg 
+/usr/lib/systemd/system/ospool-ep.service
+%config(noreplace) /etc/osg/ospool-ep.cfg 
 %attr(0755,root,root) /usr/sbin/start_ospool_ep_container.sh
 
 %changelog
