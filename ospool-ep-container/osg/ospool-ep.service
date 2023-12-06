@@ -5,7 +5,7 @@ After=network.target
 [Service]
 Type=simple
 Restart=on-success
-EnvironmentFile=/etc/osg/ospool-ep-container.cfg
+EnvironmentFile=/etc/osg/ospool-ep.cfg
 
 ExecStartPre=-/usr/bin/docker container rm -f ospool-ep-container
 ExecStart=/usr/sbin/start_ospool_ep_container.sh
