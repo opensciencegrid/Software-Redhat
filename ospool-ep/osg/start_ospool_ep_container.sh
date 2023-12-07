@@ -87,4 +87,4 @@ docker run --user $USER --name ospool-ep-container \
     --ulimit nofile=2048:2048 \
     --env-file $ENV_FILE \
     "${DOCKER_ARGS[@]}" \
-    hub.opensciencegrid.org/opensciencegrid/osgvo-docker-pilot:%{OSGVER}-release > /dev/null
+    hub.opensciencegrid.org/opensciencegrid/osgvo-docker-pilot:%{OSGVER}-release
