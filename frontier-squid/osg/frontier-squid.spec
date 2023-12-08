@@ -1,14 +1,14 @@
 # set squidsufix to 2 instead of %%{nil} to build frontier-squid2
 %define squidsuffix %{nil}
 
-%define shoalversion 1.0.0
+%define shoalversion 1.0.2
 
 # exclude shoal-agent from automatic dependency generation
 %global __requires_exclude_from ^%{_libexecdir}/squid/shoal-agent/
 
 Summary: The Frontier distribution of the Squid proxy caching server
 Name: frontier-squid%{?squidsuffix}
-Version: 5.9
+Version: 6.5
 %define release4source 1
 %define releasenum 1%{?dist}
 Release: %{?release4source}.%{?releasenum}
@@ -137,7 +137,11 @@ awk '
 ' dist/shoal-agent.spec >dist/shoal-agent-lesslibs.spec
 $PYDIR/bin/pyinstaller $PYIOPTS --noconfirm --clean dist/shoal-agent-lesslibs.spec
 
-chmod -x dist/shoal-agent/*.*
+if [ -d dist/shoal-agent/_internal ]; then
+    chmod -x dist/shoal-agent/_internal/*.*
+else
+    chmod -x dist/shoal-agent/*.*
+fi
 
 # shoal-agent looks first in its own install dir for shoal_agent.conf so
 #  symlink it to %{etcdirsquid} to be with other squid config files
@@ -309,15 +313,6 @@ touch ${RPM_BUILD_ROOT}%{etcdirsquid}/shoal_agent.conf
 mkdir ${RPM_BUILD_ROOT}/etc/shoal
 ln -s ../squid/shoal_agent.conf ${RPM_BUILD_ROOT}/etc/shoal
 
-# In the squid4 to squid5 update, there is a problem in yum (not rpm) where
-# files in the "es" directory cause conflict errors in the transaction test.
-# As a work-around, we change "es" to a link. See the pretrans section
-# for more.
-cd ${RPM_BUILD_ROOT}/usr/share/squid/errors/
-mv es es-default
-ln -s es-default es
-cd -
-
 %clean
 rm -rf $RPM_BUILD_ROOT
 
@@ -362,32 +357,6 @@ rm -rf $RPM_BUILD_ROOT
 %verify(not user group) %ghost %{logdirsquid}
 /usr/share/man/man1
 /usr/share/man/man8
-
-# In the squid4 to squid5 update, rpm/yum cannot handle the change of the "es-mx"
-# link to a directory. To fix this, the old "es-mx" link is deleted here.
-# Also, the contents of the "es" directory cause transaction errors in yum, which
-# are fixed by changing it to a link. In this pretrans step, we move the old "es"
-# directory to make way for the new link.
-
-%pretrans -p <lua>
-path = "/usr/share/squid/errors/es-mx"
-st = posix.stat(path)
-if st and st.type == "link" then
-  os.remove(path)
-end
-path = "/usr/share/squid/errors/es"
-st = posix.stat(path)
-if st and st.type == "directory" then
-  status = os.rename(path, path .. ".rpmmoved")
-  if not status then
-    suffix = 0
-    while not status do
-      suffix = suffix + 1
-      status = os.rename(path .. ".rpmmoved", path .. ".rpmmoved." .. suffix)
-    end
-    os.rename(path, path .. ".rpmmoved")
-  end
-end
 
 %pre
 # The %%pre step uses a temporary file to tell the %post step if 
@@ -527,6 +496,25 @@ if [ $1 -eq 0 ]; then
 fi
 
 %changelog
+
+* Wed Nov 22 2023 Carl Vuosalo <carl.vuosalo@cern.ch> 6.5-1.1
+ - Update to squid-6.5, with announcement at
+    https://lists.squid-cache.org/pipermail/squid-announce/2023-July/000150.html and
+    release notes at http://www.squid-cache.org/Versions/v6/squid-6.5-RELEASENOTES.html.
+    squid-6 has a number of new features, such as
+    - TLS ServerHello
+    - Log TLS Communication Secrets
+    - RFC 9211: HTTP Cache-Status support
+    - ext_kerberos_ldap_group_acl: Support -b with -D
+ - Update to shoal-1.0.2 to fix setting of external_ip.
+ - For protection against this security vulnerability:
+    https://megamansec.github.io/Squid-Security-Audit/trace-uaf.html,
+    the TRACE method has been disabled in squid.conf.proto.
+
+* Tue Aug 15 2023 Carl Vuosalo <carl.vuosalo@cern.ch> 5.9-1.2
+ - With the addtion of an EL9 repository, this release includes an EL9 RPM that was
+    compiled on EL9 and that fully supports Web Proxy Auto Discovery. The EL7/EL8
+    RPM in this release is unchanged from 5.9-1.1, except for version number.
 
 * Tue May 23 2023 Carl Vuosalo <carl.vuosalo@cern.ch> 5.9-1.1
  - Update to squid-5.9, with announcement at
