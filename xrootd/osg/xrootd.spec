@@ -75,7 +75,7 @@
 #-------------------------------------------------------------------------------
 Name:      xrootd
 Epoch:     1
-Version:   5.6.3
+Version:   5.6.4
 Release:   1.4%{?dist}%{?_with_clang:.clang}%{?_with_asan:.asan}
 Summary:   Extended ROOT file server
 Group:     System Environment/Daemons
@@ -87,7 +87,7 @@ URL:       http://xrootd.org/
 # git clone http://xrootd.org/repo/xrootd.git xrootd
 # cd xrootd
 # git-archive master | gzip -9 > ~/rpmbuild/SOURCES/xrootd.tgz
-Source0:   xrootd.tar.gz
+Source0:   xrootd-%{version}.tar.gz
 
 # always include the tarball in the SRPM even if we don't build it because the
 # SRPM build may have a different build environment than the RPM build
@@ -515,8 +515,8 @@ This package contains compatibility binaries for xrootd 4 servers.
 cd xrootd
 %patch1 -p1
 # %%patch101 -p1
-%patch2 -p1
-%patch3 -p1
+# %patch2 -p1
+# %patch3 -p1
 cd ..
 
 %build
@@ -946,7 +946,8 @@ fi
 %{_libdir}/libXrdUtils.so
 %{_libdir}/libXrdXml.so
 %{_includedir}/xrootd/XrdXml/XrdXmlReader.hh
-%{_datadir}/xrootd/cmake
+%{_libdir}/cmake/XRootD
+# %{_datadir}/xrootd/cmake
 
 %files client-libs
 %defattr(-,root,root,-)
@@ -1168,6 +1169,9 @@ fi
 # Changelog
 #-------------------------------------------------------------------------------
 %changelog
+* Mon Dec 11 2023 Matt Westphall <westphall@wisc.edu> - 5.6.4-1.1
+- Initial OSG release of upstream 5.6.4-1
+
 * Wed Nov 29 2023 Matt Westphall <westphall@wisc.edu> - 5.6.3-1.4
 - Add 2127-Switch-from-using-a-cert-file-to-a-cert-chain-file.patch (SOFTWARE-5763)
 
