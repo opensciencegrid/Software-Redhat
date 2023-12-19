@@ -1,8 +1,8 @@
-%define osgver 3.6
+%define osgver 23
 
 Name: ospool-ep
 Version: 1.0
-Release: 3%{?dist}
+Release: 4%{?dist}
 Summary: Systemd service for the OSPool Backfill Container
 
 License: Unknown
