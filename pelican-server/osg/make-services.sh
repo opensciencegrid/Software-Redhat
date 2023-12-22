@@ -5,32 +5,71 @@ for service in "$@"; do
     if [[ $service = osdf-* ]]; then
         base_service=${service#osdf-}
 
-        cat > ${service}.yaml <<EOF
+        cat > ${service}.yaml <<END
+Debug: false
+Logging:
+  Level: "Error"
+Federation:
+  DiscoveryUrl: osg-htc.org
+  TopologyNamespaceURL: https://topology.opensciencegrid.org/stashcache/namespaces.json
 Xrootd:
   ManagerHost: redirector.osgstorage.org
   SummaryMonitoringHost: xrd-report.osgstorage.org
   DetailedMonitoringHost: xrd-mon.osgstorage.org
-Federation:
-  DiscoveryUrl: osg-htc.org
-  TopologyNamespaceURL: https://topology.opensciencegrid.org/stashcache/namespaces.json
-EOF
+  Mount: "/mnt/osdf"
+END
+        if [[ $base_service == origin ]]; then
+            cat >> ${service}.yaml <<END
+  Port: 1094
+Origin:
+  NamespacePrefix: "/MY_NAMESPACE"
+  Multiuser: false
+  EnableUI: false
+END
+        elif [[ $base_service == cache ]]; then
+            cat >> ${service}.yaml <<END
+  Port: 8443
+Cache:
+  Port: 8443
+END
+
+        fi
 
     elif [[ $service = pelican-* ]]; then
         base_service=${service#pelican-}
 
         cat > ${service}.yaml <<EOF
+Debug: false
+Logging:
+  Level: "Error"
 Federation:
   DiscoveryUrl:
+Xrootd:
+  Mount: "/mnt/pelican"
+  Port: 8443
 EOF
+        if [[ $base_service == origin ]]; then
+            cat >> ${service}.yaml <<END
+Origin:
+  NamespacePrefix: "/MY_NAMESPACE"
+  Multiuser: false
+  EnableUI: true
+END
+        elif [[ $base_service == cache ]]; then
+            cat >> ${service}.yaml <<END
+Cache:
+  Port: 8443
+END
+        fi
     fi
 
     cat > ${service}.service <<EOF
 [Unit]
-Description = Pelican service %N
+Description = Pelican service ${service}
 After = network.target nss-lookup.target
 
 [Service]
-ExecStart = /usr/bin/pelican --config /etc/pelican/%N.yaml ${base_service} serve
+ExecStart = /usr/bin/pelican --config /etc/pelican/${service}.yaml ${base_service} serve
 
 [Install]
 WantedBy = multi-user.target
@@ -39,7 +78,7 @@ EOF
     if [[ $service = *-origin ]]; then
         cat > ${service}-multiuser.service <<EOF
 [Unit]
-Description = Pelican service %N with multiuser support
+Description = Pelican service ${service} with multiuser support
 After = network.target nss-lookup.target
 
 [Service]
