@@ -12,7 +12,10 @@ Logging:
 Federation:
   DiscoveryUrl: osg-htc.org
   TopologyNamespaceURL: https://topology.opensciencegrid.org/stashcache/namespaces.json
+#Server:
+#  Hostname: f.q.d.n
 Xrootd:
+  Sitename: TOPOLOGY_RESOURCE_NAME
   ManagerHost: redirector.osgstorage.org
   SummaryMonitoringHost: xrd-report.osgstorage.org
   DetailedMonitoringHost: xrd-mon.osgstorage.org
@@ -44,6 +47,8 @@ Logging:
   Level: "Error"
 Federation:
   DiscoveryUrl:
+#Server:
+#  Hostname: f.q.d.n
 Xrootd:
   Mount: "/mnt/pelican"
   Port: 8443

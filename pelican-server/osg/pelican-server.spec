@@ -1,7 +1,7 @@
 Summary: Service files for Pelican
 Name: pelican-server
 Version: 7.2.0
-Release: 3%{?dist}
+Release: 4%{?dist}
 License: ASL 2.0
 Url: https://github.com/PelicanPlatform/pelican
 BuildArch: noarch
@@ -14,6 +14,7 @@ Source0: make-services.sh
 Summary: Service file for %1
 Requires: xrootd-server
 Requires: xrootd-scitokens
+Requires: xrootd-voms
 Requires: pelican
 
 %%description -n %1
@@ -65,6 +66,9 @@ install -m 0644 *.yaml $RPM_BUILD_ROOT/etc/pelican/
 
 
 %changelog
+* Thu Dec 28 2023 Mátyás Selmeci <matyas@cs.wisc.edu> - 7.2.0-4
+- Add missing xrootd-voms dependency
+
 * Fri Dec 22 2023 Mátyás Selmeci <matyas@cs.wisc.edu> - 7.2.0-3
 - Add missing xrootd-scitokens dependency
 - Flesh out cache and origin configs
