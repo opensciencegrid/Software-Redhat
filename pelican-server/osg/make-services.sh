@@ -12,7 +12,10 @@ Logging:
 Federation:
   DiscoveryUrl: osg-htc.org
   TopologyNamespaceURL: https://topology.opensciencegrid.org/stashcache/namespaces.json
-#Server:
+Server:
+  TLSCertificate: /etc/grid-security/xrd/xrdcert.pem
+  TLSKey: /etc/grid-security/xrd/xrdkey.pem
+  TLSCACertificateDirectory: /etc/grid-security/certificates
 #  Hostname: f.q.d.n
 Xrootd:
   Sitename: TOPOLOGY_RESOURCE_NAME

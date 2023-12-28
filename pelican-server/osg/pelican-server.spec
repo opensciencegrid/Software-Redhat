@@ -1,7 +1,7 @@
 Summary: Service files for Pelican
 Name: pelican-server
 Version: 7.2.0
-Release: 4%{?dist}
+Release: 5%{?dist}
 License: ASL 2.0
 Url: https://github.com/PelicanPlatform/pelican
 BuildArch: noarch
@@ -66,8 +66,9 @@ install -m 0644 *.yaml $RPM_BUILD_ROOT/etc/pelican/
 
 
 %changelog
-* Thu Dec 28 2023 Mátyás Selmeci <matyas@cs.wisc.edu> - 7.2.0-4
+* Thu Dec 28 2023 Mátyás Selmeci <matyas@cs.wisc.edu> - 7.2.0-5
 - Add missing xrootd-voms dependency
+- osdf config improvements
 
 * Fri Dec 22 2023 Mátyás Selmeci <matyas@cs.wisc.edu> - 7.2.0-3
 - Add missing xrootd-scitokens dependency
