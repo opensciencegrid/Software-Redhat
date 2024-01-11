@@ -16,8 +16,8 @@
 # ------------------------------------------------------------------------------
 # For Release Candidate builds, check with Software team on release string
 # ------------------------------------------------------------------------------
-%define version 3.10.5
-%define release 1
+%define version 3.10.6
+%define release 0.1.rc1
 
 %define frontend_xml frontend.xml
 %define factory_xml glideinWMS.xml
@@ -823,6 +823,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_bindir}/gwms-logcat.sh
 %attr(755,root,root) %{_bindir}/manual_glidein_submit
 %attr(755,root,root) %{_bindir}/OSG_autoconf
+%attr(755,root,root) %{_bindir}/get_tarballs
 %attr(755,root,root) %{_bindir}/gfdiff
 %attr(755,root,root) %{_sbindir}/checkFactory.py
 %attr(755,root,root) %{_sbindir}/stopFactory.py
@@ -1045,6 +1046,10 @@ rm -rf $RPM_BUILD_ROOT
 #%config(noreplace) %{_sysconfdir}/condor/scripts/frontend_condortoken
 
 %changelog
+* Wed Jan 10 2024 Marco Mambelli <marcom@fnal.gov> - 3.10.6
+- Glideinwms v3.10.6
+- Release Notes: http://glideinwms.fnal.gov/doc.v3_10_6/history.html
+
 * Wed Sep 27 2023 Marco Mambelli <marcom@fnal.gov> - 3.10.5
 - Glideinwms v3.10.5
 - Release Notes: http://glideinwms.fnal.gov/doc.v3_10_5/history.html
