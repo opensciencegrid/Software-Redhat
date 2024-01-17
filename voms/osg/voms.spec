@@ -1,25 +1,49 @@
 %global _hardened_build 1
 
-%if %{?rhel}%{!?rhel:0} >= 7
+%if %{?fedora}%{!?fedora:0} >= 25 || %{?rhel}%{!?rhel:0} >= 8
 %global use_systemd 1
-%{!?_unitdir: %global _unitdir /usr/lib/systemd/system}
 %else
 %global use_systemd 0
 %endif
 
 Name:		voms
-Version:	2.0.16
-Release:	1.6%{?dist}
+Version:	2.1.0
+Release:	0.31.rc3.1%{?dist}
 Summary:	Virtual Organization Membership Service
 
-License:	ASL 2.0
+License:	Apache-2.0
 URL:		https://italiangrid.github.io/voms/
-Source0:	https://github.com/italiangrid/%{name}/archive/v%{version}/%{name}-%{version}.tar.gz
+Source0:	https://github.com/italiangrid/%{name}/archive/v%{version}-rc3/%{name}-%{version}-rc3.tar.gz
 #		Post-install setup instructions:
 Source1:	%{name}.INSTALL
-#		Fix for GCC 7
-#		https://github.com/italiangrid/voms/pull/56
-Patch0:		%{name}-gcc7.patch
+#		https://github.com/italiangrid/voms/pull/105
+Patch0:		0001-Catch-exception-by-reference.patch
+#		https://github.com/italiangrid/voms/pull/106
+Patch1:		0002-Fix-warning-about-possible-use-after-free.patch
+#		https://github.com/italiangrid/voms/pull/107
+Patch2:		0003-Fix-doxygen-warning.patch
+#		https://github.com/italiangrid/voms/pull/108
+Patch3:		0004-Fix-warning-about-possible-string-truncation.patch
+#		https://github.com/italiangrid/voms/pull/104
+Patch4:		0005-config.h-must-not-be-included-in-public-header-file.patch
+Patch5:		0006-Include-config.h-before-other-header-files.patch
+#		https://github.com/italiangrid/voms/pull/109
+Patch6:		0007-Compile-and-link-libvomsapi-with-proper-thread-flags.patch
+#		Backport from upstream
+Patch7:		0008-Fix-memory-leaks-and-double-deletes.patch
+#		https://github.com/italiangrid/voms/pull/116
+Patch8:		0009-If-a-detailed-error-message-is-available-do-not-over.patch
+#		https://github.com/italiangrid/voms/pull/112
+Patch9:		0010-Add-lexparse.h-headers-for-lexer-parser-integration-.patch
+#		https://github.com/italiangrid/voms/pull/121
+Patch10:	0011-Only-process-authority-and-subject-key-identifiers-i.patch
+#		https://github.com/italiangrid/voms/pull/113
+Patch11:	0012-Consider-the-Authority-Key-Id-extension-only-if-it-s.patch
+
+# OSG patches
+Patch100:       mariadb-innodb.patch
+Patch102:       4882-voms_install_db-cert-parsing.patch
+
 
 
 BuildRequires:	make
@@ -33,15 +57,8 @@ BuildRequires:	libxslt
 BuildRequires:	docbook-style-xsl
 BuildRequires:	doxygen
 %if %{use_systemd}
-BuildRequires:	systemd
+BuildRequires:	systemd-rpm-macros
 %endif
-
-# OSG patches
-Patch100:       mariadb-innodb.patch
-Patch101:       sw3123-voms-proxy-direct.patch
-Patch102:       4882-voms_install_db-cert-parsing.patch
-Patch103:       Set-default-key-size-to-2048-bits-in-voms-proxy-init.patch
-Patch104:       116-better-ac-signature-error-message.patch
 
 %description
 The Virtual Organization Membership Service (VOMS) is an attribute authority
@@ -121,21 +138,31 @@ authorization purposes.
 This package provides the VOMS service.
 
 %prep
-%setup -q
-%patch0 -p1
+%setup -q -n %{name}-%{version}-rc3
+%patch -P 0 -p1
+%patch -P 1 -p1
+%patch -P 2 -p1
+%patch -P 3 -p1
+%patch -P 4 -p1
+%patch -P 5 -p1
+%patch -P 6 -p1
+%patch -P 7 -p1
+%patch -P 8 -p1
+%patch -P 9 -p1
+%patch -P 10 -p1
+%patch -P 11 -p1
 
 # OSG patches
+
 %patch100 -p1
-%patch101 -p1
 %patch102 -p1
-%patch103 -p1
-%patch104 -p1
+
+
+./autogen.sh
 
 install -m 644 -p %{SOURCE1} README.Fedora
 
 %build
-./autogen.sh
-
 %configure --disable-static --enable-docs --disable-parser-gen
 
 %make_build
@@ -147,8 +174,9 @@ rm %{buildroot}%{_libdir}/*.la
 
 %if %{use_systemd}
 mkdir -p %{buildroot}%{_unitdir}
-install -m 644 -p systemd/voms@.service %{buildroot}%{_unitdir}
+install -m 644 -p systemd/%{name}@.service %{buildroot}%{_unitdir}
 rm %{buildroot}%{_initrddir}/%{name}
+rm %{buildroot}%{_sysconfdir}/sysconfig/%{name}
 %else
 # Turn off default enabling of the service
 sed -e 's/\(chkconfig: \)\w*/\1-/' \
@@ -159,7 +187,6 @@ sed -e 's/\(chkconfig: \)\w*/\1-/' \
 
 mkdir -p %{buildroot}%{_pkgdocdir}
 install -m 644 -p AUTHORS README.md %{buildroot}%{_pkgdocdir}
-%{!?_licensedir: install -m 644 -p LICENSE %{buildroot}%{_pkgdocdir}}
 
 mkdir -p %{buildroot}%{_pkgdocdir}/VOMS_C_API
 cp -pr doc/apidoc/api/VOMS_C_API/html %{buildroot}%{_pkgdocdir}/VOMS_C_API
@@ -302,8 +329,7 @@ fi
 %doc %dir %{_pkgdocdir}
 %doc %{_pkgdocdir}/AUTHORS
 %doc %{_pkgdocdir}/README.md
-%{!?_licensedir: %doc %{_pkgdocdir}/LICENSE}
-%{?_licensedir: %license LICENSE}
+%license LICENSE
 
 %files devel
 %{_libdir}/libvomsapi.so
@@ -313,18 +339,17 @@ fi
 %{_mandir}/man3/*
 
 %files doc
+%doc %dir %{_pkgdocdir}
 %doc %{_pkgdocdir}/AUTHORS
 %doc %{_pkgdocdir}/VOMS_C_API
 %doc %{_pkgdocdir}/VOMS_CC_API
-%{!?_licensedir: %doc %{_pkgdocdir}/LICENSE}
-%{?_licensedir: %license LICENSE}
+%license LICENSE
 
 %files clients-cpp
 %{_bindir}/voms-proxy-destroy2
 %{_bindir}/voms-proxy-info2
 %{_bindir}/voms-proxy-init2
 %{_bindir}/voms-proxy-fake
-%{_bindir}/voms-proxy-direct
 %{_bindir}/voms-proxy-list
 %{_bindir}/voms-verify
 %ghost %{_bindir}/voms-proxy-destroy
@@ -334,7 +359,6 @@ fi
 %{_mandir}/man1/voms-proxy-info2.1*
 %{_mandir}/man1/voms-proxy-init2.1*
 %{_mandir}/man1/voms-proxy-fake.1*
-%{_mandir}/man1/voms-proxy-direct.1*
 %{_mandir}/man1/voms-proxy-list.1*
 %ghost %{_mandir}/man1/voms-proxy-destroy.1*
 %ghost %{_mandir}/man1/voms-proxy-info.1*
@@ -346,8 +370,8 @@ fi
 %{_unitdir}/%{name}@.service
 %else
 %{_initrddir}/%{name}
-%endif
 %config(noreplace) %{_sysconfdir}/sysconfig/%{name}
+%endif
 %attr(-,voms,voms) %dir %{_sysconfdir}/%{name}
 %dir %{_sysconfdir}/grid-security/%{name}
 %attr(-,voms,voms) %dir %{_localstatedir}/log/%{name}
@@ -362,8 +386,40 @@ fi
 %doc README.Fedora
 
 %changelog
+* Wed Jan 17 2024 Matt Westphall <westphall@wisc.edu> - 2.1.0-0.31.rc3.1
+- Initial release of upstream 2.1.0-0.31.rc3; drop voms-proxy-direct OSG patch (SOFTWARE-5781)
+
+* Thu Sep 14 2023 Mattias Ellert <mattias.ellert@physics.uu.se> - 2.1.0-0.31.rc3
+- More patches from upstream
+
+* Sat Jul 22 2023 Fedora Release Engineering <releng@fedoraproject.org> - 2.1.0-0.30.rc3
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_39_Mass_Rebuild
+
 * Thu Apr 27 2023 Mátyás Selmeci <matyas@cs.wisc.edu> - 2.0.16-1.6
 - Add 116-better-ac-signature-error-message.patch (SOFTWARE-5560)
+
+* Thu Feb 09 2023 Florian Weimer <fweimer@redhat.com> - 2.1.0-0.29.rc3
+- Port lexer/parser integration to C99 (#2168585)
+
+* Sat Jan 21 2023 Fedora Release Engineering <releng@fedoraproject.org> - 2.1.0-0.28.rc3
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_38_Mass_Rebuild
+
+* Mon Jan 02 2023 Mattias Ellert <mattias.ellert@physics.uu.se> - 2.1.0-0.27.rc3
+- Update to version 2.1.0-rc3
+- Drop patches accepted upstream
+- Add new patches (the PRs have been accepted upstream)
+
+* Wed Dec 21 2022 Mattias Ellert <mattias.ellert@physics.uu.se> - 2.1.0-0.26.rc2
+- Rebuild for gsoap 2.8.124 (Fedora 38)
+
+* Sat Jul 23 2022 Fedora Release Engineering <releng@fedoraproject.org> - 2.1.0-0.25.rc2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_37_Mass_Rebuild
+
+* Wed Jun 01 2022 Mattias Ellert <mattias.ellert@physics.uu.se> - 2.1.0-0.24.rc2
+- Backport fixes from upstream
+
+* Sat Jan 22 2022 Fedora Release Engineering <releng@fedoraproject.org> - 2.1.0-0.23.rc2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_36_Mass_Rebuild
 
 * Mon Nov 08 2021 Mátyás Selmeci <matyas@cs.wisc.edu> - 2.0.16-1.5
 - Increase default key size to 2048 bits (SOFTWARE-4889)
@@ -373,39 +429,114 @@ fi
 - Fix voms_install_db cert parsing to deal with OpenSSL 1.1+ format and "Let's Encrypt" (SOFTWARE-4882)
   - Add 4882-voms_install_db-cert-parsing.patch
 
+* Tue Sep 14 2021 Sahana Prasad <sahana@redhat.com> - 2.1.0-0.22.rc2
+- Rebuilt with OpenSSL 3.0.0
+
+* Sun Aug 22 2021 Mattias Ellert <mattias.ellert@physics.uu.se> - 2.1.0-0.21.rc2
+- Update to version 2.1.0-rc2
+- Rebuild for gsoap 2.8.117 (Fedora 36)
+
+* Fri Jul 23 2021 Fedora Release Engineering <releng@fedoraproject.org> - 2.1.0-0.20.rc1
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_35_Mass_Rebuild
+
 * Tue Jun 29 2021 Carl Edquist <edquist@cs.wisc.edu> - 2.0.16-1.2
 - Reinstate /etc/sysconfig/voms (SOFTWARE-4577)
 
+* Sat Apr 17 2021 Mattias Ellert <mattias.ellert@physics.uu.se> - 2.1.0-0.19.rc1
+- Update to version 2.1.0-rc1
+- Drop patches accepted upstream:
+  voms-nid-defined.patch, voms-gssapi-header.patch and voms-wsdl2h.patch
+- Use systemd unit file from source distribution
+
 * Fri Apr 09 2021 Mattias Ellert <mattias.ellert@physics.uu.se> - 2.0.16-1
 - Update to version 2.0.16
+
+* Wed Jan 27 2021 Fedora Release Engineering <releng@fedoraproject.org> - 2.1.0-0.18.rc0
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_34_Mass_Rebuild
 
 * Sat Dec 19 2020 Mattias Ellert <mattias.ellert@physics.uu.se> - 2.0.15-2
 - Fix systemd unit for VO names with special characters
 - Add BuildRequires on make
 
+* Sat Dec 19 2020 Mattias Ellert <mattias.ellert@physics.uu.se> - 2.1.0-0.17.rc0
+- Add BuildRequires on make
+
 * Sun Oct 25 2020 Mattias Ellert <mattias.ellert@physics.uu.se> - 2.0.15-1
 - Update to version 2.0.15
+
+* Wed Jul 29 2020 Fedora Release Engineering <releng@fedoraproject.org> - 2.1.0-0.16.rc0
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_33_Mass_Rebuild
 
 * Tue Jun 02 2020 Mátyás Selmeci <matyas@cs.wisc.edu> - 2.0.14-1.6
 - Also accept VOMS attributes that only have a top-level group (SOFTWARE-4114)
   - Drop Validate-top-level-group-of-VOMS-attribute.patch
   - Add Validate-top-level-group-of-VOMS-attribute-also-acce.patch
 
+* Fri Jan 31 2020 Fedora Release Engineering <releng@fedoraproject.org> - 2.1.0-0.15.rc0
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_32_Mass_Rebuild
+
 * Mon Dec 16 2019 Diego Davila <didavila@ucsd.edu> - 2.0.14-1.5
 - Add patches to disable TLSv1 and TLSv1.1 connections and
 - insecure ciphers (SOFTWARE-3879)
 
+* Sat Aug 17 2019 Mattias Ellert <mattias.ellert@physics.uu.se> - 2.1.0-0.14.rc0
+- Rebuild for gsoap 2.8.91 (Fedora 32)
+
+* Sat Jul 27 2019 Fedora Release Engineering <releng@fedoraproject.org> - 2.1.0-0.13.rc0
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_31_Mass_Rebuild
+
+* Sun Feb 03 2019 Fedora Release Engineering <releng@fedoraproject.org> - 2.1.0-0.12.rc0
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_30_Mass_Rebuild
+
+* Wed Oct 31 2018 Mattias Ellert <mattias.ellert@physics.uu.se> - 2.1.0-0.11.rc0
+- Change default proxy cert key length to 2048 bits
+
+* Sat Jul 14 2018 Fedora Release Engineering <releng@fedoraproject.org> - 2.1.0-0.10.rc0
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_29_Mass_Rebuild
+
 * Tue Feb 13 2018 Mátyás Selmeci <matyas@cs.wisc.edu> - 2.0.14-1.4
 - Add voms-proxy-direct (SOFTWARE-3123)
+
+* Fri Feb 09 2018 Fedora Release Engineering <releng@fedoraproject.org> - 2.1.0-0.9.rc0
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_28_Mass_Rebuild
+
+* Fri Feb 02 2018 Mattias Ellert <mattias.ellert@physics.uu.se> - 2.1.0-0.8.rc0
+- Fix wsdl version detection
+
+* Thu Aug 03 2017 Fedora Release Engineering <releng@fedoraproject.org> - 2.1.0-0.7.rc0
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_27_Binutils_Mass_Rebuild
+
+
+* Sun Jul 30 2017 Florian Weimer <fweimer@redhat.com> - 2.1.0-0.6.rc0
+- Rebuild with binutils fix for ppc64le (#1475636)
+
+* Thu Jul 27 2017 Fedora Release Engineering <releng@fedoraproject.org> - 2.1.0-0.5.rc0
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_27_Mass_Rebuild
+
+* Tue Jul 25 2017 Kalev Lember <klember@redhat.com> - 2.1.0-0.4.rc0
+- Rebuilt for libgsoapssl++ soname bump
+
+* Tue Jun 27 2017 Mattias Ellert <mattias.ellert@physics.uu.se> - 2.1.0-0.3.rc0
+- Update the "check if NID is defined" patch
+- Improve compatibility with the kerberos gssapi header file
+- Rebuild for gsoap 2.8.48 (Fedora 27)
 
 * Mon Feb 20 2017 Mátyás Selmeci <matyas@cs.wisc.edu> - 2.0.14-1.3
 - Add Validate-top-level-group-of-VOMS-attribute.patch (SOFTWARE-2593)
 
-* Thu Dec 22 2016 Mátyás Selmeci <matyas@cs.wisc.edu> - 2.0.14-1.2
-- Use upstream .service file
+* Tue Feb 07 2017 Kalev Lember <klember@redhat.com> - 2.1.0-0.2.rc0
+- Rebuilt for libgsoapssl++ soname bump
 
-* Wed Dec 21 2016 Mátyás Selmeci <matyas@cs.wisc.edu> - 2.0.14-1.1
-- Merge OSG changes (SOFTWARE-2557)
+* Wed Feb 01 2017 Mattias Ellert <mattias.ellert@physics.uu.se> - 2.1.0-0.1.rc0
+- Fix a few remaining OpenSSL 1.1 issues
+- Fix a GCC 7 compiler error
+- Create RFC proxies as default
+
+* Wed Jan 25 2017 Mattias Ellert <mattias.ellert@physics.uu.se> - 2.1.0-0.rc0
+- Update to version 2.1.0-rc0 (Port to OpenSSL 1.1)
+
+* Mon Sep 19 2016 Mattias Ellert <mattias.ellert@physics.uu.se> - 2.0.14-2
+- Rebuild for gsoap 2.8.35 (Fedora 26)
 
 * Sun Sep 11 2016 Mattias Ellert <mattias.ellert@physics.uu.se> - 2.0.14-1
 - Update to version 2.0.14
@@ -433,9 +564,6 @@ fi
 * Wed Jan 20 2016 Mattias Ellert <mattias.ellert@fysast.uu.se> - 2.0.12-7
 - Disable SSLv3
 - Fix compilation with gcc 6
-
-* Fri Oct 16 2015 Carl Edquist <edquist@cs.wisc.edu> - 2.0.12-3.1
-- Fix SQL syntax for mariadb in EL7 (SOFTWARE-1604)
 
 * Fri Jun 19 2015 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 2.0.12-6
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_23_Mass_Rebuild
