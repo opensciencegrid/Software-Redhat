@@ -15,6 +15,9 @@ Source0:	%{url}/archive/refs/tags/v%{version}/%{name}-%{version}.tar.gz
 #		clibs-list-devel not available for ix86....
 ExcludeArch:	%{ix86}
 
+# OSG:
+Patch0: Check-for-DT_REG-macro.patch
+
 BuildRequires:	gcc-c++
 BuildRequires:	make
 %if %{?rhel}%{!?rhel:0} != 7
