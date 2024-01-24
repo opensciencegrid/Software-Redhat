@@ -1,18 +1,8 @@
-From 64a1a9106ed9116c9949759b32d32c80fa3dc2e9 Mon Sep 17 00:00:00 2001
-From: Matyas Selmeci <matyas@cs.wisc.edu>
-Date: Mon, 22 Nov 2021 17:41:58 -0600
-Subject: [PATCH] Check for DT_REG macro
-
----
- src/utils/file_io/fileUtils.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/src/utils/file_io/fileUtils.c b/src/utils/file_io/fileUtils.c
-index f96eafd..79a0e46 100644
+index 9dce71e3..02b644ba 100644
 --- a/src/utils/file_io/fileUtils.c
 +++ b/src/utils/file_io/fileUtils.c
-@@ -61,7 +61,7 @@ list_t* getFileListForDirIf(const char* dirname,
-     list->free   = (void(*)(void*)) & _secFree;
+@@ -68,7 +68,7 @@ list_t* getFileListForDirIf(const char* dirname, const char* prefix,
+     list->free   = (void (*)(void*)) & _secFree;
      list->match  = (matchFunction)strequal;
      while ((ent = readdir(dir)) != NULL) {
 -#ifdef _DIRENT_HAVE_D_TYPE
@@ -20,6 +10,3 @@ index f96eafd..79a0e46 100644
        if (ent->d_type != DT_REG) {
          continue;
        }
--- 
-2.6.3
-
