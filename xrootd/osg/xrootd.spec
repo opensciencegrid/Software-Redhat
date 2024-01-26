@@ -12,6 +12,10 @@
 # (also keep both % when this is commented out -- rpm still interprets macros in comments)
 #%%global _with_debug 1
 
+# This is the directory the tarball extracts to. This may be "xrootd" or "xrootd-%%{version}" depending on where the tarball was downloaded from.
+# GitHub releases use "xrootd-%%{version}"
+%global build_dir xrootd-%{version}
+
 #-------------------------------------------------------------------------------
 # Helper macros
 #-------------------------------------------------------------------------------
@@ -75,7 +79,7 @@
 #-------------------------------------------------------------------------------
 Name:      xrootd
 Epoch:     1
-Version:   5.6.4
+Version:   5.6.6
 Release:   1.1%{?dist}%{?_with_clang:.clang}%{?_with_asan:.asan}
 Summary:   Extended ROOT file server
 Group:     System Environment/Daemons
@@ -511,8 +515,8 @@ This package contains compatibility binaries for xrootd 4 servers.
 %setup -c -n xrootd-compat -a 1 -T
 %endif
 
-%setup -c -n xrootd
-cd xrootd
+%setup -c -n %{build_dir}
+cd %{build_dir}
 %patch1 -p1
 # %%patch101 -p1
 # %patch2 -p1
@@ -525,7 +529,7 @@ cd ..
 . /opt/rh/devtoolset-7/enable
 %endif
 
-cd xrootd
+cd %{build_dir}
 
 %if %{?_with_clang:1}%{!?_with_clang:0}
 export CC=clang
@@ -615,7 +619,7 @@ pushd build/bindings/python
 popd
 
 %check
-cd xrootd
+cd %{build_dir}
 %if %{use_cmake3}
 ctest3 --output-on-failure
 %else
@@ -657,7 +661,7 @@ popd
 #-------------------------------------------------------------------------------
 # Install 5.x.y
 #-------------------------------------------------------------------------------
-pushd xrootd
+pushd %{build_dir}
 pushd  build
 make install DESTDIR=$RPM_BUILD_ROOT
 popd
@@ -1169,6 +1173,9 @@ fi
 # Changelog
 #-------------------------------------------------------------------------------
 %changelog
+* Fri Jan 26 2024 Mátyás Selmeci <matyas@cs.wisc.edu> - 5.6.6-1.1
+- Update to 5.6.6 (SOFTWARE-5799)
+
 * Mon Dec 11 2023 Matt Westphall <westphall@wisc.edu> - 5.6.4-1.1
 - Initial OSG release of upstream 5.6.4-1
 
