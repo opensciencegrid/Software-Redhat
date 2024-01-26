@@ -102,6 +102,7 @@ Patch0: 1819-Actually-include-XrdSecEntity-moninfo-field-in-trace.patch
 Patch1: 1868-env-hostname-override.patch
 Patch2: 2118-HTTP-Initialize-SecEntity.addrInfo.patch
 Patch3: 2127-Switch-from-using-a-cert-file-to-a-cert-chain-file.patch
+Patch4: SOFTWARE-5800-pelican-url.patch
 
 # Debug Patches
 Patch101: 0003-DEBUG-unset-use-pep517.patch
@@ -519,8 +520,9 @@ This package contains compatibility binaries for xrootd 4 servers.
 cd %{build_dir}
 %patch1 -p1
 # %%patch101 -p1
-# %patch2 -p1
-# %patch3 -p1
+# %%patch2 -p1
+# %%patch3 -p1
+%patch4 -p1
 cd ..
 
 %build
@@ -1175,6 +1177,7 @@ fi
 %changelog
 * Fri Jan 26 2024 Mátyás Selmeci <matyas@cs.wisc.edu> - 5.6.6-1.1
 - Update to 5.6.6 (SOFTWARE-5799)
+- Add patch for pelican:// URL support (SOFTWARE-5800)
 
 * Mon Dec 11 2023 Matt Westphall <westphall@wisc.edu> - 5.6.4-1.1
 - Initial OSG release of upstream 5.6.4-1
