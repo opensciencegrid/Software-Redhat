@@ -98,10 +98,7 @@ Source0:   xrootd-%{version}.tar.gz
 Source1:   xrootd-%{compat_version}.tar.gz
 
 # OSG Patches not merged into upstream
-Patch0: 1819-Actually-include-XrdSecEntity-moninfo-field-in-trace.patch
 Patch1: 1868-env-hostname-override.patch
-Patch2: 2118-HTTP-Initialize-SecEntity.addrInfo.patch
-Patch3: 2127-Switch-from-using-a-cert-file-to-a-cert-chain-file.patch
 Patch4: SOFTWARE-5800-pelican-url.patch
 
 # Debug Patches
@@ -520,8 +517,6 @@ This package contains compatibility binaries for xrootd 4 servers.
 cd %{build_dir}
 %patch1 -p1
 # %%patch101 -p1
-# %%patch2 -p1
-# %%patch3 -p1
 %patch4 -p1
 cd ..
 
