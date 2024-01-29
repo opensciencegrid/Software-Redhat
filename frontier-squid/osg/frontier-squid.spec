@@ -8,8 +8,8 @@
 
 Summary: The Frontier distribution of the Squid proxy caching server
 Name: frontier-squid%{?squidsuffix}
-Version: 6.5
-%define release4source 1
+Version: 5.9
+%define release4source 2
 %define releasenum 1%{?dist}
 Release: %{?release4source}.%{?releasenum}
 Epoch: 11
@@ -57,6 +57,7 @@ Requires: chkconfig
 # procps-ng is needed for /usr/sbin/sysctl
 Requires: procps-ng
 Requires: logrotate
+Requires: /sbin/restorecon
 BuildRequires: pam-devel
 BuildRequires: systemd-devel
 %if 0%{?rhel} >= 9
@@ -313,6 +314,15 @@ touch ${RPM_BUILD_ROOT}%{etcdirsquid}/shoal_agent.conf
 mkdir ${RPM_BUILD_ROOT}/etc/shoal
 ln -s ../squid/shoal_agent.conf ${RPM_BUILD_ROOT}/etc/shoal
 
+# In the squid4 to squid5 update, there is a problem in yum (not rpm) where
+# files in the "es" directory cause conflict errors in the transaction test.
+# As a work-around, we change "es" to a link. See the pretrans section
+# for more.
+cd ${RPM_BUILD_ROOT}/usr/share/squid/errors/
+mv es es-default
+ln -s es-default es
+cd -
+
 %clean
 rm -rf $RPM_BUILD_ROOT
 
@@ -357,6 +367,32 @@ rm -rf $RPM_BUILD_ROOT
 %verify(not user group) %ghost %{logdirsquid}
 /usr/share/man/man1
 /usr/share/man/man8
+
+# In the squid4 to squid5 update, rpm/yum cannot handle the change of the "es-mx"
+# link to a directory. To fix this, the old "es-mx" link is deleted here.
+# Also, the contents of the "es" directory cause transaction errors in yum, which
+# are fixed by changing it to a link. In this pretrans step, we move the old "es"
+# directory to make way for the new link.
+
+%pretrans -p <lua>
+path = "/usr/share/squid/errors/es-mx"
+st = posix.stat(path)
+if st and st.type == "link" then
+  os.remove(path)
+end
+path = "/usr/share/squid/errors/es"
+st = posix.stat(path)
+if st and st.type == "directory" then
+  status = os.rename(path, path .. ".rpmmoved")
+  if not status then
+    suffix = 0
+    while not status do
+      suffix = suffix + 1
+      status = os.rename(path .. ".rpmmoved", path .. ".rpmmoved." .. suffix)
+    end
+    os.rename(path, path .. ".rpmmoved")
+  end
+end
 
 %pre
 # The %%pre step uses a temporary file to tell the %post step if 
@@ -457,6 +493,7 @@ sed -i "s,\([^ ]* *[^ ]* *[^ ]* *\)[^ ]* *[^ ]*,\1${FRONTIER_USER} ${FRONTIER_GR
 
 # this supports SELinux
 /sbin/restorecon %{cachedirsquid}
+/sbin/restorecon %{logdirsquid}  
 
 systemctl daemon-reload
 if $STARTSERVICE; then
@@ -497,19 +534,23 @@ fi
 
 %changelog
 
-* Wed Nov 22 2023 Carl Vuosalo <carl.vuosalo@cern.ch> 6.5-1.1
- - Update to squid-6.5, with announcement at
-    https://lists.squid-cache.org/pipermail/squid-announce/2023-July/000150.html and
-    release notes at http://www.squid-cache.org/Versions/v6/squid-6.5-RELEASENOTES.html.
-    squid-6 has a number of new features, such as
-    - TLS ServerHello
-    - Log TLS Communication Secrets
-    - RFC 9211: HTTP Cache-Status support
-    - ext_kerberos_ldap_group_acl: Support -b with -D
+* Thu Jan 11 2024 Carl Vuosalo <carl.vuosalo@cern.ch> 5.9-2.1
+ - Apply security patches from Squid 6 to address security concerns since 
+    a version of Squid 6 suitable for frontier-squid is not available yet.
+ - The following security vulnerabilities have been addressed with patches:
+    https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2023-46724
+    https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2023-46847
+    https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2023-46848
+    https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2023-49285
+    https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2023-50269
+    https://github.com/squid-cache/squid/security/advisories/GHSA-j83v-w3p4-5cqh
+ - The following two vulnerabilities are addressed by disabling Gopher and TRACE
+    requests, respectively, in the squid.conf.proto file:
+    https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2023-46728
+    https://megamansec.github.io/Squid-Security-Audit/trace-uaf.html
+ - To support SELinux, require /sbin/restorecon and apply it to the log directory,
+    in addition to the cache directory.
  - Update to shoal-1.0.2 to fix setting of external_ip.
- - For protection against this security vulnerability:
-    https://megamansec.github.io/Squid-Security-Audit/trace-uaf.html,
-    the TRACE method has been disabled in squid.conf.proto.
 
 * Tue Aug 15 2023 Carl Vuosalo <carl.vuosalo@cern.ch> 5.9-1.2
  - With the addtion of an EL9 repository, this release includes an EL9 RPM that was
