@@ -1,0 +1,12 @@
+index 9dce71e3..02b644ba 100644
+--- a/src/utils/file_io/fileUtils.c
++++ b/src/utils/file_io/fileUtils.c
+@@ -68,7 +68,7 @@ list_t* getFileListForDirIf(const char* dirname, const char* prefix,
+     list->free   = (void (*)(void*)) & _secFree;
+     list->match  = (matchFunction)strequal;
+     while ((ent = readdir(dir)) != NULL) {
+-#ifdef _DIRENT_HAVE_D_TYPE
++#if defined(_DIRENT_HAVE_D_TYPE) && defined(DT_REG)
+       if (ent->d_type != DT_REG) {
+         continue;
+       }
