@@ -1,7 +1,7 @@
 # set squidsufix to 2 instead of %%{nil} to build frontier-squid2
 %define squidsuffix %{nil}
 
-%define shoalversion 1.0.0
+%define shoalversion 1.0.2
 
 # exclude shoal-agent from automatic dependency generation
 %global __requires_exclude_from ^%{_libexecdir}/squid/shoal-agent/
@@ -9,7 +9,7 @@
 Summary: The Frontier distribution of the Squid proxy caching server
 Name: frontier-squid%{?squidsuffix}
 Version: 5.9
-%define release4source 1
+%define release4source 2
 %define releasenum 1%{?dist}
 Release: %{?release4source}.%{?releasenum}
 Epoch: 11
@@ -57,6 +57,7 @@ Requires: chkconfig
 # procps-ng is needed for /usr/sbin/sysctl
 Requires: procps-ng
 Requires: logrotate
+Requires: /sbin/restorecon
 BuildRequires: pam-devel
 BuildRequires: systemd-devel
 %if 0%{?rhel} >= 9
@@ -137,7 +138,11 @@ awk '
 ' dist/shoal-agent.spec >dist/shoal-agent-lesslibs.spec
 $PYDIR/bin/pyinstaller $PYIOPTS --noconfirm --clean dist/shoal-agent-lesslibs.spec
 
-chmod -x dist/shoal-agent/*.*
+if [ -d dist/shoal-agent/_internal ]; then
+    chmod -x dist/shoal-agent/_internal/*.*
+else
+    chmod -x dist/shoal-agent/*.*
+fi
 
 # shoal-agent looks first in its own install dir for shoal_agent.conf so
 #  symlink it to %{etcdirsquid} to be with other squid config files
@@ -488,6 +493,7 @@ sed -i "s,\([^ ]* *[^ ]* *[^ ]* *\)[^ ]* *[^ ]*,\1${FRONTIER_USER} ${FRONTIER_GR
 
 # this supports SELinux
 /sbin/restorecon %{cachedirsquid}
+/sbin/restorecon %{logdirsquid}  
 
 systemctl daemon-reload
 if $STARTSERVICE; then
@@ -527,6 +533,29 @@ if [ $1 -eq 0 ]; then
 fi
 
 %changelog
+
+* Thu Jan 11 2024 Carl Vuosalo <carl.vuosalo@cern.ch> 5.9-2.1
+ - Apply security patches from Squid 6 to address security concerns since 
+    a version of Squid 6 suitable for frontier-squid is not available yet.
+ - The following security vulnerabilities have been addressed with patches:
+    https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2023-46724
+    https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2023-46847
+    https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2023-46848
+    https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2023-49285
+    https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2023-50269
+    https://github.com/squid-cache/squid/security/advisories/GHSA-j83v-w3p4-5cqh
+ - The following two vulnerabilities are addressed by disabling Gopher and TRACE
+    requests, respectively, in the squid.conf.proto file:
+    https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2023-46728
+    https://megamansec.github.io/Squid-Security-Audit/trace-uaf.html
+ - To support SELinux, require /sbin/restorecon and apply it to the log directory,
+    in addition to the cache directory.
+ - Update to shoal-1.0.2 to fix setting of external_ip.
+
+* Tue Aug 15 2023 Carl Vuosalo <carl.vuosalo@cern.ch> 5.9-1.2
+ - With the addtion of an EL9 repository, this release includes an EL9 RPM that was
+    compiled on EL9 and that fully supports Web Proxy Auto Discovery. The EL7/EL8
+    RPM in this release is unchanged from 5.9-1.1, except for version number.
 
 * Tue May 23 2023 Carl Vuosalo <carl.vuosalo@cern.ch> 5.9-1.1
  - Update to squid-5.9, with announcement at
