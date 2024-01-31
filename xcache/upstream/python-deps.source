@@ -1,7 +1,0 @@
-xcache/3.0.0/python-deps/awkward-0.12.22-py2.py3-none-any.whl sha1sum=0d7a2f7265fc7e5f94b824d91ecda34ec6720f72
-xcache/3.0.0/python-deps/cachetools-3.1.1-py2.py3-none-any.whl sha1sum=923b1403622ee7390e507cc4eea96fb0fcbba91d
-xcache/3.0.0/python-deps/lz4-2.2.1-cp36-cp36m-manylinux1_x86_64.whl sha1sum=35c88b0cc6c6bd1360fa9c06743a5e4857d00d77
-xcache/3.0.0/python-deps/numpy-1.16.6-cp36-cp36m-manylinux1_x86_64.whl sha1sum=6cabd4b26cfa1093f685302c6025218070918a82
-xcache/3.0.0/python-deps/uproot-3.11.7-py2.py3-none-any.whl sha1sum=9ddd7f91bb0ca80a712a2529e4a1cd615d6048ad
-xcache/3.0.0/python-deps/uproot_methods-0.7.4-py2.py3-none-any.whl sha1sum=f66c874bee35dbac97f25fb32f0710f7eba17b51
-xcache/3.0.0/python-deps/xxhash-1.4.4-cp36-cp36m-manylinux1_x86_64.whl sha1sum=c4545e87e8902af24cd067b1920aa620838cffdb
