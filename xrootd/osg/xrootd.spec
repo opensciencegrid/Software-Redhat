@@ -80,7 +80,7 @@
 Name:      xrootd
 Epoch:     1
 Version:   5.6.6
-Release:   1.1%{?dist}%{?_with_clang:.clang}%{?_with_asan:.asan}
+Release:   1.2%{?dist}%{?_with_clang:.clang}%{?_with_asan:.asan}
 Summary:   Extended ROOT file server
 Group:     System Environment/Daemons
 License:   LGPLv3+
@@ -100,6 +100,7 @@ Source1:   xrootd-%{compat_version}.tar.gz
 # OSG Patches not merged into upstream
 Patch1: 1868-env-hostname-override.patch
 Patch4: SOFTWARE-5800-pelican-url.patch
+Patch2181: 2181-buffer-overrun-when-serialising-creds.patch
 
 # Debug Patches
 Patch101: 0003-DEBUG-unset-use-pep517.patch
@@ -518,6 +519,7 @@ cd %{build_dir}
 %patch1 -p1
 # %%patch101 -p1
 %patch4 -p1
+%patch2181 -p1
 cd ..
 
 %build
@@ -1170,6 +1172,9 @@ fi
 # Changelog
 #-------------------------------------------------------------------------------
 %changelog
+* Wed Jan 31 2024 Matt Westphall <westphall@wisc.edu> - 5.6.6-1.2
+- Add patch for buffer overrun when serialising creds (PR #2181)
+
 * Fri Jan 26 2024 Mátyás Selmeci <matyas@cs.wisc.edu> - 5.6.6-1.1
 - Update to 5.6.6 (SOFTWARE-5799)
 - Add patch for pelican:// URL support (SOFTWARE-5800)
