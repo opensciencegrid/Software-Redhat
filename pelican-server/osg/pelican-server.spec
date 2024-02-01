@@ -1,7 +1,7 @@
 Summary: Service files for Pelican
 Name: pelican-server
 Version: 7.4.0
-Release: 4%{?dist}
+Release: 5%{?dist}
 License: ASL 2.0
 Url: https://github.com/PelicanPlatform/pelican
 BuildArch: noarch
@@ -50,6 +50,8 @@ exit 0
 %install
 mkdir -p $RPM_BUILD_ROOT/usr/lib/systemd/system/
 mkdir -p $RPM_BUILD_ROOT/etc/pelican/
+mkdir -p $RPM_BUILD_ROOT/var/spool/osdf
+mkdir -p $RPM_BUILD_ROOT/var/spool/pelican
 install -m 0644 systemd/*.service $RPM_BUILD_ROOT/usr/lib/systemd/system/
 install -m 0644 systemd/*.yaml $RPM_BUILD_ROOT/etc/pelican/
 
@@ -63,10 +65,12 @@ install -m 0644 systemd/*.yaml $RPM_BUILD_ROOT/etc/pelican/
 %package -n pelican-origin
 %requires_xrootd
 %subpackage_common pelican-origin
+%attr(-,xrootd,xrootd) /var/spool/pelican
 
 %package -n pelican-cache
 %requires_xrootd
 %subpackage_common pelican-cache
+%attr(-,xrootd,xrootd) /var/spool/pelican
 
 %package -n osdf-registry
 Requires: pelican-osdf-compat
@@ -80,16 +84,21 @@ Requires: pelican-osdf-compat
 %requires_xrootd
 Requires: pelican-osdf-compat
 %subpackage_common osdf-origin
+%attr(-,xrootd,xrootd) /var/spool/osdf
 
 %package -n osdf-cache
 %requires_xrootd
 Requires: pelican-osdf-compat
 %subpackage_common osdf-cache
+%attr(-,xrootd,xrootd) /var/spool/osdf
 
 
 
 
 %changelog
+* Mon Jan 29 2024 Mátyás Selmeci <matyas@cs.wisc.edu> - 7.4.0-5
+- Add /var/spool/pelican and /var/spool/osdf directories for the xrootd-based daemons
+
 * Mon Jan 22 2024 Mátyás Selmeci <matyas@cs.wisc.edu> - 7.4.0-4
 - Mark config files as %config(noreplace)
 
