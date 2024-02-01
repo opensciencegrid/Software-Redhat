@@ -1,7 +1,7 @@
 Summary: Hashicorp packer (binary install)
 Name: packer-io-bin
-Version: 1.6.0
-Release: 2%{?dist}
+Version: 1.10.1
+Release: 1%{?dist}
 License: MPL-2.0
 Url: https://packer.io
 Source0: packer_%{version}_linux_amd64.zip
@@ -47,6 +47,9 @@ ln -s /usr/bin/packer.io %{buildroot}/usr/local/bin/packer
 /usr/local/bin/packer
 
 %changelog
+* Thu Feb 01 2024 Matt Westphall <westphall@wisc.edu> - 1.10.1-1
+- Bump release to upstream 1.10.1
+
 * Fri Dec 30 2022 Carl Edquist <edquist@cs.wisc.edu> - 1.6.0-2
 - Bump and rebuild for new gpg key (SOFTWARE-5422)
 
