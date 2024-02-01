@@ -1,21 +1,25 @@
-Summary: Service files for Pelican
-Name: pelican-server
-Version: 7.4.0
-Release: 5%{?dist}
+Summary: Service files for Pelican-based OSDF daemons
+Name: osdf-server
+Version: 7.4.99
+Release: 2%{?dist}
 License: ASL 2.0
 Url: https://github.com/PelicanPlatform/pelican
 BuildArch: noarch
 Source0: pelican.tar.gz
 
-%define requires_xrootd() %{expand:
-Requires: xrootd-server >= 1:5.6.3
-Requires: xrootd-scitokens
-Requires: xrootd-voms
-}
 
-%define subpackage_common() %{expand:
-Summary: Service file for %1
+# subpackage: A helper macro to get rid of some of the code duplication. This
+# expands to the various sections needed for each osdf subpackage. Add the -x
+# flag for services that use XRootD (the cache and the origin).
+
+%define subpackage(x) %{expand:
+%%package -n %1
+Summary: Service file and configuration for %1
 Requires: pelican >= 7.4.0
+Requires: /usr/bin/osdf
+%{-x:Requires: xrootd-server >= 1:5.6.3}
+%{-x:Requires: xrootd-scitokens}
+%{-x:Requires: xrootd-voms}
 
 %%description -n %1
 Service file for %1
@@ -33,7 +37,9 @@ systemctl daemon-reload
 %%files -n %1
 /usr/lib/systemd/system/%{1}*.service
 %%config(noreplace) /etc/pelican/%{1}*.yaml
+%{-x:%%attr(-,xrootd,xrootd) /var/spool/osdf}
 }
+# end of subpackage helper macro
 
 %description
 Service files for Pelican
@@ -51,51 +57,25 @@ exit 0
 mkdir -p $RPM_BUILD_ROOT/usr/lib/systemd/system/
 mkdir -p $RPM_BUILD_ROOT/etc/pelican/
 mkdir -p $RPM_BUILD_ROOT/var/spool/osdf
-mkdir -p $RPM_BUILD_ROOT/var/spool/pelican
-install -m 0644 systemd/*.service $RPM_BUILD_ROOT/usr/lib/systemd/system/
-install -m 0644 systemd/*.yaml $RPM_BUILD_ROOT/etc/pelican/
+install -m 0644 systemd/osdf-*.service $RPM_BUILD_ROOT/usr/lib/systemd/system/
+install -m 0644 systemd/osdf-*.yaml $RPM_BUILD_ROOT/etc/pelican/
 
 
-%package -n pelican-registry
-%subpackage_common pelican-registry
+%subpackage osdf-registry
 
-%package -n pelican-director
-%subpackage_common pelican-director
+%subpackage osdf-director
 
-%package -n pelican-origin
-%requires_xrootd
-%subpackage_common pelican-origin
-%attr(-,xrootd,xrootd) /var/spool/pelican
+%subpackage -x osdf-origin
 
-%package -n pelican-cache
-%requires_xrootd
-%subpackage_common pelican-cache
-%attr(-,xrootd,xrootd) /var/spool/pelican
-
-%package -n osdf-registry
-Requires: pelican-osdf-compat
-%subpackage_common osdf-registry
-
-%package -n osdf-director
-Requires: pelican-osdf-compat
-%subpackage_common osdf-director
-
-%package -n osdf-origin
-%requires_xrootd
-Requires: pelican-osdf-compat
-%subpackage_common osdf-origin
-%attr(-,xrootd,xrootd) /var/spool/osdf
-
-%package -n osdf-cache
-%requires_xrootd
-Requires: pelican-osdf-compat
-%subpackage_common osdf-cache
-%attr(-,xrootd,xrootd) /var/spool/osdf
+%subpackage -x osdf-cache
 
 
 
 
 %changelog
+* Thu Feb 01 2024 Mátyás Selmeci <matyas@cs.wisc.edu> - 7.4.99-2
+- Prerelease build for 7.5.0; remove pelican-* subpackages and only build osdf-* subpackages
+
 * Mon Jan 29 2024 Mátyás Selmeci <matyas@cs.wisc.edu> - 7.4.0-5
 - Add /var/spool/pelican and /var/spool/osdf directories for the xrootd-based daemons
 

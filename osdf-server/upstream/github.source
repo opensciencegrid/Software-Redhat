@@ -1,3 +1,3 @@
 #type=github  repo=PelicanPlatform/xrdcl-pelican  tag=914a6b7e7d0f8874a886b973a42cf416569bf54f  hash=914a6b7e7d0f8874a886b973a42cf416569bf54f  tarball=xrdcl-pelican-0.9.1.tar.gz
-type=github  repo=matyasselmeci/pelican  tag=v7.4.0-4-matyas  hash=d6333712675088f604be92a34ceaa9a53ff054db  tarball=pelican.tar.gz
+type=github  repo=matyasselmeci/pelican  tag=v7.4.99-2-matyas  hash=63ad7a25917fbf2e850cad350192f580ec5323a2  tarball=pelican.tar.gz
 
