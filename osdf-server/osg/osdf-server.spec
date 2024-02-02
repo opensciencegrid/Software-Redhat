@@ -1,7 +1,7 @@
 Summary: Service files for Pelican-based OSDF daemons
 Name: osdf-server
 Version: 7.4.99
-Release: 2%{?dist}
+Release: 2.1%{?dist}
 License: ASL 2.0
 Url: https://github.com/PelicanPlatform/pelican
 BuildArch: noarch
@@ -20,6 +20,7 @@ Requires: /usr/bin/osdf
 %{-x:Requires: xrootd-server >= 1:5.6.3}
 %{-x:Requires: xrootd-scitokens}
 %{-x:Requires: xrootd-voms}
+%{-x:Requires: xrdcl-pelican}
 
 %%description -n %1
 Service file for %1
@@ -73,6 +74,9 @@ install -m 0644 systemd/osdf-*.yaml $RPM_BUILD_ROOT/etc/pelican/
 
 
 %changelog
+* Fri Feb 02 2024 Mátyás Selmeci <matyas@cs.wisc.edu> - 7.4.99-2.1
+- Require xrdcl-pelican
+
 * Thu Feb 01 2024 Mátyás Selmeci <matyas@cs.wisc.edu> - 7.4.99-2
 - Prerelease build for 7.5.0; remove pelican-* subpackages and only build osdf-* subpackages
 
