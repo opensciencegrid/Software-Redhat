@@ -1,7 +1,7 @@
 Summary: Configuration tool for the OSG Software Stack
 Name: osg-configure
 Version: 4.1.1
-Release: 1%{?dist}
+Release: 2%{?dist}
 Source0: %{name}-%{version}.tar.gz
 License: Apache 2.0
 BuildArch: noarch
@@ -218,6 +218,8 @@ PYTHONPATH=$RPM_BUILD_ROOT/%{python_sitelib}:$PYTHONPATH %{__python} $RPM_BUILD_
 %{python_sitelib}/osg_configure/configure_modules/__pycache__/storage*
 
 /usr/sbin/osg-configure
+%dir %attr(-,root,root) /var/log/osg
+%dir %attr(-,root,root) /var/lib/osg
 %ghost /var/log/osg/osg-configure.log
 %ghost /var/lib/osg/osg-attributes.conf
 %ghost /var/lib/osg/osg-local-job-environment.conf
@@ -315,6 +317,9 @@ PYTHONPATH=$RPM_BUILD_ROOT/%{python_sitelib}:$PYTHONPATH %{__python} $RPM_BUILD_
 
 
 %changelog
+* Fri Feb 02 2024 Mátyás Selmeci <matyas@cs.wisc.edu> 4.1.1-2
+- Declare ownership of /var/lib/osg and /var/log/osg (SOFTWARE-5808)
+
 * Sat Apr 09 2022 Mátyás Selmeci <matyas@cs.wisc.edu> 4.1.1-1
 - Version 4.1.1 (SOFTWARE-5122)
 
