@@ -79,7 +79,7 @@
 #-------------------------------------------------------------------------------
 Name:      xrootd
 Epoch:     1
-Version:   5.6.6
+Version:   5.6.7
 Release:   1.1%{?dist}%{?_with_clang:.clang}%{?_with_asan:.asan}
 Summary:   Extended ROOT file server
 Group:     System Environment/Daemons
@@ -1170,6 +1170,12 @@ fi
 # Changelog
 #-------------------------------------------------------------------------------
 %changelog
+* Tue Feb 6 2024 Matt Westphall <westphall@wisc.edu> - 5.6.7-1.1
+- OSG release of upstream 5.6.7
+
+* Tue Feb 06 2024 Guilherme Amadio <amadio@cern.ch> - 5.6.7-1
+- XRootD 5.6.7
+
 * Fri Jan 26 2024 Mátyás Selmeci <matyas@cs.wisc.edu> - 5.6.6-1.1
 - Update to 5.6.6 (SOFTWARE-5799)
 - Add patch for pelican:// URL support (SOFTWARE-5800)
