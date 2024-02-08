@@ -1,6 +1,6 @@
 
 Name: xrdcl-pelican
-Version: 0.9.2
+Version: 0.9.3
 Release: 2%{?dist}
 Summary: A Pelican-specific backend for the XRootD client
 
@@ -72,8 +72,13 @@ rm -rf $RPM_BUILD_ROOT
 %{_sysconfdir}/xrootd/client.plugins.d/pelican-plugin-http.conf
 
 %changelog
-* Fri Jan 26 2024 Mátyás Selmeci <matyas@cs.wisc.edu> - 0.9.2-2
+* Thu Feb 8 2024 Mátyás Selmeci <matyas@cs.wisc.edu> - 0.9.3-2
 - Add /etc/xrootd/client.plugins.d/pelican-plugin-http.conf
+
+* Wed Feb 7 2024 Brian Bockelman <bbockelman@morgridge.org> - 0.9.3-1
+- Add support for requesting reversed connections from the Pelican connection broker.
+- Plugin no longer drops query parameters when `pelican://` is used; fixes
+  issues with missing authorization from URL.
 
 * Wed Jan 24 2024 Brian Bockelman <bbockelman@morgridge.org> - 0.9.2-1
 - Add support for the `pelican://` protocol, allowing XCache to consume
