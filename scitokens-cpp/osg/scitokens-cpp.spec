@@ -3,7 +3,7 @@
 
 Name: scitokens-cpp
 Version: 1.1.0
-Release: 1%{?dist}
+Release: 1.1.matyas%{?dist}
 Summary: C++ Implementation of the SciTokens Library
 License: ASL 2.0
 URL: https://github.com/scitokens/scitokens-cpp
