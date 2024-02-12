@@ -17,6 +17,7 @@ Source0: https://github.com/scitokens/scitokens-cpp/releases/download/v%{version
 # Fix build failure with GCC10.1 and Werror (upstream pull request)
 # https://github.com/kazuho/picojson/pull/131
 #Patch0: %{name}-paren.patch
+Patch100: 136-Improve-error-handling-around-the-sqlite3-library.patch
 
 # Scitokens-cpp bundles jwt-cpp, a header only dependency
 # Since it doesn't create a library that can be used by others, it seems
@@ -50,6 +51,7 @@ Requires: %{name}%{?_isa} = %{version}
 
 %prep
 %setup -q
+%patch100 -p1
 #sed 's/ -Werror//' -i CMakeLists.txt
 
 %build
@@ -74,6 +76,9 @@ Requires: %{name}%{?_isa} = %{version}
 %dir %{_includedir}/scitokens
 
 %changelog
+* Mon Feb 12 2024 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.1.0-1.1.matyas
+- Add 136-Improve-error-handling-around-the-sqlite3-library.patch
+
 * Tue Nov 07 2023 Derek Weitzel <dweitzel@unl.edu> - 1.1.0-1
 - Allow the scitokens library user to setup a custom CA file
 - Fix typecast errors in scitoken_status_get_*() that caused async queries to fail
