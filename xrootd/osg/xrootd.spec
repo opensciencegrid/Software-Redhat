@@ -1,6 +1,6 @@
 # OSG additions
 %if 0%{?osg:1}%{!?osg:0}
-    %if 0%{?rhel} < 9
+    %if 0%{?rhel} < 9 && 0%{!?_without_compat:1}
         %global _with_compat 1
     %endif
     %global _with_scitokens 1
@@ -80,7 +80,7 @@
 Name:      xrootd
 Epoch:     1
 Version:   5.6.7
-Release:   1.1%{?dist}%{?_with_clang:.clang}%{?_with_asan:.asan}
+Release:   1.2%{?dist}%{?_with_clang:.clang}%{?_with_asan:.asan}
 Summary:   Extended ROOT file server
 Group:     System Environment/Daemons
 License:   LGPLv3+
@@ -160,10 +160,12 @@ BuildRequires: ceph-devel >= 0.87
 BuildRequires: davix-devel
 %endif
 
+%if 0%{!?_without_doc:1}
 BuildRequires:	doxygen
 BuildRequires:	graphviz
 %if %{?rhel}%{!?rhel:0} == 5
 BuildRequires:	graphviz-gd
+%endif
 %endif
 
 %if %{?_with_clang:1}%{!?_with_clang:0}
@@ -390,6 +392,7 @@ Requires:      %{name}-client-libs%{?_isa} = %{epoch}:%{version}-%{release}
 Python 3 bindings for XRootD
 %endif
 
+%if 0%{!?_without_doc:1}
 #-------------------------------------------------------------------------------
 # doc
 #-------------------------------------------------------------------------------
@@ -403,6 +406,7 @@ BuildArch:	noarch
 %description doc
 This package contains the API documentation of the xrootd libraries.
 
+%endif
 #-------------------------------------------------------------------------------
 # selinux
 #-------------------------------------------------------------------------------
@@ -571,7 +575,9 @@ pushd packaging/common
 make -f /usr/share/selinux/devel/Makefile
 popd
 
+%if 0%{!?_without_doc:1}
 doxygen Doxyfile
+%endif
 
 %if 0%{?_with_compat}
 pushd $RPM_BUILD_DIR/xrootd-compat/xrootd*
@@ -732,9 +738,11 @@ install -m 644 packaging/common/http.client.conf.example $RPM_BUILD_ROOT%{_sysco
 # client config
 install -m 644 packaging/common/client.conf $RPM_BUILD_ROOT%{_sysconfdir}/xrootd/client.conf
 
+%if 0%{!?_without_doc:1}
 # documentation
 mkdir -p %{buildroot}%{_docdir}/%{name}-%{version}
 cp -pr doxydoc/html %{buildroot}%{_docdir}/%{name}-%{version}
+%endif
 
 # selinux
 mkdir -p %{buildroot}%{_datadir}/selinux/packages/%{name}
@@ -1069,9 +1077,11 @@ fi
 %doc %{_mandir}/man1/libXrdVoms.1.gz
 %doc %{_mandir}/man1/libXrdSecgsiVOMS.1.gz
 
+%if 0%{!?_without_doc:1}
 %files doc
 %defattr(-,root,root,-)
 %doc %{_docdir}/%{name}-%{version}
+%endif
 
 %if %{?_with_ceph:1}%{!?_with_ceph:0}
 %files ceph
@@ -1170,6 +1180,9 @@ fi
 # Changelog
 #-------------------------------------------------------------------------------
 %changelog
+* Mon Feb 12 2024 Mátyás Selmeci <matyas@cs.wisc.edu> - 5.6.7-1.2
+- Bump to rebuild
+
 * Tue Feb 6 2024 Matt Westphall <westphall@wisc.edu> - 5.6.7-1.1
 - OSG release of upstream 5.6.7
 
