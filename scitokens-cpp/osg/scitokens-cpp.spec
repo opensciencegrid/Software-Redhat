@@ -2,8 +2,8 @@
 %undefine __cmake3_in_source_build
 
 Name: scitokens-cpp
-Version: 0.7.2
-Release: 1.1.matyas%{?dist}
+Version: 1.1.0
+Release: 1%{?dist}
 Summary: C++ Implementation of the SciTokens Library
 License: ASL 2.0
 URL: https://github.com/scitokens/scitokens-cpp
@@ -17,8 +17,6 @@ Source0: https://github.com/scitokens/scitokens-cpp/releases/download/v%{version
 # Fix build failure with GCC10.1 and Werror (upstream pull request)
 # https://github.com/kazuho/picojson/pull/131
 #Patch0: %{name}-paren.patch
-
-Patch100: Avoid-retrying-for-5-minutes-after-failed-key-retrieval-backport.patch
 
 # Scitokens-cpp bundles jwt-cpp, a header only dependency
 # Since it doesn't create a library that can be used by others, it seems
@@ -53,7 +51,6 @@ Requires: %{name}%{?_isa} = %{version}
 %prep
 %setup -q
 #sed 's/ -Werror//' -i CMakeLists.txt
-%patch100 -p1
 
 %build
 %cmake3
@@ -77,9 +74,30 @@ Requires: %{name}%{?_isa} = %{version}
 %dir %{_includedir}/scitokens
 
 %changelog
-* Mon Oct 31 2022 Mátyás Selmeci <matyas@cs.wisc.edu> - 0.7.2-1.1
-- Add Avoid-retrying-for-5-minutes-after-failed-key-retrieval-backport.patch
-  https://github.com/scitokens/scitokens-cpp/commit/71875937ffad50719433b0089d9c5d3ae46bca12.patch
+* Tue Nov 07 2023 Derek Weitzel <dweitzel@unl.edu> - 1.1.0-1
+- Allow the scitokens library user to setup a custom CA file
+- Fix typecast errors in scitoken_status_get_*() that caused async queries to fail
+- Fix logic error in deserialize_continue() that caused async deserialization to fail
+
+* Thu Jun 15 2023 Derek Weitzel <dweitzel@unl.edu> - 1.0.2-1
+- Add support for API-configurable cache home
+- Fix enforcer_acl_free logic
+- scitokens_internal: catch matching exception type after jwt-cpp update
+
+* Wed Apr 26 2023 Derek Weitzel <dweitzel@unl.edu> - 1.0.1-1
+- Fix bug in generate acls which would cause a timeout
+
+* Tue Mar 21 2023 Derek Weitzel <dweitzel@unl.edu> - 1.0.0-1
+- Add async API for parsing and verifying tokens
+- Add configuration API
+- Make nbf claim optional for non-scitokens tokens
+- Update to OpenSSL 3.0
+
+* Sat Jan 21 2023 Fedora Release Engineering <releng@fedoraproject.org> - 0.7.3-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_38_Mass_Rebuild
+
+* Tue Nov 01 2022 Derek Weitzel <dweitzel@unl.edu> - 0.7.3-1
+- Retry failed key renewal every 5 minutes
 
 * Mon Oct 31 2022 Derek Weitzel <dweitzel@unl.edu> - 0.7.2-1
 - Add curl timeout of 4 seconds for update, and 30 for expired keys
@@ -168,18 +186,18 @@ Requires: %{name}%{?_isa} = %{version}
 * Thu Jun 20 2019 Brian Bockelman <brian.bockelman@cern.ch> - 0.3.1-1
 - Update RPM to v0.3.1 of the packaging.
 
-* Wed May 29 2019 Mátyás Selmeci <matyas@cs.wisc.edu> - 0.3.0-4
+* Wed May 29 2019 MÃ¡tyÃ¡s Selmeci <matyas@cs.wisc.edu> - 0.3.0-4
 - Use double layer of const for deserialize
   (patch from https://github.com/scitokens/scitokens-cpp/commit/ac0b2f0679488fa91c14ed781268efbcdb69ed3c)
 
-* Mon May 13 2019 Mátyás Selmeci <matyas@cs.wisc.edu> - 0.3.0-3
+* Mon May 13 2019 MÃ¡tyÃ¡s Selmeci <matyas@cs.wisc.edu> - 0.3.0-3
 - Add Force-aud-test-in-the-validator.patch from
   https://github.com/scitokens/scitokens-cpp/pull/8
 
-* Fri May 03 2019 Mátyás Selmeci <matyas@cs.wisc.edu> - 0.3.0-2
+* Fri May 03 2019 MÃ¡tyÃ¡s Selmeci <matyas@cs.wisc.edu> - 0.3.0-2
 - Fix requirements
 
-* Thu May 02 2019 Mátyás Selmeci <matyas@cs.wisc.edu> - 0.3.0-1
+* Thu May 02 2019 MÃ¡tyÃ¡s Selmeci <matyas@cs.wisc.edu> - 0.3.0-1
 - Update to v0.3.0
 - Add dependencies on libcurl-devel, libuuid-devel
 
