@@ -1,7 +1,7 @@
 Summary: Service files for Pelican-based OSDF daemons
 Name: osdf-server
-Version: 7.4.99
-Release: 2.1%{?dist}
+Version: 7.5.6
+Release: 1%{?dist}
 License: ASL 2.0
 Url: https://github.com/PelicanPlatform/pelican
 BuildArch: noarch
@@ -15,9 +15,9 @@ Source0: pelican.tar.gz
 %define subpackage(x) %{expand:
 %%package -n %1
 Summary: Service file and configuration for %1
-Requires: pelican >= 7.4.0
+Requires: pelican >= 7.5.0
 Requires: /usr/bin/osdf
-%{-x:Requires: xrootd-server >= 1:5.6.3}
+%{-x:Requires: xrootd-server >= 1:5.6.6}
 %{-x:Requires: xrootd-scitokens}
 %{-x:Requires: xrootd-voms}
 %{-x:Requires: xrdcl-pelican}
@@ -39,6 +39,7 @@ systemctl daemon-reload
 /usr/lib/systemd/system/%{1}*.service
 %%config(noreplace) /etc/pelican/%{1}*.yaml
 %{-x:%%attr(-,xrootd,xrootd) /var/spool/osdf}
+%%dir %%attr(0700,root,root) /var/log/pelican
 }
 # end of subpackage helper macro
 
@@ -58,6 +59,7 @@ exit 0
 mkdir -p $RPM_BUILD_ROOT/usr/lib/systemd/system/
 mkdir -p $RPM_BUILD_ROOT/etc/pelican/
 mkdir -p $RPM_BUILD_ROOT/var/spool/osdf
+mkdir -p $RPM_BUILD_ROOT/var/log/pelican
 install -m 0644 systemd/osdf-*.service $RPM_BUILD_ROOT/usr/lib/systemd/system/
 install -m 0644 systemd/osdf-*.yaml $RPM_BUILD_ROOT/etc/pelican/
 
@@ -74,6 +76,11 @@ install -m 0644 systemd/osdf-*.yaml $RPM_BUILD_ROOT/etc/pelican/
 
 
 %changelog
+* Fri Feb 16 2024 Mátyás Selmeci <matyas@cs.wisc.edu> - 7.5.6-1
+- Upgrade to Pelican 7.5.6
+- Require xrootd >= 5.6.6 for pelican:// URL support
+- Put log files in /var/log/pelican
+
 * Fri Feb 02 2024 Mátyás Selmeci <matyas@cs.wisc.edu> - 7.4.99-2.1
 - Require xrdcl-pelican
 
