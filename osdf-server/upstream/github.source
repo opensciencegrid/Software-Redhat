@@ -1,2 +1,2 @@
-type=github  repo=PelicanPlatform/pelican  tag=v7.5.6  hash=0ad277afa4cebe3eb9c2b14d4ce0b279c27278a2  tarball=pelican.tar.gz
-
+#type=github  repo=PelicanPlatform/pelican  tag=v7.5.6  hash=0ad277afa4cebe3eb9c2b14d4ce0b279c27278a2  tarball=pelican.tar.gz
+type=github  repo=matyasselmeci/pelican  tag=v7.5.99-0.1.matyas  hash=7fd648fe4a29610c1987dd6b42c91b153a1dad6a  tarball=pelican.tar.gz

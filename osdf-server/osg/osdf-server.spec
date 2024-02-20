@@ -1,7 +1,7 @@
 Summary: Service files for Pelican-based OSDF daemons
 Name: osdf-server
-Version: 7.5.6
-Release: 1%{?dist}
+Version: 7.5.99
+Release: 0.1%{?dist}
 License: ASL 2.0
 Url: https://github.com/PelicanPlatform/pelican
 BuildArch: noarch
@@ -40,6 +40,7 @@ systemctl daemon-reload
 %%config(noreplace) /etc/pelican/%{1}*.yaml
 %{-x:%%attr(-,xrootd,xrootd) /var/spool/osdf}
 %%dir %%attr(0700,root,root) /var/log/pelican
+%%config(noreplace) /etc/logrotate.d/pelican
 }
 # end of subpackage helper macro
 
@@ -58,10 +59,12 @@ exit 0
 %install
 mkdir -p $RPM_BUILD_ROOT/usr/lib/systemd/system/
 mkdir -p $RPM_BUILD_ROOT/etc/pelican/
+mkdir -p $RPM_BUILD_ROOT/etc/logrotate.d/
 mkdir -p $RPM_BUILD_ROOT/var/spool/osdf
 mkdir -p $RPM_BUILD_ROOT/var/log/pelican
 install -m 0644 systemd/osdf-*.service $RPM_BUILD_ROOT/usr/lib/systemd/system/
 install -m 0644 systemd/osdf-*.yaml $RPM_BUILD_ROOT/etc/pelican/
+install -m 0644 systemd/pelican.logrotate $RPM_BUILD_ROOT/etc/logrotate.d/pelican
 
 
 %subpackage osdf-registry
@@ -76,6 +79,9 @@ install -m 0644 systemd/osdf-*.yaml $RPM_BUILD_ROOT/etc/pelican/
 
 
 %changelog
+* Mon Feb 19 2024 Mátyás Selmeci <matyas@cs.wisc.edu> - 7.5.99-0.1
+- Add logrotate.conf
+
 * Fri Feb 16 2024 Mátyás Selmeci <matyas@cs.wisc.edu> - 7.5.6-1
 - Upgrade to Pelican 7.5.6
 - Require xrootd >= 5.6.6 for pelican:// URL support
