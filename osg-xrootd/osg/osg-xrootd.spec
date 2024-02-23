@@ -94,7 +94,7 @@ mkdir -p /etc/grid-security >/dev/null 2>&1 || :
 [ -e /etc/grid-security/grid-mapfile ] || touch /etc/grid-security/grid-mapfile
 
 %changelog
-* Tue Aug 22 2023 Matt Westphall <westphall@wisc.edu> - 23-3
+* Fri Jan 23 2024 Matt Westphall <westphall@wisc.edu> - 23-3
 - Enable HTTP directory listings for origins and auth caches (SOFTWARE-5586)
 
 * Tue Aug 22 2023 Matt Westphall <westphall@wisc.edu> - 23-1
