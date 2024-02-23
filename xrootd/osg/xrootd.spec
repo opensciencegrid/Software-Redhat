@@ -79,8 +79,8 @@
 #-------------------------------------------------------------------------------
 Name:      xrootd
 Epoch:     1
-Version:   5.6.7
-Release:   1.2%{?dist}%{?_with_clang:.clang}%{?_with_asan:.asan}
+Version:   5.6.8
+Release:   1.1%{?dist}%{?_with_clang:.clang}%{?_with_asan:.asan}
 Summary:   Extended ROOT file server
 Group:     System Environment/Daemons
 License:   LGPLv3+
@@ -1180,6 +1180,9 @@ fi
 # Changelog
 #-------------------------------------------------------------------------------
 %changelog
+* Fri Feb 23 2024 Matt Westphall <westphall@wisc.edu> - 5.6.8-1.1
+- Initial OSG release of upstream 5.6.8-1
+
 * Mon Feb 12 2024 Mátyás Selmeci <matyas@cs.wisc.edu> - 5.6.7-1.2
 - Bump to rebuild
 
