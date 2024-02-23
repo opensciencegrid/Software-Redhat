@@ -1,7 +1,7 @@
 Summary: OSG configuration files for XRootD
 Name: osg-xrootd
 Version: 23
-Release: 2%{?dist}
+Release: 3%{?dist}
 License: ASL 2.0
 BuildArch: noarch
 
@@ -94,6 +94,9 @@ mkdir -p /etc/grid-security >/dev/null 2>&1 || :
 [ -e /etc/grid-security/grid-mapfile ] || touch /etc/grid-security/grid-mapfile
 
 %changelog
+* Tue Aug 22 2023 Matt Westphall <westphall@wisc.edu> - 23-3
+- Enable HTTP directory listings for origins and auth caches (SOFTWARE-5586)
+
 * Tue Aug 22 2023 Matt Westphall <westphall@wisc.edu> - 23-1
 - Initial OSG 23 Release
 
