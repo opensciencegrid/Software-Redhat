@@ -1,7 +1,7 @@
 Summary: OSG configuration files for XRootD
 Name: osg-xrootd
 Version: 3.6
-Release: 22%{?dist}
+Release: 23%{?dist}
 License: ASL 2.0
 BuildArch: noarch
 
@@ -21,7 +21,7 @@ Source13: 50-osg-xrdvoms.cfg
 Source14: 50-osg-scitokens.cfg
 Source15: scitokens.conf
 
-Requires: xrootd >= 1:5.1.1
+Requires: xrootd >= 1:5.6.0
 
 # Necessary for authentication
 Requires: grid-certificates >= 7
@@ -94,6 +94,9 @@ mkdir -p /etc/grid-security >/dev/null 2>&1 || :
 [ -e /etc/grid-security/grid-mapfile ] || touch /etc/grid-security/grid-mapfile
 
 %changelog
+* Fri Mar 01 2024 Mátyás Selmeci <matyas@cs.wisc.edu> - 3.6-23
+- Log DNs of incoming certificates (SOFTWARE-5370); raise required XRootD version to 1:5.6.0 for the feature
+
 * Fri Feb 23 2024 Matt Westphall <westphall@wisc.edu> - 3.6-22
 - Enable HTTP directory listings for origins and auth caches (SOFTWARE-5586)
 
