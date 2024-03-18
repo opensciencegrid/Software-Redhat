@@ -79,7 +79,7 @@
 #-------------------------------------------------------------------------------
 Name:      xrootd
 Epoch:     1
-Version:   5.6.8
+Version:   5.6.9
 Release:   1.1%{?dist}%{?_with_clang:.clang}%{?_with_asan:.asan}
 Summary:   Extended ROOT file server
 Group:     System Environment/Daemons
@@ -1180,6 +1180,9 @@ fi
 # Changelog
 #-------------------------------------------------------------------------------
 %changelog
+* Sun Mar 17 2024 Mátyás Selmeci <matyas@cs.wisc.edu> - 5.6.9-1.1
+- Update to 5.6.9 and merge OSG patches (SOFTWARE-5839)
+
 * Fri Feb 23 2024 Matt Westphall <westphall@wisc.edu> - 5.6.8-1.1
 - Initial OSG release of upstream 5.6.8-1
 
