@@ -1,7 +1,7 @@
 Summary: Scitokens mapfile for OSG
 Name: osg-scitokens-mapfile
-Version: 12
-Release: 1%{?dist}
+Version: 13
+Release: 2%{?dist}
 License: ASL 2.0
 Source0: https://github.com/opensciencegrid/topology/archive/data-%{version}.tar.gz
 Source1: https://vdt.cs.wisc.edu/upstream/osg-scitokens-mapfile/pydeps/icalendar-4.0.7-py2.py3-none-any.whl
@@ -54,6 +54,9 @@ mv osg-scitokens-mapfile.conf %{buildroot}/usr/share/condor-ce/mapfiles.d/
 
 
 %changelog
+* Wed Mar 20 2024 Matt Westphall <westphall@wisc.edu> 13-1
+- Update to data-13 tag (SOFTWARE-5844)
+
 * Thu Mar 09 2023 Mátyás Selmeci <matyas@cs.wisc.edu> 12-1
 - Update to data-12 tag (SOFTWARE-5520)
 
