@@ -80,7 +80,7 @@
 Name:      xrootd
 Epoch:     1
 Version:   5.6.9
-Release:   1.1%{?dist}%{?_with_clang:.clang}%{?_with_asan:.asan}
+Release:   1.2%{?dist}%{?_with_clang:.clang}%{?_with_asan:.asan}
 Summary:   Extended ROOT file server
 Group:     System Environment/Daemons
 License:   LGPLv3+
@@ -100,6 +100,7 @@ Source1:   xrootd-%{compat_version}.tar.gz
 # OSG Patches not merged into upstream
 Patch1: 1868-env-hostname-override.patch
 Patch4: SOFTWARE-5800-pelican-url.patch
+Patch5: 2206-io-time-gstream-monitoring.patch
 
 # Debug Patches
 Patch101: 0003-DEBUG-unset-use-pep517.patch
@@ -1180,6 +1181,9 @@ fi
 # Changelog
 #-------------------------------------------------------------------------------
 %changelog
+* Wed Apr 10 2024 Mátyás Selmeci <matyas@cs.wisc.edu> - 5.6.9-1.2
+- Add 2206-io-time-gstream-monitoring.patch (SOFTWARE-5850)
+
 * Sun Mar 17 2024 Mátyás Selmeci <matyas@cs.wisc.edu> - 5.6.9-1.1
 - Update to 5.6.9 and merge OSG patches (SOFTWARE-5839)
 
