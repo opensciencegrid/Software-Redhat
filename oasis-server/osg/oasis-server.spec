@@ -1,6 +1,6 @@
 Summary: OASIS server package
 Name: oasis-server
-Version: 3.11
+Version: 3.12
 Release: 1%{?dist} 
 Source0: %{name}-%{version}.tar.gz
 License: Apache 2.0
@@ -135,6 +135,10 @@ This package contains files for oasis-login.opensciencegrid.org
 
 
 %changelog
+* Mon Apr 15 2024 Mátyás Selmeci <matyas@cs.wisc.edu> - 3.12-1
+- Update to upstream 3.12 (SOFTWARE-5855):
+  - Add check (-c) option
+
 * Thu Jun 29 2023 Dave Dykstra <dwd@fnal.gov> - 3.11-1
 - Remove the "-c" from manage-replicas in generate_replicas, so it will
   cleanup from failed adds of new repository and so avoid "initial
