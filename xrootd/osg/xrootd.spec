@@ -80,7 +80,7 @@
 Name:      xrootd
 Epoch:     1
 Version:   5.6.9
-Release:   1.2%{?dist}%{?_with_clang:.clang}%{?_with_asan:.asan}
+Release:   1.3%{?dist}%{?_with_clang:.clang}%{?_with_asan:.asan}
 Summary:   Extended ROOT file server
 Group:     System Environment/Daemons
 License:   LGPLv3+
@@ -523,6 +523,7 @@ cd %{build_dir}
 %patch1 -p1
 # %%patch101 -p1
 %patch4 -p1
+%patch5 -p1
 cd ..
 
 %build
@@ -1181,6 +1182,9 @@ fi
 # Changelog
 #-------------------------------------------------------------------------------
 %changelog
+* Wed May 01 2024 Mátyás Selmeci <matyas@cs.wisc.edu> - 5.6.9-1.3
+- Actually add 2206-io-time-gstream-monitoring.patch (SOFTWARE-5850)
+
 * Wed Apr 10 2024 Mátyás Selmeci <matyas@cs.wisc.edu> - 5.6.9-1.2
 - Add 2206-io-time-gstream-monitoring.patch (SOFTWARE-5850)
 
