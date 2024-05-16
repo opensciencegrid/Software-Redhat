@@ -8,7 +8,7 @@
 
 Name:		voms
 Version:	2.1.0
-Release:	0.31.rc3.1%{?dist}
+Release:	0.31.rc3.2%{?dist}
 Summary:	Virtual Organization Membership Service
 
 License:	Apache-2.0
