@@ -8,7 +8,7 @@
 
 Name:		voms
 Version:	2.1.0
-Release:	0.31.rc3.1%{?dist}
+Release:	0.31.rc3.2%{?dist}
 Summary:	Virtual Organization Membership Service
 
 License:	Apache-2.0
@@ -39,6 +39,8 @@ Patch9:		0010-Add-lexparse.h-headers-for-lexer-parser-integration-.patch
 Patch10:	0011-Only-process-authority-and-subject-key-identifiers-i.patch
 #		https://github.com/italiangrid/voms/pull/113
 Patch11:	0012-Consider-the-Authority-Key-Id-extension-only-if-it-s.patch
+#		https://github.com/italiangrid/voms/pull/128
+Patch128:       128-Adapt-client-libraries-to-voms-aa.patch
 
 # OSG patches
 Patch100:       mariadb-innodb.patch
@@ -151,6 +153,7 @@ This package provides the VOMS service.
 %patch -P 9 -p1
 %patch -P 10 -p1
 %patch -P 11 -p1
+%patch -P 128 -p1
 
 # OSG patches
 
@@ -386,6 +389,9 @@ fi
 %doc README.Fedora
 
 %changelog
+* Wed Jan 17 2024 Matt Westphall <westphall@wisc.edu> - 2.1.0-0.31.rc3.2
+- Apply patch from upstream to support voms-aa 
+
 * Wed Jan 17 2024 Matt Westphall <westphall@wisc.edu> - 2.1.0-0.31.rc3.1
 - Initial release of upstream 2.1.0-0.31.rc3; drop voms-proxy-direct OSG patch (SOFTWARE-5781)
 
