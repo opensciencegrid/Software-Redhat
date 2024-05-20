@@ -101,7 +101,7 @@ Source1:   xrootd-%{compat_version}.tar.gz
 Patch1: 1868-env-hostname-override.patch
 Patch4: SOFTWARE-5800-pelican-url.patch
 Patch5: 2206-io-time-gstream-monitoring.patch
-Patch6: SOFTWARE-5870.only-if-cached.patch
+Patch6: SOFTWARE-5870-only-if-cached.patch
 Patch7: 2262-fix-timing-on-throttle-plugin.patch
 Patch8: 2269-defer-or-disable-tls-client-auth.patch
 
@@ -1189,7 +1189,7 @@ fi
 #-------------------------------------------------------------------------------
 %changelog
 * Mon May 20 2024 Mátyás Selmeci <matyas@cs.wisc.edu> - 5.6.9-1.4
-- Add SOFTWARE-5870.only-if-cached.patch (SOFTWARE-5870)
+- Add SOFTWARE-5870-only-if-cached.patch (SOFTWARE-5870)
 - Add 2262-fix-timing-on-throttle-plugin.patch (SOFTWARE-5873, SOFTWARE-5875)
 - Add 2269-defer-or-disable-tls-client-auth.patch (SOFTWARE-5876)
 

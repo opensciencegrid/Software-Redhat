@@ -1,0 +1,200 @@
+From a5566f5d5a3ee47a760cf27a77875144689d8b96 Mon Sep 17 00:00:00 2001
+From: alja <amraktadel@ucsd.edu>
+Date: Thu, 12 Oct 2023 14:38:41 -0700
+Subject: [PATCH] Implement only-if-cached cache control using XrdPfcFsctl
+
+---
+ src/XProtocol/XProtocol.cc     |  3 ++-
+ src/XProtocol/XProtocol.hh     |  3 +++
+ src/XrdHttp/XrdHttpProtocol.cc |  5 +++++
+ src/XrdHttp/XrdHttpReq.cc      |  3 +++
+ src/XrdPfc/XrdPfcFSctl.cc      | 18 ++++++++++++++++++
+ src/XrdPss/XrdPss.cc           | 32 ++++++++++++++++++++++++++++++++
+ 6 files changed, 63 insertions(+), 1 deletion(-)
+
+diff --git a/src/XProtocol/XProtocol.cc b/src/XProtocol/XProtocol.cc
+index 1e1772d3fb0..da9e7461349 100644
+--- a/src/XProtocol/XProtocol.cc
++++ b/src/XProtocol/XProtocol.cc
+@@ -102,7 +102,8 @@ const char *errNames[kXR_ERRFENCE-kXR_ArgInvalid] =
+                     "Request is not possible",    // kXR_Impossible
+                     "Conflicting request",        // kXR_Conflict
+                     "Too many errors",            // kXR_TooManyErrs
+-                    "Request timed out"           // kXR_ReqTimedOut
++                    "Request timed out",          // kXR_ReqTimedOut
++                    "Timer expired"               // kXR_TimerExipred
+                    };
+ 
+ const char *reqNames[kXR_REQFENCE-kXR_auth] =
+diff --git a/src/XProtocol/XProtocol.hh b/src/XProtocol/XProtocol.hh
+index 561161d9913..b984f191d75 100644
+--- a/src/XProtocol/XProtocol.hh
++++ b/src/XProtocol/XProtocol.hh
+@@ -1020,6 +1020,7 @@ enum XErrorCode {
+    kXR_Conflict,        // 3032
+    kXR_TooManyErrs,     // 3033
+    kXR_ReqTimedOut,     // 3034
++   kXR_TimerExpired,    // 3035
+    kXR_ERRFENCE,        // Always last valid errcode + 1
+    kXR_noErrorYet = 10000
+ };
+@@ -1396,6 +1397,7 @@ static int mapError(int rc)
+            case ETIMEDOUT:     return kXR_ReqTimedOut;
+            case EBADF:         return kXR_FileNotOpen;
+            case ECANCELED:     return kXR_Cancelled;
++           case ETIME:         return kXR_TimerExpired;
+            default:            return kXR_FSError;
+           }
+       }
+@@ -1438,6 +1440,7 @@ static int toErrno( int xerr )
+         case kXR_Conflict:      return ENOTTY;
+         case kXR_TooManyErrs:   return ETOOMANYREFS;
+         case kXR_ReqTimedOut:   return ETIMEDOUT;
++        case kXR_TimerExpired:  return ETIME;  // Used for 504 Gateway timeout in proxy
+         default:                return ENOMSG;
+        }
+ }
+diff --git a/src/XrdHttp/XrdHttpProtocol.cc b/src/XrdHttp/XrdHttpProtocol.cc
+index 0001b251fe3..ad0a282071a 100644
+--- a/src/XrdHttp/XrdHttpProtocol.cc
++++ b/src/XrdHttp/XrdHttpProtocol.cc
+@@ -1085,6 +1085,10 @@ int XrdHttpProtocol::Config(const char *ConfigFN, XrdOucEnv *myEnv) {
+        return 1;
+       }
+ 
++// Some headers must always be converted to CGI key=value pairs
++//
++   hdr2cgimap["Cache-Control"] = "cache-control";
++
+ // Test if XrdEC is loaded
+    if (getenv("XRDCL_EC")) usingEC = true;
+ 
+@@ -1561,6 +1565,7 @@ int XrdHttpProtocol::StartSimpleResp(int code, const char *desc, const char *hea
+     else if (code == 405) ss << "Method Not Allowed";
+     else if (code == 416) ss << "Range Not Satisfiable";
+     else if (code == 500) ss << "Internal Server Error";
++    else if (code == 504) ss << "Gateway Timeout";
+     else ss << "Unknown";
+   }
+   ss << crlf;
+diff --git a/src/XrdHttp/XrdHttpReq.cc b/src/XrdHttp/XrdHttpReq.cc
+index 7d4beed9b75..9a54293b52f 100644
+--- a/src/XrdHttp/XrdHttpReq.cc
++++ b/src/XrdHttp/XrdHttpReq.cc
+@@ -898,6 +898,9 @@ void XrdHttpReq::mapXrdErrorToHttpStatus() {
+       case kXR_InvalidRequest:
+         httpStatusCode = 405; httpStatusText = "Method is not allowed";
+         break;
++      case kXR_TimerExpired:
++        httpStatusCode = 504; httpStatusText = "Gateway timeout";
++        break;
+       default:
+         break;
+     }
+diff --git a/src/XrdPfc/XrdPfcFSctl.cc b/src/XrdPfc/XrdPfcFSctl.cc
+index 1a2f1f29952..b86622bbb52 100644
+--- a/src/XrdPfc/XrdPfcFSctl.cc
++++ b/src/XrdPfc/XrdPfcFSctl.cc
+@@ -35,6 +35,7 @@
+ #include "XrdOfs/XrdOfsHandle.hh"
+ #include "XrdOuc/XrdOucEnv.hh"
+ #include "XrdOuc/XrdOucErrInfo.hh"
++#include "XrdOuc/XrdOucCache.hh"
+ #include "XrdPfc/XrdPfc.hh"
+ #include "XrdPfc/XrdPfcFSctl.hh"
+ #include "XrdPfc/XrdPfcTrace.hh"
+@@ -131,6 +132,23 @@ int XrdPfcFSctl::FSctl(const int               cmd,
+    rc = SFS_ERROR;
+   }
+ 
++  if (!strcmp(xeq, "cached"))
++  {
++     const char* path = args.ArgP[0];
++     int rval = myCache.LocalFilePath(path, nullptr, 0, XrdOucCache::LFP_Reason::ForInfo);
++     if (rval == 0 || rval == -EREMOTE)
++     {
++        rc = SFS_OK;
++        ec = 0;
++     }
++     else
++     {
++        ec = ETIME;
++        rc = SFS_ERROR;
++        TRACE(Info,"Cache "<<xeq<<' '<<path<<" rc="<<ec<<" ec="<<ec<<" msg=file not in cache");
++     }
++  }
++
+ // Return result
+ //
+    eInfo.setErrInfo(ec, msg);
+diff --git a/src/XrdPss/XrdPss.cc b/src/XrdPss/XrdPss.cc
+index 500a310a6ed..0891d5ba53a 100644
+--- a/src/XrdPss/XrdPss.cc
++++ b/src/XrdPss/XrdPss.cc
+@@ -58,6 +58,7 @@
+ #include "XrdPosix/XrdPosixExtra.hh"
+ #include "XrdPosix/XrdPosixInfo.hh"
+ #include "XrdPosix/XrdPosixXrootd.hh"
++#include "XrdOfs/XrdOfsFSctl_PI.hh"
+ 
+ #include "XrdOss/XrdOssError.hh"
+ #include "XrdOuc/XrdOucEnv.hh"
+@@ -65,6 +66,7 @@
+ #include "XrdOuc/XrdOucPgrwUtils.hh"
+ #include "XrdSec/XrdSecEntity.hh"
+ #include "XrdSecsss/XrdSecsssID.hh"
++#include "XrdSfs/XrdSfsInterface.hh"
+ #include "XrdSys/XrdSysError.hh"
+ #include "XrdSys/XrdSysHeaders.hh"
+ #include "XrdSys/XrdSysPlatform.hh"
+@@ -103,6 +105,8 @@ static XrdPssSys   XrdProxySS;
+ 
+        XrdOucEnv    *envP   = 0;
+ 
++       XrdOfsFSctl_PI *cacheFSctl = nullptr;
++
+        XrdSecsssID  *idMapper = 0;    // -> Auth ID mapper
+ 
+ static const char   *ofslclCGI = "ofs.lcl=1";
+@@ -187,6 +191,12 @@ int XrdPssSys::Init(XrdSysLogger *lp, const char *cFN, XrdOucEnv *envP)
+    tmp = ((NoGo = Configure(cFN, envP)) ? "failed." : "completed.");
+    eDest.Say("------ Proxy storage system initialization ", tmp);
+ 
++// Extract Pfc control, if it is there.
++//
++  if (!NoGo)
++      cacheFSctl = (XrdOfsFSctl_PI*)envP->GetPtr("XrdFSCtl_PC*");
++
++
+ // All done.
+ //
+    return NoGo;
+@@ -767,6 +777,28 @@ int XrdPssFile::Open(const char *path, int Oflag, mode_t Mode, XrdOucEnv &Env)
+           }
+       }
+ 
++   // check CGI cache-control paramters
++   if (cacheFSctl)
++   {
++      int elen;
++      char *envcgi = (char *)Env.Env(elen);
++
++      if (envcgi && strstr(envcgi, "only-if-cached"))
++      {
++         XrdOucErrInfo einfo;
++         XrdSfsFSctl myData;
++         myData.Arg1 = "cached";
++         myData.Arg1Len = 1;
++         myData.Arg2Len = 1;
++         const char *myArgs[1];
++         myArgs[0] = path;
++         myData.ArgP = myArgs;
++         int fsctlRes = cacheFSctl->FSctl(SFS_FSCTL_PLUGXC, myData, einfo);
++         if (fsctlRes == SFS_ERROR)
++            return -einfo.getErrInfo();
++      }
++   }
++
+ // If this is a third party copy open, then strange rules apply. If this is an
+ // outgoing proxy we let everything pass through as this may be a TPC request
+ // elsewhere.  Otherwise, if it's an open for reading, we open the file but
