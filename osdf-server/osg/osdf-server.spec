@@ -1,6 +1,6 @@
 Summary: Service files for Pelican-based OSDF daemons
 Name: osdf-server
-Version: 7.7.6
+Version: 7.8.3
 Release: 1%{?dist}
 License: ASL 2.0
 Url: https://github.com/PelicanPlatform/pelican
@@ -79,6 +79,9 @@ install -m 0644 systemd/pelican.logrotate $RPM_BUILD_ROOT/etc/logrotate.d/pelica
 
 
 %changelog
+* Wed May 22 2024 Mátyás Selmeci <matyas@cs.wisc.edu> - 7.8.3-1
+- Upgrade to Pelican 7.8.3 (SOFTWARE-5847)
+
 * Thu May 02 2024 Mátyás Selmeci <matyas@cs.wisc.edu> - 7.7.6-1
 - Upgrade to Pelican 7.7.6 (SOFTWARE-5847)
 - Add logrotate.conf
