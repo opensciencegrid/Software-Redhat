@@ -80,7 +80,7 @@
 Name:      xrootd
 Epoch:     1
 Version:   5.6.9
-Release:   1.5%{?dist}%{?_with_clang:.clang}%{?_with_asan:.asan}
+Release:   1.6%{?dist}%{?_with_clang:.clang}%{?_with_asan:.asan}
 Summary:   Extended ROOT file server
 Group:     System Environment/Daemons
 License:   LGPLv3+
@@ -103,7 +103,9 @@ Patch4: SOFTWARE-5800-pelican-url.patch
 Patch5: 2206-io-time-gstream-monitoring.patch
 Patch6: SOFTWARE-5870-only-if-cached.patch
 Patch7: 2262-fix-timing-on-throttle-plugin.patch
-#Patch8: 2269-defer-or-disable-tls-client-auth-fixed.patch
+Patch8: 2269-defer-or-disable-tls-client-auth-1.patch
+Patch9: 2269-defer-or-disable-tls-client-auth-2.patch
+Patch10: 2269-defer-or-disable-tls-client-auth-3.patch
 
 # Debug Patches
 Patch101: 0003-DEBUG-unset-use-pep517.patch
@@ -529,7 +531,9 @@ cd %{build_dir}
 %patch5 -p1
 %patch6 -p1
 %patch7 -p1
-# %%patch8 -p1
+%patch8 -p1
+%patch9 -p1
+%patch10 -p1
 cd ..
 
 %build
@@ -1188,13 +1192,14 @@ fi
 # Changelog
 #-------------------------------------------------------------------------------
 %changelog
-* Tue May 21 2024 Mátyás Selmeci <matyas@cs.wisc.edu> - 5.6.9-1.5
-- Remove 2269-defer-or-disable-tls-client-auth-fixed.patch (SOFTWARE-5876)
+* Thu May 30 2024 Mátyás Selmeci <matyas@cs.wisc.edu> - 5.6.9-1.6
+- Split 2269-defer-or-disable-tls-client-auth.patch into 3 patches
+  and re-do its conflict resolution (SOFTWARE-5876)
 
 * Mon May 20 2024 Mátyás Selmeci <matyas@cs.wisc.edu> - 5.6.9-1.4
 - Add SOFTWARE-5870-only-if-cached.patch (SOFTWARE-5870)
 - Add 2262-fix-timing-on-throttle-plugin.patch (SOFTWARE-5873, SOFTWARE-5875)
-- Add 2269-defer-or-disable-tls-client-auth-fixed.patch (SOFTWARE-5876)
+- Add 2269-defer-or-disable-tls-client-auth.patch (SOFTWARE-5876)
 
 * Wed May 01 2024 Mátyás Selmeci <matyas@cs.wisc.edu> - 5.6.9-1.3
 - Actually add 2206-io-time-gstream-monitoring.patch (SOFTWARE-5850)
