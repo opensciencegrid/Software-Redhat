@@ -1,6 +1,6 @@
 Name:           empty-condor
 Version:        1.1
-Release:        13%{?dist}
+Release:        14%{?dist}
 Summary:        An empty HTCondor package
 
 License:        Unknown
@@ -76,6 +76,9 @@ believes that Condor has been installed via RPM.
 %doc
 
 %changelog
+* Wed Jun 04 2024 Matt Westphall <westphall@wisc.edu> - 1.1-14
+- Bump to rebuild for build target restructuring (SOFTWARE-5702)
+
 * Wed Jun 27 2023 Matt Westphall <westphall@wisc.edu> - 1.1-12
 - Provide condor-blahp (SOFTWARE-5599)
 
