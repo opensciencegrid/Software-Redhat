@@ -1,6 +1,6 @@
 Name: xrootd-cmstfc
 Version: 1.5.2
-Release: 7%{?dist}
+Release: 8%{?dist}
 Summary: CMS TFC plugin for xrootd
 
 Group: System Environment/Daemons
@@ -81,6 +81,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/XrdCmsTfc.hh
 
 %changelog
+* Wed Jun 4 2024 Matt Westphall <westphall@wisc.edu> - 1.5.2-8
+- Bump release to test new build targets (SOFTWARE-5702)
+
 * Fri Jul 28 2023 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.5.2-7
 - Fix cmake build fail on EL9 (SOFTWARE-5631)
 
