@@ -7,12 +7,12 @@
 %define dver   8
 
 %define osgver 23
-%define dist .osg%{osgver}empty.el%{dver}
+%define dist .osg%{osgver}.el%{dver}
 
 Name:		buildsys-macros
 Summary:	Macros for the OSG Buildsystem
 Version:        %{dver}
-Release:	19%{dist}
+Release:	20%{dist}
 License:	GPL
 BuildArch:      noarch
 Requires:	rpmdevtools
@@ -43,6 +43,9 @@ printf %s%b "%" "_smp_ncpus_max 12\n" >> $RPM_BUILD_ROOT/etc/rpm/macros.kojibuil
 /etc/rpm/macros.kojibuilder
 
 %changelog
+* Wed Jun 4 2024 Matt Westphall <westphall@wisc.edu> - 8-20.osg23empty.el8
+- Bump to re-sign with auto key
+
 * Fri Oct 6 2023 Matt Westphall <westphall@wisc.edu> - 8-15.osg23empty.el8
 - Update for osg-23-empty-el8
 
