@@ -8,11 +8,12 @@
 
 %define osgver 23
 %define dist .osg%{osgver}.el%{dver}
+%define macros_dist .osg%{osgver}empty.el%{dver}
 
 Name:		buildsys-macros
 Summary:	Macros for the OSG Buildsystem
 Version:        %{dver}
-Release:	12%{dist}
+Release:	12%{macros_dist}
 License:	GPL
 BuildArch:      noarch
 Requires:	rpmdevtools
