@@ -16,8 +16,8 @@
 # ------------------------------------------------------------------------------
 # For Release Candidate builds, check with Software team on release string
 # ------------------------------------------------------------------------------
-%define version 3.10.6
-%define release 1
+%define version 3.10.7
+%define release 0.2.rc2
 
 %define frontend_xml frontend.xml
 %define factory_xml glideinWMS.xml
@@ -115,6 +115,7 @@ Requires: rrdtool
 # Remove the line below for the OSG 3.5 build (no python3-rrdtool there)
 Requires: python3-rrdtool
 %if 0%{?rhel} >= 8
+Requires: initscripts
 Requires: python3-m2crypto
 %else
 Requires: python36-m2crypto
@@ -254,6 +255,7 @@ Requires: python3 >= 3.6
 # Is this the same? Requires: python36-configargparse
 Requires: javascriptrrd >= 1.1.0
 %if 0%{?rhel} >= 8
+Requires: initscripts
 Requires: python3-m2crypto
 Requires: python3-requests
 Requires: python3-jwt
@@ -1046,6 +1048,11 @@ rm -rf $RPM_BUILD_ROOT
 #%config(noreplace) %{_sysconfdir}/condor/scripts/frontend_condortoken
 
 %changelog
+* Thu May 16 2024 Marco Mambelli <marcom@fnal.gov> - 3.10.7-02.rc2
+- Glideinwms v3.10.7
+- Release Notes: http://glideinwms.fnal.gov/doc.v3_10_7/history.html
+- Release candidates 3.10.7-01.rc1 to 3.10.7-02.rc2
+
 * Thu Jan 25 2024 Marco Mambelli <marcom@fnal.gov> - 3.10.6
 - Glideinwms v3.10.6
 - Release Notes: http://glideinwms.fnal.gov/doc.v3_10_6/history.html
