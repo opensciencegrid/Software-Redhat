@@ -1,7 +1,7 @@
 Summary: Configuration tool for the OSG Software Stack
 Name: osg-configure
-Version: 4.1.1
-Release: 3%{?dist}
+Version: 4.2.0
+Release: 1%{?dist}
 Source0: %{name}-%{version}.tar.gz
 License: Apache 2.0
 BuildArch: noarch
@@ -42,11 +42,9 @@ This package includes the ini file for configuring site information using osg-co
 and resource/resource_group information with osg-ce-attributes-generator.
 
 %package rsv
-Summary: OSG configuration file for RSV
-Requires: %name = %version-%release
-Requires: %name-gateway
+Summary: Transitional package
 %description rsv
-This package includes the ini file for configuring RSV using osg-configure
+This is an empty package to make upgrades easier. It may be removed.
 
 %package gratia
 Summary: OSG configuration file for gratia
@@ -195,7 +193,6 @@ PYTHONPATH=$RPM_BUILD_ROOT/%{python_sitelib}:$PYTHONPATH %{__python} $RPM_BUILD_
 %{python_sitelib}/osg_configure/configure_modules/localsettings.py*
 %{python_sitelib}/osg_configure/configure_modules/lsf.py*
 %{python_sitelib}/osg_configure/configure_modules/pbs.py*
-%{python_sitelib}/osg_configure/configure_modules/rsv.py*
 %{python_sitelib}/osg_configure/configure_modules/sge.py*
 %{python_sitelib}/osg_configure/configure_modules/siteinformation.py*
 %{python_sitelib}/osg_configure/configure_modules/slurm.py*
@@ -210,7 +207,6 @@ PYTHONPATH=$RPM_BUILD_ROOT/%{python_sitelib}:$PYTHONPATH %{__python} $RPM_BUILD_
 %{python_sitelib}/osg_configure/configure_modules/__pycache__/localsettings*
 %{python_sitelib}/osg_configure/configure_modules/__pycache__/lsf*
 %{python_sitelib}/osg_configure/configure_modules/__pycache__/pbs*
-%{python_sitelib}/osg_configure/configure_modules/__pycache__/rsv*
 %{python_sitelib}/osg_configure/configure_modules/__pycache__/sge*
 %{python_sitelib}/osg_configure/configure_modules/__pycache__/siteinformation*
 %{python_sitelib}/osg_configure/configure_modules/__pycache__/slurm*
@@ -249,7 +245,6 @@ PYTHONPATH=$RPM_BUILD_ROOT/%{python_sitelib}:$PYTHONPATH %{__python} $RPM_BUILD_
 %{python_sitelib}/osg_configure/__pycache__/version*
 
 %files rsv
-%config(noreplace) %{_sysconfdir}/osg/config.d/30-rsv.ini
 
 %files gratia
 %config(noreplace) %{_sysconfdir}/osg/config.d/30-gratia.ini
@@ -317,6 +312,10 @@ PYTHONPATH=$RPM_BUILD_ROOT/%{python_sitelib}:$PYTHONPATH %{__python} $RPM_BUILD_
 
 
 %changelog
+* Tue Jun 18 2024 Mátyás Selmeci <matyas@cs.wisc.edu> 4.2.0-1
+- Turn osg-configure-rsv into a dummy package (SOFTWARE-4511)
+- Add "queue" to OSG_ResourceCatalog for Pilot sections (SOFTWARE-5881)
+
 * Fri Feb 02 2024 Mátyás Selmeci <matyas@cs.wisc.edu> 4.1.1-3
 - Declare ownership of /var/lib/osg and /var/log/osg (SOFTWARE-5808)
 
