@@ -1,0 +1,303 @@
+From df9dbb9433ed23a7d63fa08d91aa96d7db73783f Mon Sep 17 00:00:00 2001
+From: Brian Bockelman <bbockelman@morgridge.org>
+Date: Fri, 17 May 2024 16:28:34 +0200
+Subject: [PATCH 2/3] Allow client authentication to be deferred to
+ post-handshake
+
+This commit allows, for HTTP, the client authentication to be
+deferred until after the HTTP request has been fully sent.  When
+run in 'defer' mode, the administrator can configure specific
+prefixes that require certificates; users will not be prompted for
+other paths by default.
+---
+ src/XrdHttp/XrdHttpProtocol.cc | 103 ++++++++++++++++++++++++++++++++-
+ src/XrdHttp/XrdHttpProtocol.hh |  11 ++++
+ src/XrdTls/XrdTlsContext.cc    |  19 ++++++
+ src/XrdTls/XrdTlsContext.hh    |  23 ++++++++
+ 4 files changed, 153 insertions(+), 3 deletions(-)
+
+diff --git a/src/XrdHttp/XrdHttpProtocol.cc b/src/XrdHttp/XrdHttpProtocol.cc
+index dc65fe5..c57f6a7 100644
+--- a/src/XrdHttp/XrdHttpProtocol.cc
++++ b/src/XrdHttp/XrdHttpProtocol.cc
+@@ -131,6 +131,8 @@ static const int hsmOn   =  1; // Dual purpose but use a meaningful varname
+ 
+ int  httpsmode = hsmAuto;
+ int  tlsCache  = XrdTlsContext::scOff;
++XrdTlsContext::ClientAuthSetting tlsClientAuth = XrdTlsContext::ClientAuthSetting::kOn;
++std::vector<std::string> tlsAuthRequestPrefixes;
+ bool httpsspec = false;
+ bool xrdctxVer = false;
+ }
+@@ -520,7 +522,10 @@ int XrdHttpProtocol::Process(XrdLink *lp) // We ignore the argument here
+       if (!ssl) {
+           sbio = CreateBIO(Link);
+           BIO_set_nbio(sbio, 1);
++          xrdctx->SetTlsClientAuth(tlsClientAuth);
+           ssl = (SSL*)xrdctx->Session();
++          postheaderauth = false;
++          postheaderwait = false;
+         }
+ 
+       if (!ssl) {
+@@ -567,7 +572,7 @@ int XrdHttpProtocol::Process(XrdLink *lp) // We ignore the argument here
+       strcpy(SecEntity.prot, "https");
+ 
+       // Get the voms string and auth information
+-      if (HandleAuthentication(Link)) {
++      if (tlsClientAuth == XrdTlsContext::ClientAuthSetting::kOn && HandleAuthentication(Link)) {
+           SSL_free(ssl);
+           ssl = 0;
+           return -1;
+@@ -599,7 +604,7 @@ int XrdHttpProtocol::Process(XrdLink *lp) // We ignore the argument here
+ 
+     } else
+       CurrentReq.reqstate++;
+-  } else if (!DoneSetInfo && !CurrentReq.userAgent().empty()) { // DoingLogin is true, meaning the login finished.
++  } else if (!DoneSetInfo && !postheaderwait && !postheaderauth && !CurrentReq.userAgent().empty()) { // DoingLogin is true, meaning the login finished.
+     std::string mon_info = "monitor info " + CurrentReq.userAgent();
+     DoneSetInfo = true;
+     if (mon_info.size() >= 1024) {
+@@ -619,7 +624,7 @@ int XrdHttpProtocol::Process(XrdLink *lp) // We ignore the argument here
+       }
+       return 0;
+     }
+-  } else {
++  } else if (!postheaderwait) {
+     DoingLogin = false;
+   }
+ 
+@@ -646,6 +651,20 @@ int XrdHttpProtocol::Process(XrdLink *lp) // We ignore the argument here
+           TRACE(DEBUG, " Parsing of first line failed with " << result);
+           return -1;
+         }
++
++
++        // We permit TLS client auth to be deferred until after the request path is sent.
++        // If this is a path requiring client auth, then do that now.
++        if (tlsClientAuth == XrdTlsContext::ClientAuthSetting::kDefer)
++           {for (const auto &prefix : tlsAuthRequestPrefixes) {
++               {if (!strncmp(prefix.c_str(), CurrentReq.resource.c_str(), prefix.length()))
++                   {postheaderwait = true;
++                    DoingLogin = true;
++                    break;
++                   }
++               }
++            }
++           }
+       }
+       else
+         CurrentReq.parseLine((char *)tmpline.c_str(), rc);
+@@ -675,6 +694,47 @@ int XrdHttpProtocol::Process(XrdLink *lp) // We ignore the argument here
+ 
+   }
+ 
++
++  if (postheaderwait) {
++    postheaderwait = false;
++    if (SSL_verify_client_post_handshake(ssl) != 1) {
++      // This is hit if the remote client doesn't support the post-handshake authentication
++      // (curl, Mac OSX) or TLS v1.3 (RHEL7).
++      TRACEI(ALL, "Unable to request client X.509 authentication");
++      ERR_print_errors(sslbio_err);
++    } else {
++      // We must invoke an empty write to trigger the authentication request in the TLS layer.
++      size_t write_size;
++      auto res = SSL_write_ex(ssl, nullptr, 0, &write_size);
++      if (res <= 0) {
++        TRACEI(DEBUG, " SSL post-handshake auth failed; err:" << SSL_get_error(ssl, res));
++        ERR_print_errors(sslbio_err);
++        SendSimpleResp(500, nullptr, nullptr, "Failed post-handshake authentication", 0, false);
++        return -1;
++      } else {
++        TRACEI(DEBUG, " SSL post-handshake auth finished successfully");
++        postheaderauth = true;
++        return 1;
++      }
++    }
++  }
++  if (postheaderauth) {
++    postheaderauth = false;
++    size_t readbytes;
++    TRACEI(REQ, "Reading out response to post-handshake authentication");
++    BIO_set_nbio(sbio, 1);
++    auto res = SSL_peek_ex(ssl, nullptr, 0, &readbytes);
++    if ((res <= 0) && SSL_get_error(ssl, res) != SSL_ERROR_WANT_READ) {
++      SendSimpleResp(500, nullptr, nullptr, "Failed to process authentication frames", 0, false);
++      return -1;
++    }
++    BIO_set_nbio(sbio, 0);
++    if (HandleAuthentication(Link)) {
++      SendSimpleResp(500, nullptr, nullptr, "Failed to extract authentication information from handshake", 0, false);
++      return -1;
++    }
++  }
++
+   // If we are in self-redirect mode, then let's do it
+   // Do selfredirect only with 'simple' requests, otherwise poor clients may misbehave
+   if (ishttps && ssldone && selfhttps2http &&
+@@ -1082,6 +1142,8 @@ int XrdHttpProtocol::Config(const char *ConfigFN, XrdOucEnv *myEnv) {
+       else if TS_Xeq("header2cgi", xheader2cgi);
+       else if TS_Xeq("httpsmode", xhttpsmode);
+       else if TS_Xeq("tlsreuse", xtlsreuse);
++      else if TS_Xeq("tlsclientauth", xtlsclientauth);
++      else if TS_Xeq("tlsrequiredprefix", xtlsrequiredprefix);
+       else {
+         eDest.Say("Config warning: ignoring unknown directive '", var, "'.");
+         Config.Echo();
+@@ -1894,6 +1956,8 @@ void XrdHttpProtocol::Reset() {
+ 
+   DoingLogin = false;
+   DoneSetInfo = false;
++  postheaderauth = false;
++  postheaderwait = false;
+ 
+   ResumeBytes = 0;
+   Resume = 0;
+@@ -2822,6 +2886,39 @@ int XrdHttpProtocol::xtlsreuse(XrdOucStream & Config) {
+    return 1;
+ }
+   
++int XrdHttpProtocol::xtlsclientauth(XrdOucStream &Config) {
++  auto val = Config.GetWord();
++  if (!val || !val[0])
++     {eDest.Emsg("Config", "tlsclientauth argument not specified"); return 1;}
++
++  if (!strcmp(val, "off"))
++     {tlsClientAuth = XrdTlsContext::ClientAuthSetting::kOff;
++      return 0;
++     }
++  if (!strcmp(val, "on"))
++     {tlsClientAuth = XrdTlsContext::ClientAuthSetting::kOn;
++      return 0;
++     }
++  if (!strcmp(val, "defer"))
++     {tlsClientAuth = XrdTlsContext::ClientAuthSetting::kDefer;
++     }
++
++  eDest.Emsg("config", "invalid tlsclientauth parameter -", val);
++  return 1;
++}
++
++int XrdHttpProtocol::xtlsrequiredprefix(XrdOucStream &Config) {
++  auto val = Config.GetWord();
++  if (!val || !val[0])
++     {eDest.Emsg("Config", "tlsrequiredprefix argument not specified"); return 1;}
++
++  if (val[0] != '/')
++     {eDest.Emsg("Config", "http.tlsrequiredprefix argument must be an absolute path"); return 1;}
++
++  tlsAuthRequestPrefixes.push_back(val);
++  return 0;
++}
++
+ /******************************************************************************/
+ /*                                x t r a c e                                 */
+ /******************************************************************************/
+diff --git a/src/XrdHttp/XrdHttpProtocol.hh b/src/XrdHttp/XrdHttpProtocol.hh
+index 9d47648..9c8fe64 100644
+--- a/src/XrdHttp/XrdHttpProtocol.hh
++++ b/src/XrdHttp/XrdHttpProtocol.hh
+@@ -219,6 +219,8 @@ class XrdHttpProtocol : public XrdProtocol {
+   static int xheader2cgi(XrdOucStream &Config);
+   static int xhttpsmode(XrdOucStream &Config);
+   static int xtlsreuse(XrdOucStream &Config);
++  static int xtlsclientauth(XrdOucStream &Config);
++  static int xtlsrequiredprefix(XrdOucStream &Config);
+   
+   static bool isRequiredXtractor; // If true treat secxtractor errors as fatal
+   static XrdHttpSecXtractor *secxtractor;
+@@ -320,6 +322,15 @@ class XrdHttpProtocol : public XrdProtocol {
+   /// Flag to tell if the https handshake has finished, in the case of an https
+   /// connection being established
+   bool ssldone;
++
++  /// Flag indicating we should send a request for client TLS authentication
++  /// after the headers have finished processing.
++  bool postheaderwait;
++
++  /// Flag indicating we should wait for a response to the post-header authentication
++  /// request (after headers have been processed).
++  bool postheaderauth;
++
+   static XrdCryptoFactory *myCryptoFactory;
+ 
+ protected:
+diff --git a/src/XrdTls/XrdTlsContext.cc b/src/XrdTls/XrdTlsContext.cc
+index 1d82795..741d6d2 100644
+--- a/src/XrdTls/XrdTlsContext.cc
++++ b/src/XrdTls/XrdTlsContext.cc
+@@ -70,6 +70,7 @@ struct XrdTlsContextImpl
+     time_t                        lastCertModTime = 0;
+     int                           sessionCacheOpts = -1;
+     std::string                   sessionCacheId;
++    uint64_t                      opts{0};
+ };
+   
+ /******************************************************************************/
+@@ -591,6 +592,8 @@ XrdTlsContext::XrdTlsContext(const char *cert,  const char *key,
+          SSL_CTX **ctxLoc;
+         } ctx_tracker(&pImpl->ctx);
+ 
++   pImpl->opts = opts;
++
+    static const int sslOpts = SSL_OP_ALL | SSL_OP_NO_SSLv2 | SSL_OP_NO_SSLv3
+                             | SSL_OP_NO_COMPRESSION;
+ 
+@@ -1127,3 +1130,19 @@ bool XrdTlsContext::newHostCertificateDetected() {
+     }
+     return false;
+ }
++
++void XrdTlsContext::SetTlsClientAuth(ClientAuthSetting setting) {
++
++      bool LogVF = (pImpl->opts & logVF) != 0;
++      switch (setting) {
++      case kOn:
++         SSL_CTX_set_verify(pImpl->ctx, SSL_VERIFY_PEER, (LogVF ? VerCB : 0));
++         break;
++      case kOff:
++         SSL_CTX_set_verify(pImpl->ctx, SSL_VERIFY_NONE, 0);
++         break;
++      case kDefer:
++         SSL_CTX_set_verify(pImpl->ctx, SSL_VERIFY_PEER | SSL_VERIFY_POST_HANDSHAKE, (LogVF ? VerCB : 0));
++         break;
++      }
++}
+diff --git a/src/XrdTls/XrdTlsContext.hh b/src/XrdTls/XrdTlsContext.hh
+index e6b61b7..d86de9d 100644
+--- a/src/XrdTls/XrdTlsContext.hh
++++ b/src/XrdTls/XrdTlsContext.hh
+@@ -173,6 +173,29 @@ void            SetDefaultCiphers(const char *ciphers);
+ 
+       bool      SetCrlRefresh(int refsec=-1);
+ 
++enum ClientAuthSetting {
++      kOn,
++      kOff,
++      kDefer
++};
++
++//------------------------------------------------------------------------
++//! Indicate how the server should handle TLS client authentication.
++//!
++//! @param  setting kOn:    All clients will be asked to send a TLS client
++//!                         certificate
++//!                 kOff:   No clients will be asked to send a TLS client
++//!                         certificate;
++//!                 kDefer: Only ask for a TLS client certificate
++//!                         explicitly post-authentication.
++//!
++//! Note the TLS connection will not fail if the client is asked for a cert
++//! but none are provided.
++//!
++//------------------------------------------------------------------------
++
++      void      SetTlsClientAuth(ClientAuthSetting setting);
++
+ //------------------------------------------------------------------------
+ //! Check if certificates are being verified.
+ //!
+-- 
+2.43.0
+
