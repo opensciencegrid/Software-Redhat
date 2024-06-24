@@ -1,5 +1,5 @@
 diff --git a/tag2distrepo.py b/tag2distrepo.py
-index 20c8da6..432cd12 100644
+index 20c8da6..44ef964 100644
 --- a/tag2distrepo.py
 +++ b/tag2distrepo.py
 @@ -22,7 +22,8 @@ def tag2distrepo(cbtype, tag, build, user, force=False):
@@ -12,13 +12,15 @@ index 20c8da6..432cd12 100644
          logger.debug("Ensuring signed RPMs are written out")
          [rpms, _] = readTaggedRPMS(tag['id'], rpmsigs=True)
          for rpm in rpms:
-@@ -38,7 +39,8 @@ def tag2distrepo(cbtype, tag, build, user, force=False):
+@@ -38,8 +39,9 @@ def tag2distrepo(cbtype, tag, build, user, force=False):
          'inherit': False,
          'latest': False,
          'multilib': False,
 -        'split_debuginfo': False,
+-        'skip_missing_signatures': False,
 +        'split_debuginfo': True,
 +        'with_src': True,
-         'skip_missing_signatures': False,
++        'skip_missing_signatures': True,
          'allow_missing_signatures': not keys,
      }
+     logging.debug(
