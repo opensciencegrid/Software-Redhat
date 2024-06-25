@@ -1,6 +1,6 @@
 Name:           koji-plugin-tag2distrepo
 Version:        1.0.0
-Release:        4%{?dist}
+Release:        5%{?dist}
 Summary:        Tag2distrepo plugin for koji-hub
 
 Group:          Applications/System
@@ -34,7 +34,7 @@ install -D tag2distrepo.py -m 0755 $RPM_BUILD_ROOT/usr/lib/koji-hub-plugins/tag2
 
 
 %changelog
-* Tue Jun 25 2024 Matt Westphall <westphall@wisc.edu> - 1.0.0-4
+* Tue Jun 25 2024 Matt Westphall <westphall@wisc.edu> - 1.0.0-5
 - Make 'latest' arg configurable (SOFTWARE-5911)
 
 * Tue Jun 25 2024 Matt Westphall <westphall@wisc.edu> - 1.0.0-3
