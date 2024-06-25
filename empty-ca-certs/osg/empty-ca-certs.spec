@@ -1,6 +1,6 @@
 Name:           empty-ca-certs
 Version:        1.0
-Release:        3%{?dist}
+Release:        4%{?dist}
 Summary:        An empty grid CA cert package
 
 License:        Unknown
@@ -36,6 +36,9 @@ a shared filesystem.
 %doc
 
 %changelog
+* Tue Jun 25 2024 Matt Westphall <westphall@wisc.edu> 1.0-4.osg
+- Bump release to fix automated signing issue
+
 * Wed Jul 01 2015 Mátyás Selmeci <matyas@cs.wisc.edu> 1.0-2.osg
 - Provide grid-certificates = 7
 
