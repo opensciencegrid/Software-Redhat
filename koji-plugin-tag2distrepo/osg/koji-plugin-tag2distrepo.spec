@@ -1,6 +1,6 @@
 Name:           koji-plugin-tag2distrepo
 Version:        1.0.0
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        Tag2distrepo plugin for koji-hub
 
 Group:          Applications/System
@@ -34,6 +34,9 @@ install -D tag2distrepo.py -m 0755 $RPM_BUILD_ROOT/usr/lib/koji-hub-plugins/tag2
 
 
 %changelog
+* Tue Jun 25 2024 Matt Westphall <westphall@wisc.edu> - 1.0.0-3
+- Update args to distrepo to include 'src' as an arch (SOFTWARE-5911)
+
 * Mon Jun 24 2024 Matt Westphall <westphall@wisc.edu> - 1.0.0-2
 - Update args to distrepo in script (SOFTWARE-5911)
 
