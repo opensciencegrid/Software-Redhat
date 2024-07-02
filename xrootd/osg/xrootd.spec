@@ -79,8 +79,8 @@
 #-------------------------------------------------------------------------------
 Name:      xrootd
 Epoch:     1
-Version:   5.6.9
-Release:   1.6%{?dist}%{?_with_clang:.clang}%{?_with_asan:.asan}
+Version:   5.7.0
+Release:   1.1%{?dist}%{?_with_clang:.clang}%{?_with_asan:.asan}
 Summary:   Extended ROOT file server
 Group:     System Environment/Daemons
 License:   LGPLv3+
@@ -99,13 +99,6 @@ Source1:   xrootd-%{compat_version}.tar.gz
 
 # OSG Patches not merged into upstream
 Patch1: 1868-env-hostname-override.patch
-Patch4: SOFTWARE-5800-pelican-url.patch
-Patch5: 2206-io-time-gstream-monitoring.patch
-Patch6: SOFTWARE-5870-only-if-cached.patch
-Patch7: 2262-fix-timing-on-throttle-plugin.patch
-Patch8: 2269-defer-or-disable-tls-client-auth-1.patch
-Patch9: 2269-defer-or-disable-tls-client-auth-2.patch
-Patch10: 2269-defer-or-disable-tls-client-auth-3.patch
 
 # Debug Patches
 Patch101: 0003-DEBUG-unset-use-pep517.patch
@@ -527,13 +520,6 @@ This package contains compatibility binaries for xrootd 4 servers.
 cd %{build_dir}
 %patch1 -p1
 # %%patch101 -p1
-%patch4 -p1
-%patch5 -p1
-%patch6 -p1
-%patch7 -p1
-%patch8 -p1
-%patch9 -p1
-%patch10 -p1
 cd ..
 
 %build
@@ -1192,6 +1178,14 @@ fi
 # Changelog
 #-------------------------------------------------------------------------------
 %changelog
+* Tue Jul 02 2024 Mátyás Selmeci <matyas@cs.wisc.edu> - 5.7.0-1.1
+- Update to 5.7.0 and merge OSG patches (SOFTWARE-5925)
+    - Drop SOFTWARE-5800-pelican-url.patch (applied upstream)
+    - Drop 2206-io-time-gstream-monitoring.patch (applied upstream)
+    - Drop SOFTWARE-5870-only-if-cached.patch (applied upstream)
+    - Drop 2262-fix-timing-on-throttle-plugin.patch (applied upstream)
+    - Drop 2269-defer-or-disable-tls-client-auth-*.patch (applied upstream)
+
 * Thu May 30 2024 Mátyás Selmeci <matyas@cs.wisc.edu> - 5.6.9-1.6
 - Split 2269-defer-or-disable-tls-client-auth.patch into 3 patches
   and re-do its conflict resolution (SOFTWARE-5876)
