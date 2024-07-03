@@ -3,6 +3,7 @@
 grep -q 'ID_LIKE=.*rhel' /etc/os-release || { echo >&2 'This must be run on a rhel-like OS' && exit 1; }
 
 upstream_repo=https://github.com/opensciencegrid/osg-build
+default_branch=V2-branch
 
 usage () {
     {
@@ -18,7 +19,7 @@ usage () {
 }
 
 case $# in
-    0)  branch=master
+    0)  branch=$default_branch
         repo=$upstream_repo
         ;;
     1)  if [[ $1 == -h || $1 == --help ]]; then

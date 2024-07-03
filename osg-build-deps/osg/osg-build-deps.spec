@@ -1,5 +1,5 @@
 Name:           osg-build-deps
-Version:        4
+Version:        5
 Release:        1%{?dist}
 Summary:        Dependencies for build tools for the OSG
 
@@ -13,11 +13,7 @@ Requires:       %{name}-base = %{version}
 Requires:       %{name}-mock = %{version}
 Requires:       %{name}-koji = %{version}
 
-%if (0%{?fedora} >= 31 || 0%{?rhel} >= 8)
 %define __python /usr/bin/python3
-%else
-%define __python /usr/bin/python2
-%endif
 
 
 %description
@@ -26,11 +22,7 @@ See %{url} for details.
 
 
 %package base
-%if 0%{?rhel} < 8
-Requires:       git
-%else
 Requires:       git-core
-%endif
 Requires:       rpm-build
 Requires:       quilt
 Requires:       rpmlint
@@ -38,10 +30,6 @@ Requires:       subversion
 Requires:       wget
 Requires:       epel-rpm-macros
 Requires:       make
-%if 0%{?rhel} < 8
-Requires:       python >= 2.6
-Requires:       python-six
-%endif
 Summary:        osg-build-deps base package, not containing deps for mock or koji modules or koji-based tools
 
 %description base
@@ -94,6 +82,10 @@ install -m 0755 %{SOURCE1} %{buildroot}/usr/sbin/install-osg-build.sh
 
 
 %changelog
+* Wed Jul 03 2024 Mátyás Selmeci <matyas@cs.wisc.edu> - 5-1
+- Switch default osg-build branch in install script to V2-branch
+- Remove el7 compat from spec file
+
 * Tue Sep 19 2023 Mátyás Selmeci <matyas@cs.wisc.edu> - 4-1
 - Allow selecting osg-build branch and repo in install script
 
