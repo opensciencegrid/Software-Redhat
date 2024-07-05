@@ -1,6 +1,6 @@
 Summary: Service files for Pelican-based OSDF daemons
 Name: osdf-server
-Version: 7.8.3
+Version: 7.9.3
 Release: 1%{?dist}
 License: ASL 2.0
 Url: https://github.com/PelicanPlatform/pelican
@@ -15,9 +15,9 @@ Source0: pelican.tar.gz
 %define subpackage(x) %{expand:
 %%package -n %1
 Summary: Service file and configuration for %1
-Requires: pelican >= 7.5.0
+Requires: pelican >= 7.9.0
 Requires: /usr/bin/osdf
-%{-x:Requires: xrootd-server >= 1:5.6.6}
+%{-x:Requires: xrootd-server >= 1:5.6.9-1.6}
 %{-x:Requires: xrootd-scitokens}
 %{-x:Requires: xrootd-voms}
 %{-x:Requires: xrdcl-pelican}
@@ -79,6 +79,10 @@ install -m 0644 systemd/pelican.logrotate $RPM_BUILD_ROOT/etc/logrotate.d/pelica
 
 
 %changelog
+* Fri Jul 05 2024 Mátyás Selmeci <matyas@cs.wisc.edu> - 7.9.3-1
+- Upgrade to Pelican 7.9.3 (SOFTWARE-5847)
+- Require xrootd >= 5.6.9-1.6 for various backports from 5.7.0
+
 * Wed May 22 2024 Mátyás Selmeci <matyas@cs.wisc.edu> - 7.8.3-1
 - Upgrade to Pelican 7.8.3 (SOFTWARE-5847)
 
