@@ -16,8 +16,8 @@
 # ------------------------------------------------------------------------------
 # For Release Candidate builds, check with Software team on release string
 # ------------------------------------------------------------------------------
-%define version 3.10.1
-%define release 1
+%define version 3.11.0
+%define release 0.2.rc2
 
 %define frontend_xml frontend.xml
 %define factory_xml glideinWMS.xml
@@ -115,6 +115,7 @@ Requires: rrdtool
 # Remove the line below for the OSG 3.5 build (no python3-rrdtool there)
 Requires: python3-rrdtool
 %if 0%{?rhel} >= 8
+Requires: initscripts
 Requires: python3-m2crypto
 %else
 Requires: python36-m2crypto
@@ -185,11 +186,13 @@ Requires: python3-pyyaml
 Requires: python3-jwt
 Requires: python3-cryptography
 Requires: python3-m2crypto
+#Requires: python3-structlog
 %else
 Requires: PyYAML
 Requires: python36-jwt
 Requires: python36-cryptography
 Requires: python36-m2crypto
+Requires: python36-structlog
 %endif
 Requires: python3-rrdtool
 %description libs
@@ -252,6 +255,7 @@ Requires: python3 >= 3.6
 # Is this the same? Requires: python36-configargparse
 Requires: javascriptrrd >= 1.1.0
 %if 0%{?rhel} >= 8
+Requires: initscripts
 Requires: python3-m2crypto
 Requires: python3-requests
 Requires: python3-jwt
@@ -392,6 +396,7 @@ rm -Rf $RPM_BUILD_ROOT%{python3_sitelib}/glideinwms/creation/web_base
 rm -f $RPM_BUILD_ROOT%{python3_sitelib}/glideinwms/creation/add_entry
 rm -f $RPM_BUILD_ROOT%{python3_sitelib}/glideinwms/creation/clone_glidein
 rm -f $RPM_BUILD_ROOT%{python3_sitelib}/glideinwms/creation/create_condor_tarball
+rm -f $RPM_BUILD_ROOT%{python3_sitelib}/glideinwms/creation/create_cvmfsexec_distros.sh
 rm -f $RPM_BUILD_ROOT%{python3_sitelib}/glideinwms/creation/create_frontend
 rm -f $RPM_BUILD_ROOT%{python3_sitelib}/glideinwms/creation/create_glidein
 rm -f $RPM_BUILD_ROOT%{python3_sitelib}/glideinwms/creation/info_glidein
@@ -507,9 +512,7 @@ install -d $RPM_BUILD_ROOT/%{_sysconfdir}/gwms-factory/hooks.reconfig.pre
 install -d $RPM_BUILD_ROOT/%{_sysconfdir}/gwms-factory/hooks.reconfig.post
 install -m 0644 %{SOURCE4} $RPM_BUILD_ROOT/%{_sysconfdir}/gwms-factory/glideinWMS.xml
 install -m 0644 %{SOURCE9} $RPM_BUILD_ROOT/%{_sysconfdir}/sysconfig/gwms-factory
-install -m 0755 creation/create_cvmfsexec_distros.sh $RPM_BUILD_ROOT/%{_sysconfdir}/gwms-factory/hooks.reconfig.pre/create_cvmfsexec_distros.sh
 # remove the file from python_sitelib as it is put elsewhere; similar to clone_glidein and info_glidein files
-rm -f $RPM_BUILD_ROOT%{python_sitelib}/glideinwms/creation/create_cvmfsexec_distros.sh
 
 # Install the web base
 cp -r creation/web_base/* $RPM_BUILD_ROOT%{web_base}/
@@ -564,6 +567,7 @@ for file in factory/tools/[^_]*; do
     fi
 done
 cp creation/create_condor_tarball $RPM_BUILD_ROOT%{_bindir}
+cp creation/create_cvmfsexec_distros.sh $RPM_BUILD_ROOT%{_bindir}
 
 # Install only few frontend tools
 cp frontend/tools/enter_frontend_env $RPM_BUILD_ROOT%{_bindir}/enter_frontend_env
@@ -769,6 +773,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_bindir}/glidein_ps
 %attr(755,root,root) %{_bindir}/glidein_status
 %attr(755,root,root) %{_bindir}/glidein_top
+%attr(755,root,root) %{_bindir}/gwms-logparser
 %attr(755,root,root) %{_bindir}/wmsTxtView
 %attr(755,root,root) %{_bindir}/wmsXMLView
 %{python3_sitelib}/glideinwms/tools
@@ -808,6 +813,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_bindir}/cat_logs
 %attr(755,root,root) %{_bindir}/cat_named_log
 %attr(755,root,root) %{_bindir}/create_condor_tarball
+%attr(755,root,root) %{_bindir}/create_cvmfsexec_distros.sh
 %attr(755,root,root) %{_bindir}/entry_ls
 %attr(755,root,root) %{_bindir}/entry_q
 %attr(755,root,root) %{_bindir}/entry_rm
@@ -819,6 +825,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_bindir}/gwms-logcat.sh
 %attr(755,root,root) %{_bindir}/manual_glidein_submit
 %attr(755,root,root) %{_bindir}/OSG_autoconf
+%attr(755,root,root) %{_bindir}/get_tarballs
 %attr(755,root,root) %{_bindir}/gfdiff
 %attr(755,root,root) %{_sbindir}/checkFactory.py
 %attr(755,root,root) %{_sbindir}/stopFactory.py
@@ -885,7 +892,6 @@ rm -rf $RPM_BUILD_ROOT
 %attr(-, gfactory, gfactory) %dir %{_sysconfdir}/gwms-factory/hooks.reconfig.pre
 %attr(-, gfactory, gfactory) %dir %{_sysconfdir}/gwms-factory/hooks.reconfig.post
 %attr(-, gfactory, gfactory) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/gwms-factory/glideinWMS.xml
-%attr(755, gfactory, gfactory) %{_sysconfdir}/gwms-factory/hooks.reconfig.pre/create_cvmfsexec_distros.sh
 %config(noreplace) %{_sysconfdir}/sysconfig/gwms-factory
 
 %files vofrontend-core
@@ -1042,6 +1048,39 @@ rm -rf $RPM_BUILD_ROOT
 #%config(noreplace) %{_sysconfdir}/condor/scripts/frontend_condortoken
 
 %changelog
+ Thu Jul 11 2024 Marco Mambelli <marcom@fnal.gov> - 3.11.0-02.rc2
+- Glideinwms v3.11.0
+- Release Notes: http://glideinwms.fnal.gov/doc.v3_11_0/history.html
+- Release candidates 3.11.0-02.rc2
+
+* Fri Jun 21 2024 Marco Mambelli <marcom@fnal.gov> - 3.10.7
+- Glideinwms v3.10.7
+- Release Notes: http://glideinwms.fnal.gov/doc.v3_10_7/history.html
+- Release candidates 3.10.7-01.rc1 to 3.10.7-03.rc3
+
+* Thu Jan 25 2024 Marco Mambelli <marcom@fnal.gov> - 3.10.6
+- Glideinwms v3.10.6
+- Release Notes: http://glideinwms.fnal.gov/doc.v3_10_6/history.html
+- Release candidates 3.10.6-01.rc1 to 3.10.6-02.rc2
+
+* Wed Sep 27 2023 Marco Mambelli <marcom@fnal.gov> - 3.10.5
+- Glideinwms v3.10.5
+- Release Notes: http://glideinwms.fnal.gov/doc.v3_10_5/history.html
+
+* Thu Sep 14 2023 Marco Mambelli <marcom@fnal.gov> - 3.10.4
+- Glideinwms v3.10.4
+- Release Notes: http://glideinwms.fnal.gov/doc.v3_10_4/history.html
+
+* Mon Sep 11 2023 Marco Mambelli <marcom@fnal.gov> - 3.10.3
+- Glideinwms v3.10.3
+- Release Notes: http://glideinwms.fnal.gov/doc.v3_10_3/history.html
+- Release candidates 3.10.3-01.rc1 to 3.10.3-02.rc2
+
+* Wed May 10 2023 Marco Mambelli <marcom@fnal.gov> - 3.10.2
+- Glideinwms v3.10.2
+- Release Notes: http://glideinwms.fnal.gov/doc.v3_10_2/history.html
+- Release candidates 3.10.2-01.rc1 to 3.10.2-02.rc2
+
 * Tue Dec 13 2022 Marco Mambelli <marcom@fnal.gov> - 3.10.1
 - Glideinwms v3.10.1
 - Release Notes: http://glideinwms.fnal.gov/doc.v3_10_1/history.html
