@@ -1,10 +1,11 @@
 Name:      buildsys-build
 Summary:   Minimal set of packages required to build in a chroot
 Version:   9
-Release:   3%{?dist}
+Release:   4%{?dist}
 License:   Apache 2.0
 Group:     Development
 URL:       http://www.opensciencegrid.org
+BuildArch: noarch
 
 
 Requires: bash
@@ -42,6 +43,7 @@ Requires: which
 
 %package -n buildsys-srpm-build
 Summary:   Minimal set of packages required to build srpms in a chroot
+BuildArch: noarch
 
 Requires: bash
 Requires: buildsys-macros = %{version}
@@ -71,6 +73,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue Jul 23 2024 Mátyás Selmeci <matyas@cs.wisc.edu> - 9-4
+- Make noarch
+
 * Sun Jul 30 2023 Mátyás Selmeci <matyas@cs.wisc.edu> - 9-3
 - Ask for /etc/redhat-release instead of a variant-specific package
 
