@@ -80,7 +80,7 @@
 Name:      xrootd
 Epoch:     1
 Version:   5.7.0
-Release:   1.2%{?dist}%{?_with_clang:.clang}%{?_with_asan:.asan}
+Release:   1.3%{?dist}%{?_with_clang:.clang}%{?_with_asan:.asan}
 Summary:   Extended ROOT file server
 Group:     System Environment/Daemons
 License:   LGPLv3+
@@ -100,6 +100,7 @@ Source1:   xrootd-%{compat_version}.tar.gz
 # OSG Patches not merged into upstream
 Patch1: 1868-env-hostname-override.patch
 Patch2: 2303-file-pointer-leak.patch
+Patch3: 2300-stat-call-reduction.patch
 
 # Debug Patches
 Patch101: 0003-DEBUG-unset-use-pep517.patch
@@ -521,6 +522,7 @@ This package contains compatibility binaries for xrootd 4 servers.
 cd %{build_dir}
 %patch1 -p1
 %patch2 -p1
+%patch3 -p1
 # %%patch101 -p1
 cd ..
 
@@ -1180,6 +1182,9 @@ fi
 # Changelog
 #-------------------------------------------------------------------------------
 %changelog
+* Mon Aug 05 2024 Mátyás Selmeci <matyas@cs.wisc.edu> - 5.7.0-1.3
+- Add 2300-stat-call-reduction.patch (SOFTWARE-5949)
+
 * Thu Aug 01 2024 Mátyás Selmeci <matyas@cs.wisc.edu> - 5.7.0-1.2
 - Add 2303-file-pointer-leak.patch (SOFTWARE-5947)
 
