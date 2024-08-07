@@ -401,7 +401,8 @@ Python 3 bindings for XRootD
 Summary:	Developer documentation for the xrootd libraries
 Group:		Documentation
 %if %{?fedora}%{!?fedora:0} >= 10 || %{?rhel}%{!?rhel:0} >= 6
-BuildArch:	noarch
+# Not noarch: generated documentation different between noarch packages built on different arches
+#BuildArch:	noarch
 %endif
 
 %description doc
@@ -1184,6 +1185,8 @@ fi
 %changelog
 * Wed Aug 07 2024 Mátyás Selmeci <matyas@cs.wisc.edu> - 5.7.0-1.4
 - Bump to rebuild for aarch64
+- Don't make the generated documentation (i.e., xrootd-doc subpackage) noarch
+  because the generation results are different based on the arch of the builder.
 
 * Mon Aug 05 2024 Mátyás Selmeci <matyas@cs.wisc.edu> - 5.7.0-1.3
 - Add 2300-stat-call-reduction.patch (SOFTWARE-5949)
