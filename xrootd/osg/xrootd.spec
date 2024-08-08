@@ -80,7 +80,7 @@
 Name:      xrootd
 Epoch:     1
 Version:   5.7.0
-Release:   1.5%{?dist}%{?_with_clang:.clang}%{?_with_asan:.asan}
+Release:   1.6%{?dist}%{?_with_clang:.clang}%{?_with_asan:.asan}
 Summary:   Extended ROOT file server
 Group:     System Environment/Daemons
 License:   LGPLv3+
@@ -1183,6 +1183,9 @@ fi
 # Changelog
 #-------------------------------------------------------------------------------
 %changelog
+* Thu Aug 08 2024 Mátyás Selmeci <matyas@cs.wisc.edu> - 5.7.0-1.6
+- Remove unrelated commits from 2300-stat-call-reduction.patch (SOFTWARE-5949)
+
 * Wed Aug 07 2024 Mátyás Selmeci <matyas@cs.wisc.edu> - 5.7.0-1.5
 - Bump to rebuild for aarch64
 - Don't make the generated documentation (i.e., xrootd-doc subpackage) noarch
