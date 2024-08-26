@@ -80,7 +80,7 @@
 Name:      xrootd
 Epoch:     1
 Version:   5.7.0
-Release:   1.6%{?dist}%{?_with_clang:.clang}%{?_with_asan:.asan}
+Release:   1.7%{?dist}%{?_with_clang:.clang}%{?_with_asan:.asan}
 Summary:   Extended ROOT file server
 Group:     System Environment/Daemons
 License:   LGPLv3+
@@ -101,6 +101,8 @@ Source1:   xrootd-%{compat_version}.tar.gz
 Patch1: 1868-env-hostname-override.patch
 Patch2: 2303-file-pointer-leak.patch
 Patch3: 2300-stat-call-reduction.patch
+Patch4: bbockelm-3-oss-statistics.patch
+Patch5: bbockelm-4-defer-client-auth.patch
 
 # Debug Patches
 Patch101: 0003-DEBUG-unset-use-pep517.patch
@@ -524,6 +526,8 @@ cd %{build_dir}
 %patch1 -p1
 %patch2 -p1
 %patch3 -p1
+%patch4 -p1
+%patch5 -p1
 # %%patch101 -p1
 cd ..
 
@@ -1183,6 +1187,10 @@ fi
 # Changelog
 #-------------------------------------------------------------------------------
 %changelog
+* Mon Aug 26 2024 Mátyás Selmeci <matyas@cs.wisc.edu> - 5.7.0-1.7
+- Add bbockelm-3-oss-statistics.patch (SOFTWARE-5967)
+- Add bbockelm-4-defer-client-auth.patch (SOFTWARE-5968)
+
 * Thu Aug 08 2024 Mátyás Selmeci <matyas@cs.wisc.edu> - 5.7.0-1.6
 - Remove unrelated commits from 2300-stat-call-reduction.patch (SOFTWARE-5949)
 
