@@ -1014,6 +1014,7 @@ fi
 %{_libdir}/libXrdN2No2p-5.so
 %{_libdir}/libXrdOssCsi-5.so
 %{_libdir}/libXrdOssSIgpfsT-5.so
+%{_libdir}/libXrdOssStats-5.so
 %{_libdir}/libXrdServer.so.3*
 %{_libdir}/libXrdSsi-5.so
 %{_libdir}/libXrdSsiLog-5.so
@@ -1193,7 +1194,8 @@ fi
 %changelog
 * Mon Aug 26 2024 Mátyás Selmeci <matyas@cs.wisc.edu> - 5.7.0-1.7
 - Add bbockelm-3-oss-statistics.patch (SOFTWARE-5967)
-- Add bbockelm-4-defer-client-auth (as 3 patches) (SOFTWARE-5968)
+- Add bbockelm-4-defer-client-auth (as 3 patches) (SOFTWARE-5968);
+    this adds libXrdOssStats-5.so to xrootd-server-libs
 
 * Thu Aug 08 2024 Mátyás Selmeci <matyas@cs.wisc.edu> - 5.7.0-1.6
 - Remove unrelated commits from 2300-stat-call-reduction.patch (SOFTWARE-5949)
