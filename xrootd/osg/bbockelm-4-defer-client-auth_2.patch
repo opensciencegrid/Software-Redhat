@@ -1,23 +1,26 @@
-From fa7a0683ddc19d8cf9e132a6b9aca7b919e9efb2 Mon Sep 17 00:00:00 2001
+From dce97e505bb987ebf15821b2f5446a89ef95cc73 Mon Sep 17 00:00:00 2001
 From: Brian Bockelman <bbockelman@morgridge.org>
 Date: Fri, 17 May 2024 16:28:34 +0200
-Subject: [PATCH 2/3] Allow client authentication to be deferred to
- post-handshake
+Subject: [PATCH] Allow client authentication to be deferred to post-handshake
 
 This commit allows, for HTTP, the client authentication to be
 deferred until after the HTTP request has been fully sent.  When
 run in 'defer' mode, the administrator can configure specific
 prefixes that require certificates; users will not be prompted for
 other paths by default.
+
+(rejected hunk in XrdTlsContext.cc fixed by matyas; see
+https://github.com/bbockelm/xrootd/pull/4/commits/fa7a0683ddc19d8cf9e132a6b9aca7b919e9efb2
+for original commit)
 ---
  src/XrdHttp/XrdHttpProtocol.cc | 110 ++++++++++++++++++++++++++++++---
  src/XrdHttp/XrdHttpProtocol.hh |  11 ++++
- src/XrdTls/XrdTlsContext.cc    |  21 ++++++-
+ src/XrdTls/XrdTlsContext.cc    |  19 ++++++
  src/XrdTls/XrdTlsContext.hh    |  23 +++++++
- 4 files changed, 154 insertions(+), 11 deletions(-)
+ 4 files changed, 153 insertions(+), 10 deletions(-)
 
 diff --git a/src/XrdHttp/XrdHttpProtocol.cc b/src/XrdHttp/XrdHttpProtocol.cc
-index 8f7307b4b70..34e39c8a25c 100644
+index 8f7307b..34e39c8 100644
 --- a/src/XrdHttp/XrdHttpProtocol.cc
 +++ b/src/XrdHttp/XrdHttpProtocol.cc
 @@ -134,6 +134,8 @@ static const int hsmOn   =  1; // Dual purpose but use a meaningful varname
@@ -202,10 +205,10 @@ index 8f7307b4b70..34e39c8a25c 100644
    char *val = Config.GetWord();
    if(val) {
 diff --git a/src/XrdHttp/XrdHttpProtocol.hh b/src/XrdHttp/XrdHttpProtocol.hh
-index ece9f9cb873..36b3aa7b7ed 100644
+index ece9f9c..36b3aa7 100644
 --- a/src/XrdHttp/XrdHttpProtocol.hh
 +++ b/src/XrdHttp/XrdHttpProtocol.hh
-@@ -223,6 +223,8 @@ private:
+@@ -223,6 +223,8 @@ class XrdHttpProtocol : public XrdProtocol {
    static int xhttpsmode(XrdOucStream &Config);
    static int xtlsreuse(XrdOucStream &Config);
    static int xauth(XrdOucStream &Config);
@@ -214,7 +217,7 @@ index ece9f9cb873..36b3aa7b7ed 100644
    
    static bool isRequiredXtractor; // If true treat secxtractor errors as fatal
    static XrdHttpSecXtractor *secxtractor;
-@@ -327,6 +329,15 @@ private:
+@@ -327,6 +329,15 @@ class XrdHttpProtocol : public XrdProtocol {
    /// Flag to tell if the https handshake has finished, in the case of an https
    /// connection being established
    bool ssldone;
@@ -231,7 +234,7 @@ index ece9f9cb873..36b3aa7b7ed 100644
  
  protected:
 diff --git a/src/XrdTls/XrdTlsContext.cc b/src/XrdTls/XrdTlsContext.cc
-index adf569cb172..7ec7c43147d 100644
+index 4293e3a..7ec7c43 100644
 --- a/src/XrdTls/XrdTlsContext.cc
 +++ b/src/XrdTls/XrdTlsContext.cc
 @@ -70,6 +70,7 @@ struct XrdTlsContextImpl
@@ -242,17 +245,15 @@ index adf569cb172..7ec7c43147d 100644
  };
    
  /******************************************************************************/
-@@ -591,7 +592,9 @@ XrdTlsContext::XrdTlsContext(const char *cert,  const char *key,
+@@ -591,6 +592,8 @@ XrdTlsContext::XrdTlsContext(const char *cert,  const char *key,
           SSL_CTX **ctxLoc;
          } ctx_tracker(&pImpl->ctx);
  
--   static const uint64_t sslOpts = SSL_OP_ALL
 +   pImpl->opts = opts;
 +
-+   static const int sslOpts = SSL_OP_ALL
+    static const int sslOpts = SSL_OP_ALL
                              | SSL_OP_NO_SSLv2
                              | SSL_OP_NO_SSLv3
-                             | SSL_OP_NO_COMPRESSION
 @@ -1136,3 +1139,19 @@ bool XrdTlsContext::newHostCertificateDetected() {
      }
      return false;
@@ -274,7 +275,7 @@ index adf569cb172..7ec7c43147d 100644
 +      }
 +}
 diff --git a/src/XrdTls/XrdTlsContext.hh b/src/XrdTls/XrdTlsContext.hh
-index e6b61b7b828..d86de9d464c 100644
+index e6b61b7..d86de9d 100644
 --- a/src/XrdTls/XrdTlsContext.hh
 +++ b/src/XrdTls/XrdTlsContext.hh
 @@ -173,6 +173,29 @@ void            SetDefaultCiphers(const char *ciphers);
@@ -307,4 +308,6 @@ index e6b61b7b828..d86de9d464c 100644
  //------------------------------------------------------------------------
  //! Check if certificates are being verified.
  //!
+-- 
+2.43.5
 
