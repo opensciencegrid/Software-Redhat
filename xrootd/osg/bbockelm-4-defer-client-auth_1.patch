@@ -1,0 +1,41 @@
+From 01fb06ef62e87fac3267141d72989e94652beaa2 Mon Sep 17 00:00:00 2001
+From: Brian Bockelman <bbockelman@morgridge.org>
+Date: Fri, 17 May 2024 15:47:40 +0200
+Subject: [PATCH 1/3] Implement non-blocking IO in the BIO wrapper for the
+ XrdLink object
+
+The BIO wrapper for the XrdLink did not implement the non-blocking calls;
+however, these are needed if we want to process frames in the stream
+without actually reading any data.
+---
+ src/XrdHttp/XrdHttpProtocol.cc | 17 +++++++++++++++++
+ 1 file changed, 17 insertions(+)
+
+diff --git a/src/XrdHttp/XrdHttpProtocol.cc b/src/XrdHttp/XrdHttpProtocol.cc
+index d2264710b60..8f7307b4b70 100644
+--- a/src/XrdHttp/XrdHttpProtocol.cc
++++ b/src/XrdHttp/XrdHttpProtocol.cc
+@@ -447,6 +447,23 @@ static long BIO_XrdLink_ctrl(BIO *bio, int cmd, long num, void * ptr)
+   case BIO_CTRL_FLUSH:
+     ret = 1;
+     break;
++  case BIO_C_SET_NBIO:
++  {
++    auto link = static_cast<XrdLink*>(BIO_get_data(bio));
++    if (link) {
++      struct timeval tv;
++      tv.tv_sec = 10;
++      tv.tv_usec = 0;
++      if (num) {
++        tv.tv_sec = 0;
++        tv.tv_usec = 1;
++      }
++      setsockopt(link->FDnum(), SOL_SOCKET, SO_RCVTIMEO, (struct timeval *)&tv, sizeof(struct timeval));
++      setsockopt(link->FDnum(), SOL_SOCKET, SO_SNDTIMEO, (struct timeval *)&tv, sizeof(struct timeval));
++    }
++    ret = 1;
++    break;
++  }
+   default:
+     ret = 0;
+     break;

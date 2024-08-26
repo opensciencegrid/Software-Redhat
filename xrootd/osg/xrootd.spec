@@ -102,7 +102,9 @@ Patch1: 1868-env-hostname-override.patch
 Patch2: 2303-file-pointer-leak.patch
 Patch3: 2300-stat-call-reduction.patch
 Patch4: bbockelm-3-oss-statistics.patch
-Patch5: bbockelm-4-defer-client-auth.patch
+Patch5: bbockelm-4-defer-client-auth_1.patch
+Patch6: bbockelm-4-defer-client-auth_2.patch
+Patch7: bbockelm-4-defer-client-auth_3.patch
 
 # Debug Patches
 Patch101: 0003-DEBUG-unset-use-pep517.patch
@@ -528,6 +530,8 @@ cd %{build_dir}
 %patch3 -p1
 %patch4 -p1
 %patch5 -p1
+%patch6 -p1
+%patch7 -p1
 # %%patch101 -p1
 cd ..
 
@@ -1189,7 +1193,7 @@ fi
 %changelog
 * Mon Aug 26 2024 Mátyás Selmeci <matyas@cs.wisc.edu> - 5.7.0-1.7
 - Add bbockelm-3-oss-statistics.patch (SOFTWARE-5967)
-- Add bbockelm-4-defer-client-auth.patch (SOFTWARE-5968)
+- Add bbockelm-4-defer-client-auth (as 3 patches) (SOFTWARE-5968)
 
 * Thu Aug 08 2024 Mátyás Selmeci <matyas@cs.wisc.edu> - 5.7.0-1.6
 - Remove unrelated commits from 2300-stat-call-reduction.patch (SOFTWARE-5949)
