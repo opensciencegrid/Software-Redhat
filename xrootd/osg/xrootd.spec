@@ -80,7 +80,7 @@
 Name:      xrootd
 Epoch:     1
 Version:   5.7.0
-Release:   1.7%{?dist}%{?_with_clang:.clang}%{?_with_asan:.asan}
+Release:   1.7.1%{?dist}%{?_with_clang:.clang}%{?_with_asan:.asan}
 Summary:   Extended ROOT file server
 Group:     System Environment/Daemons
 License:   LGPLv3+
@@ -529,9 +529,9 @@ cd %{build_dir}
 %patch2 -p1
 %patch3 -p1
 %patch4 -p1
-%patch5 -p1
-%patch6 -p1
-%patch7 -p1
+#patch5 -p1
+#patch6 -p1
+#patch7 -p1
 # %%patch101 -p1
 cd ..
 
@@ -1192,6 +1192,9 @@ fi
 # Changelog
 #-------------------------------------------------------------------------------
 %changelog
+* Tue Aug 27 2024 Mátyás Selmeci <matyas@cs.wisc.edu> - 5.7.0-1.7.1
+- Drop bbockelm-4-defer-client-auth (might be causing test failures)
+
 * Mon Aug 26 2024 Mátyás Selmeci <matyas@cs.wisc.edu> - 5.7.0-1.7
 - Add bbockelm-3-oss-statistics.patch (SOFTWARE-5967)
 - Add bbockelm-4-defer-client-auth (as 3 patches) (SOFTWARE-5968);
