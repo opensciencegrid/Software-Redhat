@@ -3,10 +3,10 @@
 # "osg-koji import" the resulting rpm and osg-koji tag-pkg the build into the
 # appropriate osg-*-development tag
 # This will require koji admin permissions.
-%define osg_version 23
+%define osg_version 24
 %define dver  8 
 
-%define osgver 23
+%define osgver 24
 %define dist .osg%{osgver}int.el%{dver}
 
 Name:		buildsys-macros
