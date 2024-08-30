@@ -3,10 +3,10 @@
 # "osg-koji import" the resulting rpm and osg-koji tag-pkg the build into the
 # appropriate osg-*-development tag
 # This will require koji admin permissions.
-%define osg_version 23up
+%define osg_version 24up
 %define dver   9
 
-%define osgver 23up
+%define osgver 24up
 %define dist .osg%{osgver}.el%{dver}
 
 Name:		buildsys-macros
@@ -43,6 +43,9 @@ printf %s%b "%" "_smp_ncpus_max 12\n" >> $RPM_BUILD_ROOT/etc/rpm/macros.kojibuil
 /etc/rpm/macros.kojibuilder
 
 %changelog
+* Fri Aug 30 2024 Matt Westphall <westphall@wisc.edu> - 9-10
+- osg 24 el9 version
+
 * Mon Oct 02 2023 Mátyás Selmeci <matyas@cs.wisc.edu> - 9.10
 - Bump to rebuild with new signing key
 
