@@ -80,7 +80,7 @@
 Name:      xrootd
 Epoch:     1
 Version:   5.7.0
-Release:   1.7.1%{?dist}%{?_with_clang:.clang}%{?_with_asan:.asan}
+Release:   1.7.2%{?dist}%{?_with_clang:.clang}%{?_with_asan:.asan}
 Summary:   Extended ROOT file server
 Group:     System Environment/Daemons
 License:   LGPLv3+
@@ -102,9 +102,7 @@ Patch1: 1868-env-hostname-override.patch
 Patch2: 2303-file-pointer-leak.patch
 Patch3: 2300-stat-call-reduction.patch
 Patch4: bbockelm-3-oss-statistics.patch
-Patch5: bbockelm-4-defer-client-auth_1.patch
-Patch6: bbockelm-4-defer-client-auth_2.patch
-Patch7: bbockelm-4-defer-client-auth_3.patch
+Patch5: bbockelm-4-defer-client-auth.patch
 
 # Debug Patches
 Patch101: 0003-DEBUG-unset-use-pep517.patch
@@ -529,9 +527,7 @@ cd %{build_dir}
 %patch2 -p1
 %patch3 -p1
 %patch4 -p1
-#patch5 -p1
-#patch6 -p1
-#patch7 -p1
+%patch5 -p1
 # %%patch101 -p1
 cd ..
 
@@ -1192,6 +1188,9 @@ fi
 # Changelog
 #-------------------------------------------------------------------------------
 %changelog
+* Fri Aug 30 2024 Mátyás Selmeci <matyas@cs.wisc.edu> - 5.7.0-1.7.2
+- Apply updated bbockelm-4-defer-client-auth (SOFTWARE-5968)
+
 * Tue Aug 27 2024 Mátyás Selmeci <matyas@cs.wisc.edu> - 5.7.0-1.7.1
 - Drop bbockelm-4-defer-client-auth (might be causing test failures)
 
