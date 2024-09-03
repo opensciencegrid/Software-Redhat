@@ -1,6 +1,6 @@
 Summary: Service files for Pelican-based OSDF daemons
 Name: osdf-server
-Version: 7.9.3
+Version: 7.9.9
 Release: 1%{?dist}
 License: ASL 2.0
 Url: https://github.com/PelicanPlatform/pelican
@@ -15,9 +15,9 @@ Source0: pelican.tar.gz
 %define subpackage(x) %{expand:
 %%package -n %1
 Summary: Service file and configuration for %1
-Requires: pelican >= 7.9.0
+Requires: pelican >= %{version}
 Requires: /usr/bin/osdf
-%{-x:Requires: xrootd-server >= 1:5.6.9-1.6}
+%{-x:Requires: xrootd-server >= 1:5.7.0}
 %{-x:Requires: xrootd-scitokens}
 %{-x:Requires: xrootd-voms}
 %{-x:Requires: xrdcl-pelican}
@@ -41,7 +41,14 @@ systemctl daemon-reload
 %{-x:%%attr(-,xrootd,xrootd) /var/spool/osdf}
 %%dir %%attr(0700,root,root) /var/log/pelican
 %%config(noreplace) /etc/logrotate.d/pelican
+
+%%triggerpostin -n %1 -- pelican
+systemctl condrestart %1.service
+
+%{-x:%%triggerpostin -n %1 -- xrootd-server}
+%{-x:systemctl condrestart %1.service}
 }
+
 # end of subpackage helper macro
 
 %description
@@ -79,6 +86,12 @@ install -m 0644 systemd/pelican.logrotate $RPM_BUILD_ROOT/etc/logrotate.d/pelica
 
 
 %changelog
+* Fri Aug 16 2024 Mátyás Selmeci <matyas@cs.wisc.edu> - 7.9.9-1
+- Upgrade to Pelican 7.9.9
+- Require pelican version >= service version
+- Restart service if pelican or (for xrootd-requiring services) xrootd-server is upgraded
+- Require xrootd >= 5.7.0
+
 * Fri Jul 05 2024 Mátyás Selmeci <matyas@cs.wisc.edu> - 7.9.3-1
 - Upgrade to Pelican 7.9.3 (SOFTWARE-5847)
 - Require xrootd >= 5.6.9-1.6 for various backports from 5.7.0
