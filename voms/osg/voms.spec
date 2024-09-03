@@ -1,45 +1,15 @@
 %global _hardened_build 1
 
-%if %{?fedora}%{!?fedora:0} >= 25 || %{?rhel}%{!?rhel:0} >= 8
-%global use_systemd 1
-%else
-%global use_systemd 0
-%endif
-
 Name:		voms
 Version:	2.1.0
-Release:	0.31.rc3.2%{?dist}
+Release:	1.1%{?dist}
 Summary:	Virtual Organization Membership Service
 
 License:	Apache-2.0
 URL:		https://italiangrid.github.io/voms/
-Source0:	https://github.com/italiangrid/%{name}/archive/v%{version}-rc3/%{name}-%{version}-rc3.tar.gz
+Source0:	https://github.com/italiangrid/%{name}/archive/v%{version}/%{name}-%{version}.tar.gz
 #		Post-install setup instructions:
 Source1:	%{name}.INSTALL
-#		https://github.com/italiangrid/voms/pull/105
-Patch0:		0001-Catch-exception-by-reference.patch
-#		https://github.com/italiangrid/voms/pull/106
-Patch1:		0002-Fix-warning-about-possible-use-after-free.patch
-#		https://github.com/italiangrid/voms/pull/107
-Patch2:		0003-Fix-doxygen-warning.patch
-#		https://github.com/italiangrid/voms/pull/108
-Patch3:		0004-Fix-warning-about-possible-string-truncation.patch
-#		https://github.com/italiangrid/voms/pull/104
-Patch4:		0005-config.h-must-not-be-included-in-public-header-file.patch
-Patch5:		0006-Include-config.h-before-other-header-files.patch
-#		https://github.com/italiangrid/voms/pull/109
-Patch6:		0007-Compile-and-link-libvomsapi-with-proper-thread-flags.patch
-#		Backport from upstream
-Patch7:		0008-Fix-memory-leaks-and-double-deletes.patch
-#		https://github.com/italiangrid/voms/pull/116
-Patch8:		0009-If-a-detailed-error-message-is-available-do-not-over.patch
-#		https://github.com/italiangrid/voms/pull/112
-Patch9:		0010-Add-lexparse.h-headers-for-lexer-parser-integration-.patch
-#		https://github.com/italiangrid/voms/pull/121
-Patch10:	0011-Only-process-authority-and-subject-key-identifiers-i.patch
-#		https://github.com/italiangrid/voms/pull/113
-Patch11:	0012-Consider-the-Authority-Key-Id-extension-only-if-it-s.patch
-#		https://github.com/italiangrid/voms/pull/128
 Patch128:       128-Adapt-client-libraries-to-voms-aa.patch
 
 # OSG patches
@@ -58,9 +28,7 @@ BuildRequires:	pkgconfig
 BuildRequires:	libxslt
 BuildRequires:	docbook-style-xsl
 BuildRequires:	doxygen
-%if %{use_systemd}
 BuildRequires:	systemd-rpm-macros
-%endif
 
 %description
 The Virtual Organization Membership Service (VOMS) is an attribute authority
@@ -93,7 +61,15 @@ Summary:	Virtual Organization Membership Service Documentation
 BuildArch:	noarch
 
 %description doc
-Documentation for the Virtual Organization Membership Service.
+The Virtual Organization Membership Service (VOMS) is an attribute authority
+which serves as central repository for VO user authorization information,
+providing support for sorting users into group hierarchies, keeping track of
+their roles and other attributes in order to issue trusted attribute
+certificates and SAML assertions used in the Grid environment for
+authorization purposes.
+
+This package provides documentation for the Virtual Organization Membership
+Service.
 
 %package clients-cpp
 Summary:	Virtual Organization Membership Service Clients
@@ -118,16 +94,8 @@ services.
 %package server
 Summary:	Virtual Organization Membership Service Server
 Requires:	%{name}%{?_isa} = %{version}-%{release}
-
-Requires(pre):		shadow-utils
-%if %{use_systemd}
+Requires(pre):	shadow-utils
 %{?systemd_requires}
-%else
-Requires(post):		chkconfig
-Requires(preun):	chkconfig
-Requires(preun):	initscripts
-Requires(postun):	initscripts
-%endif
 
 %description server
 The Virtual Organization Membership Service (VOMS) is an attribute authority
@@ -140,25 +108,13 @@ authorization purposes.
 This package provides the VOMS service.
 
 %prep
-%setup -q -n %{name}-%{version}-rc3
-%patch -P 0 -p1
-%patch -P 1 -p1
-%patch -P 2 -p1
-%patch -P 3 -p1
-%patch -P 4 -p1
-%patch -P 5 -p1
-%patch -P 6 -p1
-%patch -P 7 -p1
-%patch -P 8 -p1
-%patch -P 9 -p1
-%patch -P 10 -p1
-%patch -P 11 -p1
+%setup -q
 %patch -P 128 -p1
 
 # OSG patches
 
-%patch100 -p1
-%patch102 -p1
+%patch -P 100 -p1
+%patch -P 102 -p1
 
 
 ./autogen.sh
@@ -175,21 +131,10 @@ install -m 644 -p %{SOURCE1} README.Fedora
 
 rm %{buildroot}%{_libdir}/*.la
 
-%if %{use_systemd}
 mkdir -p %{buildroot}%{_unitdir}
 install -m 644 -p systemd/%{name}@.service %{buildroot}%{_unitdir}
 rm %{buildroot}%{_initrddir}/%{name}
 rm %{buildroot}%{_sysconfdir}/sysconfig/%{name}
-%else
-# Turn off default enabling of the service
-sed -e 's/\(chkconfig: \)\w*/\1-/' \
-    -e '/Default-Start/d' \
-    -e 's/\(Default-Stop:\s*\).*/\10 1 2 3 4 5 6/' \
-    -i %{buildroot}%{_initrddir}/%{name}
-%endif
-
-mkdir -p %{buildroot}%{_pkgdocdir}
-install -m 644 -p AUTHORS README.md %{buildroot}%{_pkgdocdir}
 
 mkdir -p %{buildroot}%{_pkgdocdir}/VOMS_C_API
 cp -pr doc/apidoc/api/VOMS_C_API/html %{buildroot}%{_pkgdocdir}/VOMS_C_API
@@ -209,8 +154,6 @@ for b in voms-proxy-init voms-proxy-info voms-proxy-destroy; do
   touch %{buildroot}%{_mandir}/man1/${b}.1
 done
 
-%ldconfig_scriptlets
-
 %posttrans
 # Recover /etc/vomses...
 if [ -r %{_sysconfdir}/vomses.rpmsave -a ! -r %{_sysconfdir}/vomses ] ; then
@@ -221,14 +164,6 @@ fi
 getent group %{name} >/dev/null || groupadd -r %{name}
 getent passwd %{name} >/dev/null || useradd -r -g %{name} \
     -d %{_sysconfdir}/%{name} -s /sbin/nologin -c "VOMS Server Account" %{name}
-
-%if %{use_systemd}
-# Remove old init config when systemd is used
-/sbin/service voms stop >/dev/null 2>&1 || :
-/sbin/chkconfig --del voms >/dev/null 2>&1 || :
-%endif
-
-%if %{use_systemd}
 
 %post server
 if [ $1 -eq 1 ] ; then
@@ -250,26 +185,6 @@ if [ $1 -ge 1 ] ; then
 	systemctl try-restart $INSTANCE >/dev/null 2>&1 || :
     done
 fi
-
-%else
-
-%post server
-if [ $1 = 1 ]; then
-    /sbin/chkconfig --add %{name}
-fi
-
-%preun server
-if [ $1 = 0 ]; then
-    /sbin/service %{name} stop >/dev/null 2>&1 || :
-    /sbin/chkconfig --del %{name}
-fi
-
-%postun server
-if [ $1 -ge 1 ]; then
-    /sbin/service %{name} condrestart >/dev/null 2>&1 || :
-fi
-
-%endif
 
 %pre clients-cpp
 if [ $1 -gt 1 ]; then
@@ -329,9 +244,8 @@ fi
 %dir %{_sysconfdir}/grid-security/vomsdir
 %dir %{_datadir}/%{name}
 %{_datadir}/%{name}/vomses.template
-%doc %dir %{_pkgdocdir}
-%doc %{_pkgdocdir}/AUTHORS
-%doc %{_pkgdocdir}/README.md
+%doc AUTHORS
+%doc README.md
 %license LICENSE
 
 %files devel
@@ -343,9 +257,9 @@ fi
 
 %files doc
 %doc %dir %{_pkgdocdir}
-%doc %{_pkgdocdir}/AUTHORS
 %doc %{_pkgdocdir}/VOMS_C_API
 %doc %{_pkgdocdir}/VOMS_CC_API
+%doc AUTHORS
 %license LICENSE
 
 %files clients-cpp
@@ -369,12 +283,7 @@ fi
 
 %files server
 %{_sbindir}/%{name}
-%if %{use_systemd}
 %{_unitdir}/%{name}@.service
-%else
-%{_initrddir}/%{name}
-%config(noreplace) %{_sysconfdir}/sysconfig/%{name}
-%endif
 %attr(-,voms,voms) %dir %{_sysconfdir}/%{name}
 %dir %{_sysconfdir}/grid-security/%{name}
 %attr(-,voms,voms) %dir %{_localstatedir}/log/%{name}
@@ -389,6 +298,23 @@ fi
 %doc README.Fedora
 
 %changelog
+* Fri Jul 05 2024 Mattias Ellert <mattias.ellert@physics.uu.se> - 2.1.0-1
+- Update to version 2.1.0
+- Drop EPEL 7 support from spec file (EOL)
+
+* Tue Jun 18 2024 Mattias Ellert <mattias.ellert@physics.uu.se> - 2.1.0-0.35.rc5
+- Update to version 2.1.0-rc5
+
+* Fri May 03 2024 Mattias Ellert <mattias.ellert@physics.uu.se> - 2.1.0-0.34.rc4
+- Update to version 2.1.0-rc4
+- Drop patches accepted upstream
+
+* Wed Apr 10 2024 Mattias Ellert <mattias.ellert@physics.uu.se> - 2.1.0-0.33.rc3
+- Fix problem with newer gsoap versions
+
+* Sat Jan 27 2024 Fedora Release Engineering <releng@fedoraproject.org> - 2.1.0-0.32.rc3
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_40_Mass_Rebuild
+
 * Wed Jan 17 2024 Matt Westphall <westphall@wisc.edu> - 2.1.0-0.31.rc3.2
 - Apply patch from upstream to support voms-aa 
 
