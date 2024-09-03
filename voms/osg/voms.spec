@@ -10,7 +10,6 @@ URL:		https://italiangrid.github.io/voms/
 Source0:	https://github.com/italiangrid/%{name}/archive/v%{version}/%{name}-%{version}.tar.gz
 #		Post-install setup instructions:
 Source1:	%{name}.INSTALL
-Patch128:       128-Adapt-client-libraries-to-voms-aa.patch
 
 # OSG patches
 Patch100:       mariadb-innodb.patch
@@ -109,7 +108,6 @@ This package provides the VOMS service.
 
 %prep
 %setup -q
-%patch -P 128 -p1
 
 # OSG patches
 
@@ -298,6 +296,10 @@ fi
 %doc README.Fedora
 
 %changelog
+* Tue Sep 03 2024 Mátyás Selmeci <matyas@cs.wisc.edu> - 2.1.0-1.1
+- Merge OSG changes (SOFTWARE-5973)
+- Drop 128-Adapt-client-libraries-to-voms-aa.patch (merged upstream)
+
 * Fri Jul 05 2024 Mattias Ellert <mattias.ellert@physics.uu.se> - 2.1.0-1
 - Update to version 2.1.0
 - Drop EPEL 7 support from spec file (EOL)
