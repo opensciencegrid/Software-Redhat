@@ -79,8 +79,8 @@
 #-------------------------------------------------------------------------------
 Name:      xrootd
 Epoch:     1
-Version:   5.7.0
-Release:   1.7.2%{?dist}%{?_with_clang:.clang}%{?_with_asan:.asan}
+Version:   5.7.1
+Release:   1.1%{?dist}%{?_with_clang:.clang}%{?_with_asan:.asan}
 Summary:   Extended ROOT file server
 Group:     System Environment/Daemons
 License:   LGPLv3+
@@ -98,11 +98,10 @@ Source0:   xrootd-%{version}.tar.gz
 Source1:   xrootd-%{compat_version}.tar.gz
 
 # OSG Patches not merged into upstream
+Patch0: bbockelm-defer_clientauth_v5_v2.patch
 Patch1: 1868-env-hostname-override.patch
-Patch2: 2303-file-pointer-leak.patch
 Patch3: 2300-stat-call-reduction.patch
 Patch4: bbockelm-3-oss-statistics.patch
-Patch5: bbockelm-4-defer-client-auth.patch
 
 # Debug Patches
 Patch101: 0003-DEBUG-unset-use-pep517.patch
@@ -523,11 +522,10 @@ This package contains compatibility binaries for xrootd 4 servers.
 
 %setup -c -n %{build_dir}
 cd %{build_dir}
+%patch0 -p1
 %patch1 -p1
-%patch2 -p1
 %patch3 -p1
 %patch4 -p1
-%patch5 -p1
 # %%patch101 -p1
 cd ..
 
@@ -1188,6 +1186,9 @@ fi
 # Changelog
 #-------------------------------------------------------------------------------
 %changelog
+* Fri Sep 06 2024 Mátyás Selmeci <matyas@cs.wisc.edu> - 5.7.1-1.1
+- Update to 5.7.1 and drop upstreamed patches (SOFTWARE-5975)
+
 * Fri Aug 30 2024 Mátyás Selmeci <matyas@cs.wisc.edu> - 5.7.0-1.7.2
 - Apply updated bbockelm-4-defer-client-auth (SOFTWARE-5968)
 
