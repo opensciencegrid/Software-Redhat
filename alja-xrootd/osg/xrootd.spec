@@ -82,7 +82,7 @@
 Name:      alja-xrootd
 Epoch:     1
 Version:   5.7.1
-Release:   1.2%{?dist}%{?_with_clang:.clang}%{?_with_asan:.asan}
+Release:   1.3%{?dist}%{?_with_clang:.clang}%{?_with_asan:.asan}
 Summary:   Extended ROOT file server
 Group:     System Environment/Daemons
 License:   LGPLv3+
@@ -1208,7 +1208,7 @@ fi
 # Changelog
 #-------------------------------------------------------------------------------
 %changelog
-* Thu Sep 12 2024 Mátyás Selmeci <matyas@cs.wisc.edu> - 5.7.1-1.2
+* Thu Sep 12 2024 Mátyás Selmeci <matyas@cs.wisc.edu> - 5.7.1-1.3
 - Initial build of alja-xrootd (SOFTWARE-5980)
 
 * Fri Sep 06 2024 Mátyás Selmeci <matyas@cs.wisc.edu> - 5.7.1-1.1
