@@ -14,7 +14,9 @@
 
 # This is the directory the tarball extracts to. This may be "xrootd" or "xrootd-%%{version}" depending on where the tarball was downloaded from.
 # GitHub releases use "xrootd-%%{version}"
-%global build_dir xrootd-%{version}
+#global build_dir xrootd-%{version}
+%global build_dir xrootd-xcache-purge-rebase-onto-master-2024-09-10-tag-1
+#                                                                 ^^ note only one dash
 
 #-------------------------------------------------------------------------------
 # Helper macros
@@ -77,21 +79,21 @@
 #-------------------------------------------------------------------------------
 # Package definitions
 #-------------------------------------------------------------------------------
-Name:      xrootd
+Name:      alja-xrootd
 Epoch:     1
 Version:   5.7.1
-Release:   1.1%{?dist}%{?_with_clang:.clang}%{?_with_asan:.asan}
+Release:   1.2%{?dist}%{?_with_clang:.clang}%{?_with_asan:.asan}
 Summary:   Extended ROOT file server
 Group:     System Environment/Daemons
 License:   LGPLv3+
 URL:       http://xrootd.org/
 
+Provides:  xrootd = %{epoch}:%{version}-%{release}
+
 %define compat_version 4.12.6
 
-# git clone http://xrootd.org/repo/xrootd.git xrootd
-# cd xrootd
-# git-archive master | gzip -9 > ~/rpmbuild/SOURCES/xrootd.tgz
-Source0:   xrootd-%{version}.tar.gz
+%define tag xcache-purge-rebase-onto-master-2024-09-10--tag-1
+Source0:   %{tag}.tar.gz
 
 # always include the tarball in the SRPM even if we don't build it because the
 # SRPM build may have a different build environment than the RPM build
@@ -237,6 +239,7 @@ latency and increased throughput.
 %package libs
 Summary:	Libraries used by xrootd servers and clients
 Group:		System Environment/Libraries
+Provides:       xrootd-libs = %{epoch}:%{version}-%{release}
 
 %description libs
 This package contains libraries used by the xrootd servers and clients.
@@ -248,6 +251,7 @@ This package contains libraries used by the xrootd servers and clients.
 Summary:	Development files for xrootd
 Group:		Development/Libraries
 Requires:	%{name}-libs%{?_isa} = %{epoch}:%{version}-%{release}
+Provides:       xrootd-devel = %{epoch}:%{version}-%{release}
 
 %description devel
 This package contains header files and development libraries for xrootd
@@ -260,6 +264,7 @@ development.
 Summary:	Libraries used by xrootd clients
 Group:		System Environment/Libraries
 Requires:	%{name}-libs%{?_isa} = %{epoch}:%{version}-%{release}
+Provides:       xrootd-client-libs = %{epoch}:%{version}-%{release}
 
 %description client-libs
 This package contains libraries used by xrootd clients.
@@ -272,6 +277,7 @@ Summary:	Development files for xrootd clients
 Group:		Development/Libraries
 Requires:	%{name}-devel%{?_isa} = %{epoch}:%{version}-%{release}
 Requires:	%{name}-client-libs%{?_isa} = %{epoch}:%{version}-%{release}
+Provides:       xrootd-client-devel = %{epoch}:%{version}-%{release}
 
 %description client-devel
 This package contains header files and development libraries for xrootd
@@ -285,6 +291,7 @@ Summary:	Libraries used by xrootd servers
 Group:		System Environment/Libraries
 Requires:	%{name}-libs%{?_isa} = %{epoch}:%{version}-%{release}
 Requires:	%{name}-client-libs%{?_isa} = %{epoch}:%{version}-%{release}
+Provides:       xrootd-server-libs = %{epoch}:%{version}-%{release}
 Obsoletes:  xrootd-macaroons
 Obsoletes:  xrootd-tpc
 
@@ -300,6 +307,7 @@ Group:		Development/Libraries
 Requires:	%{name}-devel%{?_isa} = %{epoch}:%{version}-%{release}
 Requires:	%{name}-client-devel%{?_isa} = %{epoch}:%{version}-%{release}
 Requires:	%{name}-server-libs%{?_isa} = %{epoch}:%{version}-%{release}
+Provides:       xrootd-server-devel = %{epoch}:%{version}-%{release}
 
 %description server-devel
 This package contains header files and development libraries for xrootd
@@ -314,6 +322,7 @@ Group:		Development/Libraries
 Requires:	%{name}-devel%{?_isa} = %{epoch}:%{version}-%{release}
 Requires:	%{name}-client-devel%{?_isa} = %{epoch}:%{version}-%{release}
 Requires:	%{name}-server-devel%{?_isa} = %{epoch}:%{version}-%{release}
+Provides:       xrootd-private-devel = %{epoch}:%{version}-%{release}
 
 %description private-devel
 This package contains some private xrootd headers. Backward and forward
@@ -327,6 +336,7 @@ Summary:	Xrootd command line client tools
 Group:		Applications/Internet
 Requires:	%{name}-libs%{?_isa} = %{epoch}:%{version}-%{release}
 Requires:	%{name}-client-libs%{?_isa} = %{epoch}:%{version}-%{release}
+Provides:       xrootd-client = %{epoch}:%{version}-%{release}
 
 %description client
 This package contains the command line tools used to communicate with
@@ -342,6 +352,7 @@ Requires:  %{name}-libs        = %{epoch}:%{version}-%{release}
 Requires:  %{name}-client-libs = %{epoch}:%{version}-%{release}
 Requires:  %{name}-server-libs = %{epoch}:%{version}-%{release}
 Requires:  expect
+Provides:  xrootd-server = %{epoch}:%{version}-%{release}
 
 %description server
 XRootD server binaries
@@ -355,6 +366,7 @@ Group:		Applications/Internet
 Requires:	%{name}-libs%{?_isa} = %{epoch}:%{version}-%{release}
 Requires:	%{name}-client-libs%{?_isa} = %{epoch}:%{version}-%{release}
 Requires:	fuse
+Provides:       xrootd-fuse = %{epoch}:%{version}-%{release}
 
 %description fuse
 This package contains the FUSE (file system in user space) xrootd mount
@@ -389,6 +401,7 @@ Summary:       Python 3 bindings for XRootD
 Group:         Development/Libraries
 %{?python_provide:%python_provide python%{python3_pkgversion}-%{name}}
 Requires:      %{name}-client-libs%{?_isa} = %{epoch}:%{version}-%{release}
+Provides:       python%{python3_pkgversion}-xrootd = %{epoch}:%{version}-%{release}
 
 %description -n python%{python3_pkgversion}-%{name}
 Python 3 bindings for XRootD
@@ -405,6 +418,7 @@ Group:		Documentation
 # Not noarch: generated documentation different between noarch packages built on different arches
 #BuildArch:	noarch
 %endif
+Provides: xrootd-doc = %{epoch}:%{version}-%{release}
 
 %description doc
 This package contains the API documentation of the xrootd libraries.
@@ -422,6 +436,7 @@ BuildArch: noarch
 Requires(post):   policycoreutils
 Requires(postun): policycoreutils
 Requires:         selinux-policy
+Provides: xrootd-selinux = %{epoch}:%{version}-%{release}
 
 %description selinux
 SELinux policy extensions for running xrootd while in enforcing mode.
@@ -434,6 +449,7 @@ SELinux policy extensions for running xrootd while in enforcing mode.
 Summary: Ceph back-end plug-in for XRootD
 Group:   Development/Tools
 Requires: %{name}-server = %{epoch}:%{version}-%{release}
+Provides: xrootd-ceph = %{epoch}:%{version}-%{release}
 %description ceph
 Ceph back-end plug-in for XRootD.
 %endif
@@ -442,11 +458,12 @@ Ceph back-end plug-in for XRootD.
 # xrdcl-http
 #-------------------------------------------------------------------------------
 %if %{?_with_xrdclhttp:1}%{!?_with_xrdclhttp:0}
-%package -n xrdcl-http
+%package -n alja-xrdcl-http
 Summary:  HTTP client plug-in for XRootD client
 Group:    System Environment/Libraries
 Requires: %{name}-client = %{epoch}:%{version}-%{release}
-%description -n xrdcl-http
+Provides: xrdcl-http = %{epoch}:%{version}-%{release}
+%description -n alja-xrdcl-http
 xrdcl-http is an XRootD client plugin which allows XRootD to interact 
 with HTTP repositories.
 %endif
@@ -458,6 +475,7 @@ with HTTP repositories.
 Summary:   VOMS attribute extractor plug-in for XRootD
 Group:     System Environment/Libraries
 Provides:  vomsxrd = %{epoch}:%{version}-%{release}
+Provides:  xrootd-voms = %{epoch}:%{version}-%{release}
 Obsoletes: vomsxrd < 1:4.12.4-1
 Requires:  %{name}-libs = %{epoch}:%{version}-%{release}
 Obsoletes: xrootd-voms-plugin
@@ -472,6 +490,7 @@ The VOMS attribute extractor plug-in for XRootD.
 Summary: SciTokens authentication plugin for XRootD
 Group:   Development/Tools
 Requires: %{name}-server = %{epoch}:%{version}-%{release}
+Provides: xrootd-scitokens = %{epoch}:%{version}-%{release}
 %description scitokens
 SciToken athorization plug-in for XRootD.
 %endif
@@ -484,6 +503,7 @@ SciToken athorization plug-in for XRootD.
 Summary: CPPUnit tests
 Group:   Development/Tools
 Requires: %{name}-client = %{epoch}:%{version}-%{release}
+Provides: xrootd-tests = %{epoch}:%{version}-%{release}
 %description tests
 This package contains a set of CPPUnit tests for xrootd.
 %endif
@@ -495,6 +515,7 @@ This package contains a set of CPPUnit tests for xrootd.
 %package client-compat
 Summary:	XRootD 4 compatibility client libraries
 Group:		System Environment/Libraries
+Provides: xrootd-client-compat = %{epoch}:%{version}-%{release}
 
 %description client-compat
 This package contains compatibility libraries for xrootd 4 clients.
@@ -506,6 +527,7 @@ This package contains compatibility libraries for xrootd 4 clients.
 Summary:	XRootD 4 compatibility server binaries
 Group:		System Environment/Daemons
 Requires:	%{name}-libs%{?_isa} = %{epoch}:%{version}-%{release}
+Provides: xrootd-server-compat = %{epoch}:%{version}-%{release}
 
 %description server-compat
 This package contains compatibility binaries for xrootd 4 servers.
@@ -1098,7 +1120,7 @@ fi
 %endif
 
 %if %{?_with_xrdclhttp:1}%{!?_with_xrdclhttp:0}
-%files -n xrdcl-http
+%files -n alja-xrdcl-http
 %defattr(-,root,root,-)
 %{_libdir}/libXrdClHttp-5.so
 %{_sysconfdir}/xrootd/client.plugins.d/xrdcl-http-plugin.conf
@@ -1186,6 +1208,9 @@ fi
 # Changelog
 #-------------------------------------------------------------------------------
 %changelog
+* Thu Sep 12 2024 Mátyás Selmeci <matyas@cs.wisc.edu> - 5.7.1-1.2
+- Initial build of alja-xrootd (SOFTWARE-5980)
+
 * Fri Sep 06 2024 Mátyás Selmeci <matyas@cs.wisc.edu> - 5.7.1-1.1
 - Update to 5.7.1 and drop upstreamed patches (SOFTWARE-5975)
 
