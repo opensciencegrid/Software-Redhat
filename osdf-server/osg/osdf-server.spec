@@ -20,6 +20,7 @@ Requires: /usr/bin/osdf
 %{-x:Requires: xrootd-server >= 1:5.7.0}
 %{-x:Requires: xrootd-scitokens}
 %{-x:Requires: xrootd-voms}
+%{-x:Requires: xrootd-multiuser}
 %{-x:Requires: xrdcl-pelican}
 
 %%description -n %1
@@ -91,6 +92,7 @@ install -m 0644 systemd/pelican.logrotate $RPM_BUILD_ROOT/etc/logrotate.d/pelica
 - Require pelican version >= service version
 - Restart service if pelican or (for xrootd-requiring services) xrootd-server is upgraded
 - Require xrootd >= 5.7.0
+- Require xrootd-multiuser
 
 * Fri Jul 05 2024 Mátyás Selmeci <matyas@cs.wisc.edu> - 7.9.3-1
 - Upgrade to Pelican 7.9.3 (SOFTWARE-5847)
