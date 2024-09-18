@@ -3,7 +3,7 @@
 
 Name:           %{pkgname}
 Version:        3.11.2
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        JSON Library for C++
 
 License:        MIT
@@ -44,5 +44,8 @@ cd build
 /usr/share/pkgconfig/nlohmann_json.pc
 
 %changelog
+* Wed Sep 18 2024 Justin Hiemstra <jhiemstra@wisc.edu> - 3.11.2-2
+- Bump release version for building against aarch64
+
 * Mon Jun 26 2023 Justin Hiemstra <jhiemstra@morgridge.org> - 3.11.2-1
 - Initial RPM release

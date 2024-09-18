@@ -9,7 +9,7 @@
 #############################################
 Name:           %{pkgname}
 Version:        2.2.0
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        JSON Schema Validator
 License:        MIT
 URL:            https://github.com/pboettch/json-schema-validator
@@ -78,5 +78,8 @@ cd build
 # packaging revision.                       #
 #############################################
 %changelog
+* Wed Sep 18 2024 Justin Hiemstra <jhiemstra@wisc.edu> - 2.2.0-2
+- Bump release version for building against aarch64
+
 * Mon Jun 26 2023 Justin Hiemstra <jhiemstra@morgridge.org> - 2.2.0-1
 - Initial RPM release
