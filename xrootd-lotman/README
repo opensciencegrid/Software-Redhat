@@ -1,0 +1,4 @@
+xrootd-lotman is a purge plugin for XRootD that implements purge policies
+based on Lotman's "lot" objects and statistics tracking.
+
+See https://github.com/pelicanplatform/xrootd-lotman for more details
