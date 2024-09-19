@@ -8,7 +8,7 @@
 # Package description and other info        #
 #############################################
 Name:           %{pkgname}
-Version:        2.2.0
+Version:        2.3.0
 Release:        1%{?dist}
 Summary:        JSON Schema Validator
 License:        MIT
@@ -61,16 +61,14 @@ cd build
 # installed upon completion                 #
 #############################################
 %files
+%doc README.md
+%license LICENSE
 %{_includedir}/nlohmann/
-/usr/bin/json-schema-validate
-/usr/bin/readme-json-schema
-/usr/lib/cmake/nlohmann_json_schema_validator/nlohmann_json_schema_validatorConfig.cmake
-/usr/lib/cmake/nlohmann_json_schema_validator/nlohmann_json_schema_validatorConfigVersion.cmake
-/usr/lib/cmake/nlohmann_json_schema_validator/nlohmann_json_schema_validatorTargets-noconfig.cmake
-/usr/lib/cmake/nlohmann_json_schema_validator/nlohmann_json_schema_validatorTargets.cmake
-/usr/lib/libnlohmann_json_schema_validator.so
-/usr/lib/libnlohmann_json_schema_validator.so.2
-/usr/lib/libnlohmann_json_schema_validator.so.2.2.0
+%{_libdir}/libnlohmann_json_schema_validator.so*
+%{_libdir}/cmake/nlohmann_json_schema_validator
+%{_bindir}/format-json-schema
+%{_bindir}/readme-json-schema
+%{_bindir}/json-schema-validate
 
 #############################################
 # Changelog, where the version X.X.X-Y is   #
@@ -78,5 +76,11 @@ cd build
 # packaging revision.                       #
 #############################################
 %changelog
+* Wed Sep 18 2024 Justin Hiemstra <jhiemstra@wisc.edu> - 2.3.0-1
+- CMake/spec file updates to make project more flexible.
+
+* Wed Sep 18 2024 Justin Hiemstra <jhiemstra@wisc.edu> - 2.2.0-2
+- Bump release version for building against aarch64
+
 * Mon Jun 26 2023 Justin Hiemstra <jhiemstra@morgridge.org> - 2.2.0-1
 - Initial RPM release
