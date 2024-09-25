@@ -1,7 +1,7 @@
 [{YUMREPO}]
 name=OSG Software for Enterprise Linux {EL} {TITLE} $basearch
-#baseurl=https://repo.opensciencegrid.org/osg/{SERIES}/el{EL}/$basearch
-mirrorlist=https://repo.opensciencegrid.org/mirror/osg/{SERIES}/el{EL}/$basearch
+#baseurl=https://repo.osg-htc.org/osg/{SERIES}/el{EL}/$basearch
+mirrorlist=https://repo.osg-htc.org/mirror/osg/{SERIES}/el{EL}/$basearch
 priority=98
 enabled=0
 gpgcheck=1

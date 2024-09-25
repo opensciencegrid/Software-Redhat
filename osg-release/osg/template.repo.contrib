@@ -1,7 +1,7 @@
 [{YUMREPO}]
 name=OSG Software for Enterprise Linux {EL} {TITLE} $basearch
-#baseurl=https://repo.opensciencegrid.org/osg/{SERIES}/el{EL}/$basearch
-mirrorlist=https://repo.opensciencegrid.org/mirror/osg/{SERIES}/el{EL}/$basearch
+#baseurl=https://repo.osg-htc.org/osg/{SERIES}/el{EL}/$basearch
+mirrorlist=https://repo.osg-htc.org/mirror/osg/{SERIES}/el{EL}/$basearch
 priority=98
 enabled={ENABLED}
 gpgcheck=1
@@ -9,7 +9,7 @@ gpgkey=file:///etc/pki/rpm-gpg/{GPGKEY}
 
 [{YUMREPO}-source]
 name=OSG Software for Enterprise Linux {EL} {TITLE} $basearch - Source
-baseurl=https://repo.opensciencegrid.org/osg/{SERIES}/el{EL}/source/SRPMS
+baseurl=https://repo.osg-htc.org/osg/{SERIES}/el{EL}/source/SRPMS
 priority=98
 enabled=0
 gpgcheck=1
@@ -17,7 +17,7 @@ gpgkey=file:///etc/pki/rpm-gpg/{GPGKEY}
 
 [{YUMREPO}-debuginfo]
 name=OSG Software for Enterprise Linux {EL} {TITLE} $basearch - Debug
-baseurl=https://repo.opensciencegrid.org/osg/{SERIES}/el{EL}/$basearch/debug
+baseurl=https://repo.osg-htc.org/osg/{SERIES}/el{EL}/$basearch/debug
 priority=98
 enabled=0
 gpgcheck=1
