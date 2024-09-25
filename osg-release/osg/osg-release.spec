@@ -62,6 +62,9 @@ install -m 644 *.repo $RPM_BUILD_ROOT%{_sysconfdir}/yum.repos.d
 
 
 %changelog
+* Tue Sep 24 2024 Mátyás Selmeci <matyas@cs.wisc.edu> - 24-1
+- Initial OSG 24 release (SOFTWARE-5985)
+
 * Wed Oct 18 2023 Mátyás Selmeci <matyas@cs.wisc.edu> - 23-5
 - Use 'auto' key for prerelease repo
 
