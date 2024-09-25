@@ -1,10 +1,12 @@
+%define series 24
+
 Name:           osg-release
-Version:        23
-Release:        5%{?dist}
+Version:        %{series}
+Release:        1%{?dist}
 Summary:        OSG Software for Enterprise Linux repository configuration
 
 License:        GPL
-URL:            https://repo.opensciencegrid.org/
+URL:            https://repo.osg-htc.org/
 
 # This is a OSG Software maintained package which is specific to
 # our distribution.  Thus the source is only available from
@@ -19,15 +21,13 @@ Source4:        template.repo.koji
 Source5:        template.repo.direct
 Source6:        template.repo.contrib
 
-Source41:       RPM-GPG-KEY-OSG-23-auto
-Source42:       RPM-GPG-KEY-OSG-23-developer
+Source41:       RPM-GPG-KEY-OSG-%{series}-auto
+Source42:       RPM-GPG-KEY-OSG-%{series}-developer
 
 
 BuildArch:      noarch
 
 Requires:       redhat-release >= %{rhel}
-
-Obsoletes:      vdt-release
 
 %description
 This package contains the OSG Software for Enterprise Linux repository
@@ -43,24 +43,22 @@ exit 0
 
 %install
 
-#GPG Key
-mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/pki/rpm-gpg
-install -pm 644 %{SOURCE41} \
-    $RPM_BUILD_ROOT%{_sysconfdir}/pki/rpm-gpg/RPM-GPG-KEY-OSG-23-auto
-install -pm 644 %{SOURCE42} \
-    $RPM_BUILD_ROOT%{_sysconfdir}/pki/rpm-gpg/RPM-GPG-KEY-OSG-23-developer
+# GPG Key
+install -D -pm 644 %{SOURCE41} \
+    $RPM_BUILD_ROOT%{_sysconfdir}/pki/rpm-gpg/RPM-GPG-KEY-OSG-%{series}-auto
+install -D -pm 644 %{SOURCE42} \
+    $RPM_BUILD_ROOT%{_sysconfdir}/pki/rpm-gpg/RPM-GPG-KEY-OSG-%{series}-developer
 
 # yum
 mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/yum.repos.d
 
 install -m 644 *.repo $RPM_BUILD_ROOT%{_sysconfdir}/yum.repos.d
-sed -i -e 's/gpgcheck=1/gpgcheck=0/' $RPM_BUILD_ROOT%{_sysconfdir}/yum.repos.d/*-minefield.repo
 
 %files
 %defattr(-,root,root,-)
 %config(noreplace) /etc/yum.repos.d/*
-/etc/pki/rpm-gpg/RPM-GPG-KEY-OSG-23-auto
-/etc/pki/rpm-gpg/RPM-GPG-KEY-OSG-23-developer
+/etc/pki/rpm-gpg/RPM-GPG-KEY-OSG-%{series}-auto
+/etc/pki/rpm-gpg/RPM-GPG-KEY-OSG-%{series}-developer
 
 
 %changelog
