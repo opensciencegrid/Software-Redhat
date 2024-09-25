@@ -18,8 +18,3 @@ osg-upcoming-testing      24-upcoming   testing      standard  Upcoming_Testing
 osg-upcoming-minefield    24-upcoming   development  distrepo  Upcoming_Build_Repository
 osg-upcoming-prerelease   24-upcoming   prerelease   kojira    Upcoming_Prerelease_Repository_for_Internal_Use
 
-osg-next                  25            release      standard  Next_Release_Series
-osg-next-development      25            development  standard  Next_Development_Series
-osg-next-testing          25            testing      standard  Next_Testing_Series
-osg-next-minefield        25            development  distrepo  Next_Build_Repository_Series
-
