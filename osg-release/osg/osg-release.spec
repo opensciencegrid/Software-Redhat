@@ -17,9 +17,10 @@ Source0:        generate-repo-files.sh
 Source1:        repoinfo.txt
 Source2:        template.repo.standard
 Source3:        template.repo.basic
-Source4:        template.repo.koji
+Source4:        template.repo.kojira
 Source5:        template.repo.direct
 Source6:        template.repo.contrib
+Source7:        template.repo.distrepo
 
 Source41:       RPM-GPG-KEY-OSG-%{series}-auto
 Source42:       RPM-GPG-KEY-OSG-%{series}-developer

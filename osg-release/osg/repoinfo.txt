@@ -5,21 +5,21 @@ osg-development           24-main       development  standard  Development
 osg-testing               24-main       testing      standard  Testing
 osg-contrib               24-contrib    contrib      contrib   Contributed
 osg-empty                 24-empty      empty        basic     Empty_Packages
-osg-minefield             24-main       development  koji      Build_Repository
-osg-prerelease            24-main       prerelease   koji      Prerelease_Repository_for_Internal_Use
+osg-minefield             24-main       development  distrepo  Build_Repository
+osg-prerelease            24-main       prerelease   kojira    Prerelease_Repository_for_Internal_Use
 
 osg-internal-development      24-internal   development  direct    Internal_Development
 osg-internal                  24-internal   release      direct    Internal
-osg-internal-minefield        24-internal   development  koji      Internal_build_Repository
+osg-internal-minefield        24-internal   development  distrepo  Internal_build_Repository
 
 osg-upcoming              24-upcoming   release      standard  Upcoming
 osg-upcoming-development  24-upcoming   development  standard  Upcoming_Development
 osg-upcoming-testing      24-upcoming   testing      standard  Upcoming_Testing
-osg-upcoming-minefield    24-upcoming   development  koji      Upcoming_Build_Repository
-osg-upcoming-prerelease   24-upcoming   prerelease   koji      Upcoming_Prerelease_Repository_for_Internal_Use
+osg-upcoming-minefield    24-upcoming   development  distrepo  Upcoming_Build_Repository
+osg-upcoming-prerelease   24-upcoming   prerelease   kojira    Upcoming_Prerelease_Repository_for_Internal_Use
 
 osg-next                  25            release      standard  Next_Release_Series
 osg-next-development      25            development  standard  Next_Development_Series
 osg-next-testing          25            testing      standard  Next_Testing_Series
-osg-next-minefield        25            development  koji      Next_Build_Repository_Series
+osg-next-minefield        25            development  distrepo  Next_Build_Repository_Series
 
