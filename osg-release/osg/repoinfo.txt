@@ -5,16 +5,16 @@ osg-development           23-main       development  standard  Development
 osg-testing               23-main       testing      standard  Testing
 osg-contrib               23-contrib    contrib      contrib   Contributed
 osg-empty                 23-empty      empty        basic     Empty_Packages
-osg-minefield             23-main       development  distrepo  Build_Repository
+osg-minefield             23-main       development  kojira    Development_from_Build_System
 osg-prerelease            23-main       prerelease   kojira    Prerelease_Repository_for_Internal_Use
 
 osg-internal-development      23-internal   development  direct    Internal_Development
 osg-internal                  23-internal   release      direct    Internal
-osg-internal-minefield        23-internal   development  distrepo  Internal_build_Repository
+osg-internal-minefield        23-internal   development  kojira    Internal_Development_from_Build_System
 
 osg-upcoming              23-upcoming   release      standard  Upcoming
 osg-upcoming-development  23-upcoming   development  standard  Upcoming_Development
 osg-upcoming-testing      23-upcoming   testing      standard  Upcoming_Testing
-osg-upcoming-minefield    23-upcoming   development  distrepo  Upcoming_Build_Repository
+osg-upcoming-minefield    23-upcoming   development  kojira    Upcoming_Development_from_Build_System
 osg-upcoming-prerelease   23-upcoming   prerelease   kojira    Upcoming_Prerelease_Repository_for_Internal_Use
 
