@@ -2,7 +2,7 @@
 
 Name:           osg-release
 Version:        %{series}
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        OSG Software for Enterprise Linux repository configuration
 
 License:        GPL
@@ -63,6 +63,9 @@ install -m 644 *.repo $RPM_BUILD_ROOT%{_sysconfdir}/yum.repos.d
 
 
 %changelog
+* Mon Sep 30 2024 Mátyás Selmeci <matyas@cs.wisc.edu> - 24-2
+- Do not use "distrepo" repos for minefield (SOFTWARE-5985)
+
 * Tue Sep 24 2024 Mátyás Selmeci <matyas@cs.wisc.edu> - 24-1
 - Initial OSG 24 release (SOFTWARE-5985)
 
