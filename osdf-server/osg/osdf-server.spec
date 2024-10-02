@@ -1,10 +1,13 @@
 Summary: Service files for Pelican-based OSDF daemons
 Name: osdf-server
-Version: 7.9.9
+Version: 7.10.7
 Release: 1%{?dist}
 License: ASL 2.0
 Url: https://github.com/PelicanPlatform/pelican
 BuildArch: noarch
+#BuildRequires: pelican >= %{version}
+# ^^ does not work: the pelican RPM is missing the SIGMD5 header and cannot be used
+#    in a BuildRequires - at least in Koji
 Source0: pelican.tar.gz
 
 
@@ -43,10 +46,10 @@ systemctl daemon-reload
 %%dir %%attr(0700,root,root) /var/log/pelican
 %%config(noreplace) /etc/logrotate.d/pelican
 
-%%triggerpostin -n %1 -- pelican
+%%triggerin -n %1 -- pelican
 systemctl condrestart %1.service
 
-%{-x:%%triggerpostin -n %1 -- xrootd-server}
+%{-x:%%triggerin -n %1 -- xrootd-server}
 %{-x:systemctl condrestart %1.service}
 }
 
@@ -87,6 +90,9 @@ install -m 0644 systemd/pelican.logrotate $RPM_BUILD_ROOT/etc/logrotate.d/pelica
 
 
 %changelog
+* Wed Oct 02 2024 Mátyás Selmeci <matyas@cs.wisc.edu> - 7.10.7-1
+- Upgrade to Pelican 7.10.7 (SOFTWARE-6004)
+
 * Fri Aug 16 2024 Mátyás Selmeci <matyas@cs.wisc.edu> - 7.9.9-1
 - Upgrade to Pelican 7.9.9
 - Require pelican version >= service version
