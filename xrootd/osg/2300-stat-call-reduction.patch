@@ -1,7 +1,7 @@
-From f015f5fdf504fcd82a685ca579d4c651a1ef88f1 Mon Sep 17 00:00:00 2001
+From 17af84fb2c53a48de7f622b8ac058ca92c1f6fb8 Mon Sep 17 00:00:00 2001
 From: Brian Bockelman <bbockelman@morgridge.org>
 Date: Tue, 23 Jul 2024 13:49:38 -0400
-Subject: [PATCH 3/3] Revamp the GET state machine to avoid stat.
+Subject: [PATCH 1/2] Revamp the GET state machine to avoid stat.
 
 The original GET implementation always started with a standalone `stat`
 call - whose results were only used to determine whether to invoke
@@ -20,10 +20,10 @@ collapse all the open files into a single file handle).
  2 files changed, 461 insertions(+), 488 deletions(-)
 
 diff --git a/src/XrdHttp/XrdHttpReq.cc b/src/XrdHttp/XrdHttpReq.cc
-index ab12adcf5d0..09918d78570 100644
+index 35417c8ed88..ecf0fa23e1f 100644
 --- a/src/XrdHttp/XrdHttpReq.cc
 +++ b/src/XrdHttp/XrdHttpReq.cc
-@@ -520,8 +520,10 @@ bool XrdHttpReq::Error(XrdXrootd::Bridge::Context &info, //!< the result context
+@@ -521,8 +521,10 @@ bool XrdHttpReq::Error(XrdXrootd::Bridge::Context &info, //!< the result context
  
    if (PostProcessHTTPReq()) reset();
  
@@ -36,7 +36,7 @@ index ab12adcf5d0..09918d78570 100644
      return true;
    
    return false;
-@@ -1087,22 +1089,36 @@ int XrdHttpReq::ProcessHTTPReq() {
+@@ -1093,22 +1095,36 @@ int XrdHttpReq::ProcessHTTPReq() {
            }
        
        // The reqstate parameter basically moves us through a simple state machine.
@@ -83,7 +83,7 @@ index ab12adcf5d0..09918d78570 100644
          case 1: // Checksum request
            if (!(fileflags & kXR_isDir) && !m_req_digest.empty()) {
              // In this case, the Want-Digest header was set.
-@@ -1132,16 +1148,23 @@ int XrdHttpReq::ProcessHTTPReq() {
+@@ -1138,16 +1154,23 @@ int XrdHttpReq::ProcessHTTPReq() {
              reqstate += 1;
            }
          // fallthrough
@@ -113,7 +113,7 @@ index ab12adcf5d0..09918d78570 100644
              if (prot->listdeny) {
                prot->SendSimpleResp(503, NULL, NULL, (char *) "Listings are disabled.", 0, false);
                return -1;
-@@ -1161,10 +1184,8 @@ int XrdHttpReq::ProcessHTTPReq() {
+@@ -1167,10 +1190,8 @@ int XrdHttpReq::ProcessHTTPReq() {
                return -1;
              }
  
@@ -124,7 +124,7 @@ index ab12adcf5d0..09918d78570 100644
  
              // --------- DIRLIST
              memset(&xrdreq, 0, sizeof (ClientRequest));
-@@ -1180,37 +1201,21 @@ int XrdHttpReq::ProcessHTTPReq() {
+@@ -1186,37 +1207,21 @@ int XrdHttpReq::ProcessHTTPReq() {
  
              // We don't want to be invoked again after this request is finished
              return 1;
@@ -171,7 +171,7 @@ index ab12adcf5d0..09918d78570 100644
            const XrdHttpIOList &readChunkList = readRangeHandler.NextReadList();
  
            // Close() if we have finished, otherwise read the next chunk
-@@ -1781,6 +1786,287 @@ XrdHttpReq::PostProcessChecksum(std::string &digest_header) {
+@@ -1788,6 +1793,287 @@ XrdHttpReq::PostProcessChecksum(std::string &digest_header) {
    }
  }
  
@@ -459,7 +459,7 @@ index ab12adcf5d0..09918d78570 100644
  
  // This is invoked by the callbacks, after something has happened in the bridge
  
-@@ -1859,488 +2145,167 @@ int XrdHttpReq::PostProcessHTTPReq(bool final_) {
+@@ -1867,488 +2153,167 @@ int XrdHttpReq::PostProcessHTTPReq(bool final_) {
      }
      case XrdHttpReq::rtGET:
      {
@@ -1089,3 +1089,26 @@ index ed56ede2066..7b368b506f5 100644
    /// Cook and send the response after the bridge did something
    /// Return values:
    ///  0->everything OK, additionsl steps may be required
+
+From a9143716197a24bd9795109bdd2457f0f5cf2e84 Mon Sep 17 00:00:00 2001
+From: Fabrizio Furano <fabrizio.furano@gmail.com>
+Date: Fri, 13 Sep 2024 11:19:51 +0200
+Subject: [PATCH 2/2] PostProcessListing should return 0, not 1
+
+---
+ src/XrdHttp/XrdHttpReq.cc | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/src/XrdHttp/XrdHttpReq.cc b/src/XrdHttp/XrdHttpReq.cc
+index ecf0fa23e1f..c7c2b376e91 100644
+--- a/src/XrdHttp/XrdHttpReq.cc
++++ b/src/XrdHttp/XrdHttpReq.cc
+@@ -1988,7 +1988,7 @@ XrdHttpReq::PostProcessListing(bool final_) {
+     return keepalive ? 1 : -1;
+   }
+ 
+-  return 1;
++  return 0;
+ }
+ 
+ int
