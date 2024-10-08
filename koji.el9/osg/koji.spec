@@ -8,7 +8,7 @@
 %{?!python3_pkgversion:%global python3_pkgversion 3}
 
 Name: koji
-Version: 1.33.0
+Version: 1.33.2
 Release: 1.1%{?dist}
 # the included arch lib from yum's rpmUtils is GPLv2+
 License: LGPLv2 and GPLv2+
@@ -22,7 +22,7 @@ Patch103: kojid_scmbuild_check_spec_after_running_sourcecmd.patch
 Patch113: kojira-add-sleeptime-to-conf.patch
 
 # Not upstreamable
-Patch1000: fedora-config.patch
+# Patch1000: fedora-config.patch
 
 BuildArch: noarch
 Requires: python%{python3_pkgversion}-%{name} = %{version}-%{release}
