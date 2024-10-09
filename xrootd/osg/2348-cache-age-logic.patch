@@ -1,0 +1,59 @@
+From 4e2aeff330247bb99ac7b9f57fc457f840405c5f Mon Sep 17 00:00:00 2001
+From: Brian Bockelman <bbockelman@morgridge.org>
+Date: Sun, 29 Sep 2024 11:36:29 +0200
+Subject: [PATCH] Change cache age logic to only indicate fully cached files
+
+The cache mtime logic (whose sole use is to have the `Age` header
+set) was fairly misleading: a `HEAD` (or `stat`) request would cause
+the cinfo file to be written, and the cache to indicate it had the
+data.
+
+This was not useful: the object was indicated as cached even when
+not a single byte of data was present.
+
+This takes the opposite approach: mtime and ctime are only set
+(and hence the `Age` header is returned) only if the file is complete.
+---
+ src/XrdPfc/XrdPfcIOFile.cc | 22 +++++++++++++++-------
+ 1 file changed, 15 insertions(+), 7 deletions(-)
+
+diff --git a/src/XrdPfc/XrdPfcIOFile.cc b/src/XrdPfc/XrdPfcIOFile.cc
+index d0b3ebef169..68d1ac3f5ae 100644
+--- a/src/XrdPfc/XrdPfcIOFile.cc
++++ b/src/XrdPfc/XrdPfcIOFile.cc
+@@ -96,9 +96,18 @@ int IOFile::initCachedStat()
+             // The filesize from the file itself may be misleading if its download is incomplete; take it from the cinfo.
+             tmpStat.st_size = info.GetFileSize();
+             // We are arguably abusing the mtime to be the creation time of the file; then ctime becomes the
+-            // last time additional data was cached.
+-            tmpStat.st_mtime = info.GetCreationTime();
+-            TRACEIO(Info, trace_pfx << "successfully read size " << tmpStat.st_size << " and creation time " << tmpStat.st_mtime << " from info file");
++            // last time additional data was cached.  Note we only set the mtime if the file is complete; this
++            // helps clients know whether there was a cache hit or miss.
++            if (info.IsComplete())
++            {
++               tmpStat.st_mtime = info.GetCreationTime();
++               TRACEIO(Info, trace_pfx << "successfully read size " << tmpStat.st_size << " and creation time " << tmpStat.st_mtime << " from info file");
++            }
++            else
++            {
++               tmpStat.st_mtime = 0;
++               TRACEIO(Info, trace_pfx << "successfully read size from info file = " << tmpStat.st_size);
++            }
+             res = 0;
+          }
+          else
+@@ -120,10 +129,9 @@ int IOFile::initCachedStat()
+       res = GetInput()->Fstat(tmpStat);
+       TRACEIO(Debug, trace_pfx << "got stat from client res = " << res << ", size = " << tmpStat.st_size);
+       // The mtime / atime / ctime for cached responses come from the file on disk in the cache hit case.
+-      // To avoid weirdness when two subsequent stat queries can give wildly divergent times (one from the
+-      // origin, one from the cache), set the times to "now" so we effectively only report the *time as the
+-      // cache service sees it.
+-      tmpStat.st_ctime = tmpStat.st_mtime = tmpStat.st_atime = time(NULL);
++      // In the cache miss cache, we set the various *time attributes to 0 as they are meant to indicate
++      // the age of the cache information and 0 indicates non-existence.
++      tmpStat.st_ctime = tmpStat.st_mtime = tmpStat.st_atime = 0;
+    }
+ 
+    if (res == 0)
