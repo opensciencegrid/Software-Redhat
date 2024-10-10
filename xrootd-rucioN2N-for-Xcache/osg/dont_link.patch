@@ -1,0 +1,13 @@
+diff --git a/Makefile b/Makefile
+index d77159f..5482318 100644
+--- a/rucioN2N-for-Xcache-1.2/Makefile
++++ b/rucioN2N-for-Xcache-1.2/Makefile
+@@ -20,7 +20,7 @@ OBJECTS=XrdOucName2NameDCP4RUCIO.o XrdOssStatInfoDCP.o rucioGetMetaLink.o pfn2ca
+ DEBUG=-g
+ 
+ XrdName2NameDCP4RUCIO.so: $(OBJECTS) Makefile
+-	g++ ${DEBUG} -shared -fPIC -o $@ $(OBJECTS) -L${XRD_LIB} -L${XRD_LIB}/XrdCl -ldl -lssl -lcurl -lXrdCl -lXrdFileCache-4 -lXrdPosix -lstdc++
++	g++ ${DEBUG} -shared -fPIC -o $@ $(OBJECTS) -L${XRD_LIB} -L${XRD_LIB}/XrdCl -ldl -lssl -lcurl -lXrdCl -lXrdPosix -lstdc++
+ 
+ XrdOucName2NameDCP4RUCIO.o: XrdOucName2NameDCP4RUCIO.cc ${HEADERS} Makefile
+ 	g++ ${DEBUG} ${FLAGS} -fPIC -I ${XRD_INC} -I ${XRD_LIB} -c -o $@ $<
