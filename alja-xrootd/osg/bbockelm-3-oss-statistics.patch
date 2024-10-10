@@ -1,0 +1,1001 @@
+From 02934a61c6aaf90973654750e69397601cd3672c Mon Sep 17 00:00:00 2001
+From: Brian Bockelman <bbockelman@morgridge.org>
+Date: Wed, 29 May 2024 11:24:29 -0500
+Subject: [PATCH 1/2] Add infrastructure for generic OSS g-stream monitoring
+
+With this, any OSS plugin may use the gstream monitoring.
+---
+ src/XrdXrootd/XrdXrootdConfigMon.cc | 2 ++
+ src/XrdXrootd/XrdXrootdMonData.hh   | 1 +
+ src/XrdXrootd/XrdXrootdMonitor.hh   | 3 ++-
+ 3 files changed, 5 insertions(+), 1 deletion(-)
+
+diff --git a/src/XrdXrootd/XrdXrootdConfigMon.cc b/src/XrdXrootd/XrdXrootdConfigMon.cc
+index 3acc2e150d5..46b07b435ca 100644
+--- a/src/XrdXrootd/XrdXrootdConfigMon.cc
++++ b/src/XrdXrootd/XrdXrootdConfigMon.cc
+@@ -82,6 +82,8 @@ MonParms *MP = 0;
+ struct XrdXrootdGSReal::GSParms gsObj[] =
+        {{"ccm",      0, XROOTD_MON_CCM,   0, -1, XROOTD_MON_GSCCM, 0,
+                      XrdXrootdGSReal::fmtBin, XrdXrootdGSReal::hdrNorm},
++        {"oss",      0, XROOTD_MON_OSS,   0, -1, XROOTD_MON_GSOSS, 0,
++                     XrdXrootdGSReal::fmtBin, XrdXrootdGSReal::hdrNorm},
+         {"pfc",      0, XROOTD_MON_PFC,   0, -1, XROOTD_MON_GSPFC, 0,
+                      XrdXrootdGSReal::fmtBin, XrdXrootdGSReal::hdrNorm},
+         {"TcpMon",   0, XROOTD_MON_TCPMO, 0, -1, XROOTD_MON_GSTCP, 0,
+diff --git a/src/XrdXrootd/XrdXrootdMonData.hh b/src/XrdXrootd/XrdXrootdMonData.hh
+index 82035e7cb17..7a3d6200600 100644
+--- a/src/XrdXrootd/XrdXrootdMonData.hh
++++ b/src/XrdXrootd/XrdXrootdMonData.hh
+@@ -120,6 +120,7 @@ const kXR_char XROOTD_MON_GSPFC         = 'C'; // pfc: Cache monitoring  info
+ const kXR_char XROOTD_MON_GSTCP         = 'T'; // TCP connection statistics
+ const kXR_char XROOTD_MON_GSTPC         = 'P'; // TPC Third Party Copy
+ const kXR_char XROOTD_MON_GSTHR         = 'R'; // IO activity from the throttle plugin
++const kXR_char XROOTD_MON_GSOSS         = 'O'; // IO activity from a generic OSS plugin
+ 
+ // The following bits are insert in the low order 4 bits of the MON_REDIRECT
+ // entry code to indicate the actual operation that was requestded.
+diff --git a/src/XrdXrootd/XrdXrootdMonitor.hh b/src/XrdXrootd/XrdXrootdMonitor.hh
+index 52205e1825f..8fa46f186bb 100644
+--- a/src/XrdXrootd/XrdXrootdMonitor.hh
++++ b/src/XrdXrootd/XrdXrootdMonitor.hh
+@@ -60,7 +60,8 @@
+ #define XROOTD_MON_TCPMO 0x00000800
+ #define XROOTD_MON_TPC   0x00001000
+ #define XROOTD_MON_THROT 0x00002000
+-#define XROOTD_MON_GSTRM (XROOTD_MON_CCM | XROOTD_MON_PFC | XROOTD_MON_TCPMO | XROOTD_MON_THROT)
++#define XROOTD_MON_OSS   0x00004000
++#define XROOTD_MON_GSTRM (XROOTD_MON_CCM | XROOTD_MON_PFC | XROOTD_MON_TCPMO | XROOTD_MON_THROT | XROOTD_MON_OSS)
+ 
+ #define XROOTD_MON_FSLFN    1
+ #define XROOTD_MON_FSOPS    2
+
+From 74dd393a8e0bc9298b7e41d8f93f0bb413278323 Mon Sep 17 00:00:00 2001
+From: Brian Bockelman <bbockelman@morgridge.org>
+Date: Wed, 29 May 2024 11:26:01 -0500
+Subject: [PATCH 2/2] Implementation of the new "storage statistics" OSS
+
+The storage statistics OSS keep track of number of server-wide
+requests and performance, reporting this information through the
+g-stream.
+
+It includes separate counters for "slow" requests, allowing one to
+get a feel for how many requests go through the server over a
+configurable threshold (default: 1s).
+---
+ src/XrdOssStats/XrdStatsConfig.cc     | 128 ++++++++++
+ src/XrdOssStats/XrdStatsConfig.hh     |  17 ++
+ src/XrdOssStats/XrdStatsDirectory.hh  |  52 ++++
+ src/XrdOssStats/XrdStatsFile.cc       |   5 +
+ src/XrdOssStats/XrdStatsFile.hh       | 168 +++++++++++++
+ src/XrdOssStats/XrdStatsFileSystem.cc | 337 ++++++++++++++++++++++++++
+ src/XrdOssStats/XrdStatsFileSystem.hh | 128 ++++++++++
+ src/XrdPlugins.cmake                  |  19 +-
+ 8 files changed, 853 insertions(+), 1 deletion(-)
+ create mode 100644 src/XrdOssStats/XrdStatsConfig.cc
+ create mode 100644 src/XrdOssStats/XrdStatsConfig.hh
+ create mode 100644 src/XrdOssStats/XrdStatsDirectory.hh
+ create mode 100644 src/XrdOssStats/XrdStatsFile.cc
+ create mode 100644 src/XrdOssStats/XrdStatsFile.hh
+ create mode 100644 src/XrdOssStats/XrdStatsFileSystem.cc
+ create mode 100644 src/XrdOssStats/XrdStatsFileSystem.hh
+
+diff --git a/src/XrdOssStats/XrdStatsConfig.cc b/src/XrdOssStats/XrdStatsConfig.cc
+new file mode 100644
+index 00000000000..bc31f035295
+--- /dev/null
++++ b/src/XrdOssStats/XrdStatsConfig.cc
+@@ -0,0 +1,128 @@
++
++#include "XrdVersion.hh"
++
++#include "XrdStatsConfig.hh"
++#include "XrdStatsFileSystem.hh"
++#include "XrdSys/XrdSysError.hh"
++
++#include <sstream>
++
++XrdVERSIONINFO(XrdOssGetFileSystem, Stats);
++
++
++std::string LogMaskToString(int mask) {
++    if (mask == LogMask::All) {return "all";}
++
++    bool has_entry = false;
++    std::stringstream ss;
++    if (mask & LogMask::Debug) {
++        ss << "debug";
++        has_entry = true;
++    }
++    if (mask & LogMask::Info) {
++        ss << (has_entry ? ", " : "") << "info";
++        has_entry = true;
++    }
++    if (mask & LogMask::Warning) {
++        ss << (has_entry ? ", " : "") << "warning";
++        has_entry = true;
++    }
++    if (mask & LogMask::Error) {
++        ss << (has_entry ? ", " : "") << "error";
++        has_entry = true;
++    }
++    return ss.str();
++}
++
++// Parse a string as a timeout value with a unit.
++//
++// Example:
++//    1s500ms
++bool ParseDuration(const std::string &duration, std::chrono::steady_clock::duration &result, std::string &errmsg) {
++
++    if (duration.empty()) {
++        errmsg = "cannot parse empty string as a time duration";
++        return false;
++    }
++    if (duration == "0") {
++        result = std::chrono::steady_clock::duration(0);
++        return true;
++    }
++    std::chrono::steady_clock::duration dur(0);
++    auto strValue = duration;
++    while (!strValue.empty()) {
++        std::size_t pos;
++        double value;
++        try {
++            value = std::stod(strValue, &pos);
++        } catch (std::invalid_argument const &exc) {
++            errmsg = "Invalid number provided as timeout: " + strValue;
++            return false;
++        } catch (std::out_of_range const &exc) {
++            errmsg = "Provided timeout out of representable range: " + std::string(exc.what());
++            return false;
++        }
++        if (value < 0) {
++            errmsg = "Provided timeout was negative";
++            return false;
++        }
++        strValue = strValue.substr(pos);
++        char unit[3] = {'\0', '\0', '\0'};
++        if (!strValue.empty()) {
++            unit[0] = strValue[0];
++            if (unit[0] >= '0' && unit[0] <= '9') {unit[0] = '\0';}
++        }
++        if (strValue.size() > 1) {
++            unit[1] = strValue[1];
++            if (unit[1] >= '0' && unit[1] <= '9') {unit[1] = '\0';}
++        }
++        if (!strncmp(unit, "ns", 2)) {
++            dur += std::chrono::duration_cast<typeof(dur)>(std::chrono::duration<double, std::nano>(value));
++        } else if (!strncmp(unit, "us", 2)) {
++            dur += std::chrono::duration_cast<typeof(dur)>(std::chrono::duration<double, std::micro>(value));
++        } else if (!strncmp(unit, "ms", 2)) {
++            dur += std::chrono::duration_cast<typeof(dur)>(std::chrono::duration<double, std::milli>(value));
++        } else if (!strncmp(unit, "s", 1)) {
++            dur += std::chrono::duration_cast<typeof(dur)>(std::chrono::duration<double>(value));
++        } else if (!strncmp(unit, "m", 1)) {
++            dur += std::chrono::duration_cast<typeof(dur)>(std::chrono::duration<double, std::ratio<60>>(value));
++        } else if (!strncmp(unit, "h", 1)) {
++            dur += std::chrono::duration_cast<typeof(dur)>(std::chrono::duration<double, std::ratio<3600>>(value));
++        } else if (strlen(unit) > 0) {
++            errmsg = "Unknown unit in duration: " + std::string(unit);
++            return false;
++        } else {
++            errmsg = "Unit missing from duration: " + duration;
++            return false;
++        }
++        strValue = strValue.substr(strlen(unit));
++    }
++    result = dur;
++    return true;
++}
++
++///
++// The following functions export the plugin to the
++// XRootD framework
++
++extern "C" {
++
++XrdOss *XrdOssAddStorageSystem2(XrdOss       *curr_oss,
++                                XrdSysLogger *logger,
++                                const char   *config_fn,
++                                const char   *parms,
++                                XrdOucEnv    *envP)
++{
++                   
++    XrdSysError log(logger, "fsstats_");
++    try {
++        return new StatsFileSystem(curr_oss, logger, config_fn, envP);
++    } catch (std::runtime_error &re) {
++        log.Emsg("Initialize", "Encountered a runtime failure:", re.what());
++        return nullptr;
++    }
++}
++
++XrdVERSIONINFO(XrdOssAddStorageSystem2,fsstats);
++
++}
+diff --git a/src/XrdOssStats/XrdStatsConfig.hh b/src/XrdOssStats/XrdStatsConfig.hh
+new file mode 100644
+index 00000000000..3ac1f1109c9
+--- /dev/null
++++ b/src/XrdOssStats/XrdStatsConfig.hh
+@@ -0,0 +1,17 @@
++
++#pragma once
++
++#include <chrono>
++#include <string>
++
++enum LogMask {
++    Debug =   0x01,
++    Info =    0x02,
++    Warning = 0x04,
++    Error =   0x08,
++    All =     0xff
++};
++
++std::string LogMaskToString(int mask);
++
++bool ParseDuration(const std::string &duration, std::chrono::steady_clock::duration &result, std::string &errmsg);
+diff --git a/src/XrdOssStats/XrdStatsDirectory.hh b/src/XrdOssStats/XrdStatsDirectory.hh
+new file mode 100644
+index 00000000000..e91f0b0a61d
+--- /dev/null
++++ b/src/XrdOssStats/XrdStatsDirectory.hh
+@@ -0,0 +1,52 @@
++
++#pragma once
++
++#include "XrdOuc/XrdOucEnv.hh"
++#include "XrdOss/XrdOss.hh"
++#include "XrdStatsFileSystem.hh"
++#include "XrdSys/XrdSysError.hh"
++
++#include <memory>
++
++class StatsDirectory : public XrdOssDF {
++public:
++    StatsDirectory(const char *user, std::unique_ptr<XrdOssDF> ossDF, XrdSysError &log, StatsFileSystem &oss) :
++        XrdOssDF(user),
++        m_wrappedDir(std::move(ossDF)),
++        m_log(log),
++        m_oss(oss)
++    {
++    }
++
++    virtual ~StatsDirectory() {}
++
++    virtual int
++    Opendir(const char *path,
++            XrdOucEnv &env) override 
++    {
++        StatsFileSystem::OpTimer op(m_oss.m_ops.m_dirlist_ops, m_oss.m_slow_ops.m_dirlist_ops, m_oss.m_times.m_dirlist, m_oss.m_slow_times.m_dirlist, m_oss.m_slow_duration);
++        return m_wrappedDir->Opendir(path, env);
++    }
++
++    int Readdir(char *buff, int blen) override
++    {
++        StatsFileSystem::OpTimer op(m_oss.m_ops.m_dirlist_entries, m_oss.m_slow_ops.m_dirlist_entries, m_oss.m_times.m_dirlist, m_oss.m_slow_times.m_dirlist, m_oss.m_slow_duration);
++        return m_wrappedDir->Readdir(buff, blen);
++    }
++
++    int StatRet(struct stat *statStruct) override
++    {
++        return m_wrappedDir->StatRet(statStruct);
++    }
++
++    int Close(long long *retsz=0) override
++    {
++        return m_wrappedDir->Close(retsz);
++    }
++
++
++private:
++    std::unique_ptr<XrdOssDF> m_wrappedDir;
++    XrdSysError m_log;
++    StatsFileSystem &m_oss;
++};
+diff --git a/src/XrdOssStats/XrdStatsFile.cc b/src/XrdOssStats/XrdStatsFile.cc
+new file mode 100644
+index 00000000000..5065dc497ed
+--- /dev/null
++++ b/src/XrdOssStats/XrdStatsFile.cc
+@@ -0,0 +1,5 @@
++
++#include "XrdStatsFile.hh"
++
++StatsFile::~StatsFile() {}
++
+diff --git a/src/XrdOssStats/XrdStatsFile.hh b/src/XrdOssStats/XrdStatsFile.hh
+new file mode 100644
+index 00000000000..2f59d7cb30c
+--- /dev/null
++++ b/src/XrdOssStats/XrdStatsFile.hh
+@@ -0,0 +1,168 @@
++
++#pragma once
++
++#include "XrdOss/XrdOssWrapper.hh"
++#include "XrdSys/XrdSysError.hh"
++#include "XrdStatsFileSystem.hh"
++
++#include <memory>
++
++class XrdSecEntity;
++
++class StatsFile : public XrdOssWrapDF {
++public:
++    StatsFile(std::unique_ptr<XrdOssDF> wrapDF, XrdSysError &log, StatsFileSystem &oss) :
++      XrdOssWrapDF(*wrapDF),
++      m_wrapped(std::move(wrapDF)),
++      m_log(log),
++      m_oss(oss)
++    {}
++
++    virtual ~StatsFile();
++
++    int     Open(const char *path, int Oflag, mode_t Mode, XrdOucEnv &env) override
++    {
++        StatsFileSystem::OpTimer op(m_oss.m_ops.m_open_ops, m_oss.m_slow_ops.m_open_ops, m_oss.m_times.m_open, m_oss.m_slow_times.m_open, m_oss.m_slow_duration);
++        return wrapDF.Open(path, Oflag, Mode, env);
++    }
++
++    int     Fchmod(mode_t mode) override
++    {
++        StatsFileSystem::OpTimer op(m_oss.m_ops.m_chmod_ops, m_oss.m_slow_ops.m_chmod_ops, m_oss.m_times.m_chmod, m_oss.m_slow_times.m_chmod, m_oss.m_slow_duration);
++        return wrapDF.Fchmod(mode);
++    }
++
++    void    Flush() override
++    {
++        return wrapDF.Flush();
++    }
++
++    int     Fstat(struct stat *buf) override
++    {
++        StatsFileSystem::OpTimer op(m_oss.m_ops.m_stat_ops, m_oss.m_slow_ops.m_stat_ops, m_oss.m_times.m_stat, m_oss.m_slow_times.m_stat, m_oss.m_slow_duration);
++        return wrapDF.Fstat(buf);
++    }
++
++    int     Fsync() override
++    {
++        return wrapDF.Fsync();
++    }
++
++    int     Fsync(XrdSfsAio *aiop) override
++    {
++        return wrapDF.Fsync(aiop);
++    }
++
++    int     Ftruncate(unsigned long long size) override
++    {
++        StatsFileSystem::OpTimer op(m_oss.m_ops.m_truncate_ops, m_oss.m_slow_ops.m_truncate_ops, m_oss.m_times.m_truncate, m_oss.m_slow_times.m_truncate, m_oss.m_slow_duration);
++        return wrapDF.Ftruncate(size);
++    }
++
++    off_t   getMmap(void **addr) override
++    {
++        return wrapDF.getMmap(addr);
++    }
++
++    int     isCompressed(char *cxidp=0) override
++    {
++        return wrapDF.isCompressed(cxidp);
++    }
++
++    ssize_t pgRead (void* buffer, off_t offset, size_t rdlen,
++                        uint32_t* csvec, uint64_t opts) override
++    {
++        StatsFileSystem::OpTimer op(m_oss.m_ops.m_pgread_ops, m_oss.m_slow_ops.m_pgread_ops, m_oss.m_times.m_pgread, m_oss.m_slow_times.m_pgread, m_oss.m_slow_duration);
++        return wrapDF.pgRead(buffer, offset, rdlen, csvec, opts);
++    }
++
++    int     pgRead (XrdSfsAio* aioparm, uint64_t opts) override
++    {
++        StatsFileSystem::OpTimer op(m_oss.m_ops.m_pgread_ops, m_oss.m_slow_ops.m_pgread_ops, m_oss.m_times.m_pgread, m_oss.m_slow_times.m_pgread, m_oss.m_slow_duration);
++        return wrapDF.pgRead(aioparm, opts);
++    }
++
++    ssize_t pgWrite(void* buffer, off_t offset, size_t wrlen,
++                        uint32_t* csvec, uint64_t opts) override
++    {
++        StatsFileSystem::OpTimer op(m_oss.m_ops.m_pgwrite_ops, m_oss.m_slow_ops.m_pgwrite_ops, m_oss.m_times.m_pgwrite, m_oss.m_slow_times.m_pgwrite, m_oss.m_slow_duration);
++        return wrapDF.pgWrite(buffer, offset, wrlen, csvec, opts);
++    }
++
++    int     pgWrite(XrdSfsAio* aioparm, uint64_t opts) override
++    {
++        StatsFileSystem::OpTimer op(m_oss.m_ops.m_pgwrite_ops, m_oss.m_slow_ops.m_pgwrite_ops, m_oss.m_times.m_pgwrite, m_oss.m_slow_times.m_pgwrite, m_oss.m_slow_duration);
++        return wrapDF.pgWrite(aioparm, opts);
++    }
++
++    ssize_t Read(off_t offset, size_t size) override
++    {
++        StatsFileSystem::OpTimer op(m_oss.m_ops.m_read_ops, m_oss.m_slow_ops.m_read_ops, m_oss.m_times.m_read, m_oss.m_slow_times.m_read, m_oss.m_slow_duration);
++        return wrapDF.Read(offset, size);
++    }
++
++    ssize_t Read(void *buffer, off_t offset, size_t size) override
++    {
++        StatsFileSystem::OpTimer op(m_oss.m_ops.m_read_ops, m_oss.m_slow_ops.m_read_ops, m_oss.m_times.m_read, m_oss.m_slow_times.m_read, m_oss.m_slow_duration);
++        return wrapDF.Read(buffer, offset, size);
++    }
++
++    int     Read(XrdSfsAio *aiop) override
++    {
++        StatsFileSystem::OpTimer op(m_oss.m_ops.m_read_ops, m_oss.m_slow_ops.m_read_ops, m_oss.m_times.m_read, m_oss.m_slow_times.m_read, m_oss.m_slow_duration);
++        return wrapDF.Read(aiop);
++    }
++
++    ssize_t ReadRaw(void *buffer, off_t offset, size_t size) override
++    {
++        StatsFileSystem::OpTimer op(m_oss.m_ops.m_read_ops, m_oss.m_slow_ops.m_read_ops, m_oss.m_times.m_read, m_oss.m_slow_times.m_read, m_oss.m_slow_duration);
++        return wrapDF.ReadRaw(buffer, offset, size);
++    }
++
++    ssize_t ReadV(XrdOucIOVec *readV, int rdvcnt) override
++    {
++        auto start = std::chrono::steady_clock::now();
++        auto result = wrapDF.ReadV(readV, rdvcnt);
++        auto dur = std::chrono::steady_clock::now() - start;
++        m_oss.m_ops.m_readv_ops++;
++        m_oss.m_ops.m_readv_segs += rdvcnt;
++        auto ns = std::chrono::nanoseconds(dur).count();
++        m_oss.m_times.m_readv += ns;
++        if (dur > m_oss.m_slow_duration) {
++            m_oss.m_slow_ops.m_readv_ops++;
++            m_oss.m_slow_ops.m_readv_segs += rdvcnt;
++            m_oss.m_times.m_readv += std::chrono::nanoseconds(dur).count();
++        }
++        return result;
++    }
++
++    ssize_t Write(const void *buffer, off_t offset, size_t size) override
++    {
++        StatsFileSystem::OpTimer op(m_oss.m_ops.m_write_ops, m_oss.m_slow_ops.m_write_ops, m_oss.m_times.m_write, m_oss.m_slow_times.m_write, m_oss.m_slow_duration);
++        return wrapDF.Write(buffer, offset, size);
++    }
++
++    int     Write(XrdSfsAio *aiop) override
++    {
++        StatsFileSystem::OpTimer op(m_oss.m_ops.m_write_ops, m_oss.m_slow_ops.m_write_ops, m_oss.m_times.m_write, m_oss.m_slow_times.m_write, m_oss.m_slow_duration);
++        return wrapDF.Write(aiop);
++    }
++
++    ssize_t WriteV(XrdOucIOVec *writeV, int wrvcnt) override
++    {
++        StatsFileSystem::OpTimer op(m_oss.m_ops.m_write_ops, m_oss.m_slow_ops.m_write_ops, m_oss.m_times.m_write, m_oss.m_slow_times.m_write, m_oss.m_slow_duration);
++        return wrapDF.WriteV(writeV, wrvcnt);
++    }
++
++    int Close(long long *retsz=0) override
++    {
++        return wrapDF.Close(retsz);
++    }
++
++private:
++    std::unique_ptr<XrdOssDF> m_wrapped;
++    XrdSysError &m_log;
++    const XrdSecEntity* m_client;
++    StatsFileSystem &m_oss;
++
++};
+diff --git a/src/XrdOssStats/XrdStatsFileSystem.cc b/src/XrdOssStats/XrdStatsFileSystem.cc
+new file mode 100644
+index 00000000000..fcbb0dedc8e
+--- /dev/null
++++ b/src/XrdOssStats/XrdStatsFileSystem.cc
+@@ -0,0 +1,337 @@
++
++#include "XrdOuc/XrdOucGatherConf.hh"
++#include "XrdStatsConfig.hh"
++#include "XrdStatsDirectory.hh"
++#include "XrdStatsFile.hh"
++#include "XrdStatsFileSystem.hh"
++#include "XrdSys/XrdSysPthread.hh"
++#include "XrdXrootd/XrdXrootdGStream.hh"
++
++#include <inttypes.h>
++#include <stdexcept>
++#include <thread>
++
++StatsFileSystem::StatsFileSystem(XrdOss *oss, XrdSysLogger *lp, const char *configfn, XrdOucEnv *envP) :
++    m_oss(oss),
++    m_env(envP),
++    m_log(lp, "fsstat_"),
++    m_slow_duration(std::chrono::seconds(1))
++{
++    if (!oss) {
++        throw std::runtime_error("The storage statistics plugin must be chained with another filesystem.");
++    }
++    m_log.Say("------ Initializing the storage statistics plugin.");
++    if (!Config(configfn)) {
++        throw std::runtime_error("Failed to configure the storage statistics plugin.");
++    }
++    pthread_t tid;
++    int rc;
++    if ((rc = XrdSysThread::Run(&tid, StatsFileSystem::AggregateBootstrap, static_cast<void *>(this), 0, "FS Stats Compute Thread"))) {
++      m_log.Emsg("StatsFileSystem", rc, "create stats compute thread");
++      throw std::runtime_error("Failed to create the statistics computing thread.");
++    }
++    if (envP) {
++       m_gstream = reinterpret_cast<XrdXrootdGStream*>(envP->GetPtr("oss.gStream*"));
++       m_log.Say("Config", "Stats monitoring has", m_gstream ? "" : " NOT", " been configured via xrootd.mongstream directive");
++    }
++}
++
++StatsFileSystem::~StatsFileSystem() {}
++
++void *
++StatsFileSystem::AggregateBootstrap(void *me) {
++    auto myself = static_cast<StatsFileSystem*>(me);
++    while (1) {
++        std::this_thread::sleep_for(std::chrono::seconds(1));
++        myself->AggregateStats();
++    }
++    return nullptr;
++}
++
++bool
++StatsFileSystem::Config(const char *configfn)
++{
++    m_log.setMsgMask(LogMask::Error | LogMask::Warning);
++
++    XrdOucGatherConf statsConf("fsstats.trace fsstats.slowop", &m_log);
++    int result;
++    if ((result = statsConf.Gather(configfn, XrdOucGatherConf::trim_lines)) < 0) {
++        m_log.Emsg("Config", -result, "parsing config file", configfn);
++        return false;
++    }
++
++    char *val;
++    while (statsConf.GetLine()) {
++        val = statsConf.GetToken(); // Ignore -- we asked for a single value
++        if (!strcmp(val, "trace")) {
++            m_log.setMsgMask(0);
++            if (!(val = statsConf.GetToken())) {
++                m_log.Emsg("Config", "fsstats.trace requires an argument.  Usage: fsstats.trace [all|err|warning|info|debug|none]");
++                return false;
++            }
++            do {
++                if (!strcmp(val, "all")) {m_log.setMsgMask(m_log.getMsgMask() | LogMask::All);}
++                else if (!strcmp(val, "error")) {m_log.setMsgMask(m_log.getMsgMask() | LogMask::Error);}
++                else if (!strcmp(val, "warning")) {m_log.setMsgMask(m_log.getMsgMask() | LogMask::Error | LogMask::Warning);}
++                else if (!strcmp(val, "info")) {m_log.setMsgMask(m_log.getMsgMask() | LogMask::Error | LogMask::Warning | LogMask::Info);}
++                else if (!strcmp(val, "debug")) {m_log.setMsgMask(m_log.getMsgMask() | LogMask::Error | LogMask::Warning | LogMask::Info | LogMask::Debug);}
++                else if (!strcmp(val, "none")) {m_log.setMsgMask(0);}
++            } while ((val = statsConf.GetToken()));
++        } else if (!strcmp(val, "slowop")) {
++            if (!(val = statsConf.GetToken())) {
++                m_log.Emsg("Config", "fsstats.slowop requires an argument.  Usage: fsstats.slowop [duration]");
++                return false;
++            }
++            std::string errmsg;
++            if (!ParseDuration(val, m_slow_duration, errmsg)) {
++                m_log.Emsg("Config", "fsstats.slowop couldn't parse duration", val, errmsg.c_str());
++                return false;
++            }
++        }
++    }
++    m_log.Emsg("Config", "Logging levels enabled", LogMaskToString(m_log.getMsgMask()).c_str());
++
++    return true;
++}
++
++XrdOssDF *StatsFileSystem::newDir(const char *user)
++{
++    // Call the underlying OSS newDir
++    std::unique_ptr<XrdOssDF> wrapped(m_oss->newDir(user));
++    return new StatsDirectory(user, std::move(wrapped), m_log, *this);
++}
++
++XrdOssDF *StatsFileSystem::newFile(const char *user)
++{
++    // Call the underlying OSS newFile
++    std::unique_ptr<XrdOssDF> wrapped(m_oss->newFile(user));
++    return new StatsFile(std::move(wrapped), m_log, *this);
++}
++
++int StatsFileSystem::Chmod(const char * path, mode_t mode, XrdOucEnv *env)
++{
++    OpTimer op(m_ops.m_chmod_ops, m_slow_ops.m_chmod_ops, m_times.m_chmod, m_slow_times.m_chmod, m_slow_duration);
++    return m_oss->Chmod(path, mode, env);
++}
++
++void StatsFileSystem::Connect(XrdOucEnv &env)
++{
++    m_oss->Connect(env);
++}
++
++int       StatsFileSystem::Create(const char *tid, const char *path, mode_t mode, XrdOucEnv &env,
++                        int opts)
++{
++    return m_oss->Create(tid, path, mode, env, opts);
++}
++
++void      StatsFileSystem::Disc(XrdOucEnv &env)
++{
++    m_oss->Disc(env);
++}
++
++void      StatsFileSystem::EnvInfo(XrdOucEnv *env)
++{
++    m_oss->EnvInfo(env);
++}
++
++uint64_t  StatsFileSystem::Features()
++{
++    return m_oss->Features();
++}
++
++int       StatsFileSystem::FSctl(int cmd, int alen, const char *args, char **resp)
++{
++    return m_oss->FSctl(cmd, alen, args, resp);
++}
++
++int       StatsFileSystem::Init(XrdSysLogger *lp, const char *cfn)
++{
++    return 0;
++}
++
++int       StatsFileSystem::Init(XrdSysLogger *lp, const char *cfn, XrdOucEnv *env)
++{
++    return Init(lp, cfn);
++}
++
++int       StatsFileSystem::Mkdir(const char *path, mode_t mode, int mkpath,
++                    XrdOucEnv  *env)
++{
++    return m_oss->Mkdir(path, mode, mkpath, env);
++}
++
++int       StatsFileSystem::Reloc(const char *tident, const char *path,
++                    const char *cgName, const char *anchor)
++{
++    return m_oss->Reloc(tident, path, cgName, anchor);
++}
++
++int       StatsFileSystem::Remdir(const char *path, int Opts, XrdOucEnv *env)
++{
++    return m_oss->Remdir(path, Opts, env);
++}
++
++int       StatsFileSystem::Rename(const char *oPath, const char *nPath,
++                        XrdOucEnv  *oEnvP, XrdOucEnv *nEnvP)
++{
++    OpTimer op(m_ops.m_rename_ops, m_slow_ops.m_rename_ops, m_times.m_rename, m_slow_times.m_rename, m_slow_duration);
++    return m_oss->Rename(oPath, nPath, oEnvP, nEnvP);
++}
++
++int       StatsFileSystem::Stat(const char *path, struct stat *buff,
++                    int opts, XrdOucEnv *env)
++{
++    OpTimer op(m_ops.m_stat_ops, m_slow_ops.m_stat_ops, m_times.m_stat, m_slow_times.m_stat, m_slow_duration);
++    return m_oss->Stat(path, buff, opts, env);
++}
++
++int       StatsFileSystem::Stats(char *buff, int blen)
++{
++    return m_oss->Stats(buff, blen);
++}
++
++int       StatsFileSystem::StatFS(const char *path, char *buff, int &blen,
++                        XrdOucEnv  *env)
++{
++    OpTimer op(m_ops.m_stat_ops, m_slow_ops.m_stat_ops, m_times.m_stat, m_slow_times.m_stat, m_slow_duration);
++    return m_oss->StatFS(path, buff, blen, env);
++}
++
++int       StatsFileSystem::StatLS(XrdOucEnv &env, const char *path,
++                        char *buff, int &blen)
++{
++    OpTimer op(m_ops.m_stat_ops, m_slow_ops.m_stat_ops, m_times.m_stat, m_slow_times.m_stat, m_slow_duration);
++    return m_oss->StatLS(env, path, buff, blen);
++}
++
++int       StatsFileSystem::StatPF(const char *path, struct stat *buff, int opts)
++{
++    OpTimer op(m_ops.m_stat_ops, m_slow_ops.m_stat_ops, m_times.m_stat, m_slow_times.m_stat, m_slow_duration);
++    return m_oss->StatPF(path, buff, opts);
++}
++
++int       StatsFileSystem::StatPF(const char *path, struct stat *buff)
++{
++    OpTimer op(m_ops.m_stat_ops, m_slow_ops.m_stat_ops, m_times.m_stat, m_slow_times.m_stat, m_slow_duration);
++    return m_oss->StatPF(path, buff, 0);
++}
++
++int       StatsFileSystem::StatVS(XrdOssVSInfo *vsP, const char *sname, int updt)
++{
++    OpTimer op(m_ops.m_stat_ops, m_slow_ops.m_stat_ops, m_times.m_stat, m_slow_times.m_stat, m_slow_duration);
++    return m_oss->StatVS(vsP, sname, updt);
++}
++
++int       StatsFileSystem::StatXA(const char *path, char *buff, int &blen,
++                        XrdOucEnv *env)
++{
++    OpTimer op(m_ops.m_stat_ops, m_slow_ops.m_stat_ops, m_times.m_stat, m_slow_times.m_stat, m_slow_duration);
++    return m_oss->StatXA(path, buff, blen, env);
++}
++
++int       StatsFileSystem::StatXP(const char *path, unsigned long long &attr,
++                        XrdOucEnv  *env)
++{
++    OpTimer op(m_ops.m_stat_ops, m_slow_ops.m_stat_ops, m_times.m_stat, m_slow_times.m_stat, m_slow_duration);
++    return m_oss->StatXP(path, attr, env);
++}
++
++int       StatsFileSystem::Truncate(const char *path, unsigned long long fsize,
++                        XrdOucEnv *env)
++{
++    OpTimer op(m_ops.m_truncate_ops, m_slow_ops.m_truncate_ops, m_times.m_truncate, m_slow_times.m_truncate, m_slow_duration);
++    return m_oss->Truncate(path, fsize, env);
++}
++
++int       StatsFileSystem::Unlink(const char *path, int Opts, XrdOucEnv *env)
++{
++    OpTimer op(m_ops.m_unlink_ops, m_slow_ops.m_unlink_ops, m_times.m_unlink, m_slow_times.m_unlink, m_slow_duration);
++    return m_oss->Unlink(path, Opts, env);
++}
++
++int       StatsFileSystem::Lfn2Pfn(const char *Path, char *buff, int blen)
++{
++    return m_oss->Lfn2Pfn(Path, buff, blen);
++}
++
++const char       *StatsFileSystem::Lfn2Pfn(const char *Path, char *buff, int blen, int &rc)
++{
++    return m_oss->Lfn2Pfn(Path, buff, blen, rc);
++}
++
++void StatsFileSystem::AggregateStats()
++{
++    char buf[1500];
++    auto len = snprintf(buf, 1500,
++        "{"
++        "\"event\":\"oss_stats\"," \
++        "\"reads\":%" PRIu64 ",\"writes\":%" PRIu64 ",\"stats\":%" PRIu64 "," \
++        "\"pgreads\":%" PRIu64 ",\"pgwrites\":%" PRIu64 ",\"readvs\":%" PRIu64 "," \
++        "\"readv_segs\":%" PRIu64 ",\"dirlists\":%" PRIu64 ",\"dirlist_ents\":%" PRIu64 ","
++        "\"truncates\":%" PRIu64 ",\"unlinks\":%" PRIu64 ",\"chmods\":%" PRIu64 ","
++        "\"opens\":%" PRIu64 ",\"renames\":%" PRIu64 ","
++        "\"slow_reads\":%" PRIu64 ",\"slow_writes\":%" PRIu64 ",\"slow_stats\":%" PRIu64 ","
++        "\"slow_pgreads\":%" PRIu64 ",\"slow_pgwrites\":%" PRIu64 ",\"slow_readvs\":%" PRIu64 ","
++        "\"slow_readv_segs\":%" PRIu64 ",\"slow_dirlists\":%" PRIu64 ",\"slow_dirlist_ents\":%" PRIu64 ","
++        "\"slow_truncates\":%" PRIu64 ",\"slow_unlinks\":%" PRIu64 ",\"slow_chmods\":%" PRIu64 ","
++        "\"slow_opens\":%" PRIu64 ",\"slow_renames\":%" PRIu64 ","
++        "\"open_t\":%.4f,\"read_t\":%.4f,\"readv_t\":%.4f,"
++        "\"pgread_t\":%.4f,\"write_t\":%.4f,\"pgwrite_t\":%.4f,"
++        "\"dirlist_t\":%.4f,\"stat_t\":%.4f,\"truncate_t\":%.4f,"
++        "\"unlink_t\":%.4f,\"rename_t\":%.4f,\"chmod_t\":%.4f,"
++        "\"slow_open_t\":%.4f,\"slow_read_t\":%.4f,\"slow_readv_t\":%.4f,"
++        "\"slow_pgread_t\":%.4f,\"slow_write_t\":%.4f,\"slow_pgwrite_t\":%.4f,"
++        "\"slow_dirlist_t\":%.4f,\"slow_stat_t\":%.4f,\"slow_truncate_t\":%.4f,"
++        "\"slow_unlink_t\":%.4f,\"slow_rename_t\":%.4f,\"slow_chmod_t\":%.4f"
++        "}",
++        m_ops.m_read_ops.load(), m_ops.m_write_ops.load(), m_ops.m_stat_ops.load(),
++        m_ops.m_pgread_ops.load(), m_ops.m_pgwrite_ops.load(), m_ops.m_readv_ops.load(),
++        m_ops.m_readv_segs.load(), m_ops.m_dirlist_ops.load(), m_ops.m_dirlist_entries.load(),
++        m_ops.m_truncate_ops.load(), m_ops.m_unlink_ops.load(), m_ops.m_chmod_ops.load(),
++        m_ops.m_open_ops.load(), m_ops.m_rename_ops.load(),
++        m_slow_ops.m_read_ops.load(), m_slow_ops.m_write_ops.load(), m_slow_ops.m_stat_ops.load(),
++        m_slow_ops.m_pgread_ops.load(), m_slow_ops.m_pgwrite_ops.load(), m_slow_ops.m_readv_ops.load(),
++        m_slow_ops.m_readv_segs.load(), m_slow_ops.m_dirlist_ops.load(), m_slow_ops.m_dirlist_entries.load(),
++        m_slow_ops.m_truncate_ops.load(), m_slow_ops.m_unlink_ops.load(), m_slow_ops.m_chmod_ops.load(),
++        m_slow_ops.m_open_ops.load(), m_slow_ops.m_rename_ops.load(),
++        static_cast<float>(m_times.m_open.load())/1e9, static_cast<float>(m_times.m_read.load())/1e9, static_cast<float>(m_times.m_readv.load())/1e9,
++        static_cast<float>(m_times.m_pgread.load())/1e9, static_cast<float>(m_times.m_write.load())/1e9, static_cast<float>(m_times.m_pgwrite.load())/1e9,
++        static_cast<float>(m_times.m_dirlist.load())/1e9, static_cast<float>(m_times.m_stat.load())/1e9, static_cast<float>(m_times.m_truncate.load())/1e9,
++        static_cast<float>(m_times.m_unlink.load())/1e9, static_cast<float>(m_times.m_rename.load())/1e9, static_cast<float>(m_times.m_chmod.load())/1e9,
++        static_cast<float>(m_slow_times.m_open.load())/1e9, static_cast<float>(m_slow_times.m_read.load())/1e9, static_cast<float>(m_slow_times.m_readv.load())/1e9,
++        static_cast<float>(m_slow_times.m_pgread.load())/1e9, static_cast<float>(m_slow_times.m_write.load())/1e9, static_cast<float>(m_slow_times.m_pgwrite.load())/1e9,
++        static_cast<float>(m_slow_times.m_dirlist.load())/1e9, static_cast<float>(m_slow_times.m_stat.load())/1e9, static_cast<float>(m_slow_times.m_truncate.load())/1e9,
++        static_cast<float>(m_slow_times.m_unlink.load())/1e9, static_cast<float>(m_slow_times.m_rename.load())/1e9, static_cast<float>(m_slow_times.m_chmod.load())/1e9
++
++    );
++    if (len >= 1500) {
++        m_log.Log(LogMask::Error, "Aggregate", "Failed to generate g-stream statistics packet");
++        return;
++    }
++    m_log.Log(LogMask::Debug, "Aggregate", buf);
++    if (m_gstream && !m_gstream->Insert(buf, len + 1)) {
++        m_log.Log(LogMask::Error, "Aggregate", "Failed to send g-stream statistics packet");
++        return;
++    }
++}
++
++StatsFileSystem::OpTimer::OpTimer(std::atomic<uint64_t> &op_count, std::atomic<uint64_t> &slow_op_count, std::atomic<uint64_t> &timing, std::atomic<uint64_t> &slow_timing, std::chrono::steady_clock::duration duration)
++    : m_op_count(op_count),
++    m_slow_op_count(slow_op_count),
++    m_timing(timing),
++    m_slow_timing(slow_timing),
++    m_start(std::chrono::steady_clock::now()),
++    m_slow_duration(duration)
++{}
++
++StatsFileSystem::OpTimer::~OpTimer()
++{
++    auto dur = std::chrono::steady_clock::now() - m_start;
++    m_op_count++;
++    m_timing += std::chrono::nanoseconds(dur).count();
++    if (dur > m_slow_duration) {
++        m_slow_op_count++;
++        m_slow_timing += std::chrono::nanoseconds(dur).count();
++    }
++}
+diff --git a/src/XrdOssStats/XrdStatsFileSystem.hh b/src/XrdOssStats/XrdStatsFileSystem.hh
+new file mode 100644
+index 00000000000..21b611b2e41
+--- /dev/null
++++ b/src/XrdOssStats/XrdStatsFileSystem.hh
+@@ -0,0 +1,128 @@
++
++#pragma once
++
++#include "XrdOss/XrdOss.hh"
++#include "XrdSys/XrdSysError.hh"
++
++#include <atomic>
++#include <chrono>
++
++class XrdXrootdGStream;
++
++// The "stats" filesystem is a wrapper that collects information
++// about the performance of the underlying storage.
++//
++// It allows one to accumulate time spent in I/O, the number of operations,
++// and information about "slow" operations
++class StatsFileSystem : public XrdOss {
++    friend class StatsFile;
++    friend class StatsDirectory;
++
++public:
++    StatsFileSystem(XrdOss *oss, XrdSysLogger *log, const char *configName, XrdOucEnv *envP);
++    virtual ~StatsFileSystem();
++
++    bool
++    Config(const char *configfn);
++
++    XrdOssDF *newDir(const char *user=0) override;
++    XrdOssDF *newFile(const char *user=0) override;
++    int Chmod(const char * path, mode_t mode, XrdOucEnv *env=0) override;
++    void      Connect(XrdOucEnv &env) override;
++    int       Create(const char *tid, const char *path, mode_t mode, XrdOucEnv &env,
++                         int opts=0) override;
++    void      Disc(XrdOucEnv &env) override;
++    void      EnvInfo(XrdOucEnv *env) override;
++    uint64_t  Features() override;
++    int       FSctl(int cmd, int alen, const char *args, char **resp=0) override;
++    int       Init(XrdSysLogger *lp, const char *cfn) override;
++    int       Init(XrdSysLogger *lp, const char *cfn, XrdOucEnv *env) override;
++    int       Mkdir(const char *path, mode_t mode, int mkpath=0,
++                        XrdOucEnv  *env=0) override;
++    int       Reloc(const char *tident, const char *path,
++                        const char *cgName, const char *anchor=0) override;
++    int       Remdir(const char *path, int Opts=0, XrdOucEnv *env=0) override;
++    int       Rename(const char *oPath, const char *nPath,
++                         XrdOucEnv  *oEnvP=0, XrdOucEnv *nEnvP=0) override;
++    int       Stat(const char *path, struct stat *buff,
++                       int opts=0, XrdOucEnv *env=0) override;
++    int       Stats(char *buff, int blen) override;
++    int       StatFS(const char *path, char *buff, int &blen,
++                         XrdOucEnv  *env=0) override;
++    int       StatLS(XrdOucEnv &env, const char *path,
++                         char *buff, int &blen) override;
++    int       StatPF(const char *path, struct stat *buff, int opts) override;
++    int       StatPF(const char *path, struct stat *buff) override;
++    int       StatVS(XrdOssVSInfo *vsP, const char *sname=0, int updt=0) override;
++    int       StatXA(const char *path, char *buff, int &blen,
++                         XrdOucEnv *env=0) override;
++    int       StatXP(const char *path, unsigned long long &attr,
++                         XrdOucEnv  *env=0) override;
++    int       Truncate(const char *path, unsigned long long fsize,
++                           XrdOucEnv *env=0) override;
++    int       Unlink(const char *path, int Opts=0, XrdOucEnv *env=0) override;
++    int       Lfn2Pfn(const char *Path, char *buff, int blen) override;
++    const char       *Lfn2Pfn(const char *Path, char *buff, int blen, int &rc) override;
++
++private:
++    static void * AggregateBootstrap(void *instance);
++    void AggregateStats();
++
++    XrdXrootdGStream* m_gstream{nullptr};
++
++    XrdOss *m_oss;
++    XrdOucEnv *m_env;
++    XrdSysError m_log;
++
++    class OpTimer {
++        public:
++            OpTimer(std::atomic<uint64_t> &op_count, std::atomic<uint64_t> &slow_op_count, std::atomic<uint64_t> &timing, std::atomic<uint64_t> &slow_timing, std::chrono::steady_clock::duration duration);
++            ~OpTimer();
++
++        private:
++            std::atomic<uint64_t> &m_op_count;
++            std::atomic<uint64_t> &m_slow_op_count;
++            std::atomic<uint64_t> &m_timing;
++            std::atomic<uint64_t> &m_slow_timing;
++            std::chrono::steady_clock::time_point m_start;
++            std::chrono::steady_clock::duration m_slow_duration;
++    };
++
++    struct OpRecord {
++        std::atomic<uint64_t> m_read_ops{0};
++        std::atomic<uint64_t> m_write_ops{0};
++        std::atomic<uint64_t> m_stat_ops{0};
++        std::atomic<uint64_t> m_pgread_ops{0};
++        std::atomic<uint64_t> m_pgwrite_ops{0};
++        std::atomic<uint64_t> m_readv_ops{0};
++        std::atomic<uint64_t> m_readv_segs{0};
++        std::atomic<uint64_t> m_dirlist_ops{0};
++        std::atomic<uint64_t> m_dirlist_entries{0};
++        std::atomic<uint64_t> m_truncate_ops{0};
++        std::atomic<uint64_t> m_unlink_ops{0};
++        std::atomic<uint64_t> m_chmod_ops{0};
++        std::atomic<uint64_t> m_open_ops{0};
++        std::atomic<uint64_t> m_rename_ops{0};
++    };
++
++    struct OpTiming {
++        std::atomic<uint64_t> m_open{0};
++        std::atomic<uint64_t> m_read{0};
++        std::atomic<uint64_t> m_readv{0};
++        std::atomic<uint64_t> m_pgread{0};
++        std::atomic<uint64_t> m_write{0};
++        std::atomic<uint64_t> m_pgwrite{0};
++        std::atomic<uint64_t> m_dirlist{0};
++        std::atomic<uint64_t> m_stat{0};
++        std::atomic<uint64_t> m_truncate{0};
++        std::atomic<uint64_t> m_unlink{0};
++        std::atomic<uint64_t> m_rename{0};
++        std::atomic<uint64_t> m_chmod{0};
++    };
++
++    OpRecord m_ops;
++    OpTiming m_times;
++    OpRecord m_slow_ops;
++    OpTiming m_slow_times;
++    std::chrono::steady_clock::duration m_slow_duration;
++};
+diff --git a/src/XrdPlugins.cmake b/src/XrdPlugins.cmake
+index adfda36e43e..c9484537d1e 100644
+--- a/src/XrdPlugins.cmake
++++ b/src/XrdPlugins.cmake
+@@ -11,6 +11,7 @@ set( LIB_XRD_GPFS       XrdOssSIgpfsT-${PLUGIN_VERSION} )
+ set( LIB_XRD_GPI        XrdOfsPrepGPI-${PLUGIN_VERSION} )
+ set( LIB_XRD_ZCRC32     XrdCksCalczcrc32-${PLUGIN_VERSION} )
+ set( LIB_XRD_THROTTLE   XrdThrottle-${PLUGIN_VERSION} )
++set( LIB_XRD_OSSSTATS   XrdOssStats-${PLUGIN_VERSION} )
+ 
+ #-------------------------------------------------------------------------------
+ # Shared library version
+@@ -133,6 +134,22 @@ target_link_libraries(
+   XrdServer
+   XrdUtils )
+ 
++#-------------------------------------------------------------------------------
++# An OSS plugin for calculating storage performance statistics
++#-------------------------------------------------------------------------------
++add_library(
++  ${LIB_XRD_OSSSTATS}
++  MODULE
++  XrdOssStats/XrdStatsConfig.cc     XrdOssStats/XrdStatsConfig.hh
++  XrdOssStats/XrdStatsFileSystem.cc XrdOssStats/XrdStatsFileSystem.hh
++  XrdOssStats/XrdStatsFile.cc       XrdOssStats/XrdStatsFile.hh )
++
++target_link_libraries(
++  ${LIB_XRD_OSSSTATS}
++  PRIVATE
++  XrdServer
++  XrdUtils )
++
+ #-------------------------------------------------------------------------------
+ # The XrdCmsRedirLocal module
+ #-------------------------------------------------------------------------------
+@@ -151,5 +168,5 @@ target_link_libraries(
+ # Install
+ #-------------------------------------------------------------------------------
+ install(
+-  TARGETS ${LIB_XRD_PSS} ${LIB_XRD_BWM} ${LIB_XRD_GPFS} ${LIB_XRD_ZCRC32} ${LIB_XRD_THROTTLE} ${LIB_XRD_N2NO2P} ${LIB_XRD_CMSREDIRL} ${LIB_XRD_GPI}
++  TARGETS ${LIB_XRD_PSS} ${LIB_XRD_BWM} ${LIB_XRD_GPFS} ${LIB_XRD_ZCRC32} ${LIB_XRD_THROTTLE} ${LIB_XRD_N2NO2P} ${LIB_XRD_CMSREDIRL} ${LIB_XRD_GPI} ${LIB_XRD_OSSSTATS}
+   LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR} )
