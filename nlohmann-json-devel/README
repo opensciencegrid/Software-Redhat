@@ -1,0 +1,3 @@
+nlohmann/json is a json library for C++. It
+is used by the LotMan library, and can be downloaded from:
+https://github.com/nlohmann/json
