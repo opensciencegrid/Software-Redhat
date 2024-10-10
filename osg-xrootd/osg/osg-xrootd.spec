@@ -1,7 +1,7 @@
 Summary: OSG configuration files for XRootD
 Name: osg-xrootd
-Version: 23
-Release: 6%{?dist}
+Version: 24
+Release: 1%{?dist}
 License: ASL 2.0
 BuildArch: noarch
 
@@ -94,6 +94,9 @@ mkdir -p /etc/grid-security >/dev/null 2>&1 || :
 [ -e /etc/grid-security/grid-mapfile ] || touch /etc/grid-security/grid-mapfile
 
 %changelog
+* Thu Oct 10 2024 Mátyás Selmeci <matyas@cs.wisc.edu> - 24-1
+- Initial OSG 24 release
+
 * Mon Mar 18 2024 Mátyás Selmeci <matyas@cs.wisc.edu> - 23-6
 - Add GridMapfile and GmapOpt variables for controlling grid-mapfile mapping (SOFTWARE-5468)
 
