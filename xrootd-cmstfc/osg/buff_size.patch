@@ -1,0 +1,23 @@
+From 8325f22302dcd246dee16c4828e645735f58d8dd Mon Sep 17 00:00:00 2001
+From: Diego Davila <davila.foyo@gmail.com>
+Date: Mon, 19 Oct 2020 14:07:07 -0700
+Subject: [PATCH] increasing buffer size at replaceWithRegexp to avoid
+ compilation -Werror=format-overflow=
+
+---
+ src/XrdCmsTfc.cc | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/src/XrdCmsTfc.cc b/src/XrdCmsTfc.cc
+index 3babbaa..04062f1 100644
+--- a/xrootd-cmstfc-1.5.2/src/XrdCmsTfc.cc
++++ b/xrootd-cmstfc-1.5.2/src/XrdCmsTfc.cc
+@@ -355,7 +355,7 @@ std::string replaceWithRegexp (const int ovector[OVECCOUNT], const int rc,
+ {
+     //std::cerr << "InputString:" << inputString << std::endl;
+  
+-    char buffer[8];
++    char buffer[11];
+     std::string result = outputFormat;
+     int substring_length;
+     int substring_begin;
