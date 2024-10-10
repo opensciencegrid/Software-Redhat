@@ -10,11 +10,12 @@ Summary: The Frontier distribution of the Squid proxy caching server
 Name: frontier-squid%{?squidsuffix}
 Version: 5.9
 %define release4source 2
-%define releasenum 1%{?dist}
+%define releasenum 2%{?dist}
 Release: %{?release4source}.%{?releasenum}
 Epoch: 11
 License: GPL
 Group: System Environment/Daemons
+ExclusiveArch: x86_64
 
 %define frontiersquidutils frontier-squid-utils
 %define distname squid
@@ -533,6 +534,9 @@ if [ $1 -eq 0 ]; then
 fi
 
 %changelog
+
+* Thu Oct 10 2024 Matt Westphall <westphall@wisc.edu> 5.9-2.2
+  - Limit osg builds to x86_64
 
 * Thu Jan 11 2024 Carl Vuosalo <carl.vuosalo@cern.ch> 5.9-2.1
  - Apply security patches from Squid 6 to address security concerns since 
