@@ -1,0 +1,16 @@
+The following dependencies are built into the go binaries for
+xrootd-monitoring-shoveler, with the corresponding licenses:
+
+Dependency                                  License
+----------                                  -------
+http://github.com/go-stomp/stomp            Apache-2.0
+http://github.com/golang-jwt/jwt            MIT
+http://github.com/joncrlsn/dque             MIT
+http://github.com/prometheus/client_golang  Apache-2.0
+http://github.com/prometheus/common         Apache-2.0
+http://github.com/prometheus/procfs         Apache-2.0
+http://github.com/sirupsen/logrus           MIT
+http://github.com/spf13/viper               MIT
+http://github.com/streadway/amqp            BSD-2-Clause
+http://github.com/stretchr/testify          MIT
+
