@@ -1,0 +1,4 @@
+Metadata package containing a systemd service for running the osgvo-docker-pilot image.
+Creates a configuration file in /etc/osg/ospool-ep.cfg with sensible defaults for container environment variables.
+See [Open Science Pool Containers](https://osg-htc.org/docs/resource-sharing/os-backfill-containers/) for
+details about configuration options.

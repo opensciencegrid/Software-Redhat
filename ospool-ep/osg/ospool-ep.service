@@ -1,0 +1,17 @@
+[Unit]
+Description=OSPool Backfill Container Service
+After=network.target
+
+[Service]
+Type=simple
+Restart=on-success
+EnvironmentFile=/etc/osg/ospool-ep.cfg
+
+ExecStartPre=-/usr/bin/docker container rm -f ospool-ep-container
+ExecStart=/usr/sbin/start_ospool_ep_container.sh
+
+ExecStop=-/usr/bin/docker container stop -t 120 ospool-ep-container
+ExecStopPost=-/usr/bin/docker container rm ospool-ep-container
+    
+[Install]
+WantedBy=multi-user.target
