@@ -39,13 +39,13 @@ else
   exit_with_error "TOKEN_LOCATION must be a file"
 fi
 
-# Verify that WORK_TEMP_DIR is either a directory or is unset
-if [ -n "$WORK_TEMP_DIR" ] && ! test -d "$WORK_TEMP_DIR"; then
-  exit_with_error "WORK_TEMP_DIR must be empty or a directory"
+# Verify that WORKER_TEMP_DIR is either a directory or is unset
+if [ -n "$WORKER_TEMP_DIR" ] && ! test -d "$WORKER_TEMP_DIR"; then
+  exit_with_error "WORKER_TEMP_DIR must be empty or a directory"
 fi
 
-if [ -n "$WORK_TEMP_DIR" ] && test -d "$WORK_TEMP_DIR"; then
-  add_docker_arg -v "${WORK_TEMP_DIR}:/pilot"
+if [ -n "$WORKER_TEMP_DIR" ] && test -d "$WORKER_TEMP_DIR"; then
+  add_docker_arg -v "${WORKER_TEMP_DIR}:/pilot"
 fi
 
 # Verify that only one of BIND_MOUNT_CVMFS and CVMFSEXEC_REPOS is set
