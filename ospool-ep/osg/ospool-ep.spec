@@ -1,8 +1,8 @@
-%define osgver 23
+%define osgver 24
 
 Name: ospool-ep
-Version: 1.0
-Release: 4%{?dist}
+Version: %{osgver}
+Release: 1%{?dist}
 Summary: Systemd service for the OSPool Backfill Container
 
 License: Unknown
@@ -40,6 +40,9 @@ mv %{SOURCE2} %{buildroot}/etc/osg/
 %attr(0755,root,root) /usr/sbin/start_ospool_ep_container.sh
 
 %changelog
+
+* Tue Nov 14 2023 Matt Westphall <westphall@wisc.edu> 24-1
+- OSG 24 release
 
 * Tue Nov 14 2023 Matt Westphall <westphall@wisc.edu> 1.0-1
 - Initial version
