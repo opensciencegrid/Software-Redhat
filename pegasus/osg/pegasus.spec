@@ -1,6 +1,6 @@
 Name:           pegasus
 Version:        5.0.6
-Release:        1.2%{?dist}
+Release:        1.3%{?dist}
 Summary:        Workflow management system for HTCondor, grids, and clouds
 Group:          Applications/System
 License:        ASL 2.0
@@ -11,6 +11,8 @@ Source:         pegasus-%{version}.tar.gz
 
 BuildRequires:  ant-apache-regexp, gcc, gcc-c++, jpackage-utils, make, openssl-devel, ant, R-devel
 Requires:       java >= 1:1.8.0, python3, condor >= 8.8, graphviz, perl-Getopt-Long
+
+ExclusiveArch: x86_64
 
 %if 0%{?rhel} <= 7
 # Jinja2 v2.11 has async code, which uses py36 syntax, and is never imported in < py36, but
@@ -88,6 +90,9 @@ rm -f %{buildroot}/%{_datadir}/%{name}/java/NOTICE.*
 
 
 %changelog
+* Mon Oct 21 2024 Matt Westphall <westphall@wisc.edu> - 5.0.6-1.3
+- Set exclusiveArch to x86_64 for initial OSG 24 build
+
 * Mon Aug 14 2023 Matt Westphall <westphall@wisc.edu> - 5.0.6-1.1
 - Build from upstream 5.0.6 (SOFTWARE-5648)
 
