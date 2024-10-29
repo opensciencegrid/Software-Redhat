@@ -1,1 +1,1 @@
-type=github repo=mwestphall/ospool-ap tag=v1.9-4 hash=5a07f65fbbbd7aa7854ea459e1e558c8c6780e75
+type=github repo=opensciencegrid/osg-flock spec=rpm/ospool-ap.spec tag=1.10-2 hash=1d0c59c9eea8c96377fc3d5f19c72115d6255b03
