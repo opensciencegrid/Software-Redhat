@@ -80,7 +80,7 @@
 Name:      xrootd
 Epoch:     1
 Version:   5.7.1
-Release:   1.3%{?dist}%{?_with_clang:.clang}%{?_with_asan:.asan}
+Release:   1.4%{?dist}%{?_with_clang:.clang}%{?_with_asan:.asan}
 Summary:   Extended ROOT file server
 Group:     System Environment/Daemons
 License:   LGPLv3+
@@ -104,6 +104,7 @@ Patch3: 2300-stat-call-reduction.patch
 Patch4: bbockelm-3-oss-statistics.patch
 Patch5: 2348-cache-age-logic.patch
 Patch6: 2357-fix-errSocketTimeout-loop.patch
+Patch7: 2363-reset-runstatus-in-redrive-thread.patch
 
 # Debug Patches
 Patch101: 0003-DEBUG-unset-use-pep517.patch
@@ -530,6 +531,7 @@ cd %{build_dir}
 %patch4 -p1
 %patch5 -p1
 %patch6 -p1
+%patch7 -p1
 # %%patch101 -p1
 cd ..
 
@@ -1190,7 +1192,11 @@ fi
 # Changelog
 #-------------------------------------------------------------------------------
 %changelog
+* Wed Oct 16 2024 Matt Westphall <westphall@wisc.edu> - 5.7.1-1.4
+- Add 2363-reset-runstatus-in-redrive-thread.patch (SOFTWARE-6024)
+
 * Wed Oct 16 2024 Matt Westphall <westphall@wisc.edu> - 5.7.1-1.3
+- Add 2357-fix-errSocketTimeout-loop.patch
 
 * Thu Oct 03 2024 Mátyás Selmeci <matyas@cs.wisc.edu> - 5.7.1-1.2
 - Update 2300-stat-call-reduction.patch (SOFTWARE-6003)
