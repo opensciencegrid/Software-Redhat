@@ -1,6 +1,6 @@
 Name:      osg-wn-client
 Summary:   OSG Worker-Node Client
-Version:   23
+Version:   24
 Release:   1%{?dist}
 License:   Apache 2.0
 URL:       http://www.opensciencegrid.org
@@ -44,6 +44,9 @@ EOF
 %config(noreplace) %{_prefix}/etc/globus-user-env.sh
 
 %changelog
+* Thu Oct 31 2024 Mátyás Selmeci <matyas@cs.wisc.edu> - 24-1
+- Bump version for OSG 24 (SOFTWARE-6026)
+
 * Fri Sep 8 2023 Matt Westphall <westphall@wisc.edu> - 23-1
 - Bump version for OSG 23
 
