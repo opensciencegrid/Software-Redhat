@@ -1,10 +1,10 @@
 Name:      osg-ce
 Summary:   OSG Compute Element
 # Note: the verison must match the OSG release series
-Version:   23
-Release:   2%{?dist}
+Version:   24
+Release:   1%{?dist}
 License:   Apache 2.0
-URL:       http://www.opensciencegrid.org
+URL:       https://osg-htc.org
 
 Source0: 01-osg-ce.conf
 
@@ -141,6 +141,9 @@ sed -e 's/@@SERIES@@/%{version}/' %{SOURCE0} > $RPM_BUILD_ROOT/%{_datadir}/condo
 %files slurm
 
 %changelog
+* Thu Oct 31 2024 Mátyás Selmeci <matyas@cs.wisc.edu> - 24-1
+- Version bump for OSG 24 (SOFTWARE-6026)
+
 * Mon Nov 13 2023 Mátyás Selmeci <matyas@cs.wisc.edu> - 23-2
 - Set correct value of OSG_SERIES attribute (SOFTWARE-5747)
 
