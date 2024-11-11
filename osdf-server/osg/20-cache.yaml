@@ -1,0 +1,21 @@
+#####################################################
+# Cache configuration
+#####################################################
+
+Cache:
+  ## Required options:
+
+  ## LocalRoot is the location where symlinks representing cached object paths are located.
+  ## You must uncomment and set this.
+  # LocalRoot: /mnt/osdf/namespaces
+
+  ## MetaLocations is the directory where metadata about cached objects will be stored.
+  ## It may be a list of multiple directories.
+  ## You must uncomment and set this.
+  # MetaLocations: /mnt/osdf/meta
+
+  ## DataLocations is the directory where the contents of cached objects will be stored.
+  ## It may be a list of multiple directories.
+  ## You must uncomment and set this.
+  # DataLocations: /mnt/osdf/data
+
