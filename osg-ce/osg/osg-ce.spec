@@ -2,7 +2,7 @@ Name:      osg-ce
 Summary:   OSG Compute Element
 # Note: the verison must match the OSG release series
 Version:   24
-Release:   1%{?dist}
+Release:   2%{?dist}
 License:   Apache 2.0
 URL:       https://osg-htc.org
 
@@ -113,7 +113,6 @@ Requires: %{name} = %{version}-%{release}
 Requires: osg-configure-bosco
 # Added for scripts to manage remote WN tarball, CA, and CRL
 # installations (SOFTWARE-3582)
-Requires: hosted-ce-tools
 
 Requires: htcondor-ce
 Requires: htcondor-ce-bosco
@@ -141,6 +140,9 @@ sed -e 's/@@SERIES@@/%{version}/' %{SOURCE0} > $RPM_BUILD_ROOT/%{_datadir}/condo
 %files slurm
 
 %changelog
+* Tue Nov 19 2024 Matt Westphall <matyas@cs.wisc.edu> - 24-2
+- Remove dependency on deprecated hosted-ce-tools (SOFTWARE-6027)
+
 * Thu Oct 31 2024 Mátyás Selmeci <matyas@cs.wisc.edu> - 24-1
 - Version bump for OSG 24 (SOFTWARE-6026)
 
