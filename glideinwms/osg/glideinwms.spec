@@ -19,8 +19,8 @@
 # ------------------------------------------------------------------------------
 # For Release Candidate builds, check with Software team on release string
 # ------------------------------------------------------------------------------
-%define version 3.10.7
-%define release 3
+%define version 3.10.8
+%define release 0.1.rc1
 
 %define frontend_xml frontend.xml
 %define factory_xml glideinWMS.xml
@@ -643,9 +643,11 @@ if [ ! -e %{frontend_passwd_dir} ]; then
     mkdir -p %{frontend_passwd_dir}
     chown frontend.frontend %{frontend_passwd_dir}
 fi
-openssl rand -base64 64 | /usr/sbin/condor_store_cred -u "frontend@${fqdn_hostname}" -f "/etc/condor/passwords.d/FRONTEND" add > /dev/null 2>&1
-/bin/cp /etc/condor/passwords.d/FRONTEND /var/lib/gwms-frontend/passwords.d/FRONTEND
-chown frontend.frontend /var/lib/gwms-frontend/passwords.d/FRONTEND
+# The IDTOKEN password creation is now in the startup script
+# For manual creation you can use:
+#  openssl rand -base64 64 | /usr/sbin/condor_store_cred -u "frontend@${fqdn_hostname}" -f "/etc/condor/passwords.d/FRONTEND" add > /dev/null 2>&1
+#  /bin/cp /etc/condor/passwords.d/FRONTEND /var/lib/gwms-frontend/passwords.d/FRONTEND
+#  chown frontend.frontend /var/lib/gwms-frontend/passwords.d/FRONTEND
 
 %post vofrontend-httpd
 # Protecting from failure in case it is not running/installed
@@ -1051,8 +1053,14 @@ rm -rf $RPM_BUILD_ROOT
 #%config(noreplace) %{_sysconfdir}/condor/scripts/frontend_condortoken
 
 %changelog
+* Thu Nov 21 2024 Marco Mambelli <marcom@fnal.gov> - 3.10.8.0.1.rc1
+- Glideinwms v3.10.8
+- Release Notes: http://glideinwms.fnal.gov/doc.v3_10_8/history.html
+- Release candidates 3.10.7-01.rc1
+
 * Tue Oct 22 2024 Marco Mambelli <marcom@fnal.gov> - 3.10.7-3
 - Glideinwms v3.10.7
+- 3.10.7-1 was on Fri Jun 21 2024 
 - Removed bash mangling in 3.10.7-3
 - Release Notes: http://glideinwms.fnal.gov/doc.v3_10_7/history.html
 - Release candidates 3.10.7-01.rc1 to 3.10.7-03.rc3
