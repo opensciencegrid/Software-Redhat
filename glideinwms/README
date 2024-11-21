@@ -1,0 +1,15 @@
+Package: glideinwms
+
+This are the GlideinWMS packages for OSG.
+The GlideinWMS sources, including the spec file can be found on https://github.com/glideinWMS/glideinwms
+
+#The spec file is derived from the upstream sources, sometime unmodified
+
+More details:
+------------
+The GlideinWMS documentation can be found on
+http://tinyurl.com/glideinWMS/
+
+The Spec file and patches are coming from
+svn co svn+ssh://p-gwms-release-manager@cdcvs.fnal.gov/cvs/projects/gwms-release-manager/trunk/rpm/vofrontend
+or https://vdt.cs.wisc.edu/svn/native/redhat/branches/
