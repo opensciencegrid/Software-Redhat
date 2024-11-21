@@ -1,18 +1,15 @@
-Package: glideinwms-vofrontend
+Package: glideinwms
 
-This is a glideinWMS VO Frontend package for OSG.
+This are the GlideinWMS packages for OSG.
+The GlideinWMS sources, including the spec file can be found on https://github.com/glideinWMS/glideinwms
 
-We are re-publishing the srpm, taken from
-http://koji.hep.caltech.edu/public/packages/glideinwms-vofrontend/2.5.1/12/src/glideinwms-vofrontend-2.5.1-12.src.rpm
-
-#The spec file is taken directly from the upstream SRPM, so we don't have one in the osg subdir.
-The spec file is modified to include the dependencies that are in the vdt repos.
+#The spec file is derived from the upstream sources, sometime unmodified
 
 More details:
 ------------
-The glideinWMS sources can be found on
-http://tinyurl.com/glideinWMS/download.html
+The GlideinWMS documentation can be found on
+http://tinyurl.com/glideinWMS/
 
 The Spec file and patches are coming from
 svn co svn+ssh://p-gwms-release-manager@cdcvs.fnal.gov/cvs/projects/gwms-release-manager/trunk/rpm/vofrontend
-or https://cdcvs.fnal.gov/redmine/projects/gwms-release-manager/repository/show/trunk/rpm/vofrontend
+or https://vdt.cs.wisc.edu/svn/native/redhat/branches/
