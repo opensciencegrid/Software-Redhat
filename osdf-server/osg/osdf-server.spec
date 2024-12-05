@@ -1,14 +1,15 @@
 Summary: Service files for Pelican-based OSDF daemons
 Name: osdf-server
-Version: 7.10.7
+Version: 7.11.7
 Release: 1%{?dist}
 License: ASL 2.0
 Url: https://github.com/PelicanPlatform/pelican
 BuildArch: noarch
-#BuildRequires: pelican >= %{version}
+#BuildRequires: pelican >= %%{version}
 # ^^ does not work: the pelican RPM is missing the SIGMD5 header and cannot be used
 #    in a BuildRequires - at least in Koji
-Source0: pelican.tar.gz
+Source0: pelican-%{version}.tar.gz
+Source1: 20-cache.yaml
 
 
 # subpackage: A helper macro to get rid of some of the code duplication. This
@@ -41,10 +42,18 @@ systemctl daemon-reload
 
 %%files -n %1
 /usr/lib/systemd/system/%{1}*.service
-%%config(noreplace) /etc/pelican/%{1}*.yaml
+%%config /etc/pelican/%{1}*.yaml
+/usr/share/pelican/config.d/10-osdf-defaults.yaml
+%%config(noreplace) /etc/pelican/config.d/15-osdf.yaml
+%%config(noreplace) /etc/pelican/config.d/50-webui.yaml
 %{-x:%%attr(-,xrootd,xrootd) /var/spool/osdf}
 %%dir %%attr(0700,root,root) /var/log/pelican
 %%config(noreplace) /etc/logrotate.d/pelican
+
+# kind of a hack
+%%if "%{1}" == "osdf-cache"
+%%config(noreplace) /etc/pelican/config.d/20-cache.yaml
+%%endif
 
 %%triggerin -n %1 -- pelican
 systemctl condrestart %1.service
@@ -60,7 +69,7 @@ Service files for Pelican
 
 
 %prep
-%setup -n pelican
+%setup -n pelican-%{version}
 
 
 %build
@@ -69,13 +78,18 @@ exit 0
 
 %install
 mkdir -p $RPM_BUILD_ROOT/usr/lib/systemd/system/
-mkdir -p $RPM_BUILD_ROOT/etc/pelican/
+mkdir -p $RPM_BUILD_ROOT/usr/share/pelican/config.d/
+mkdir -p $RPM_BUILD_ROOT/etc/pelican/config.d/
 mkdir -p $RPM_BUILD_ROOT/etc/logrotate.d/
 mkdir -p $RPM_BUILD_ROOT/var/spool/osdf
 mkdir -p $RPM_BUILD_ROOT/var/log/pelican
-install -m 0644 systemd/osdf-*.service $RPM_BUILD_ROOT/usr/lib/systemd/system/
-install -m 0644 systemd/osdf-*.yaml $RPM_BUILD_ROOT/etc/pelican/
-install -m 0644 systemd/pelican.logrotate $RPM_BUILD_ROOT/etc/logrotate.d/pelican
+install -m 0644 systemd/osdf-*.service          $RPM_BUILD_ROOT/usr/lib/systemd/system/
+install -m 0644 systemd/osdf-*.yaml             $RPM_BUILD_ROOT/etc/pelican/
+install -m 0644 systemd/10-osdf-defaults.yaml   $RPM_BUILD_ROOT/usr/share/pelican/config.d/
+install -m 0644 %{SOURCE1}                      $RPM_BUILD_ROOT/etc/pelican/config.d/
+install -m 0644 systemd/examples/15-osdf.yaml   $RPM_BUILD_ROOT/etc/pelican/config.d/
+install -m 0644 systemd/examples/50-webui.yaml  $RPM_BUILD_ROOT/etc/pelican/config.d/
+install -m 0644 systemd/pelican.logrotate       $RPM_BUILD_ROOT/etc/logrotate.d/pelican
 
 
 %subpackage osdf-registry
@@ -90,6 +104,12 @@ install -m 0644 systemd/pelican.logrotate $RPM_BUILD_ROOT/etc/logrotate.d/pelica
 
 
 %changelog
+* Thu Dec 05 2024 Mátyás Selmeci <matyas@cs.wisc.edu> - 7.11.7-1
+- Upgrade to Pelican 7.11.7 (SOFTWARE-6028)
+
+* Tue Nov 05 2024 Mátyás Selmeci <matyas@cs.wisc.edu> - 7.11.1-1
+- Upgrade to Pelican 7.11.1 and switch to config.d layout (SOFTWARE-6028)
+
 * Wed Oct 02 2024 Mátyás Selmeci <matyas@cs.wisc.edu> - 7.10.7-1
 - Upgrade to Pelican 7.10.7 (SOFTWARE-6004)
 
