@@ -9,7 +9,7 @@
 Summary: The Frontier distribution of the Squid proxy caching server
 Name: frontier-squid%{?squidsuffix}
 Version: 5.9
-%define release4source 2
+%define release4source 3
 %define releasenum 1%{?dist}
 Release: %{?release4source}.%{?releasenum}
 Epoch: 11
@@ -52,7 +52,6 @@ Source2: https://github.com/hep-gc/shoal/archive/%{shoalname}.tar.gz
 Source3: shoal-downloads.tar.gz
 Conflicts: squid
 Conflicts: frontier-awstats < 6.9-4
-Requires: chkconfig
 
 # procps-ng is needed for /usr/sbin/sysctl
 Requires: procps-ng
@@ -220,8 +219,6 @@ touch ${RPM_BUILD_ROOT}%{etcdirsquid}/squid.conf.old
 
 cd %{_builddir}/%{frontiersquidtarball}/squid
 make INSTALL_DIR=$RPM_BUILD_ROOT SQUID_SUFFIX=%{?squidsuffix} proto_install
-cd ../%{frontiersquidutils}
-make INSTALL_DIR=$RPM_BUILD_ROOT SQUID_SUFFIX=%{?squidsuffix} proto_install
 
 # Variables for unproto
 UNPROTO_VARS="NET_LOCAL CACHE_MEM CACHE_DIR_SIZE EFFECTIVE_USER EFFECTIVE_GROUP ETC_DIR LIBEXEC_DIR LOG_DIR SHARE_DIR CACHE_DIR BIN_DIR LIB_DIR VARLIB_DIR CONF_DIR SBIN_DIR CRON_DIR RUN_DIR AWSTATS_SCRIPT REINIT_SCRIPT RELOAD_SCRIPT SQUID_SUFFIX"
@@ -244,22 +241,29 @@ export SBIN_DIR=/usr/sbin
 export CRON_DIR=%{datadirsquid}/cron
 export RUN_DIR=%{rundirsquid}
 export AWSTATS_SCRIPT=/etc/awstats/run_awstats.sh
-export REINIT_SCRIPT="/etc/init.d/frontier-squid"
+export REINIT_SCRIPT=%{libexecdirsquid}/frontier-squid
 export RELOAD_SCRIPT="systemctl reload %{name}"
 export SQUID_SUFFIX=%{?squidsuffix}
 
 UNPROTO_SCRIPT=%{_builddir}/%{frontiersquidtarball}/unproto.sh 
+mkdir -p ${RPM_BUILD_ROOT}/usr/sbin
+pushd %{_builddir}/%{frontiersquidtarball}/%{frontiersquidutils}
+cp bin/fn-local-squid.sh.proto ${RPM_BUILD_ROOT}/usr/sbin/fn-local-squid%{?squidsuffix}.sh.proto
 ${UNPROTO_SCRIPT} ${RPM_BUILD_ROOT}/usr/sbin/fn-local-squid%{?squidsuffix}.sh.proto 1 755 ${UNPROTO_VARS}
 ${UNPROTO_SCRIPT} ${RPM_BUILD_ROOT}%{etcdirsquid}/customize.sh.proto 1 755 ${UNPROTO_VARS}
-mkdir -p ${RPM_BUILD_ROOT}/etc/init.d
-mv ${RPM_BUILD_ROOT}%{etcdirsquid}/init.d/%{name}.sh.proto ${RPM_BUILD_ROOT}/etc/init.d/%{name}.proto
-rmdir ${RPM_BUILD_ROOT}%{etcdirsquid}/init.d
-${UNPROTO_SCRIPT} ${RPM_BUILD_ROOT}/etc/init.d/%{name}.proto 1 755 ${UNPROTO_VARS}
+mkdir -p ${RPM_BUILD_ROOT}%{libexecdirsquid}
+cp init.d/%{name}.sh.proto ${RPM_BUILD_ROOT}%{libexecdirsquid}/%{name}.proto
+${UNPROTO_SCRIPT} ${RPM_BUILD_ROOT}%{libexecdirsquid}/%{name}.proto 1 755 ${UNPROTO_VARS}
 mv ${RPM_BUILD_ROOT}%{etcdirsquid}/squid.conf.proto ${RPM_BUILD_ROOT}%{etcdirsquid}/squid.conf.frontierdefault.proto
 ${UNPROTO_SCRIPT} ${RPM_BUILD_ROOT}%{etcdirsquid}/squid.conf.frontierdefault.proto 1 644 ${UNPROTO_VARS}
+mkdir -p ${RPM_BUILD_ROOT}$CRON_DIR
+cp cron/daily.sh.proto ${RPM_BUILD_ROOT}$CRON_DIR/daily.sh.proto
 ${UNPROTO_SCRIPT} ${RPM_BUILD_ROOT}$CRON_DIR/daily.sh.proto 1 755 ${UNPROTO_VARS}
+cp cron/hourly.sh.proto ${RPM_BUILD_ROOT}$CRON_DIR/hourly.sh.proto
 ${UNPROTO_SCRIPT} ${RPM_BUILD_ROOT}$CRON_DIR/hourly.sh.proto 1 755 ${UNPROTO_VARS}
+cp cron/crontab.dat.proto ${RPM_BUILD_ROOT}$CRON_DIR/crontab.dat.proto
 ${UNPROTO_SCRIPT} ${RPM_BUILD_ROOT}$CRON_DIR/crontab.dat.proto 1 644 ${UNPROTO_VARS}
+popd
 
 # make default tmpfiles.d configuration for EL7, without leading '/var'
 echo "d `echo %{rundirsquid}|sed 's,^/var,,'` 0755 %{defaultsquiduser} %{defaultsquiduser} -" >${RPM_BUILD_ROOT}%{tmpfilesconfdir}/%{name}.conf
@@ -273,9 +277,9 @@ Documentation=man:squid(8)
 
 [Service]
 Type=forking
-ExecStart=/etc/init.d/frontier-squid start
-ExecReload=/etc/init.d/frontier-squid reload
-ExecStop=/etc/init.d/frontier-squid stop
+ExecStart=%{libexecdirsquid}/frontier-squid start
+ExecReload=%{libexecdirsquid}/frontier-squid reload
+ExecStop=%{libexecdirsquid}/frontier-squid stop
 TimeoutStartSec=90
 TimeoutStopSec=60
 # We want systemd to give squid some time to finish gracefully, but still want
@@ -346,8 +350,8 @@ rm -rf $RPM_BUILD_ROOT
 %verify(not user group size md5 mtime) %config(noreplace) %{etcdirsquid}/customize.sh
 %verify(not user group size md5 mtime) %{etcdirsquid}/squid.conf.frontierdefault
 %verify(not user group size md5 mtime) %{etcdirsquid}/cachemgr.conf
-# the init.d, cron.d, and tmpfiles.d scripts are edited in post-install
-%verify(not size md5 mtime) /etc/init.d/%{name}
+# the %{libexecdirsquid}, cron.d, and tmpfiles.d scripts are edited in post-install
+%verify(not size md5 mtime) %{libexecdirsquid}/%{name}
 # removed the %config(noreplace) on the cron because it was too hard to manage
 %verify(not size md5 mtime) /etc/cron.d/%{name}.cron
 %verify(not size md5 mtime) %{tmpfilesconfdir}/%{name}.conf
@@ -482,8 +486,8 @@ fi
 
 # override effective user and group in squid.conf 
 sed -i "s/^cache_effective_user.*/cache_effective_user ${FRONTIER_USER}/;s/^cache_effective_group.*/cache_effective_group ${FRONTIER_GROUP}/" %{etcdirsquid}/squid.conf.frontierdefault
-# set FRONTIER_USER in the init.d script
-sed -i -e "s/^\(FRONTIER_USER=\).*/\1${FRONTIER_USER}/" /etc/init.d/%{name}
+# set FRONTIER_USER in the %{libexecdirsquid} script
+sed -i -e "s/^\(FRONTIER_USER=\).*/\1${FRONTIER_USER}/" %{libexecdirsquid}/%{name}
 # set file ownerships
 find %{cachedirsquid} %{logdirsquid} %{rundirsquid} %{etcdirsquid} \
 	\( ! -user ${FRONTIER_USER} -o ! -group ${FRONTIER_GROUP} \) | \
@@ -522,9 +526,7 @@ if [ $1 -eq 0 ]; then
    if systemctl is-active --quiet %{name}; then
       systemctl stop %{name}
    fi
-   /etc/init.d/frontier-squid removecache
-   # This is needed for cleaning up after versions <= 4.13-5.2
-   /sbin/chkconfig --del %{name}
+   %{libexecdirsquid}/frontier-squid removecache
 
    # The following intends to avoid missing old squid.conf at upgrade.
    if [ -f %{etcdirsquid}/squid.conf.old ]; then 
@@ -533,6 +535,14 @@ if [ $1 -eq 0 ]; then
 fi
 
 %changelog
+
+* Wed Oct 23 2024 Carl Vuosalo <carl.vuosalo@cern.ch> 5.9-3.1
+ - Upgrade to 5.9-3 tarball with the following release notes:
+  - Add *.eessi.science to MAJOR_CVMFS in squid/files/postinstall/squid.conf.proto.
+ - Move frontier-squid.sh from /etc/init.d to /usr/libexec/squid. Remove chkconfig
+    because it is no longer needed. Move all steps of preparation of the
+    frontier-squid-utils prototype files to this file to simplify future
+    maintenance.
 
 * Thu Jan 11 2024 Carl Vuosalo <carl.vuosalo@cern.ch> 5.9-2.1
  - Apply security patches from Squid 6 to address security concerns since 
