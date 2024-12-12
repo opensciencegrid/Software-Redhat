@@ -1053,11 +1053,6 @@ rm -rf $RPM_BUILD_ROOT
 #%config(noreplace) %{_sysconfdir}/condor/scripts/frontend_condortoken
 
 %changelog
-* Wed Dec 11 2024 Namratha Urs <nurs@fnal.gov> - 3.11.1
-- Glideinwms v3.11.1
-- Release Notes: http://glideinwms.fnal.gov/doc.v3_11_1/history.html
-- Release candidates 3.11.1-01.rc1 to 3.11.1-01.rc1
-
 * Mon Dec 12 2024 Bruno Coimbra <coimbra@fnal.gov> - 3.11.0
 - Glideinwms v3.11.0
 - Release Notes: http://glideinwms.fnal.gov/doc.v3_11_0/history.html
