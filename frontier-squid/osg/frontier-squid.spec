@@ -10,7 +10,7 @@ Summary: The Frontier distribution of the Squid proxy caching server
 Name: frontier-squid%{?squidsuffix}
 Version: 5.9
 %define release4source 3
-%define releasenum 1%{?dist}
+%define releasenum 2%{?dist}
 Release: %{?release4source}.%{?releasenum}
 Epoch: 11
 License: GPL
@@ -69,6 +69,8 @@ BuildRequires: python3-pip
 BuildRequires: redhat-rpm-config
 BuildRequires: libffi-devel
 BuildRequires: cargo
+
+ExclusiveArch: x86_64
 
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -535,6 +537,10 @@ if [ $1 -eq 0 ]; then
 fi
 
 %changelog
+
+* Fri Dec 13 2024 Carl Vuosalo <carl.vuosalo@cern.ch> 5.9-3.2
+ - Fix building of RPM to properly choose Python36 or Python39.
+     Also, restrict building to x86_64 architecture.
 
 * Wed Oct 23 2024 Carl Vuosalo <carl.vuosalo@cern.ch> 5.9-3.1
  - Upgrade to 5.9-3 tarball with the following release notes:
