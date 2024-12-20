@@ -1,0 +1,42 @@
+From 089541f639ac161056256b6d223c29a3a23a61cd Mon Sep 17 00:00:00 2001
+From: Matevz Tadel <mtadel@ucsd.edu>
+Date: Fri, 20 Dec 2024 09:29:30 -0800
+Subject: [PATCH] [Pfc] Fix FD leak when reading file-size from cinfo file in
+ Cache::DetermineFullFileSize().
+
+---
+ src/XrdPfc/XrdPfc.cc | 20 ++++++++++++++------
+ 1 file changed, 14 insertions(+), 6 deletions(-)
+
+diff --git a/src/XrdPfc/XrdPfc.cc b/src/XrdPfc/XrdPfc.cc
+index 567bda0d9a2..c600697208c 100644
+--- a/src/XrdPfc/XrdPfc.cc
++++ b/src/XrdPfc/XrdPfc.cc
+@@ -944,13 +944,21 @@ long long Cache::DetermineFullFileSize(const std::string &cinfo_fname)
+ 
+    XrdOssDF *infoFile = m_oss->newFile(m_configuration.m_username.c_str());
+    XrdOucEnv env;
++   long long ret;
+    int res = infoFile->Open(cinfo_fname.c_str(), O_RDONLY, 0600, env);
+-   if (res < 0)
+-      return res;
+-   Info info(m_trace, 0);
+-   if ( ! info.Read(infoFile, cinfo_fname.c_str()))
+-      return -EBADF;
+-   return info.GetFileSize();
++   if (res < 0) {
++      ret = res;
++   } else {
++      Info info(m_trace, 0);
++      if ( ! info.Read(infoFile, cinfo_fname.c_str())) {
++         ret = -EBADF;
++      } else {
++         ret = info.GetFileSize();
++      }
++      infoFile->Close();
++   }
++   delete infoFile;
++   return ret;
+ }
+ 
+ //______________________________________________________________________________
