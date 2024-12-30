@@ -1,16 +1,16 @@
 Summary: XRootD Monitoring Shoveler
 Name: xrootd-monitoring-shoveler
-Version: 1.1.2
-Release: 3%{?dist}
+Version: 1.4.0
+Release: 1%{?dist}
 License: ASL 2.0
 URL: https://github.com/opensciencegrid/xrootd-monitoring-shoveler
 
 # Pre-compiled go binaries
-Source0: %{name}_%{version}_Linux_x86_64.tar.gz
-ExclusiveArch: x86_64
-Source1: %{name}.service
-Source2: config.yaml
-Source3: dependency-licenses.txt
+Source0: %{name}_Linux_x86_64.tar.gz
+Source1: %{name}_Linux_arm64.tar.gz
+Source2: %{name}.service
+Source3: config.yaml
+Source4: dependency-licenses.txt
 
 # go compiler doesn't generate build id files by default.
 # We also don't have them if we're using a pre-compiled binary.
@@ -23,8 +23,13 @@ This shoveler gathers UDP messages and sends them to a message bus.
 This shoveling is used to convert unreliable UDP to reliable message bus.
 
 %prep
-%setup -q -n %{name}_%{version}_Linux_x86_64
-cp %{SOURCE3} .
+%ifarch x86_64
+%setup -q -n %{name}_Linux_x86_64
+%endif
+%ifarch aarch64
+%setup -q -n %{name}_Linux_arm64 -T -b 1
+%endif
+cp %{SOURCE4} .
 
 %build
 exit 0
@@ -35,10 +40,10 @@ install -m 755 %{name} $RPM_BUILD_ROOT/%{_bindir}/
 install -m 755 createtoken $RPM_BUILD_ROOT/%{_bindir}/
 
 install -m 755 -d $RPM_BUILD_ROOT/%{_unitdir}/
-install -m 644 %{SOURCE1} $RPM_BUILD_ROOT/%{_unitdir}/
+install -m 644 %{SOURCE2} $RPM_BUILD_ROOT/%{_unitdir}/
 
 install -m 755 -d $RPM_BUILD_ROOT/%{_sysconfdir}/%{name}/
-install -m 644 %{SOURCE2} $RPM_BUILD_ROOT/%{_sysconfdir}/%{name}/
+install -m 644 %{SOURCE3} $RPM_BUILD_ROOT/%{_sysconfdir}/%{name}/
 
 install -m 755 -d $RPM_BUILD_ROOT/%_localstatedir/spool/shoveler-queue
 
@@ -53,6 +58,9 @@ install -m 755 -d $RPM_BUILD_ROOT/%_localstatedir/spool/shoveler-queue
 %doc dependency-licenses.txt
 
 %changelog
+* Mon Dec 30 2024 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.4.0-1
+- Update to 1.4.0 (SOFTWARE-6930); make ARM packages too
+
 * Thu Oct 10 2024 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.1.2-3
 - Add ExclusiveArch: x86_64 since we're repackaging a compiled binary
 
