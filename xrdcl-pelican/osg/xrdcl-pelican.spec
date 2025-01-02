@@ -40,6 +40,7 @@ BuildRequires: curl-devel
 # For %{_unitdir} macro
 BuildRequires: systemd
 BuildRequires: openssl-devel
+BuildRequires: tinyxml2-devel
 
 Requires: xrootd-client >= 1:%{xrootd_current_major}.%{xrootd_current_minor}
 Requires: xrootd-client <  1:%{xrootd_next_major}.0.0-1
@@ -55,7 +56,7 @@ Requires: xrootd-client <  1:%{xrootd_next_major}.0.0-1
 . /opt/rh/devtoolset-11/enable
 %endif
 
-%cmake3 -DCMAKE_BUILD_TYPE=RelWithDebInfo .
+%cmake3 -DCMAKE_BUILD_TYPE=RelWithDebInfo -DXROOTD_EXTERNAL_TINYXML2=1 .
 make VERBOSE=1 %{?_smp_mflags}
 
 %install
