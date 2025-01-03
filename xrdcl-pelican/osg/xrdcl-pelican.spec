@@ -1,14 +1,12 @@
 
 Name: xrdcl-pelican
 Version: 1.0.0
-Release: 1%{?dist}
+Release: 1.1%{?dist}
 Summary: A Pelican-specific backend for the XRootD client
 
 Group: System Environment/Daemons
 License: BSD
 URL: https://github.com/pelicanplatform/xrdcl-pelican
-# Generated from:
-# git archive v%{version} --prefix=xrdcl-pelican-%{version}/ | gzip -7 > ~/rpmbuild/SOURCES/xrdcl-pelican-%{version}.tar.gz
 Source0: %{name}-%{version}.tar.gz
 
 %define xrootd_current_major 5
@@ -37,7 +35,7 @@ BuildRequires: devtoolset-11-toolchain
 %endif
 BuildRequires: curl-devel
 %{?systemd_requires}
-# For %{_unitdir} macro
+# For %%{_unitdir} macro
 BuildRequires: systemd
 BuildRequires: openssl-devel
 BuildRequires: tinyxml2-devel
