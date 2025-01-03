@@ -55,8 +55,9 @@ Requires: xrootd-client <  1:%{xrootd_next_major}.0.0-1
 . /opt/rh/devtoolset-11/enable
 %endif
 
-%cmake3 -DCMAKE_BUILD_TYPE=RelWithDebInfo -DXROOTD_EXTERNAL_TINYXML2=1 -DXROOTD_EXTERNAL_JSON=1 .
-make VERBOSE=1 %{?_smp_mflags}
+%cmake3 --log-level=DEBUG -DCMAKE_BUILD_TYPE=RelWithDebInfo -DXROOTD_EXTERNAL_TINYXML2=1 -DXROOTD_EXTERNAL_JSON=1 .
+make VERBOSE=1 -j1
+# %%{?_smp_mflags}
 
 %install
 rm -rf $RPM_BUILD_ROOT
