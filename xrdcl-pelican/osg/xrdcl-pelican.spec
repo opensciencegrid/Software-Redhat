@@ -8,6 +8,7 @@ Group: System Environment/Daemons
 License: BSD
 URL: https://github.com/pelicanplatform/xrdcl-pelican
 Source0: %{name}-%{version}.tar.gz
+Patch0: Fix-use-of-non-constant-in-format-string.patch
 
 %define xrootd_current_major 5
 %define xrootd_current_minor 6
@@ -49,6 +50,7 @@ Requires: xrootd-client <  1:%{xrootd_next_major}.0.0-1
 
 %prep
 %setup -q
+%patch0 -p1
 
 %build
 %if 0%{?rhel} == 7
