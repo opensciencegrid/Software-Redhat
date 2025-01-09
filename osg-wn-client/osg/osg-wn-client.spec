@@ -11,7 +11,10 @@ Requires: /usr/bin/xrdcp
 Requires: /usr/bin/curl
 Requires: /usr/bin/ldapsearch
 Requires: /usr/bin/wget
+
+Suggests: osg-ca-certs
 Requires: grid-certificates >= 7
+
 Requires: fetch-crl
 Requires: osg-system-profiler
 Requires: stashcp

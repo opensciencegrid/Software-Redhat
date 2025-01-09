@@ -24,7 +24,9 @@ Source15: scitokens.conf
 Requires: xrootd >= 1:5.6.0
 
 # Necessary for authentication
+Suggests: osg-ca-certs
 Requires: grid-certificates >= 7
+
 Requires: vo-client
 Requires: fetch-crl
 Requires: xrootd-voms

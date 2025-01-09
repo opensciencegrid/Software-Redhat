@@ -13,6 +13,8 @@ BuildRequires: condor
 BuildRequires: htcondor-ce
 
 Requires: grid-certificates >= 7
+Suggests: osg-ca-certs
+
 Requires: osg-scitokens-mapfile
 Requires: vo-client
 
