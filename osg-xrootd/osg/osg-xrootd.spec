@@ -1,7 +1,7 @@
 Summary: OSG configuration files for XRootD
 Name: osg-xrootd
 Version: 24
-Release: 2%{?dist}
+Release: 3%{?dist}
 License: ASL 2.0
 BuildArch: noarch
 
@@ -96,7 +96,7 @@ mkdir -p /etc/grid-security >/dev/null 2>&1 || :
 [ -e /etc/grid-security/grid-mapfile ] || touch /etc/grid-security/grid-mapfile
 
 %changelog
-* Thu Jan 9 2024 Matt Westphall <westphall@wisc.edu> - 24-2
+* Thu Jan 9 2025 Matt Westphall <westphall@wisc.edu> - 24-3
 - Add suggests: osg-ca-certs to satisfy grid-certificates (SOFTWARE-6051)
 
 * Thu Oct 10 2024 Mátyás Selmeci <matyas@cs.wisc.edu> - 24-1

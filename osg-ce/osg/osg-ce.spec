@@ -2,7 +2,7 @@ Name:      osg-ce
 Summary:   OSG Compute Element
 # Note: the verison must match the OSG release series
 Version:   24
-Release:   3%{?dist}
+Release:   4%{?dist}
 License:   Apache 2.0
 URL:       https://osg-htc.org
 
@@ -142,7 +142,7 @@ sed -e 's/@@SERIES@@/%{version}/' %{SOURCE0} > $RPM_BUILD_ROOT/%{_datadir}/condo
 %files slurm
 
 %changelog
-* Thu Jan 9 2024 Matt Westphall <westphall@wisc.edu> - 24-3
+* Thu Jan 9 2025 Matt Westphall <westphall@wisc.edu> - 24-4
 - Add suggests: osg-ca-certs to satisfy grid-certificates (SOFTWARE-6051)
 
 * Tue Nov 19 2024 Matt Westphall <westphall@wisc.edu> - 24-2
