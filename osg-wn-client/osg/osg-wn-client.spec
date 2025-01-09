@@ -1,7 +1,7 @@
 Name:      osg-wn-client
 Summary:   OSG Worker-Node Client
 Version:   23
-Release:   1%{?dist}
+Release:   2%{?dist}
 License:   Apache 2.0
 URL:       http://www.opensciencegrid.org
 BuildArch: noarch
@@ -11,6 +11,7 @@ Requires: /usr/bin/xrdcp
 Requires: /usr/bin/curl
 Requires: /usr/bin/ldapsearch
 Requires: /usr/bin/wget
+Suggests: osg-ca-certs
 Requires: grid-certificates >= 7
 Requires: fetch-crl
 Requires: osg-system-profiler
@@ -44,6 +45,9 @@ EOF
 %config(noreplace) %{_prefix}/etc/globus-user-env.sh
 
 %changelog
+* Thu Jan 9 2025 Matt Westphall <westphall@wisc.edu> - 23-2
+- Add suggests: osg-ca-certs to satisfy grid-certificates (SOFTWARE-6051)
+
 * Fri Sep 8 2023 Matt Westphall <westphall@wisc.edu> - 23-1
 - Bump version for OSG 23
 

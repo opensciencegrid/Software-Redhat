@@ -2,7 +2,7 @@ Name:      osg-ce
 Summary:   OSG Compute Element
 # Note: the verison must match the OSG release series
 Version:   23
-Release:   2%{?dist}
+Release:   3%{?dist}
 License:   Apache 2.0
 URL:       http://www.opensciencegrid.org
 
@@ -12,6 +12,7 @@ Source0: 01-osg-ce.conf
 BuildRequires: condor
 BuildRequires: htcondor-ce
 
+Suggests: osg-ca-certs
 Requires: grid-certificates >= 7
 Requires: osg-scitokens-mapfile
 Requires: vo-client
@@ -141,6 +142,9 @@ sed -e 's/@@SERIES@@/%{version}/' %{SOURCE0} > $RPM_BUILD_ROOT/%{_datadir}/condo
 %files slurm
 
 %changelog
+* Thu Jan 9 2025 Matt Westphall <westphall@wisc.edu> - 23-3
+- Add suggests: osg-ca-certs to satisfy grid-certificates (SOFTWARE-6051)
+
 * Mon Nov 13 2023 Mátyás Selmeci <matyas@cs.wisc.edu> - 23-2
 - Set correct value of OSG_SERIES attribute (SOFTWARE-5747)
 
