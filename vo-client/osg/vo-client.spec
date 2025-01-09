@@ -4,9 +4,11 @@
 # Set to 1 to include IAM-based VOMS endpoints in the vomses file (SOFTWARE-5843)
 %define iam_vomses 0
 
+%define release_num 2
+
 Name:           vo-client
 Version:        137
-Release:        2%{?dist}
+Release:        %{release_num}%{?dist}
 Summary:        Contains vomses file for use with user authentication
 
 License:        Apache 2.0
@@ -16,7 +18,7 @@ BuildArch:      noarch
 Suggests: osg-ca-certs
 Requires: grid-certificates >= 7
 
-Source0:        %{name}-%{version}-%{release}.tar.gz
+Source0:        %{name}-%{version}-%{release_num}.tar.gz
 
 # See
 # https://github.com/opensciencegrid/osg-vo-config#readme
@@ -42,7 +44,7 @@ Requires:       %{name} = %{version}-%{release}
 
 
 %prep
-%setup
+%setup -q -n vo-client-%{version}-%{release_num}
 
 %build
 make
