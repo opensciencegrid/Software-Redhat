@@ -15,8 +15,7 @@
 # This is the directory the tarball extracts to. This may be "xrootd" or "xrootd-%%{version}" depending on where the tarball was downloaded from.
 # GitHub releases use "xrootd-%%{version}"
 #global build_dir xrootd-%{version}
-%global build_dir xrootd-xcache-purge-rebase-onto-master-2024-09-10-tag-1
-#                                                                 ^^ note only one dash
+%global build_dir xrootd-xcache-purge-rebase-onto-master-5.7.2-2024-12-05
 
 #-------------------------------------------------------------------------------
 # Helper macros
@@ -81,7 +80,7 @@
 #-------------------------------------------------------------------------------
 Name:      alja-xrootd
 Epoch:     1
-Version:   5.7.1
+Version:   5.7.2
 Release:   1.3%{?dist}%{?_with_clang:.clang}%{?_with_asan:.asan}
 Summary:   Extended ROOT file server
 Group:     System Environment/Daemons
@@ -92,7 +91,7 @@ Provides:  xrootd = %{epoch}:%{version}-%{release}
 
 %define compat_version 4.12.6
 
-%define tag xcache-purge-rebase-onto-master-2024-09-10--tag-1
+%define tag xcache-purge-rebase-onto-master-5.7.2-2024-12-05
 Source0:   %{tag}.tar.gz
 
 # always include the tarball in the SRPM even if we don't build it because the
@@ -102,8 +101,9 @@ Source1:   xrootd-%{compat_version}.tar.gz
 # OSG Patches not merged into upstream
 Patch0: bbockelm-defer_clientauth_v5_v2.patch
 Patch1: 1868-env-hostname-override.patch
-Patch3: 2300-stat-call-reduction.patch
 Patch4: bbockelm-3-oss-statistics.patch
+Patch5: 2348-cache-age-logic.patch
+Patch6: 2395-cinfo-read-fd-leak.patch
 
 # Debug Patches
 Patch101: 0003-DEBUG-unset-use-pep517.patch
@@ -546,8 +546,9 @@ This package contains compatibility binaries for xrootd 4 servers.
 cd %{build_dir}
 %patch0 -p1
 %patch1 -p1
-%patch3 -p1
 %patch4 -p1
+%patch5 -p1
+%patch6 -p1
 # %%patch101 -p1
 cd ..
 
@@ -1208,6 +1209,30 @@ fi
 # Changelog
 #-------------------------------------------------------------------------------
 %changelog
+* Mon Jan 13 2025 Mátyás Selmeci <matyas@cs.wisc.edu> - 5.7.2-1.3
+- Rebase on XRootD 5.7.2 (SOFTWARE-6056):
+
+    * Fri Dec 20 2024 Mátyás Selmeci <matyas@cs.wisc.edu> - 5.7.2-1.2
+    - Add 2395-cinfo-read-fd-leak.patch (SOFTWARE-6047)
+
+    * Tue Dec 03 2024 Mátyás Selmeci <matyas@cs.wisc.edu> - 5.7.2-1.1
+    - Update to 5.7.2 and drop upstreamed patches (SOFTWARE-6036)
+      - Drop 2300-stat-call-reduction.patch
+      - Update 2348-cache-age-logic.patch
+        (replace with https://github.com/bbockelm/xrootd/commit/2160a23febe1782cc3590a473209f0e74f965084)
+      - Drop 2357-fix-errSocketTimeout-loop.patch
+      - Drop 2363-reset-runstatus-in-redrive-thread.patch
+
+    * Wed Oct 16 2024 Matt Westphall <westphall@wisc.edu> - 5.7.1-1.4
+    - Add 2363-reset-runstatus-in-redrive-thread.patch (SOFTWARE-6024)
+
+    * Wed Oct 16 2024 Matt Westphall <westphall@wisc.edu> - 5.7.1-1.3
+    - Add 2357-fix-errSocketTimeout-loop.patch
+
+    * Thu Oct 03 2024 Mátyás Selmeci <matyas@cs.wisc.edu> - 5.7.1-1.2
+    - Update 2300-stat-call-reduction.patch (SOFTWARE-6003)
+    - Add 2348-cache-age-logic.patch (SOFTWARE-6003)
+
 * Thu Sep 12 2024 Mátyás Selmeci <matyas@cs.wisc.edu> - 5.7.1-1.3
 - Initial build of alja-xrootd (SOFTWARE-5980)
 
