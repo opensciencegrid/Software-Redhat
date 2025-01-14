@@ -1,2 +1,4 @@
-alja-xrootd/tag-1/xcache-purge-rebase-onto-master-2024-09-10--tag-1.tar.gz sha1sum=3169424348aeb0485e3a792d366a1025fa619700
-# https://github.com/osschar/xrootd/archive/refs/tags/xcache-purge-rebase-onto-master-2024-09-10--tag-1.tar.gz
+alja-xrootd/2024-12-05/xcache-purge-rebase-onto-master-5.7.2-2024-12-05.tar.gz sha1sum=6c6dfbca3bea158f5082dfea7b851c06a6370325
+# https://github.com/osschar/xrootd/archive/refs/heads/xcache-purge-rebase-onto-master-5.7.2-2024-12-05.tar.gz
+# downloaded 2025-01-13 when it was at commit 3de56eeb81cb71971f72235eea076122eac7f141
+

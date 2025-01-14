@@ -1,0 +1,30 @@
+From 2160a23febe1782cc3590a473209f0e74f965084 Mon Sep 17 00:00:00 2001
+From: Brian Bockelman <bbockelman@morgridge.org>
+Date: Tue, 3 Dec 2024 10:19:53 -0600
+Subject: [PATCH] [XrdPfc] Zero mtime if object is not cached
+
+XrdHttp determines the presence of the `Age` header (indicating data
+that is cached) based on whether the `mtime` is zero; however, XrdPfc
+sets `ctime` to 0 if things aren't cached.
+
+Also set `mtime` to 0 in the not-cached case.
+---
+ src/XrdPfc/XrdPfc.cc | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
+
+diff --git a/src/XrdPfc/XrdPfc.cc b/src/XrdPfc/XrdPfc.cc
+index 567bda0d9a2..86078fbdf6b 100644
+--- a/src/XrdPfc/XrdPfc.cc
++++ b/src/XrdPfc/XrdPfc.cc
+@@ -1143,8 +1143,9 @@ int Cache::Stat(const char *curl, struct stat &sbuff)
+    }
+    sbuff.st_size = file_size;
+    bool is_cached = DecideIfConsideredCached(file_size, sbuff.st_blocks * 512ll);
+-   if ( ! is_cached)
+-      sbuff.st_atime = 0;
++   if ( ! is_cached) {
++      sbuff.st_ctime = sbuff.st_mtime = sbuff.st_atime = 0;
++   }
+ 
+    TRACE(Debug, tpfx << "from disk " << curl << " -> " << res);
+ 
