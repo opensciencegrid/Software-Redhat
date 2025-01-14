@@ -20,7 +20,7 @@
 # For Release Candidate builds, check with Software team on release string
 # ------------------------------------------------------------------------------
 %define version 3.11.0
-%define release 0.7.rc7
+%define release 0.8.rc8
 
 %define frontend_xml frontend.xml
 %define factory_xml glideinWMS.xml
@@ -1106,10 +1106,10 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
-* Fri Jan 3 2025 Bruno Coimbra <coimbra@fnal.gov> - 3.11.0
+* Fri Jan 14 2025 Bruno Coimbra <coimbra@fnal.gov> - 3.11.0
 - Glideinwms v3.11.0
 - Release Notes: http://glideinwms.fnal.gov/doc.v3_11_0/history.html
-- Release candidates 3.11.0-01.rc1 to 3.11.0-07.rc7
+- Release candidates 3.11.0-01.rc1 to 3.11.0-08.rc8
 
 * Fri Dec 20 2024 Marco Mambelli <marcom@fnal.gov> - 3.10.9
 - Glideinwms v3.10.9
