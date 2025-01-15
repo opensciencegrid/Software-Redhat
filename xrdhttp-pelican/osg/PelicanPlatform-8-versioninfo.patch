@@ -1,0 +1,30 @@
+From f65c26b2461b565baf0d23fb655fbd4aa26655cb Mon Sep 17 00:00:00 2001
+From: Brian Bockelman <bbockelman@morgridge.org>
+Date: Tue, 14 Jan 2025 08:14:40 -0600
+Subject: [PATCH] Initialize version information in the plugin
+
+---
+ src/XrdHttpPelican.cc | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/src/XrdHttpPelican.cc b/src/XrdHttpPelican.cc
+index 9a3a622..4c1cda4 100644
+--- a/src/XrdHttpPelican.cc
++++ b/src/XrdHttpPelican.cc
+@@ -19,6 +19,7 @@
+ #include "private/XrdHttp/XrdHttpExtHandler.hh"
+ 
+ #include "XrdSys/XrdSysError.hh"
++#include <XrdVersion.hh>
+ 
+ #include <arpa/inet.h>
+ #include <errno.h>
+@@ -329,6 +330,8 @@ int PelicanHandler::ProcessReq(XrdHttpExtReq &req) { return -1; }
+ 
+ extern "C" {
+ 
++XrdVERSIONINFO(XrdHttpGetExtHandler, XrdHttpPelican);
++
+ XrdHttpExtHandler *XrdHttpGetExtHandler(XrdSysError *log, const char *config,
+                                         const char * /*parms*/,
+                                         XrdOucEnv *myEnv) {
