@@ -20,7 +20,7 @@
 # For Release Candidate builds, check with Software team on release string
 # ------------------------------------------------------------------------------
 %define version 3.10.9
-%define release 0.1.rc1
+%define release 0.3.rc3
 
 %define frontend_xml frontend.xml
 %define factory_xml glideinWMS.xml
@@ -304,6 +304,7 @@ Requires: httpd
 Requires: mod_ssl
 Requires: php
 Requires: php-fpm
+Requires: composer
 %description logserver
 This subpackage includes an example of the files and Apache configuration
 to implement a simple server to receive Glidein logs.
@@ -627,6 +628,7 @@ install -d $RPM_BUILD_ROOT%{logserver_web_dir}/uploads
 install -d $RPM_BUILD_ROOT%{logserver_web_dir}/uploads_unauthorized
 install -m 0644 logserver/web-area/put.php $RPM_BUILD_ROOT%{logserver_web_dir}/put.php
 install -m 0644 logserver/logging_config.json $RPM_BUILD_ROOT%{logserver_dir}/logging_config.json
+install -m 0644 logserver/composer.json $RPM_BUILD_ROOT%{logserver_dir}/composer.json
 install -m 0644 logserver/jwt.php $RPM_BUILD_ROOT%{logserver_dir}/jwt.php
 install -m 0644 logserver/getjwt.py $RPM_BUILD_ROOT%{logserver_dir}/getjwt.py
 install -m 0644 logserver/README.md $RPM_BUILD_ROOT%{logserver_dir}/README.md
@@ -710,6 +712,7 @@ systemctl daemon-reload
 %post logserver
 # Protecting from failure in case it is not running/installed
 /sbin/service httpd reload > /dev/null 2>&1 || true
+# Could also load the dependencies with composer install
 
 %pre vofrontend-core
 # Add the "frontend" user and group if they do not exist
@@ -1095,17 +1098,18 @@ rm -rf $RPM_BUILD_ROOT
 %attr(-, apache, apache) %{logserver_web_dir}/uploads
 %attr(-, apache, apache) %{logserver_web_dir}/uploads_unauthorized
 %attr(-, apache, apache) %{logserver_web_dir}/put.php
-%attr(-, root, apache) %{logserver_dir}/logging_config.json
+%attr(-, root, root) %{logserver_dir}/logging_config.json
+%attr(-, root, root) %{logserver_dir}/composer.json
 %attr(-, root, root) %{logserver_dir}/jwt.php
 %attr(-, root, root) %{logserver_dir}/getjwt.py
 %attr(-, root, root) %{logserver_dir}/README.md
 
 
 %changelog
-* Fri Dec 20 2024 Marco Mambelli <marcom@fnal.gov> - 3.10.9
+* Wed Jan 15 2025 Marco Mambelli <marcom@fnal.gov> - 3.10.9
 - Glideinwms v3.10.9
 - Release Notes: http://glideinwms.fnal.gov/doc.v3_10_9/history.html
-- Release candidates 3.10.9-01.rc1
+- Release candidates 3.10.9-01.rc1 to 3.10.9-03.rc3
 
 * Mon Nov 25 2024 Marco Mambelli <marcom@fnal.gov> - 3.10.8
 - Glideinwms v3.10.8
