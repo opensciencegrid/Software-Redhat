@@ -100,12 +100,12 @@ Source1:   xrootd-%{compat_version}.tar.gz
 # OSG Patches not merged into upstream
 Patch0: bbockelm-defer_clientauth_v5_v2.patch
 Patch1: 1868-env-hostname-override.patch
-Patch4: bbockelm-3-oss-statistics.patch
-Patch5: 2348-cache-age-logic.patch
-Patch6: 2395-cinfo-read-fd-leak.patch
+Patch2: bbockelm-3-oss-statistics.patch
+Patch3: 2348-cache-age-logic.patch
+Patch4: 2395-cinfo-read-fd-leak.patch
 
-# Debug Patches
-Patch101: 0003-DEBUG-unset-use-pep517.patch
+## Debug Patches -- uncomment as needed
+#Patch101: 0003-DEBUG-unset-use-pep517.patch
 
 BuildRoot: %{_tmppath}/%{name}-root
 
@@ -523,12 +523,7 @@ This package contains compatibility binaries for xrootd 4 servers.
 
 %setup -c -n %{build_dir}
 cd %{build_dir}
-%patch0 -p1
-%patch1 -p1
-%patch4 -p1
-%patch5 -p1
-%patch6 -p1
-# %%patch101 -p1
+%autopatch -p1
 cd ..
 
 %build
