@@ -80,7 +80,7 @@
 Name:      xrootd
 Epoch:     1
 Version:   5.7.2
-Release:   1.2%{?dist}%{?_with_clang:.clang}%{?_with_asan:.asan}
+Release:   1.3%{?dist}%{?_with_clang:.clang}%{?_with_asan:.asan}
 Summary:   Extended ROOT file server
 Group:     System Environment/Daemons
 License:   LGPLv3+
@@ -97,12 +97,22 @@ Source0:   xrootd-%{version}.tar.gz
 # SRPM build may have a different build environment than the RPM build
 Source1:   xrootd-%{compat_version}.tar.gz
 
-# OSG Patches not merged into upstream
-Patch0: bbockelm-defer_clientauth_v5_v2.patch
-Patch1: 1868-env-hostname-override.patch
-Patch2: bbockelm-3-oss-statistics.patch
-Patch3: 2348-cache-age-logic.patch
-Patch4: 2395-cinfo-read-fd-leak.patch
+# PelicanPlatform/xrootd #1 (xrootd/xrootd #1868)
+Patch: 0001-Allow-hostname-used-by-XRootD-to-be-overridden-by-en.patch
+# PelicanPlatform/xrootd #2 (xrootd/xrootd #2348)
+Patch: 0002-XrdHttp-determines-the-presence-of-the-Age-header-in.patch
+# PelicanPlatform/xrootd #3 (xrootd/xrootd #2395)
+Patch: 0003-Fix-FD-leak-when-reading-file-size-from-cinfo-file-i.patch
+# PelicanPlatform/xrootd #4 (xrootd/xrootd #2269)
+Patch: 0004-Defer-client-TLS-auth-until-after-HTTP-parsing.patch
+# PelicanPlatform/xrootd #5 (xrootd/xrootd #2279)
+Patch: 0005-Add-new-filesystem-load-counter-plugin.patch
+# PelicanPlatform/xrootd #6 (xrootd/xrootd #2397)
+Patch: 0006-XrdSciTokens-Handle-multiple-authorization-token-set.patch
+# PelicanPlatform/xrootd #7 (xrootd/xrootd #2389)
+Patch: 0007-XrdHttp-Add-http.staticheader.patch
+# PelicanPlatform/xrootd #8 (xrootd/xrootd #2378)
+Patch: 0008-XrdHttp-Set-oss.asize-if-object-size-is-known.patch
 
 ## Debug Patches -- uncomment as needed
 #Patch101: 0003-DEBUG-unset-use-pep517.patch
@@ -1183,6 +1193,17 @@ fi
 # Changelog
 #-------------------------------------------------------------------------------
 %changelog
+* Wed Jan 15 2025 Mátyás Selmeci <mselmeci@wisc.edu> - 5.7.2-1.3
+- Use patches from PelicanPlatform/xrootd (SOFTWARE-6063)
+    - Replace 1868-env-hostname-override.patch with 0001-Allow-hostname-used-by-XRootD-to-be-overridden-by-en.patch (PelicanPlatform/xrootd #1)
+    - Replace 2348-cache-age-logic.patch with 0002-XrdHttp-determines-the-presence-of-the-Age-header-in.patch (PelicanPlatform/xrootd #2)
+    - Replace 2395-cinfo-read-fd-leak.patch with 0003-Fix-FD-leak-when-reading-file-size-from-cinfo-file-i.patch (PelicanPlatform/xrootd #3)
+    - Replace 2269-defer-client-auth.patch with 0004-Defer-client-TLS-auth-until-after-HTTP-parsing.patch (PelicanPlatform/xrootd #4)
+    - Replace bbockelm-3-oss-statistics.patch with 0005-Add-new-filesystem-load-counter-plugin.patch (PelicanPlatform/xrootd #5)
+    - Add 0006-XrdSciTokens-Handle-multiple-authorization-token-set.patch (PelicanPlatform/xrootd #6)
+    - Add 0007-XrdHttp-Add-http.staticheader.patch (PelicanPlatform/xrootd #7)
+    - Add 0008-XrdHttp-Set-oss.asize-if-object-size-is-known.patch (PelicanPlatform/xrootd #8)
+
 * Fri Dec 20 2024 Mátyás Selmeci <matyas@cs.wisc.edu> - 5.7.2-1.2
 - Add 2395-cinfo-read-fd-leak.patch (SOFTWARE-6047)
 

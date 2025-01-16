@@ -1,96 +1,40 @@
-From 02934a61c6aaf90973654750e69397601cd3672c Mon Sep 17 00:00:00 2001
+From 7029bb3adaee973d89392149448adebfaeaff529 Mon Sep 17 00:00:00 2001
 From: Brian Bockelman <bbockelman@morgridge.org>
-Date: Wed, 29 May 2024 11:24:29 -0500
-Subject: [PATCH 1/2] Add infrastructure for generic OSS g-stream monitoring
+Date: Wed, 15 Jan 2025 08:10:14 -0600
+Subject: [PATCH 5/9] Add new filesystem load counter plugin
 
-With this, any OSS plugin may use the gstream monitoring.
 ---
- src/XrdXrootd/XrdXrootdConfigMon.cc | 2 ++
- src/XrdXrootd/XrdXrootdMonData.hh   | 1 +
- src/XrdXrootd/XrdXrootdMonitor.hh   | 3 ++-
- 3 files changed, 5 insertions(+), 1 deletion(-)
+ src/XrdOssStats/XrdOssStatsConfig.cc     | 128 +++++++++++
+ src/XrdOssStats/XrdOssStatsConfig.hh     |  17 ++
+ src/XrdOssStats/XrdOssStatsDirectory.hh  |  45 ++++
+ src/XrdOssStats/XrdOssStatsFile.cc       |   5 +
+ src/XrdOssStats/XrdOssStatsFile.hh       | 141 ++++++++++++
+ src/XrdOssStats/XrdOssStatsFileSystem.cc | 271 +++++++++++++++++++++++
+ src/XrdOssStats/XrdOssStatsFileSystem.hh | 113 ++++++++++
+ src/XrdPlugins.cmake                     |  19 +-
+ src/XrdXrootd/XrdXrootdConfigMon.cc      |   2 +
+ src/XrdXrootd/XrdXrootdMonData.hh        |   1 +
+ src/XrdXrootd/XrdXrootdMonitor.hh        |   3 +-
+ 11 files changed, 743 insertions(+), 2 deletions(-)
+ create mode 100644 src/XrdOssStats/XrdOssStatsConfig.cc
+ create mode 100644 src/XrdOssStats/XrdOssStatsConfig.hh
+ create mode 100644 src/XrdOssStats/XrdOssStatsDirectory.hh
+ create mode 100644 src/XrdOssStats/XrdOssStatsFile.cc
+ create mode 100644 src/XrdOssStats/XrdOssStatsFile.hh
+ create mode 100644 src/XrdOssStats/XrdOssStatsFileSystem.cc
+ create mode 100644 src/XrdOssStats/XrdOssStatsFileSystem.hh
 
-diff --git a/src/XrdXrootd/XrdXrootdConfigMon.cc b/src/XrdXrootd/XrdXrootdConfigMon.cc
-index 3acc2e150d5..46b07b435ca 100644
---- a/src/XrdXrootd/XrdXrootdConfigMon.cc
-+++ b/src/XrdXrootd/XrdXrootdConfigMon.cc
-@@ -82,6 +82,8 @@ MonParms *MP = 0;
- struct XrdXrootdGSReal::GSParms gsObj[] =
-        {{"ccm",      0, XROOTD_MON_CCM,   0, -1, XROOTD_MON_GSCCM, 0,
-                      XrdXrootdGSReal::fmtBin, XrdXrootdGSReal::hdrNorm},
-+        {"oss",      0, XROOTD_MON_OSS,   0, -1, XROOTD_MON_GSOSS, 0,
-+                     XrdXrootdGSReal::fmtBin, XrdXrootdGSReal::hdrNorm},
-         {"pfc",      0, XROOTD_MON_PFC,   0, -1, XROOTD_MON_GSPFC, 0,
-                      XrdXrootdGSReal::fmtBin, XrdXrootdGSReal::hdrNorm},
-         {"TcpMon",   0, XROOTD_MON_TCPMO, 0, -1, XROOTD_MON_GSTCP, 0,
-diff --git a/src/XrdXrootd/XrdXrootdMonData.hh b/src/XrdXrootd/XrdXrootdMonData.hh
-index 82035e7cb17..7a3d6200600 100644
---- a/src/XrdXrootd/XrdXrootdMonData.hh
-+++ b/src/XrdXrootd/XrdXrootdMonData.hh
-@@ -120,6 +120,7 @@ const kXR_char XROOTD_MON_GSPFC         = 'C'; // pfc: Cache monitoring  info
- const kXR_char XROOTD_MON_GSTCP         = 'T'; // TCP connection statistics
- const kXR_char XROOTD_MON_GSTPC         = 'P'; // TPC Third Party Copy
- const kXR_char XROOTD_MON_GSTHR         = 'R'; // IO activity from the throttle plugin
-+const kXR_char XROOTD_MON_GSOSS         = 'O'; // IO activity from a generic OSS plugin
- 
- // The following bits are insert in the low order 4 bits of the MON_REDIRECT
- // entry code to indicate the actual operation that was requestded.
-diff --git a/src/XrdXrootd/XrdXrootdMonitor.hh b/src/XrdXrootd/XrdXrootdMonitor.hh
-index 52205e1825f..8fa46f186bb 100644
---- a/src/XrdXrootd/XrdXrootdMonitor.hh
-+++ b/src/XrdXrootd/XrdXrootdMonitor.hh
-@@ -60,7 +60,8 @@
- #define XROOTD_MON_TCPMO 0x00000800
- #define XROOTD_MON_TPC   0x00001000
- #define XROOTD_MON_THROT 0x00002000
--#define XROOTD_MON_GSTRM (XROOTD_MON_CCM | XROOTD_MON_PFC | XROOTD_MON_TCPMO | XROOTD_MON_THROT)
-+#define XROOTD_MON_OSS   0x00004000
-+#define XROOTD_MON_GSTRM (XROOTD_MON_CCM | XROOTD_MON_PFC | XROOTD_MON_TCPMO | XROOTD_MON_THROT | XROOTD_MON_OSS)
- 
- #define XROOTD_MON_FSLFN    1
- #define XROOTD_MON_FSOPS    2
-
-From 74dd393a8e0bc9298b7e41d8f93f0bb413278323 Mon Sep 17 00:00:00 2001
-From: Brian Bockelman <bbockelman@morgridge.org>
-Date: Wed, 29 May 2024 11:26:01 -0500
-Subject: [PATCH 2/2] Implementation of the new "storage statistics" OSS
-
-The storage statistics OSS keep track of number of server-wide
-requests and performance, reporting this information through the
-g-stream.
-
-It includes separate counters for "slow" requests, allowing one to
-get a feel for how many requests go through the server over a
-configurable threshold (default: 1s).
----
- src/XrdOssStats/XrdStatsConfig.cc     | 128 ++++++++++
- src/XrdOssStats/XrdStatsConfig.hh     |  17 ++
- src/XrdOssStats/XrdStatsDirectory.hh  |  52 ++++
- src/XrdOssStats/XrdStatsFile.cc       |   5 +
- src/XrdOssStats/XrdStatsFile.hh       | 168 +++++++++++++
- src/XrdOssStats/XrdStatsFileSystem.cc | 337 ++++++++++++++++++++++++++
- src/XrdOssStats/XrdStatsFileSystem.hh | 128 ++++++++++
- src/XrdPlugins.cmake                  |  19 +-
- 8 files changed, 853 insertions(+), 1 deletion(-)
- create mode 100644 src/XrdOssStats/XrdStatsConfig.cc
- create mode 100644 src/XrdOssStats/XrdStatsConfig.hh
- create mode 100644 src/XrdOssStats/XrdStatsDirectory.hh
- create mode 100644 src/XrdOssStats/XrdStatsFile.cc
- create mode 100644 src/XrdOssStats/XrdStatsFile.hh
- create mode 100644 src/XrdOssStats/XrdStatsFileSystem.cc
- create mode 100644 src/XrdOssStats/XrdStatsFileSystem.hh
-
-diff --git a/src/XrdOssStats/XrdStatsConfig.cc b/src/XrdOssStats/XrdStatsConfig.cc
+diff --git a/src/XrdOssStats/XrdOssStatsConfig.cc b/src/XrdOssStats/XrdOssStatsConfig.cc
 new file mode 100644
-index 00000000000..bc31f035295
+index 000000000..a1fb7ef44
 --- /dev/null
-+++ b/src/XrdOssStats/XrdStatsConfig.cc
++++ b/src/XrdOssStats/XrdOssStatsConfig.cc
 @@ -0,0 +1,128 @@
 +
 +#include "XrdVersion.hh"
 +
-+#include "XrdStatsConfig.hh"
-+#include "XrdStatsFileSystem.hh"
++#include "XrdOssStatsConfig.hh"
++#include "XrdOssStatsFileSystem.hh"
 +#include "XrdSys/XrdSysError.hh"
 +
 +#include <sstream>
@@ -214,11 +158,11 @@ index 00000000000..bc31f035295
 +XrdVERSIONINFO(XrdOssAddStorageSystem2,fsstats);
 +
 +}
-diff --git a/src/XrdOssStats/XrdStatsConfig.hh b/src/XrdOssStats/XrdStatsConfig.hh
+diff --git a/src/XrdOssStats/XrdOssStatsConfig.hh b/src/XrdOssStats/XrdOssStatsConfig.hh
 new file mode 100644
-index 00000000000..3ac1f1109c9
+index 000000000..3ac1f1109
 --- /dev/null
-+++ b/src/XrdOssStats/XrdStatsConfig.hh
++++ b/src/XrdOssStats/XrdOssStatsConfig.hh
 @@ -0,0 +1,17 @@
 +
 +#pragma once
@@ -237,26 +181,27 @@ index 00000000000..3ac1f1109c9
 +std::string LogMaskToString(int mask);
 +
 +bool ParseDuration(const std::string &duration, std::chrono::steady_clock::duration &result, std::string &errmsg);
-diff --git a/src/XrdOssStats/XrdStatsDirectory.hh b/src/XrdOssStats/XrdStatsDirectory.hh
+diff --git a/src/XrdOssStats/XrdOssStatsDirectory.hh b/src/XrdOssStats/XrdOssStatsDirectory.hh
 new file mode 100644
-index 00000000000..e91f0b0a61d
+index 000000000..8dff5c3fb
 --- /dev/null
-+++ b/src/XrdOssStats/XrdStatsDirectory.hh
-@@ -0,0 +1,52 @@
++++ b/src/XrdOssStats/XrdOssStatsDirectory.hh
+@@ -0,0 +1,45 @@
 +
-+#pragma once
++#ifndef __XRDSTATS_DIRECTORY_H
++#define __XRDSTATS_DIRECTORY_H
 +
 +#include "XrdOuc/XrdOucEnv.hh"
-+#include "XrdOss/XrdOss.hh"
-+#include "XrdStatsFileSystem.hh"
++#include "XrdOss/XrdOssWrapper.hh"
++#include "XrdOssStatsFileSystem.hh"
 +#include "XrdSys/XrdSysError.hh"
 +
 +#include <memory>
 +
-+class StatsDirectory : public XrdOssDF {
++class StatsDirectory : public XrdOssWrapDF {
 +public:
-+    StatsDirectory(const char *user, std::unique_ptr<XrdOssDF> ossDF, XrdSysError &log, StatsFileSystem &oss) :
-+        XrdOssDF(user),
++    StatsDirectory(std::unique_ptr<XrdOssDF> ossDF, XrdSysError &log, StatsFileSystem &oss) :
++        XrdOssWrapDF(*ossDF),
 +        m_wrappedDir(std::move(ossDF)),
 +        m_log(log),
 +        m_oss(oss)
@@ -270,23 +215,13 @@ index 00000000000..e91f0b0a61d
 +            XrdOucEnv &env) override 
 +    {
 +        StatsFileSystem::OpTimer op(m_oss.m_ops.m_dirlist_ops, m_oss.m_slow_ops.m_dirlist_ops, m_oss.m_times.m_dirlist, m_oss.m_slow_times.m_dirlist, m_oss.m_slow_duration);
-+        return m_wrappedDir->Opendir(path, env);
++        return wrapDF.Opendir(path, env);
 +    }
 +
 +    int Readdir(char *buff, int blen) override
 +    {
 +        StatsFileSystem::OpTimer op(m_oss.m_ops.m_dirlist_entries, m_oss.m_slow_ops.m_dirlist_entries, m_oss.m_times.m_dirlist, m_oss.m_slow_times.m_dirlist, m_oss.m_slow_duration);
-+        return m_wrappedDir->Readdir(buff, blen);
-+    }
-+
-+    int StatRet(struct stat *statStruct) override
-+    {
-+        return m_wrappedDir->StatRet(statStruct);
-+    }
-+
-+    int Close(long long *retsz=0) override
-+    {
-+        return m_wrappedDir->Close(retsz);
++        return wrapDF.Readdir(buff, blen);
 +    }
 +
 +
@@ -295,29 +230,32 @@ index 00000000000..e91f0b0a61d
 +    XrdSysError m_log;
 +    StatsFileSystem &m_oss;
 +};
-diff --git a/src/XrdOssStats/XrdStatsFile.cc b/src/XrdOssStats/XrdStatsFile.cc
++
++#endif
+diff --git a/src/XrdOssStats/XrdOssStatsFile.cc b/src/XrdOssStats/XrdOssStatsFile.cc
 new file mode 100644
-index 00000000000..5065dc497ed
+index 000000000..b29c7be80
 --- /dev/null
-+++ b/src/XrdOssStats/XrdStatsFile.cc
++++ b/src/XrdOssStats/XrdOssStatsFile.cc
 @@ -0,0 +1,5 @@
 +
-+#include "XrdStatsFile.hh"
++#include "XrdOssStatsFile.hh"
 +
 +StatsFile::~StatsFile() {}
 +
-diff --git a/src/XrdOssStats/XrdStatsFile.hh b/src/XrdOssStats/XrdStatsFile.hh
+diff --git a/src/XrdOssStats/XrdOssStatsFile.hh b/src/XrdOssStats/XrdOssStatsFile.hh
 new file mode 100644
-index 00000000000..2f59d7cb30c
+index 000000000..831b30751
 --- /dev/null
-+++ b/src/XrdOssStats/XrdStatsFile.hh
-@@ -0,0 +1,168 @@
++++ b/src/XrdOssStats/XrdOssStatsFile.hh
+@@ -0,0 +1,141 @@
 +
-+#pragma once
++#ifndef __XRDSTATS_FILE_H
++#define __XRDSTATS_FILE_H
 +
 +#include "XrdOss/XrdOssWrapper.hh"
 +#include "XrdSys/XrdSysError.hh"
-+#include "XrdStatsFileSystem.hh"
++#include "XrdOssStatsFileSystem.hh"
 +
 +#include <memory>
 +
@@ -346,41 +284,16 @@ index 00000000000..2f59d7cb30c
 +        return wrapDF.Fchmod(mode);
 +    }
 +
-+    void    Flush() override
-+    {
-+        return wrapDF.Flush();
-+    }
-+
 +    int     Fstat(struct stat *buf) override
 +    {
 +        StatsFileSystem::OpTimer op(m_oss.m_ops.m_stat_ops, m_oss.m_slow_ops.m_stat_ops, m_oss.m_times.m_stat, m_oss.m_slow_times.m_stat, m_oss.m_slow_duration);
 +        return wrapDF.Fstat(buf);
 +    }
 +
-+    int     Fsync() override
-+    {
-+        return wrapDF.Fsync();
-+    }
-+
-+    int     Fsync(XrdSfsAio *aiop) override
-+    {
-+        return wrapDF.Fsync(aiop);
-+    }
-+
 +    int     Ftruncate(unsigned long long size) override
 +    {
 +        StatsFileSystem::OpTimer op(m_oss.m_ops.m_truncate_ops, m_oss.m_slow_ops.m_truncate_ops, m_oss.m_times.m_truncate, m_oss.m_slow_times.m_truncate, m_oss.m_slow_duration);
 +        return wrapDF.Ftruncate(size);
-+    }
-+
-+    off_t   getMmap(void **addr) override
-+    {
-+        return wrapDF.getMmap(addr);
-+    }
-+
-+    int     isCompressed(char *cxidp=0) override
-+    {
-+        return wrapDF.isCompressed(cxidp);
 +    }
 +
 +    ssize_t pgRead (void* buffer, off_t offset, size_t rdlen,
@@ -468,11 +381,6 @@ index 00000000000..2f59d7cb30c
 +        return wrapDF.WriteV(writeV, wrvcnt);
 +    }
 +
-+    int Close(long long *retsz=0) override
-+    {
-+        return wrapDF.Close(retsz);
-+    }
-+
 +private:
 +    std::unique_ptr<XrdOssDF> m_wrapped;
 +    XrdSysError &m_log;
@@ -480,18 +388,20 @@ index 00000000000..2f59d7cb30c
 +    StatsFileSystem &m_oss;
 +
 +};
-diff --git a/src/XrdOssStats/XrdStatsFileSystem.cc b/src/XrdOssStats/XrdStatsFileSystem.cc
++
++#endif
+diff --git a/src/XrdOssStats/XrdOssStatsFileSystem.cc b/src/XrdOssStats/XrdOssStatsFileSystem.cc
 new file mode 100644
-index 00000000000..fcbb0dedc8e
+index 000000000..e35df4748
 --- /dev/null
-+++ b/src/XrdOssStats/XrdStatsFileSystem.cc
-@@ -0,0 +1,337 @@
++++ b/src/XrdOssStats/XrdOssStatsFileSystem.cc
+@@ -0,0 +1,271 @@
 +
 +#include "XrdOuc/XrdOucGatherConf.hh"
-+#include "XrdStatsConfig.hh"
-+#include "XrdStatsDirectory.hh"
-+#include "XrdStatsFile.hh"
-+#include "XrdStatsFileSystem.hh"
++#include "XrdOssStatsConfig.hh"
++#include "XrdOssStatsDirectory.hh"
++#include "XrdOssStatsFile.hh"
++#include "XrdOssStatsFileSystem.hh"
 +#include "XrdSys/XrdSysPthread.hh"
 +#include "XrdXrootd/XrdXrootdGStream.hh"
 +
@@ -500,14 +410,12 @@ index 00000000000..fcbb0dedc8e
 +#include <thread>
 +
 +StatsFileSystem::StatsFileSystem(XrdOss *oss, XrdSysLogger *lp, const char *configfn, XrdOucEnv *envP) :
++    XrdOssWrapper(*oss),
 +    m_oss(oss),
 +    m_env(envP),
 +    m_log(lp, "fsstat_"),
 +    m_slow_duration(std::chrono::seconds(1))
 +{
-+    if (!oss) {
-+        throw std::runtime_error("The storage statistics plugin must be chained with another filesystem.");
-+    }
 +    m_log.Say("------ Initializing the storage statistics plugin.");
 +    if (!Config(configfn)) {
 +        throw std::runtime_error("Failed to configure the storage statistics plugin.");
@@ -518,9 +426,18 @@ index 00000000000..fcbb0dedc8e
 +      m_log.Emsg("StatsFileSystem", rc, "create stats compute thread");
 +      throw std::runtime_error("Failed to create the statistics computing thread.");
 +    }
++
++    // While the plugin _does_ print its activity to the debugging facility (if enabled), its relatively useless
++    // unless the g-stream is available.  Hence, if it's _not_ available, we should fail to startup.
 +    if (envP) {
 +       m_gstream = reinterpret_cast<XrdXrootdGStream*>(envP->GetPtr("oss.gStream*"));
-+       m_log.Say("Config", "Stats monitoring has", m_gstream ? "" : " NOT", " been configured via xrootd.mongstream directive");
++       if (m_gstream) {
++         m_log.Say("Config", "Stats monitoring has been configured via xrootd.mongstream directive");
++       } else {
++         throw std::runtime_error("XrdOssStats plugin is loaded but it requires the oss monitoring g-stream to also be enabled to be set; try adding `xrootd.mongstream oss ...` to your configuration");
++       }
++    } else {
++       throw std::runtime_error("XrdOssStats plugin invoked without a configured environment; likely an internal error");
 +    }
 +}
 +
@@ -585,167 +502,94 @@ index 00000000000..fcbb0dedc8e
 +XrdOssDF *StatsFileSystem::newDir(const char *user)
 +{
 +    // Call the underlying OSS newDir
-+    std::unique_ptr<XrdOssDF> wrapped(m_oss->newDir(user));
-+    return new StatsDirectory(user, std::move(wrapped), m_log, *this);
++    std::unique_ptr<XrdOssDF> wrapped(wrapPI.newDir(user));
++    return new StatsDirectory(std::move(wrapped), m_log, *this);
 +}
 +
 +XrdOssDF *StatsFileSystem::newFile(const char *user)
 +{
 +    // Call the underlying OSS newFile
-+    std::unique_ptr<XrdOssDF> wrapped(m_oss->newFile(user));
++    std::unique_ptr<XrdOssDF> wrapped(wrapPI.newFile(user));
 +    return new StatsFile(std::move(wrapped), m_log, *this);
 +}
 +
 +int StatsFileSystem::Chmod(const char * path, mode_t mode, XrdOucEnv *env)
 +{
 +    OpTimer op(m_ops.m_chmod_ops, m_slow_ops.m_chmod_ops, m_times.m_chmod, m_slow_times.m_chmod, m_slow_duration);
-+    return m_oss->Chmod(path, mode, env);
-+}
-+
-+void StatsFileSystem::Connect(XrdOucEnv &env)
-+{
-+    m_oss->Connect(env);
-+}
-+
-+int       StatsFileSystem::Create(const char *tid, const char *path, mode_t mode, XrdOucEnv &env,
-+                        int opts)
-+{
-+    return m_oss->Create(tid, path, mode, env, opts);
-+}
-+
-+void      StatsFileSystem::Disc(XrdOucEnv &env)
-+{
-+    m_oss->Disc(env);
-+}
-+
-+void      StatsFileSystem::EnvInfo(XrdOucEnv *env)
-+{
-+    m_oss->EnvInfo(env);
-+}
-+
-+uint64_t  StatsFileSystem::Features()
-+{
-+    return m_oss->Features();
-+}
-+
-+int       StatsFileSystem::FSctl(int cmd, int alen, const char *args, char **resp)
-+{
-+    return m_oss->FSctl(cmd, alen, args, resp);
-+}
-+
-+int       StatsFileSystem::Init(XrdSysLogger *lp, const char *cfn)
-+{
-+    return 0;
-+}
-+
-+int       StatsFileSystem::Init(XrdSysLogger *lp, const char *cfn, XrdOucEnv *env)
-+{
-+    return Init(lp, cfn);
-+}
-+
-+int       StatsFileSystem::Mkdir(const char *path, mode_t mode, int mkpath,
-+                    XrdOucEnv  *env)
-+{
-+    return m_oss->Mkdir(path, mode, mkpath, env);
-+}
-+
-+int       StatsFileSystem::Reloc(const char *tident, const char *path,
-+                    const char *cgName, const char *anchor)
-+{
-+    return m_oss->Reloc(tident, path, cgName, anchor);
-+}
-+
-+int       StatsFileSystem::Remdir(const char *path, int Opts, XrdOucEnv *env)
-+{
-+    return m_oss->Remdir(path, Opts, env);
++    return wrapPI.Chmod(path, mode, env);
 +}
 +
 +int       StatsFileSystem::Rename(const char *oPath, const char *nPath,
 +                        XrdOucEnv  *oEnvP, XrdOucEnv *nEnvP)
 +{
 +    OpTimer op(m_ops.m_rename_ops, m_slow_ops.m_rename_ops, m_times.m_rename, m_slow_times.m_rename, m_slow_duration);
-+    return m_oss->Rename(oPath, nPath, oEnvP, nEnvP);
++    return wrapPI.Rename(oPath, nPath, oEnvP, nEnvP);
 +}
 +
 +int       StatsFileSystem::Stat(const char *path, struct stat *buff,
 +                    int opts, XrdOucEnv *env)
 +{
 +    OpTimer op(m_ops.m_stat_ops, m_slow_ops.m_stat_ops, m_times.m_stat, m_slow_times.m_stat, m_slow_duration);
-+    return m_oss->Stat(path, buff, opts, env);
-+}
-+
-+int       StatsFileSystem::Stats(char *buff, int blen)
-+{
-+    return m_oss->Stats(buff, blen);
++    return wrapPI.Stat(path, buff, opts, env);
 +}
 +
 +int       StatsFileSystem::StatFS(const char *path, char *buff, int &blen,
 +                        XrdOucEnv  *env)
 +{
 +    OpTimer op(m_ops.m_stat_ops, m_slow_ops.m_stat_ops, m_times.m_stat, m_slow_times.m_stat, m_slow_duration);
-+    return m_oss->StatFS(path, buff, blen, env);
++    return wrapPI.StatFS(path, buff, blen, env);
 +}
 +
 +int       StatsFileSystem::StatLS(XrdOucEnv &env, const char *path,
 +                        char *buff, int &blen)
 +{
 +    OpTimer op(m_ops.m_stat_ops, m_slow_ops.m_stat_ops, m_times.m_stat, m_slow_times.m_stat, m_slow_duration);
-+    return m_oss->StatLS(env, path, buff, blen);
++    return wrapPI.StatLS(env, path, buff, blen);
 +}
 +
 +int       StatsFileSystem::StatPF(const char *path, struct stat *buff, int opts)
 +{
 +    OpTimer op(m_ops.m_stat_ops, m_slow_ops.m_stat_ops, m_times.m_stat, m_slow_times.m_stat, m_slow_duration);
-+    return m_oss->StatPF(path, buff, opts);
++    return wrapPI.StatPF(path, buff, opts);
 +}
 +
 +int       StatsFileSystem::StatPF(const char *path, struct stat *buff)
 +{
 +    OpTimer op(m_ops.m_stat_ops, m_slow_ops.m_stat_ops, m_times.m_stat, m_slow_times.m_stat, m_slow_duration);
-+    return m_oss->StatPF(path, buff, 0);
++    return wrapPI.StatPF(path, buff, 0);
 +}
 +
 +int       StatsFileSystem::StatVS(XrdOssVSInfo *vsP, const char *sname, int updt)
 +{
 +    OpTimer op(m_ops.m_stat_ops, m_slow_ops.m_stat_ops, m_times.m_stat, m_slow_times.m_stat, m_slow_duration);
-+    return m_oss->StatVS(vsP, sname, updt);
++    return wrapPI.StatVS(vsP, sname, updt);
 +}
 +
 +int       StatsFileSystem::StatXA(const char *path, char *buff, int &blen,
 +                        XrdOucEnv *env)
 +{
 +    OpTimer op(m_ops.m_stat_ops, m_slow_ops.m_stat_ops, m_times.m_stat, m_slow_times.m_stat, m_slow_duration);
-+    return m_oss->StatXA(path, buff, blen, env);
++    return wrapPI.StatXA(path, buff, blen, env);
 +}
 +
 +int       StatsFileSystem::StatXP(const char *path, unsigned long long &attr,
 +                        XrdOucEnv  *env)
 +{
 +    OpTimer op(m_ops.m_stat_ops, m_slow_ops.m_stat_ops, m_times.m_stat, m_slow_times.m_stat, m_slow_duration);
-+    return m_oss->StatXP(path, attr, env);
++    return wrapPI.StatXP(path, attr, env);
 +}
 +
 +int       StatsFileSystem::Truncate(const char *path, unsigned long long fsize,
 +                        XrdOucEnv *env)
 +{
 +    OpTimer op(m_ops.m_truncate_ops, m_slow_ops.m_truncate_ops, m_times.m_truncate, m_slow_times.m_truncate, m_slow_duration);
-+    return m_oss->Truncate(path, fsize, env);
++    return wrapPI.Truncate(path, fsize, env);
 +}
 +
 +int       StatsFileSystem::Unlink(const char *path, int Opts, XrdOucEnv *env)
 +{
 +    OpTimer op(m_ops.m_unlink_ops, m_slow_ops.m_unlink_ops, m_times.m_unlink, m_slow_times.m_unlink, m_slow_duration);
-+    return m_oss->Unlink(path, Opts, env);
-+}
-+
-+int       StatsFileSystem::Lfn2Pfn(const char *Path, char *buff, int blen)
-+{
-+    return m_oss->Lfn2Pfn(Path, buff, blen);
-+}
-+
-+const char       *StatsFileSystem::Lfn2Pfn(const char *Path, char *buff, int blen, int &rc)
-+{
-+    return m_oss->Lfn2Pfn(Path, buff, blen, rc);
++    return wrapPI.Unlink(path, Opts, env);
 +}
 +
 +void StatsFileSystem::AggregateStats()
@@ -823,20 +667,21 @@ index 00000000000..fcbb0dedc8e
 +        m_slow_timing += std::chrono::nanoseconds(dur).count();
 +    }
 +}
-diff --git a/src/XrdOssStats/XrdStatsFileSystem.hh b/src/XrdOssStats/XrdStatsFileSystem.hh
+diff --git a/src/XrdOssStats/XrdOssStatsFileSystem.hh b/src/XrdOssStats/XrdOssStatsFileSystem.hh
 new file mode 100644
-index 00000000000..21b611b2e41
+index 000000000..6df43638d
 --- /dev/null
-+++ b/src/XrdOssStats/XrdStatsFileSystem.hh
-@@ -0,0 +1,128 @@
++++ b/src/XrdOssStats/XrdOssStatsFileSystem.hh
+@@ -0,0 +1,113 @@
 +
 +#pragma once
 +
-+#include "XrdOss/XrdOss.hh"
++#include "XrdOss/XrdOssWrapper.hh"
 +#include "XrdSys/XrdSysError.hh"
 +
 +#include <atomic>
 +#include <chrono>
++#include <memory>
 +
 +class XrdXrootdGStream;
 +
@@ -845,11 +690,12 @@ index 00000000000..21b611b2e41
 +//
 +// It allows one to accumulate time spent in I/O, the number of operations,
 +// and information about "slow" operations
-+class StatsFileSystem : public XrdOss {
++class StatsFileSystem : public XrdOssWrapper {
 +    friend class StatsFile;
 +    friend class StatsDirectory;
 +
 +public:
++    // Note: StatsFileSystem takes ownerhip of the underlying oss
 +    StatsFileSystem(XrdOss *oss, XrdSysLogger *log, const char *configName, XrdOucEnv *envP);
 +    virtual ~StatsFileSystem();
 +
@@ -859,25 +705,10 @@ index 00000000000..21b611b2e41
 +    XrdOssDF *newDir(const char *user=0) override;
 +    XrdOssDF *newFile(const char *user=0) override;
 +    int Chmod(const char * path, mode_t mode, XrdOucEnv *env=0) override;
-+    void      Connect(XrdOucEnv &env) override;
-+    int       Create(const char *tid, const char *path, mode_t mode, XrdOucEnv &env,
-+                         int opts=0) override;
-+    void      Disc(XrdOucEnv &env) override;
-+    void      EnvInfo(XrdOucEnv *env) override;
-+    uint64_t  Features() override;
-+    int       FSctl(int cmd, int alen, const char *args, char **resp=0) override;
-+    int       Init(XrdSysLogger *lp, const char *cfn) override;
-+    int       Init(XrdSysLogger *lp, const char *cfn, XrdOucEnv *env) override;
-+    int       Mkdir(const char *path, mode_t mode, int mkpath=0,
-+                        XrdOucEnv  *env=0) override;
-+    int       Reloc(const char *tident, const char *path,
-+                        const char *cgName, const char *anchor=0) override;
-+    int       Remdir(const char *path, int Opts=0, XrdOucEnv *env=0) override;
 +    int       Rename(const char *oPath, const char *nPath,
 +                         XrdOucEnv  *oEnvP=0, XrdOucEnv *nEnvP=0) override;
 +    int       Stat(const char *path, struct stat *buff,
 +                       int opts=0, XrdOucEnv *env=0) override;
-+    int       Stats(char *buff, int blen) override;
 +    int       StatFS(const char *path, char *buff, int &blen,
 +                         XrdOucEnv  *env=0) override;
 +    int       StatLS(XrdOucEnv &env, const char *path,
@@ -892,8 +723,6 @@ index 00000000000..21b611b2e41
 +    int       Truncate(const char *path, unsigned long long fsize,
 +                           XrdOucEnv *env=0) override;
 +    int       Unlink(const char *path, int Opts=0, XrdOucEnv *env=0) override;
-+    int       Lfn2Pfn(const char *Path, char *buff, int blen) override;
-+    const char       *Lfn2Pfn(const char *Path, char *buff, int blen, int &rc) override;
 +
 +private:
 +    static void * AggregateBootstrap(void *instance);
@@ -901,7 +730,7 @@ index 00000000000..21b611b2e41
 +
 +    XrdXrootdGStream* m_gstream{nullptr};
 +
-+    XrdOss *m_oss;
++    std::unique_ptr<XrdOss> m_oss;
 +    XrdOucEnv *m_env;
 +    XrdSysError m_log;
 +
@@ -958,7 +787,7 @@ index 00000000000..21b611b2e41
 +    std::chrono::steady_clock::duration m_slow_duration;
 +};
 diff --git a/src/XrdPlugins.cmake b/src/XrdPlugins.cmake
-index adfda36e43e..c9484537d1e 100644
+index adfda36e4..e56392262 100644
 --- a/src/XrdPlugins.cmake
 +++ b/src/XrdPlugins.cmake
 @@ -11,6 +11,7 @@ set( LIB_XRD_GPFS       XrdOssSIgpfsT-${PLUGIN_VERSION} )
@@ -979,9 +808,9 @@ index adfda36e43e..c9484537d1e 100644
 +add_library(
 +  ${LIB_XRD_OSSSTATS}
 +  MODULE
-+  XrdOssStats/XrdStatsConfig.cc     XrdOssStats/XrdStatsConfig.hh
-+  XrdOssStats/XrdStatsFileSystem.cc XrdOssStats/XrdStatsFileSystem.hh
-+  XrdOssStats/XrdStatsFile.cc       XrdOssStats/XrdStatsFile.hh )
++  XrdOssStats/XrdOssStatsConfig.cc     XrdOssStats/XrdOssStatsConfig.hh
++  XrdOssStats/XrdOssStatsFileSystem.cc XrdOssStats/XrdOssStatsFileSystem.hh
++  XrdOssStats/XrdOssStatsFile.cc       XrdOssStats/XrdOssStatsFile.hh )
 +
 +target_link_libraries(
 +  ${LIB_XRD_OSSSTATS}
@@ -999,3 +828,45 @@ index adfda36e43e..c9484537d1e 100644
 -  TARGETS ${LIB_XRD_PSS} ${LIB_XRD_BWM} ${LIB_XRD_GPFS} ${LIB_XRD_ZCRC32} ${LIB_XRD_THROTTLE} ${LIB_XRD_N2NO2P} ${LIB_XRD_CMSREDIRL} ${LIB_XRD_GPI}
 +  TARGETS ${LIB_XRD_PSS} ${LIB_XRD_BWM} ${LIB_XRD_GPFS} ${LIB_XRD_ZCRC32} ${LIB_XRD_THROTTLE} ${LIB_XRD_N2NO2P} ${LIB_XRD_CMSREDIRL} ${LIB_XRD_GPI} ${LIB_XRD_OSSSTATS}
    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR} )
+diff --git a/src/XrdXrootd/XrdXrootdConfigMon.cc b/src/XrdXrootd/XrdXrootdConfigMon.cc
+index 3acc2e150..46b07b435 100644
+--- a/src/XrdXrootd/XrdXrootdConfigMon.cc
++++ b/src/XrdXrootd/XrdXrootdConfigMon.cc
+@@ -82,6 +82,8 @@ MonParms *MP = 0;
+ struct XrdXrootdGSReal::GSParms gsObj[] =
+        {{"ccm",      0, XROOTD_MON_CCM,   0, -1, XROOTD_MON_GSCCM, 0,
+                      XrdXrootdGSReal::fmtBin, XrdXrootdGSReal::hdrNorm},
++        {"oss",      0, XROOTD_MON_OSS,   0, -1, XROOTD_MON_GSOSS, 0,
++                     XrdXrootdGSReal::fmtBin, XrdXrootdGSReal::hdrNorm},
+         {"pfc",      0, XROOTD_MON_PFC,   0, -1, XROOTD_MON_GSPFC, 0,
+                      XrdXrootdGSReal::fmtBin, XrdXrootdGSReal::hdrNorm},
+         {"TcpMon",   0, XROOTD_MON_TCPMO, 0, -1, XROOTD_MON_GSTCP, 0,
+diff --git a/src/XrdXrootd/XrdXrootdMonData.hh b/src/XrdXrootd/XrdXrootdMonData.hh
+index 82035e7cb..7a3d62006 100644
+--- a/src/XrdXrootd/XrdXrootdMonData.hh
++++ b/src/XrdXrootd/XrdXrootdMonData.hh
+@@ -120,6 +120,7 @@ const kXR_char XROOTD_MON_GSPFC         = 'C'; // pfc: Cache monitoring  info
+ const kXR_char XROOTD_MON_GSTCP         = 'T'; // TCP connection statistics
+ const kXR_char XROOTD_MON_GSTPC         = 'P'; // TPC Third Party Copy
+ const kXR_char XROOTD_MON_GSTHR         = 'R'; // IO activity from the throttle plugin
++const kXR_char XROOTD_MON_GSOSS         = 'O'; // IO activity from a generic OSS plugin
+ 
+ // The following bits are insert in the low order 4 bits of the MON_REDIRECT
+ // entry code to indicate the actual operation that was requestded.
+diff --git a/src/XrdXrootd/XrdXrootdMonitor.hh b/src/XrdXrootd/XrdXrootdMonitor.hh
+index 52205e182..8fa46f186 100644
+--- a/src/XrdXrootd/XrdXrootdMonitor.hh
++++ b/src/XrdXrootd/XrdXrootdMonitor.hh
+@@ -60,7 +60,8 @@
+ #define XROOTD_MON_TCPMO 0x00000800
+ #define XROOTD_MON_TPC   0x00001000
+ #define XROOTD_MON_THROT 0x00002000
+-#define XROOTD_MON_GSTRM (XROOTD_MON_CCM | XROOTD_MON_PFC | XROOTD_MON_TCPMO | XROOTD_MON_THROT)
++#define XROOTD_MON_OSS   0x00004000
++#define XROOTD_MON_GSTRM (XROOTD_MON_CCM | XROOTD_MON_PFC | XROOTD_MON_TCPMO | XROOTD_MON_THROT | XROOTD_MON_OSS)
+ 
+ #define XROOTD_MON_FSLFN    1
+ #define XROOTD_MON_FSOPS    2
+-- 
+2.43.5
+
