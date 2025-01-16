@@ -11,7 +11,7 @@ URL: https://github.com/pelicanplatform/xrdhttp-pelican
 # git archive --format tar.gz v%{version} --prefix=xrdhttp-pelican-%{version}/ > ~/rpmbuild/SOURCES/xrdhttp-pelican-%{version}.tar.gz
 Source0: %{name}-%{version}.tar.gz
 # https://github.com/PelicanPlatform/xrdhttp-pelican/pull/8
-Patch: PelicanPlatform-8-versioninfo.patch
+Patch1: PelicanPlatform-8-versioninfo.patch
 
 %define xrootd_current_major 5
 %define xrootd_current_minor 7
