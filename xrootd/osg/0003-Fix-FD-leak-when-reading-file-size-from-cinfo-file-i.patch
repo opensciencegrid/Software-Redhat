@@ -1,15 +1,15 @@
-From 089541f639ac161056256b6d223c29a3a23a61cd Mon Sep 17 00:00:00 2001
-From: Matevz Tadel <mtadel@ucsd.edu>
-Date: Fri, 20 Dec 2024 09:29:30 -0800
-Subject: [PATCH] [Pfc] Fix FD leak when reading file-size from cinfo file in
- Cache::DetermineFullFileSize().
+From f7267c5c17c9c53f547100259201b0cf5ad4757d Mon Sep 17 00:00:00 2001
+From: Brian Bockelman <bbockelman@morgridge.org>
+Date: Wed, 15 Jan 2025 08:04:24 -0600
+Subject: [PATCH 3/9] Fix FD leak when reading file-size from cinfo file in
+ `Cache::DetermineFullFileSize()`.
 
 ---
  src/XrdPfc/XrdPfc.cc | 20 ++++++++++++++------
  1 file changed, 14 insertions(+), 6 deletions(-)
 
 diff --git a/src/XrdPfc/XrdPfc.cc b/src/XrdPfc/XrdPfc.cc
-index 567bda0d9a2..c600697208c 100644
+index 86078fbdf..dffdd9847 100644
 --- a/src/XrdPfc/XrdPfc.cc
 +++ b/src/XrdPfc/XrdPfc.cc
 @@ -944,13 +944,21 @@ long long Cache::DetermineFullFileSize(const std::string &cinfo_fname)
@@ -40,3 +40,6 @@ index 567bda0d9a2..c600697208c 100644
  }
  
  //______________________________________________________________________________
+-- 
+2.43.5
+

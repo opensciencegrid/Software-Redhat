@@ -1,21 +1,30 @@
-From e827f06fec2747894403f1a15f7f74df9a93a9f7 Mon Sep 17 00:00:00 2001
+From 579b09d163e5cdb9c964808a4cef5d9657893ca0 Mon Sep 17 00:00:00 2001
 From: Brian Bockelman <bbockelman@morgridge.org>
-Date: Thu, 15 Dec 2022 09:20:50 -0600
-Subject: [PATCH 1/5] Provide a mechanism to override the detected hostname by
- environment variable.
+Date: Wed, 15 Jan 2025 08:01:58 -0600
+Subject: [PATCH 1/9] Allow hostname used by XRootD to be overridden by env
+ var.
 
-Note the `myName` variable needed to be changed to a string as it must own
-the memory; the memory pointed to by `getenv` my change after future `setenv` calls.
+This affects how the host advertises itself to other servers in a cluster
+and prevents the use of reverse DNS lookups (which are often meaningless,
+especially in Kubernetes-based environments).
 ---
- src/Xrd/XrdConfig.cc | 26 +++++++++++++++++---------
- src/Xrd/XrdConfig.hh |  3 ++-
- 2 files changed, 19 insertions(+), 10 deletions(-)
+ src/Xrd/XrdConfig.cc          | 27 +++++++++-----
+ src/Xrd/XrdConfig.hh          |  3 +-
+ src/Xrd/XrdLinkXeq.cc         |  4 ---
+ src/XrdCms/XrdCmsClientMan.cc |  9 +++--
+ src/XrdCms/XrdCmsCluster.cc   | 11 +++---
+ src/XrdCms/XrdCmsConfig.cc    |  5 +++
+ src/XrdCms/XrdCmsNode.cc      |  2 ++
+ src/XrdCms/XrdCmsProtocol.cc  | 67 +++++++----------------------------
+ src/XrdNet/XrdNetIF.cc        | 18 +++++++++-
+ src/XrdNet/XrdNetIF.hh        | 49 +++++++++++++++++++++++++
+ 10 files changed, 117 insertions(+), 78 deletions(-)
 
 diff --git a/src/Xrd/XrdConfig.cc b/src/Xrd/XrdConfig.cc
-index f1d13566509..a2b3d5dceb3 100644
+index 65a8303a6..71bfd2df4 100644
 --- a/src/Xrd/XrdConfig.cc
 +++ b/src/Xrd/XrdConfig.cc
-@@ -572,11 +572,19 @@ int XrdConfig::Configure(int argc, char **argv)
+@@ -580,24 +580,33 @@ int XrdConfig::Configure(int argc, char **argv)
  // run in v4 mode and that doesn't get set until after the options are scanned.
  //
     static XrdNetAddr *myIPAddr = new XrdNetAddr((int)0);
@@ -24,6 +33,7 @@ index f1d13566509..a2b3d5dceb3 100644
 +   const char *ipAddrName;
 +   if (envName) {
 +      myName = envName;
++      XrdOucEnv::Export("OVERRIDEXRDHOST", myName.c_str());
 +   } else if ((ipAddrName = myIPAddr->Name(0, &temp))) {
 +      myName = ipAddrName;
 +   } else {
@@ -37,7 +47,8 @@ index f1d13566509..a2b3d5dceb3 100644
     ProtInfo.myAddr = myIPAddr->SockAddr();
     ProtInfo.myInst = XrdOucUtils::InstName(myInsName);
     ProtInfo.myProg = myProg;
-@@ -585,11 +593,11 @@ int XrdConfig::Configure(int argc, char **argv)
+ 
+ // Set the Environmental variable to hold the instance name
  // XRDINSTANCE=<pgm> <instance name>@<host name>
  //                 XrdOucEnv::Export("XRDINSTANCE")
  //
@@ -51,7 +62,7 @@ index f1d13566509..a2b3d5dceb3 100644
     XrdOucEnv::Export("XRDNAME", ProtInfo.myInst);
     XrdOucEnv::Export("XRDPROG", myProg);
  
-@@ -608,7 +616,7 @@ int XrdConfig::Configure(int argc, char **argv)
+@@ -616,7 +625,7 @@ int XrdConfig::Configure(int argc, char **argv)
  // We can't really continue without some kind of name at this point. Note that
  // vriable temp should still be valid from the previous NetAddr call.
  //
@@ -60,7 +71,7 @@ index f1d13566509..a2b3d5dceb3 100644
        {Log.Emsg("Config", "Unable to determine host name; ",
                             (temp ? temp : "reason unknown"),
                             "; execution terminated.");
-@@ -633,13 +641,13 @@ int XrdConfig::Configure(int argc, char **argv)
+@@ -641,13 +650,13 @@ int XrdConfig::Configure(int argc, char **argv)
  // Otherwise, determine our domain name.
  //
     if (!myIPAddr->isRegistered())
@@ -77,7 +88,7 @@ index f1d13566509..a2b3d5dceb3 100644
                              ", is registered without a domain qualification.");
  
  // Setup the initial required protocol.
-@@ -1885,7 +1893,7 @@ int XrdConfig::xport(XrdSysError *eDest, XrdOucStream &Config)
+@@ -1951,7 +1960,7 @@ int XrdConfig::xport(XrdSysError *eDest, XrdOucStream &Config)
      strncpy(cport, val, sizeof(cport)-1); cport[sizeof(cport)-1] = '\0';
  
      if ((val = Config.GetWord()) && !strcmp("if", val))
@@ -87,7 +98,7 @@ index f1d13566509..a2b3d5dceb3 100644
            {if (!rc) Config.noEcho(); return (rc < 0);}
  
 diff --git a/src/Xrd/XrdConfig.hh b/src/Xrd/XrdConfig.hh
-index a06ad462f4e..0c89bddd2b6 100644
+index f29dc6005..249eb6006 100644
 --- a/src/Xrd/XrdConfig.hh
 +++ b/src/Xrd/XrdConfig.hh
 @@ -30,6 +30,7 @@
@@ -98,7 +109,7 @@ index a06ad462f4e..0c89bddd2b6 100644
  
  #include "Xrd/XrdProtLoad.hh"
  #include "Xrd/XrdProtocol.hh"
-@@ -94,7 +95,7 @@ static const char  *TraceID;
+@@ -97,7 +98,7 @@ static const char  *TraceID;
  XrdNetSecurity     *Police;
  XrdTcpMonInfo      *tmoInfo;
  const char         *myProg;
@@ -107,19 +118,134 @@ index a06ad462f4e..0c89bddd2b6 100644
  const char         *myDomain;
  const char         *mySitName;
  const char         *myInsName;
-
-From eb6e38976a8f8b631dc8243fd8b649a9a8306855 Mon Sep 17 00:00:00 2001
-From: Brian Bockelman <bbockelman@morgridge.org>
-Date: Mon, 19 Dec 2022 13:48:47 -0600
-Subject: [PATCH 2/5] Have redirector prefer the host's stated name over IP
- address.
-
----
- src/XrdCms/XrdCmsProtocol.cc | 67 +++++++-----------------------------
- 1 file changed, 12 insertions(+), 55 deletions(-)
-
+diff --git a/src/Xrd/XrdLinkXeq.cc b/src/Xrd/XrdLinkXeq.cc
+index ee51e9f1a..247c436e7 100644
+--- a/src/Xrd/XrdLinkXeq.cc
++++ b/src/Xrd/XrdLinkXeq.cc
+@@ -573,10 +573,6 @@ int XrdLinkXeq::RecvIOV(const struct iovec *iov, int iocnt)
+ bool XrdLinkXeq::Register(const char *hName)
+ {
+ 
+-// First see if we can register this name with the address object
+-//
+-   if (!Addr.Register(hName)) return false;
+-
+ // Make appropriate changes here
+ //
+    if (HostName) free(HostName);
+diff --git a/src/XrdCms/XrdCmsClientMan.cc b/src/XrdCms/XrdCmsClientMan.cc
+index 9f5294195..677b64da3 100644
+--- a/src/XrdCms/XrdCmsClientMan.cc
++++ b/src/XrdCms/XrdCmsClientMan.cc
+@@ -323,20 +323,25 @@ int XrdCmsClientMan::Hookup()
+    EPNAME("Hookup");
+    CmsLoginData Data;
+    XrdLink *lp;
+-   char buff[256], hnBuff[264];
++   char buff[256], hnBuff[264*2+1];
+    kXR_char *envData = 0;
+    int rc, oldWait, tries = 12, opts = 0;
+ 
+ // Turn off our debugging and version flags
+ //
+    manMutex.Lock();
+    doDebug    &= ~manMask;
+    manMutex.UnLock();
+ 
+ // Report our hostname (there are better ways of doing this)
+ //
+    const char *hn = getenv("XRDHOST");
+-   if (hn)
++   const char *override_hn = getenv("OVERRIDEXRDHOST");
++   if (hn && override_hn)
++      {snprintf(hnBuff, sizeof(hnBuff), "myHN=%s&ovHN=%s", hn, override_hn);
++       envData = (kXR_char *)hnBuff;
++      }
++   else if (hn)
+       {snprintf(hnBuff, sizeof(hnBuff), "myHN=%s", hn);
+        envData = (kXR_char *)hnBuff;
+       }
+diff --git a/src/XrdCms/XrdCmsCluster.cc b/src/XrdCms/XrdCmsCluster.cc
+index 1daf93967..d799b5b36 100644
+--- a/src/XrdCms/XrdCmsCluster.cc
++++ b/src/XrdCms/XrdCmsCluster.cc
+@@ -557,8 +557,7 @@ XrdCmsSelected *XrdCmsCluster::List(SMask_t mask, CmsLSOpts opts, bool &oksel)
+                      }
+                }
+             sip = new XrdCmsSelected(sipp);
+-                 if (retDest) destLen = nP->netIF.GetDest(sip->Ident, iSize,
+-                                                          ifGet, retName);
++                 if (retDest) destLen = nP->netIF.GetPublicDest(sip->Ident, iSize);
+             else if (nP->myNlen >= XrdCmsSelected::IdentSize) destLen = 0;
+             else {strcpy(sip->Ident, nP->myName); destLen = nP->myNlen;}
+             if (!destLen) {delete sip; continue;}
+@@ -1121,7 +1120,7 @@ int XrdCmsCluster::Select(SMask_t pmask, int &port, char *hbuff, int &hlen,
+                              : Config.sched_LoadR == 0 ? SelbyLoad(pmask,selR)
+                                                        : SelbyLoadR(pmask, selR));
+ 
+-       if (nP) hlen = nP->netIF.GetName(hbuff, port, nType) + 1;
++       if (nP) hlen = nP->netIF.GetPublicName(hbuff, port) + 1;
+           else hlen = 0;
+        STMutex.UnLock();
+        return hlen != 1;
+@@ -1152,7 +1151,7 @@ int XrdCmsCluster::Select(SMask_t pmask, int &port, char *hbuff, int &hlen,
+ // At this point either we have a node or we do not
+ //
+    if (nP)
+-      {hlen = nP->netIF.GetName(hbuff, port, nType) + 1;
++      {hlen = nP->netIF.GetPublicName(hbuff, port) + 1;
+        nP->RefR++;
+        STMutex.UnLock();
+        return hlen != 1;
+@@ -1633,7 +1632,7 @@ int XrdCmsCluster::SelNode(XrdCmsSelect &Sel, SMask_t pmask, SMask_t amask)
+ //
+    if (nP)
+       {nP->g2nLock(STMutex);
+-       Sel.Resp.DLen = nP->netIF.GetName(Sel.Resp.Data, Sel.Resp.Port, nType);
++       Sel.Resp.DLen = nP->netIF.GetPublicName(Sel.Resp.Data, Sel.Resp.Port);
+        if (!Sel.Resp.DLen) {nP->UnLock(); return Unreachable(Sel, false);}
+        Sel.Resp.DLen++; Sel.smask = nP->NodeMask;
+ 
+@@ -1690,7 +1689,7 @@ int XrdCmsCluster::SelNode(XrdCmsSelect &Sel, SMask_t pmask, SMask_t amask)
+        if ((mask = (pmask | amask) & peerHost)) nP = SelbyCost(mask, selR);
+        if (nP)
+           {nP->g2nLock(STMutex);
+-           Sel.Resp.DLen = nP->netIF.GetName(Sel.Resp.Data,Sel.Resp.Port,nType);
++           Sel.Resp.DLen = nP->netIF.GetPublicName(Sel.Resp.Data,Sel.Resp.Port);
+            if (!Sel.Resp.DLen) {nP->UnLock(); return Unreachable(Sel, false);}
+            Sel.Resp.DLen++; Sel.smask = nP->NodeMask;
+            if (Sel.iovN && Sel.iovP) nP->Send(Sel.iovP, Sel.iovN);
+diff --git a/src/XrdCms/XrdCmsConfig.cc b/src/XrdCms/XrdCmsConfig.cc
+index 3a2a69af3..2bb168961 100644
+--- a/src/XrdCms/XrdCmsConfig.cc
++++ b/src/XrdCms/XrdCmsConfig.cc
+@@ -415,6 +415,11 @@ int XrdCmsConfig::Configure2()
+ //
+    envData += "myHN=";
+    envData += myName;
++   const char *override_hn = getenv("OVERRIDEXRDHOST");
++   if (override_hn)
++      {envData += "&ovHN=";
++       envData += override_hn;
++      }
+ 
+ // Print herald
+ //
+diff --git a/src/XrdCms/XrdCmsNode.cc b/src/XrdCms/XrdCmsNode.cc
+index b453523b8..dce904b92 100644
+--- a/src/XrdCms/XrdCmsNode.cc
++++ b/src/XrdCms/XrdCmsNode.cc
+@@ -166,6 +166,8 @@ void XrdCmsNode::setName(XrdLink *lnkp, const char *theIF, int port)
+    netIF.SetIF(&netID, theIF, port);
+    hasNet = netIF.Mask();
+ 
++   netIF.SetPublicName(hname);
++
+ // Construct our identification
+ //
+    myName = strdup(hname);
 diff --git a/src/XrdCms/XrdCmsProtocol.cc b/src/XrdCms/XrdCmsProtocol.cc
-index 226c3eb317e..870a2cc938b 100644
+index c4abde0ac..6580a5c5d 100644
 --- a/src/XrdCms/XrdCmsProtocol.cc
 +++ b/src/XrdCms/XrdCmsProtocol.cc
 @@ -564,30 +564,6 @@ int XrdCmsProtocol::Stats(char *buff, int blen, int do_sync)
@@ -188,7 +314,7 @@ index 226c3eb317e..870a2cc938b 100644
 -          }
 -       free(oldName);
 -      }
-+   const char *altName = cgiEnv.Get("myHN");
++   const char *altName = cgiEnv.Get("ovHN");
 +   if (altName) {
 +     std::string oldName(Link->Host());
 +     char buff[512];
@@ -203,122 +329,8 @@ index 226c3eb317e..870a2cc938b 100644
  
  // Handle Redirectors here (minimal stuff to do)
  //
-
-From 167f380dd4b9aa064a6ad9db1b8a4b84c9619116 Mon Sep 17 00:00:00 2001
-From: Brian Bockelman <bbockelman@morgridge.org>
-Date: Thu, 22 Dec 2022 08:01:10 -0600
-Subject: [PATCH 3/5] Do not bail if link's IP address does not match forward
- resolution
-
-If the redirector and data server are both inside the same Kubernetes
-instance, it is quite possible the internal route is taken between
-the two pods, meaning there's an internal IP address on the socket.
-
-Always prefer the data server-provided hostname over any sort of DNS
-setup.
----
- src/Xrd/XrdLinkXeq.cc | 4 ----
- 1 file changed, 4 deletions(-)
-
-diff --git a/src/Xrd/XrdLinkXeq.cc b/src/Xrd/XrdLinkXeq.cc
-index ccfcd4f4fd8..e9a5d98781e 100644
---- a/src/Xrd/XrdLinkXeq.cc
-+++ b/src/Xrd/XrdLinkXeq.cc
-@@ -589,10 +589,6 @@ int XrdLinkXeq::RecvIOV(const struct iovec *iov, int iocnt)
- bool XrdLinkXeq::Register(const char *hName)
- {
- 
--// First see if we can register this name with the address object
--//
--   if (!Addr.Register(hName)) return false;
--
- // Make appropriate changes here
- //
-    if (HostName) free(HostName);
-
-From f2ac76bbb055a083a518c9007a7571ad68bd5449 Mon Sep 17 00:00:00 2001
-From: Brian Bockelman <bbockelman@morgridge.org>
-Date: Thu, 22 Dec 2022 09:21:00 -0600
-Subject: [PATCH 4/5] Give cmsd the concept of a 'public hostname'
-
-Have the cmsd use the name provided by the remote data server, bypassing
-the logic of interface-specific names or addresses.
-
-Could serve as the basis for the idea of a 'public mode' where the
-cluster operators are responsible for ensuring the hostnames are
-properly registered.
----
- src/XrdCms/XrdCmsCluster.cc | 11 ++++-----
- src/XrdCms/XrdCmsNode.cc    |  2 ++
- src/XrdNet/XrdNetIF.cc      | 18 +++++++++++++-
- src/XrdNet/XrdNetIF.hh      | 49 +++++++++++++++++++++++++++++++++++++
- 4 files changed, 73 insertions(+), 7 deletions(-)
-
-diff --git a/src/XrdCms/XrdCmsCluster.cc b/src/XrdCms/XrdCmsCluster.cc
-index 9d7a0f3..2709013 100644
---- a/src/XrdCms/XrdCmsCluster.cc
-+++ b/src/XrdCms/XrdCmsCluster.cc
-@@ -557,8 +557,7 @@ XrdCmsSelected *XrdCmsCluster::List(SMask_t mask, CmsLSOpts opts, bool &oksel)
-                      }
-                }
-             sip = new XrdCmsSelected(sipp);
--                 if (retDest) destLen = nP->netIF.GetDest(sip->Ident, iSize,
--                                                          ifGet, retName);
-+                 if (retDest) destLen = nP->netIF.GetPublicDest(sip->Ident, iSize);
-             else if (nP->myNlen >= XrdCmsSelected::IdentSize) destLen = 0;
-             else {strcpy(sip->Ident, nP->myName); destLen = nP->myNlen;}
-             if (!destLen) {delete sip; continue;}
-@@ -1120,7 +1119,7 @@ int XrdCmsCluster::Select(SMask_t pmask, int &port, char *hbuff, int &hlen,
-                              : Config.sched_LoadR == 0 ? SelbyLoad(pmask,selR)
-                                                        : SelbyLoadR(pmask, selR));
- 
--       if (nP) hlen = nP->netIF.GetName(hbuff, port, nType) + 1;
-+       if (nP) hlen = nP->netIF.GetPublicName(hbuff, port) + 1;
-           else hlen = 0;
-        STMutex.UnLock();
-        return hlen != 1;
-@@ -1151,7 +1150,7 @@ int XrdCmsCluster::Select(SMask_t pmask, int &port, char *hbuff, int &hlen,
- // At this point either we have a node or we do not
- //
-    if (nP)
--      {hlen = nP->netIF.GetName(hbuff, port, nType) + 1;
-+      {hlen = nP->netIF.GetPublicName(hbuff, port) + 1;
-        nP->RefR++;
-        STMutex.UnLock();
-        return hlen != 1;
-@@ -1632,7 +1631,7 @@ int XrdCmsCluster::SelNode(XrdCmsSelect &Sel, SMask_t pmask, SMask_t amask)
- //
-    if (nP)
-       {nP->g2nLock(STMutex);
--       Sel.Resp.DLen = nP->netIF.GetName(Sel.Resp.Data, Sel.Resp.Port, nType);
-+       Sel.Resp.DLen = nP->netIF.GetPublicName(Sel.Resp.Data, Sel.Resp.Port);
-        if (!Sel.Resp.DLen) {nP->UnLock(); return Unreachable(Sel, false);}
-        Sel.Resp.DLen++; Sel.smask = nP->NodeMask;
- 
-@@ -1689,7 +1688,7 @@ int XrdCmsCluster::SelNode(XrdCmsSelect &Sel, SMask_t pmask, SMask_t amask)
-        if ((mask = (pmask | amask) & peerHost)) nP = SelbyCost(mask, selR);
-        if (nP)
-           {nP->g2nLock(STMutex);
--           Sel.Resp.DLen = nP->netIF.GetName(Sel.Resp.Data,Sel.Resp.Port,nType);
-+           Sel.Resp.DLen = nP->netIF.GetPublicName(Sel.Resp.Data,Sel.Resp.Port);
-            if (!Sel.Resp.DLen) {nP->UnLock(); return Unreachable(Sel, false);}
-            Sel.Resp.DLen++; Sel.smask = nP->NodeMask;
-            if (Sel.iovN && Sel.iovP) nP->Send(Sel.iovP, Sel.iovN);
-diff --git a/src/XrdCms/XrdCmsNode.cc b/src/XrdCms/XrdCmsNode.cc
-index b453523..dce904b 100644
---- a/src/XrdCms/XrdCmsNode.cc
-+++ b/src/XrdCms/XrdCmsNode.cc
-@@ -166,6 +166,8 @@ void XrdCmsNode::setName(XrdLink *lnkp, const char *theIF, int port)
-    netIF.SetIF(&netID, theIF, port);
-    hasNet = netIF.Mask();
- 
-+   netIF.SetPublicName(hname);
-+
- // Construct our identification
- //
-    myName = strdup(hname);
 diff --git a/src/XrdNet/XrdNetIF.cc b/src/XrdNet/XrdNetIF.cc
-index 5e06b79..bde58b0 100644
+index 6d774c781..3a3ba7325 100644
 --- a/src/XrdNet/XrdNetIF.cc
 +++ b/src/XrdNet/XrdNetIF.cc
 @@ -403,7 +403,23 @@ int XrdNetIF::GetDest(char *dest, int dlen, ifType ifT, bool prefn)
@@ -347,7 +359,7 @@ index 5e06b79..bde58b0 100644
  /*                                 G e t I F                                  */
  /******************************************************************************/
 diff --git a/src/XrdNet/XrdNetIF.hh b/src/XrdNet/XrdNetIF.hh
-index b369566..849b67e 100644
+index b36956622..849b67e1d 100644
 --- a/src/XrdNet/XrdNetIF.hh
 +++ b/src/XrdNet/XrdNetIF.hh
 @@ -32,6 +32,7 @@
@@ -430,88 +442,3 @@ index b369566..849b67e 100644
 -- 
 2.43.5
 
-From 459a5c7227b80f33aa58af5de2c28281124aa337 Mon Sep 17 00:00:00 2001
-From: Brian Bockelman <bbockelman@morgridge.org>
-Date: Tue, 27 Dec 2022 08:00:39 -0600
-Subject: [PATCH 5/5] Only utilize the hostname when an explicit override is in
- place.
-
-Testing on the OSDF production redirector revealed that there's a
-large variety of hostnames in use.  Until we get these sorted out,
-make the preference to use the hostname from the remote cmsd an
-opt-in feature.
----
- src/Xrd/XrdConfig.cc          | 1 +
- src/XrdCms/XrdCmsClientMan.cc | 9 +++++++--
- src/XrdCms/XrdCmsConfig.cc    | 5 +++++
- src/XrdCms/XrdCmsProtocol.cc  | 2 +-
- 4 files changed, 14 insertions(+), 3 deletions(-)
-
-diff --git a/src/Xrd/XrdConfig.cc b/src/Xrd/XrdConfig.cc
-index a2b3d5dceb3..5965307c72f 100644
---- a/src/Xrd/XrdConfig.cc
-+++ b/src/Xrd/XrdConfig.cc
-@@ -576,6 +576,7 @@ int XrdConfig::Configure(int argc, char **argv)
-    const char *ipAddrName;
-    if (envName) {
-       myName = envName;
-+      XrdOucEnv::Export("OVERRIDEXRDHOST", myName.c_str());
-    } else if ((ipAddrName = myIPAddr->Name(0, &temp))) {
-       myName = ipAddrName;
-    } else {
-diff --git a/src/XrdCms/XrdCmsClientMan.cc b/src/XrdCms/XrdCmsClientMan.cc
-index 9f529419518..677b64da375 100644
---- a/src/XrdCms/XrdCmsClientMan.cc
-+++ b/src/XrdCms/XrdCmsClientMan.cc
-@@ -323,7 +323,7 @@ int XrdCmsClientMan::Hookup()
-    EPNAME("Hookup");
-    CmsLoginData Data;
-    XrdLink *lp;
--   char buff[256], hnBuff[264];
-+   char buff[256], hnBuff[264*2+1];
-    kXR_char *envData = 0;
-    int rc, oldWait, tries = 12, opts = 0;
- 
-@@ -336,7 +336,12 @@ int XrdCmsClientMan::Hookup()
- // Report our hostname (there are better ways of doing this)
- //
-    const char *hn = getenv("XRDHOST");
--   if (hn)
-+   const char *override_hn = getenv("OVERRIDEXRDHOST");
-+   if (hn && override_hn)
-+      {snprintf(hnBuff, sizeof(hnBuff), "myHN=%s&ovHN=%s", hn, override_hn);
-+       envData = (kXR_char *)hnBuff;
-+      }
-+   else if (hn)
-       {snprintf(hnBuff, sizeof(hnBuff), "myHN=%s", hn);
-        envData = (kXR_char *)hnBuff;
-       }
-diff --git a/src/XrdCms/XrdCmsConfig.cc b/src/XrdCms/XrdCmsConfig.cc
-index 9512df778d6..89370145753 100644
---- a/src/XrdCms/XrdCmsConfig.cc
-+++ b/src/XrdCms/XrdCmsConfig.cc
-@@ -415,6 +415,11 @@ int XrdCmsConfig::Configure2()
- //
-    envData += "myHN=";
-    envData += myName;
-+   const char *override_hn = getenv("OVERRIDEXRDHOST");
-+   if (override_hn)
-+      {envData += "&ovHN=";
-+       envData += override_hn;
-+      }
- 
- // Print herald
- //
-diff --git a/src/XrdCms/XrdCmsProtocol.cc b/src/XrdCms/XrdCmsProtocol.cc
-index 870a2cc938b..018b819d46c 100644
---- a/src/XrdCms/XrdCmsProtocol.cc
-+++ b/src/XrdCms/XrdCmsProtocol.cc
-@@ -599,7 +599,7 @@ XrdCmsRouting *XrdCmsProtocol::Admit()
- // Construct environment for incoming node
- //
-    XrdOucEnv cgiEnv((const char *)Data.envCGI);
--   const char *altName = cgiEnv.Get("myHN");
-+   const char *altName = cgiEnv.Get("ovHN");
-    if (altName) {
-      std::string oldName(Link->Host());
-      char buff[512];

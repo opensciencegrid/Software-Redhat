@@ -1,13 +1,21 @@
- src/XrdHttp/XrdHttpProtocol.cc | 132 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++---
- src/XrdHttp/XrdHttpProtocol.hh |  14 ++++++++++++++
- src/XrdTls/XrdTlsContext.cc    |  25 +++++++++++++++++++++++++
- src/XrdTls/XrdTlsContext.hh    |  23 +++++++++++++++++++++++
- 4 files changed, 191 insertions(+), 3 deletions(-)
+From 74a2cae00b63e12bce21e2e6673e3788f97dd4ab Mon Sep 17 00:00:00 2001
+From: Brian Bockelman <bbockelman@morgridge.org>
+Date: Wed, 15 Jan 2025 08:05:58 -0600
+Subject: [PATCH 4/9] Defer client TLS auth until after HTTP parsing
 
-diff --git c/src/XrdHttp/XrdHttpProtocol.cc w/src/XrdHttp/XrdHttpProtocol.cc
-index 4c9b4a733..76c97b0de 100644
---- c/src/XrdHttp/XrdHttpProtocol.cc
-+++ w/src/XrdHttp/XrdHttpProtocol.cc
+---
+ src/XrdHttp/XrdHttpProtocol.cc                | 132 +++++++++++++++++-
+ ...ttpProtocol.cc => XrdHttpProtocol.cc.orig} |   0
+ src/XrdHttp/XrdHttpProtocol.hh                |  14 ++
+ src/XrdTls/XrdTlsContext.cc                   |  25 ++++
+ src/XrdTls/XrdTlsContext.hh                   |  23 +++
+ 5 files changed, 191 insertions(+), 3 deletions(-)
+ copy src/XrdHttp/{XrdHttpProtocol.cc => XrdHttpProtocol.cc.orig} (100%)
+
+diff --git a/src/XrdHttp/XrdHttpProtocol.cc b/src/XrdHttp/XrdHttpProtocol.cc
+index ba8af7435..146e39c1d 100644
+--- a/src/XrdHttp/XrdHttpProtocol.cc
++++ b/src/XrdHttp/XrdHttpProtocol.cc
 @@ -135,6 +135,8 @@ static const int hsmOn   =  1; // Dual purpose but use a meaningful varname
  
  int  httpsmode = hsmAuto;
@@ -171,7 +179,7 @@ index 4c9b4a733..76c97b0de 100644
  
    ResumeBytes = 0;
    Resume = 0;
-@@ -2834,6 +2920,46 @@ int XrdHttpProtocol::xtlsreuse(XrdOucStream & Config) {
+@@ -2845,6 +2931,46 @@ int XrdHttpProtocol::xtlsreuse(XrdOucStream & Config) {
     return 1;
  }
  
@@ -218,10 +226,14 @@ index 4c9b4a733..76c97b0de 100644
  int XrdHttpProtocol::xauth(XrdOucStream &Config) {
    char *val = Config.GetWord();
    if(val) {
-diff --git c/src/XrdHttp/XrdHttpProtocol.hh w/src/XrdHttp/XrdHttpProtocol.hh
+diff --git a/src/XrdHttp/XrdHttpProtocol.cc b/src/XrdHttp/XrdHttpProtocol.cc.orig
+similarity index 100%
+copy from src/XrdHttp/XrdHttpProtocol.cc
+copy to src/XrdHttp/XrdHttpProtocol.cc.orig
+diff --git a/src/XrdHttp/XrdHttpProtocol.hh b/src/XrdHttp/XrdHttpProtocol.hh
 index ece9f9cb8..78fd24b45 100644
---- c/src/XrdHttp/XrdHttpProtocol.hh
-+++ w/src/XrdHttp/XrdHttpProtocol.hh
+--- a/src/XrdHttp/XrdHttpProtocol.hh
++++ b/src/XrdHttp/XrdHttpProtocol.hh
 @@ -223,6 +223,8 @@ class XrdHttpProtocol : public XrdProtocol {
    static int xhttpsmode(XrdOucStream &Config);
    static int xtlsreuse(XrdOucStream &Config);
@@ -250,10 +262,10 @@ index ece9f9cb8..78fd24b45 100644
    static XrdCryptoFactory *myCryptoFactory;
  
  protected:
-diff --git c/src/XrdTls/XrdTlsContext.cc w/src/XrdTls/XrdTlsContext.cc
+diff --git a/src/XrdTls/XrdTlsContext.cc b/src/XrdTls/XrdTlsContext.cc
 index adf569cb1..c57f8ccfd 100644
---- c/src/XrdTls/XrdTlsContext.cc
-+++ w/src/XrdTls/XrdTlsContext.cc
+--- a/src/XrdTls/XrdTlsContext.cc
++++ b/src/XrdTls/XrdTlsContext.cc
 @@ -70,6 +70,7 @@ struct XrdTlsContextImpl
      time_t                        lastCertModTime = 0;
      int                           sessionCacheOpts = -1;
@@ -297,10 +309,10 @@ index adf569cb1..c57f8ccfd 100644
 +         break;
 +      }
 +}
-diff --git c/src/XrdTls/XrdTlsContext.hh w/src/XrdTls/XrdTlsContext.hh
+diff --git a/src/XrdTls/XrdTlsContext.hh b/src/XrdTls/XrdTlsContext.hh
 index e6b61b7b8..d86de9d46 100644
---- c/src/XrdTls/XrdTlsContext.hh
-+++ w/src/XrdTls/XrdTlsContext.hh
+--- a/src/XrdTls/XrdTlsContext.hh
++++ b/src/XrdTls/XrdTlsContext.hh
 @@ -173,6 +173,29 @@ void            SetDefaultCiphers(const char *ciphers);
  
        bool      SetCrlRefresh(int refsec=-1);
@@ -331,3 +343,6 @@ index e6b61b7b8..d86de9d46 100644
  //------------------------------------------------------------------------
  //! Check if certificates are being verified.
  //!
+-- 
+2.43.5
+
