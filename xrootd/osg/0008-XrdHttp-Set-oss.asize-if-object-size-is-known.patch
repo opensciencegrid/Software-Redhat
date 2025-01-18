@@ -1,7 +1,7 @@
 From b941785271a0e24a963783c6c712f4a18c5ce7c7 Mon Sep 17 00:00:00 2001
 From: Brian Bockelman <bbockelman@morgridge.org>
 Date: Wed, 15 Jan 2025 08:17:53 -0600
-Subject: [PATCH 8/9] [XrdHttp] Set oss.asize if object size is known
+Subject: [PATCH 08/11] [XrdHttp] Set oss.asize if object size is known
 
 ---
  src/XrdHttp/XrdHttpReq.cc | 28 +++++++++++++++++++++++-----

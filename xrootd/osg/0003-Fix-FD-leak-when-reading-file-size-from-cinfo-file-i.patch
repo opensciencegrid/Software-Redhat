@@ -1,7 +1,7 @@
 From f7267c5c17c9c53f547100259201b0cf5ad4757d Mon Sep 17 00:00:00 2001
 From: Brian Bockelman <bbockelman@morgridge.org>
 Date: Wed, 15 Jan 2025 08:04:24 -0600
-Subject: [PATCH 3/9] Fix FD leak when reading file-size from cinfo file in
+Subject: [PATCH 03/11] Fix FD leak when reading file-size from cinfo file in
  `Cache::DetermineFullFileSize()`.
 
 ---

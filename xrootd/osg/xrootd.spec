@@ -5,6 +5,9 @@
     %endif
     %global _with_scitokens 1
     %global _with_xrdclhttp 1
+
+    # Enable/disable this to build with purge plugin support
+    #global _with_purge 1
 %endif
 
 # Set _with_debug to build with debug messages and asserts.  The build will have a .dbg in the Release field.
@@ -80,7 +83,7 @@
 Name:      xrootd
 Epoch:     1
 Version:   5.7.2
-Release:   1.3%{?dist}%{?_with_clang:.clang}%{?_with_asan:.asan}
+Release:   1.4%{?_with_purge:.purge}%{?dist}%{?_with_clang:.clang}%{?_with_asan:.asan}
 Summary:   Extended ROOT file server
 Group:     System Environment/Daemons
 License:   LGPLv3+
@@ -113,6 +116,14 @@ Patch6: 0006-XrdSciTokens-Handle-multiple-authorization-token-set.patch
 Patch7: 0007-XrdHttp-Add-http.staticheader.patch
 # PelicanPlatform/xrootd #8 (xrootd/xrootd #2378)
 Patch8: 0008-XrdHttp-Set-oss.asize-if-object-size-is-known.patch
+%if 0%{?_with_purge}
+# PelicanPlatform/xrootd #9 (xrootd/xrootd #2406)
+Patch9: 0009-Second-rebase-of-alja-purge-main-rb1-onto-master-5.7.patch
+%endif
+# PelicanPlatform/xrootd #10
+Patch10: 0010-do_WriteSpan-Add-written-bytes-in-file-statistics.patch
+# PelicanPlatform/xrootd #11
+Patch11: 0011-Xrd-Fix-MacOS-poller.patch
 
 ## Debug Patches -- uncomment as needed
 #Patch101: 0003-DEBUG-unset-use-pep517.patch
@@ -533,7 +544,14 @@ This package contains compatibility binaries for xrootd 4 servers.
 
 %setup -c -n %{build_dir}
 cd %{build_dir}
-%autopatch -p1
+# patch up to #8
+%autopatch -p1 -M8
+# maybe apply #9
+%if 0%{?_with_purge}
+%patch -p1 -P9
+%endif
+# patch #10 and more
+%autopatch -p1 -m10
 cd ..
 
 %build
@@ -1193,6 +1211,15 @@ fi
 # Changelog
 #-------------------------------------------------------------------------------
 %changelog
+* Fri Jan 17 2025 Mátyás Selmeci <mselmeci@wisc.edu> - 5.7.2-1.4.purge
+- Add purge plugin patch 0009-Second-rebase-of-alja-purge-main-rb1-onto-master-5.7.patch
+    (PelicanPlatform/xrootd #9)
+
+* Fri Jan 17 2025 Mátyás Selmeci <mselmeci@wisc.edu> - 5.7.2-1.4
+- Two more patches from PelicanPlatform/xrootd (SOFTWARE-6063)
+    - Add 0010-do_WriteSpan-Add-written-bytes-in-file-statistics.patch (PelicanPlatform/xrootd #10)
+    - Add 0011-Xrd-Fix-MacOS-poller.patch (PelicanPlatform/xrootd #11)
+
 * Wed Jan 15 2025 Mátyás Selmeci <mselmeci@wisc.edu> - 5.7.2-1.3
 - Use patches from PelicanPlatform/xrootd (SOFTWARE-6063)
     - Replace 1868-env-hostname-override.patch with 0001-Allow-hostname-used-by-XRootD-to-be-overridden-by-en.patch (PelicanPlatform/xrootd #1)
