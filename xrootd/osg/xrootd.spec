@@ -7,7 +7,7 @@
     %global _with_xrdclhttp 1
 
     # Enable/disable this to build with purge plugin support
-    #global _with_purge 1
+    %global _with_purge 1
 %endif
 
 # Set _with_debug to build with debug messages and asserts.  The build will have a .dbg in the Release field.
