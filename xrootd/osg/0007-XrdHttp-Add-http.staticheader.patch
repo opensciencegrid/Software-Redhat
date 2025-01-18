@@ -1,7 +1,7 @@
 From cb016c10292a5a7ac254ace849b4b3cee72f53c5 Mon Sep 17 00:00:00 2001
 From: Brian Bockelman <bbockelman@morgridge.org>
 Date: Wed, 15 Jan 2025 08:17:10 -0600
-Subject: [PATCH 7/9] [XrdHttp] Add http.staticheader
+Subject: [PATCH 07/11] [XrdHttp] Add http.staticheader
 
 ---
  src/XrdHttp/XrdHttpProtocol.cc                |  92 ++++++++++++

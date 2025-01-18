@@ -1,7 +1,7 @@
 From 74a2cae00b63e12bce21e2e6673e3788f97dd4ab Mon Sep 17 00:00:00 2001
 From: Brian Bockelman <bbockelman@morgridge.org>
 Date: Wed, 15 Jan 2025 08:05:58 -0600
-Subject: [PATCH 4/9] Defer client TLS auth until after HTTP parsing
+Subject: [PATCH 04/11] Defer client TLS auth until after HTTP parsing
 
 ---
  src/XrdHttp/XrdHttpProtocol.cc                | 132 +++++++++++++++++-

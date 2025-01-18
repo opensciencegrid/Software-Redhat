@@ -1,0 +1,25 @@
+From 6f01aac597797ee53adceb42bbd5104c15e59ece Mon Sep 17 00:00:00 2001
+From: Cedric Caffy <cedric.caffy@cern.ch>
+Date: Fri, 10 Jan 2025 17:46:16 +0100
+Subject: [PATCH 10/11] do_WriteSpan() - Add written bytes in file statistics
+
+Fixes #2368
+---
+ src/XrdXrootd/XrdXrootdXeq.cc | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/src/XrdXrootd/XrdXrootdXeq.cc b/src/XrdXrootd/XrdXrootdXeq.cc
+index 78292614c..2ab55ed9b 100644
+--- a/src/XrdXrootd/XrdXrootdXeq.cc
++++ b/src/XrdXrootd/XrdXrootdXeq.cc
+@@ -3379,6 +3379,7 @@ int XrdXrootdProtocol::do_WriteSpan()
+    if (Monitor.InOut())
+       Monitor.Agent->Add_wr(IO.File->Stats.FileID, Request.write.dlen,
+                                                   Request.write.offset);
++   IO.File->Stats.wrOps(IO.IOLen); // Optimistically correct
+ 
+ // Trace this entry
+ //
+-- 
+2.43.5
+
