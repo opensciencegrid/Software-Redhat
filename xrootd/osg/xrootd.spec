@@ -7,7 +7,7 @@
     %global _with_xrdclhttp 1
 
     # Enable/disable this to build with purge plugin support
-    %global _with_purge 1
+    #%%global _with_purge 1
 %endif
 
 # Set _with_debug to build with debug messages and asserts.  The build will have a .dbg in the Release field.
@@ -114,7 +114,7 @@ Patch5: 0005-XrdSciTokens-Handle-multiple-authorization-token-set.patch~a33ca13.
 Patch6: 0006-XrdHttp-Add-http.staticheader.patch~5c6ee05.patch
 %if 0%{?_with_purge}
 # PelicanPlatform/xrootd #9 (xrootd/xrootd #2406)
-Patch9: 0009-Second-rebase-of-alja-purge-main-rb1-onto-master-5.7~4f6f775.patch
+#Patch9: 0009-Second-rebase-of-alja-purge-main-rb1-onto-master-5.7~4f6f775.patch
 %endif
 
 BuildRoot: %{_tmppath}/%{name}-root
@@ -537,7 +537,7 @@ cd %{build_dir}
 %autopatch -p1 -M8
 # maybe apply #9
 %if 0%{?_with_purge}
-%patch -p1 -P9
+#patch -p1 -P9
 %endif
 # patch #10 and more
 #autopatch -p1 -m10
