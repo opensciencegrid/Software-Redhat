@@ -82,8 +82,8 @@
 #-------------------------------------------------------------------------------
 Name:      xrootd
 Epoch:     1
-Version:   5.7.2
-Release:   1.4%{?_with_purge:.purge}%{?dist}%{?_with_clang:.clang}%{?_with_asan:.asan}
+Version:   5.7.3
+Release:   1.1%{?_with_purge:.purge}%{?dist}%{?_with_clang:.clang}%{?_with_asan:.asan}
 Summary:   Extended ROOT file server
 Group:     System Environment/Daemons
 License:   LGPLv3+
@@ -104,29 +104,18 @@ Source1:   xrootd-%{compat_version}.tar.gz
 Patch1: 0001-Allow-hostname-used-by-XRootD-to-be-overridden-by-en~e13587e.patch
 # PelicanPlatform/xrootd #2 (xrootd/xrootd #2348)
 Patch2: 0002-XrdHttp-determines-the-presence-of-the-Age-header-in~092c7a5.patch
-# PelicanPlatform/xrootd #3 (xrootd/xrootd #2395)
-Patch3: 0003-Fix-FD-leak-when-reading-file-size-from-cinfo-file-i~a219487.patch
 # PelicanPlatform/xrootd #4 (xrootd/xrootd #2269)
-Patch4: 0004-Defer-client-TLS-auth-until-after-HTTP-parsing~323a16b.patch
+Patch3: 0003-XrdTls-Allow-disabling-of-X.509-client-auth.patch~18e1c81.patch
 # PelicanPlatform/xrootd #5 (xrootd/xrootd #2279)
-Patch5: 0005-Add-new-filesystem-load-counter-plugin~3c1be23.patch
+Patch4: 0004-Add-new-filesystem-load-counter-plugin.patch~3c1be23.patch
 # PelicanPlatform/xrootd #6 (xrootd/xrootd #2397)
-Patch6: 0006-XrdSciTokens-Handle-multiple-authorization-token-set~7433116.patch
+Patch5: 0005-XrdSciTokens-Handle-multiple-authorization-token-set.patch~a33ca13.patch
 # PelicanPlatform/xrootd #7 (xrootd/xrootd #2389)
-Patch7: 0007-XrdHttp-Add-http.staticheader~2175ae2.patch
-# PelicanPlatform/xrootd #8 (xrootd/xrootd #2378)
-Patch8: 0008-XrdHttp-Set-oss.asize-if-object-size-is-known~d710312.patch
+Patch6: 0006-XrdHttp-Add-http.staticheader.patch~5c6ee05.patch
 %if 0%{?_with_purge}
 # PelicanPlatform/xrootd #9 (xrootd/xrootd #2406)
 Patch9: 0009-Second-rebase-of-alja-purge-main-rb1-onto-master-5.7~4f6f775.patch
 %endif
-# PelicanPlatform/xrootd #10
-Patch10: 0010-do_WriteSpan-Add-written-bytes-in-file-statistics~98a22ba.patch
-# PelicanPlatform/xrootd #11
-Patch11: 0011-Xrd-Fix-MacOS-poller~79a5439.patch
-
-## Debug Patches -- uncomment as needed
-#Patch101: 0003-DEBUG-unset-use-pep517.patch
 
 BuildRoot: %{_tmppath}/%{name}-root
 
@@ -551,7 +540,7 @@ cd %{build_dir}
 %patch -p1 -P9
 %endif
 # patch #10 and more
-%autopatch -p1 -m10
+#autopatch -p1 -m10
 cd ..
 
 %build
@@ -1211,6 +1200,23 @@ fi
 # Changelog
 #-------------------------------------------------------------------------------
 %changelog
+* Tue Jan 28 2025 Mátyás Selmeci <mselmeci@wisc.edu> - 5.7.3-1.1
+- Update to XRootD 5.7.3 (SOFTWARE-6071)
+- Drop upstreamed patches:
+    - 0003-Fix-FD-leak-when-reading-file-size-from-cinfo-file-i~a219487.patch
+    - 0008-XrdHttp-Set-oss.asize-if-object-size-is-known~d710312.patch
+    - 0010-do_WriteSpan-Add-written-bytes-in-file-statistics~98a22ba.patch
+    - 0011-Xrd-Fix-MacOS-poller~79a5439.patch
+- Replace patches with updated versions:
+    - 0004-Defer-client-TLS-auth-until-after-HTTP-parsing~323a16b.patch
+        -> 0003-XrdTls-Allow-disabling-of-X.509-client-auth.patch~18e1c81.patch
+    - 0005-Add-new-filesystem-load-counter-plugin~3c1be23.patch
+        -> 0004-Add-new-filesystem-load-counter-plugin.patch~3c1be23.patch
+    - 0006-XrdSciTokens-Handle-multiple-authorization-token-set~7433116.patch
+        -> 0005-XrdSciTokens-Handle-multiple-authorization-token-set.patch~a33ca13.patch
+    - 0007-XrdHttp-Add-http.staticheader~2175ae2.patch
+        -> 0006-XrdHttp-Add-http.staticheader.patch~5c6ee05.patch
+
 * Fri Jan 17 2025 Mátyás Selmeci <mselmeci@wisc.edu> - 5.7.2-1.4.purge
 - Add purge plugin patch 0009-Second-rebase-of-alja-purge-main-rb1-onto-master-5.7.patch
     (PelicanPlatform/xrootd #9)
