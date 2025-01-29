@@ -1,7 +1,7 @@
-From 7029bb3adaee973d89392149448adebfaeaff529 Mon Sep 17 00:00:00 2001
+From 0a935bb704e463bc63e10dc36392d353fe81bd12 Mon Sep 17 00:00:00 2001
 From: Brian Bockelman <bbockelman@morgridge.org>
 Date: Wed, 15 Jan 2025 08:10:14 -0600
-Subject: [PATCH 05/11] Add new filesystem load counter plugin
+Subject: [PATCH 4/6] Add new filesystem load counter plugin
 
 ---
  src/XrdOssStats/XrdOssStatsConfig.cc     | 128 +++++++++++

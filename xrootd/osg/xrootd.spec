@@ -7,7 +7,7 @@
     %global _with_xrdclhttp 1
 
     # Enable/disable this to build with purge plugin support
-    %global _with_purge 1
+    #%%global _with_purge 1
 %endif
 
 # Set _with_debug to build with debug messages and asserts.  The build will have a .dbg in the Release field.
@@ -70,6 +70,7 @@
     %define use_cmake3 0
 %endif
 
+%global compat_version 4.12.6
 
 # Remove default rpm python bytecompiling scripts
 %global __os_install_post \
@@ -80,16 +81,15 @@
 #-------------------------------------------------------------------------------
 # Package definitions
 #-------------------------------------------------------------------------------
-Name:      xrootd
-Epoch:     1
-Version:   5.7.2
-Release:   1.4%{?_with_purge:.purge}%{?dist}%{?_with_clang:.clang}%{?_with_asan:.asan}
-Summary:   Extended ROOT file server
-Group:     System Environment/Daemons
-License:   LGPLv3+
-URL:       http://xrootd.org/
+Name:		xrootd
+Epoch:		1
+Version:	5.7.3
+Release:	1.1%{?_with_purge:.purge}%{?dist}%{?_with_clang:.clang}%{?_with_asan:.asan}
+Summary:	Extended ROOT File Server
+Group:		System Environment/Daemons
+License:	LGPL-3.0-or-later AND BSD-2-Clause AND BSD-3-Clause AND curl AND MIT AND Zlib
+URL:		https://xrootd.slac.stanford.edu
 
-%define compat_version 4.12.6
 
 # git clone http://xrootd.org/repo/xrootd.git xrootd
 # cd xrootd
@@ -101,87 +101,75 @@ Source0:   xrootd-%{version}.tar.gz
 Source1:   xrootd-%{compat_version}.tar.gz
 
 # PelicanPlatform/xrootd #1 (xrootd/xrootd #1868)
-Patch1: 0001-Allow-hostname-used-by-XRootD-to-be-overridden-by-en.patch
+Patch1: 0001-Allow-hostname-used-by-XRootD-to-be-overridden-by-en~e13587e.patch
 # PelicanPlatform/xrootd #2 (xrootd/xrootd #2348)
-Patch2: 0002-XrdHttp-determines-the-presence-of-the-Age-header-in.patch
-# PelicanPlatform/xrootd #3 (xrootd/xrootd #2395)
-Patch3: 0003-Fix-FD-leak-when-reading-file-size-from-cinfo-file-i.patch
+Patch2: 0002-XrdHttp-determines-the-presence-of-the-Age-header-in~092c7a5.patch
 # PelicanPlatform/xrootd #4 (xrootd/xrootd #2269)
-Patch4: 0004-Defer-client-TLS-auth-until-after-HTTP-parsing.patch
+Patch3: 0003-XrdTls-Allow-disabling-of-X.509-client-auth.patch~18e1c81.patch
 # PelicanPlatform/xrootd #5 (xrootd/xrootd #2279)
-Patch5: 0005-Add-new-filesystem-load-counter-plugin.patch
+Patch4: 0004-Add-new-filesystem-load-counter-plugin.patch~3c1be23.patch
 # PelicanPlatform/xrootd #6 (xrootd/xrootd #2397)
-Patch6: 0006-XrdSciTokens-Handle-multiple-authorization-token-set.patch
+Patch5: 0005-XrdSciTokens-Handle-multiple-authorization-token-set.patch~a33ca13.patch
 # PelicanPlatform/xrootd #7 (xrootd/xrootd #2389)
-Patch7: 0007-XrdHttp-Add-http.staticheader.patch
-# PelicanPlatform/xrootd #8 (xrootd/xrootd #2378)
-Patch8: 0008-XrdHttp-Set-oss.asize-if-object-size-is-known.patch
+Patch6: 0006-XrdHttp-Add-http.staticheader.patch~5c6ee05.patch
 %if 0%{?_with_purge}
 # PelicanPlatform/xrootd #9 (xrootd/xrootd #2406)
-Patch9: 0009-Second-rebase-of-alja-purge-main-rb1-onto-master-5.7.patch
+#Patch9: 0009-Second-rebase-of-alja-purge-main-rb1-onto-master-5.7~4f6f775.patch
 %endif
-# PelicanPlatform/xrootd #10
-Patch10: 0010-do_WriteSpan-Add-written-bytes-in-file-statistics.patch
-# PelicanPlatform/xrootd #11
-Patch11: 0011-Xrd-Fix-MacOS-poller.patch
 
-## Debug Patches -- uncomment as needed
-#Patch101: 0003-DEBUG-unset-use-pep517.patch
-
-BuildRoot: %{_tmppath}/%{name}-root
 
 %if %{use_cmake3}
-BuildRequires: cmake3
+BuildRequires:	cmake3
 %else
-BuildRequires: cmake
+BuildRequires:	cmake
 %endif
-BuildRequires: krb5-devel
-BuildRequires: readline-devel
-BuildRequires: fuse-devel
-BuildRequires: libxml2-devel
-BuildRequires: krb5-devel
-BuildRequires: zlib-devel
-BuildRequires: ncurses-devel
-BuildRequires: libcurl-devel
-BuildRequires: libuuid-devel
-BuildRequires: voms-devel >= 2.0.6
-BuildRequires: git
-BuildRequires: pkgconfig
+BuildRequires:	krb5-devel
+BuildRequires:	readline-devel
+BuildRequires:	fuse-devel
+BuildRequires:	libxml2-devel
+BuildRequires:	krb5-devel
+BuildRequires:	zlib-devel
+BuildRequires:	ncurses-devel
+BuildRequires:	libcurl-devel
+BuildRequires:	libuuid-devel
+BuildRequires:	voms-devel >= 2.0.6
+BuildRequires:	git
+BuildRequires:	pkgconfig
 %if %{have_macaroons}
-BuildRequires: libmacaroons-devel
+BuildRequires:	libmacaroons-devel
 %endif
-BuildRequires: json-c-devel
+BuildRequires:	json-c-devel
 
 %if %{_with_python2}
-BuildRequires: python2-pip
-BuildRequires: python2-devel
-BuildRequires: python2-setuptools
+BuildRequires:	python2-pip
+BuildRequires:	python2-devel
+BuildRequires:	python2-setuptools
 %endif
 %if %{_with_python3}
-BuildRequires: python%{python3_pkgversion}-devel
-BuildRequires: python%{python3_pkgversion}-setuptools
+BuildRequires:	python%{python3_pkgversion}-devel
+BuildRequires:	python%{python3_pkgversion}-setuptools
 %endif
 
-BuildRequires: openssl-devel
+BuildRequires:	openssl-devel
 
-BuildRequires: selinux-policy-devel
+BuildRequires:	selinux-policy-devel
 
 %if %{?_with_tests:1}%{!?_with_tests:0}
-BuildRequires: cppunit-devel
-BuildRequires: gtest-devel
+BuildRequires:	cppunit-devel
+BuildRequires:	gtest-devel
 %endif
 
 %if %{?_with_ceph:1}%{!?_with_ceph:0}
     %if %{?_with_ceph11:1}%{!?_with_ceph11:0}
-BuildRequires: librados-devel >= 11.0
-BuildRequires: libradosstriper-devel >= 11.0
+BuildRequires:	librados-devel >= 11.0
+BuildRequires:	libradosstriper-devel >= 11.0
     %else
-BuildRequires: ceph-devel >= 0.87
+BuildRequires:	ceph-devel >= 0.87
     %endif
 %endif
 
 %if %{?_with_xrdclhttp:1}%{!?_with_xrdclhttp:0}
-BuildRequires: davix-devel
+BuildRequires:	davix-devel
 %endif
 
 %if 0%{!?_without_doc:1}
@@ -193,34 +181,34 @@ BuildRequires:	graphviz-gd
 %endif
 
 %if %{?_with_clang:1}%{!?_with_clang:0}
-BuildRequires: clang
+BuildRequires:	clang
 %endif
 
 %if %{?_with_asan:1}%{!?_with_asan:0}
-BuildRequires: libasan
+BuildRequires:	libasan
 %if %{?rhel}%{!?rhel:0} == 7
-BuildRequires: devtoolset-7-libasan-devel
+BuildRequires:	devtoolset-7-libasan-devel
 %endif
 Requires: libasan
 %endif
 
 %if %{?_with_scitokens:1}%{!?_with_scitokens:0}
-BuildRequires: scitokens-cpp-devel
+BuildRequires:	scitokens-cpp-devel
 %endif
 
 %if %{?_with_isal:1}%{!?_with_isal:0}
-BuildRequires: autoconf
-BuildRequires: automake
-BuildRequires: libtool
-BuildRequires: yasm
+BuildRequires:	autoconf
+BuildRequires:	automake
+BuildRequires:	libtool
+BuildRequires:	yasm
 %endif
 
 Requires:	%{name}-server%{?_isa} = %{epoch}:%{version}-%{release}
 Requires:	%{name}-selinux = %{epoch}:%{version}-%{release}
 
 %if %{use_systemd}
-BuildRequires:    systemd
-BuildRequires:    systemd-devel
+BuildRequires:	systemd
+BuildRequires:	systemd-devel
 Requires(pre):		systemd
 Requires(post):		systemd
 Requires(preun):	systemd
@@ -235,9 +223,9 @@ Requires(postun):	initscripts
 %endif
 
 %if %{?rhel}%{!?rhel:0} == 7
-BuildRequires: devtoolset-7
+BuildRequires:	devtoolset-7
 %else
-BuildRequires: gcc-c++
+BuildRequires:	gcc-c++
 %endif
 
 %description
@@ -257,53 +245,53 @@ latency and increased throughput.
 # libs
 #-------------------------------------------------------------------------------
 %package libs
-Summary:	Libraries used by xrootd servers and clients
+Summary:	Libraries used by XRootD servers and clients
 Group:		System Environment/Libraries
 
 %description libs
-This package contains libraries used by the xrootd servers and clients.
+This package contains libraries used by the XRootD servers and clients.
 
 #-------------------------------------------------------------------------------
 # devel
 #------------------------------------------------------------------------------
 %package devel
-Summary:	Development files for xrootd
+Summary:	Development files for XRootD
 Group:		Development/Libraries
 Requires:	%{name}-libs%{?_isa} = %{epoch}:%{version}-%{release}
 
 %description devel
-This package contains header files and development libraries for xrootd
+This package contains header files and development libraries for XRootD
 development.
 
 #-------------------------------------------------------------------------------
 # client-libs
 #-------------------------------------------------------------------------------
 %package client-libs
-Summary:	Libraries used by xrootd clients
+Summary:	Libraries used by XRootD clients
 Group:		System Environment/Libraries
 Requires:	%{name}-libs%{?_isa} = %{epoch}:%{version}-%{release}
 
 %description client-libs
-This package contains libraries used by xrootd clients.
+This package contains libraries used by XRootD clients.
 
 #-------------------------------------------------------------------------------
 # client-devel
 #-------------------------------------------------------------------------------
 %package client-devel
-Summary:	Development files for xrootd clients
+Summary:	Development files for XRootD clients
 Group:		Development/Libraries
 Requires:	%{name}-devel%{?_isa} = %{epoch}:%{version}-%{release}
 Requires:	%{name}-client-libs%{?_isa} = %{epoch}:%{version}-%{release}
 
 %description client-devel
-This package contains header files and development libraries for xrootd
+This package contains header files and development libraries for XRootD
 client development.
 
 #-------------------------------------------------------------------------------
 # server-libs
 #-------------------------------------------------------------------------------
 %package server-libs
-Summary:	Libraries used by xrootd servers
+Summary:	Libraries used by XRootD servers
 Group:		System Environment/Libraries
 Requires:	%{name}-libs%{?_isa} = %{epoch}:%{version}-%{release}
 Requires:	%{name}-client-libs%{?_isa} = %{epoch}:%{version}-%{release}
@@ -311,48 +299,48 @@ Obsoletes:  xrootd-macaroons
 Obsoletes:  xrootd-tpc
 
 %description server-libs
-This package contains libraries used by xrootd servers.
+This package contains libraries used by XRootD servers.
 
 #-------------------------------------------------------------------------------
 # server-devel
 #-------------------------------------------------------------------------------
 %package server-devel
-Summary:	Development files for xrootd servers
+Summary:	Development files for XRootD servers
 Group:		Development/Libraries
 Requires:	%{name}-devel%{?_isa} = %{epoch}:%{version}-%{release}
 Requires:	%{name}-client-devel%{?_isa} = %{epoch}:%{version}-%{release}
 Requires:	%{name}-server-libs%{?_isa} = %{epoch}:%{version}-%{release}
 
 %description server-devel
-This package contains header files and development libraries for xrootd
+This package contains header files and development libraries for XRootD
 server development.
 
 #-------------------------------------------------------------------------------
 # private devel
 #-------------------------------------------------------------------------------
 %package private-devel
-Summary:	Private xrootd headers
+Summary:	Private XRootD headers
 Group:		Development/Libraries
 Requires:	%{name}-devel%{?_isa} = %{epoch}:%{version}-%{release}
 Requires:	%{name}-client-devel%{?_isa} = %{epoch}:%{version}-%{release}
 Requires:	%{name}-server-devel%{?_isa} = %{epoch}:%{version}-%{release}
 
 %description private-devel
-This package contains some private xrootd headers. Backward and forward
+This package contains some private XRootD headers. Backward and forward
 compatibility between versions is not guaranteed for these headers.
 
 #-------------------------------------------------------------------------------
 # client
 #-------------------------------------------------------------------------------
 %package client
-Summary:	Xrootd command line client tools
+Summary:	XRootD command line client tools
 Group:		Applications/Internet
 Requires:	%{name}-libs%{?_isa} = %{epoch}:%{version}-%{release}
 Requires:	%{name}-client-libs%{?_isa} = %{epoch}:%{version}-%{release}
 
 %description client
 This package contains the command line tools used to communicate with
-xrootd servers.
+XRootD servers.
 
 #-------------------------------------------------------------------------------
 # server
@@ -372,14 +360,14 @@ XRootD server binaries
 # fuse
 #-------------------------------------------------------------------------------
 %package fuse
-Summary:	Xrootd FUSE tool
+Summary:	XRootD FUSE tool
 Group:		Applications/Internet
 Requires:	%{name}-libs%{?_isa} = %{epoch}:%{version}-%{release}
 Requires:	%{name}-client-libs%{?_isa} = %{epoch}:%{version}-%{release}
 Requires:	fuse
 
 %description fuse
-This package contains the FUSE (file system in user space) xrootd mount
+This package contains the FUSE (file system in user space) XRootD mount
 tool.
 
 #-------------------------------------------------------------------------------
@@ -519,7 +507,7 @@ Summary:	XRootD 4 compatibility client libraries
 Group:		System Environment/Libraries
 
 %description client-compat
-This package contains compatibility libraries for xrootd 4 clients.
+This package contains compatibility libraries for XRootD 4 clients.
 
 #-------------------------------------------------------------------------------
 # server-compat
@@ -530,8 +518,7 @@ Group:		System Environment/Daemons
 Requires:	%{name}-libs%{?_isa} = %{epoch}:%{version}-%{release}
 
 %description server-compat
-This package contains compatibility binaries for xrootd 4 servers.
-
+This package contains compatibility binaries for XRootD 4 servers.
 %endif
 
 #-------------------------------------------------------------------------------
@@ -548,10 +535,10 @@ cd %{build_dir}
 %autopatch -p1 -M8
 # maybe apply #9
 %if 0%{?_with_purge}
-%patch -p1 -P9
+#patch -p1 -P9
 %endif
 # patch #10 and more
-%autopatch -p1 -m10
+#autopatch -p1 -m10
 cd ..
 
 %build
@@ -897,10 +884,9 @@ fi
 # Files
 #-------------------------------------------------------------------------------
 %files
-# empty
+# Empty
 
 %files server
-%defattr(-,root,root,-)
 %{_bindir}/cconfig
 %{_bindir}/cmsd
 %{_bindir}/frm_admin
@@ -947,7 +933,6 @@ fi
 %endif
 
 %files libs
-%defattr(-,root,root,-)
 %{_libdir}/libXrdAppUtils.so.2*
 %{_libdir}/libXrdClProxyPlugin-5.so
 %{_libdir}/libXrdCks*-5.so
@@ -968,7 +953,6 @@ fi
 %{_libdir}/libXrdXml.so.3*
 
 %files devel
-%defattr(-,root,root,-)
 %dir %{_includedir}/xrootd
 %{_bindir}/xrootd-config
 %{_includedir}/xrootd/XProtocol
@@ -1007,7 +991,6 @@ fi
 %{_libdir}/libXrdPosixPreload.so
 
 %files client-devel
-%defattr(-,root,root,-)
 %{_bindir}/xrdgsitest
 %{_includedir}/xrootd/XrdCl
 %{_includedir}/xrootd/XrdPosix
@@ -1017,7 +1000,6 @@ fi
 %{_mandir}/man1/xrdgsitest.1*
 
 %files server-libs
-%defattr(-,root,root,-)
 %{_libdir}/libXrdBwm-5.so
 %{_libdir}/libXrdPss-5.so
 %{_libdir}/libXrdXrootd-5.so
@@ -1042,7 +1024,6 @@ fi
 %{_libdir}/libXrdOfsPrepGPI-5.so
 
 %files server-devel
-%defattr(-,root,root,-)
 %{_includedir}/xrootd/XrdAcc
 %{_includedir}/xrootd/XrdCms
 %{_includedir}/xrootd/XrdPfc
@@ -1055,7 +1036,6 @@ fi
 %{_libdir}/libXrdHttpUtils.so
 
 %files private-devel
-%defattr(-,root,root,-)
 %{_includedir}/xrootd/private
 %{_libdir}/libXrdSsiLib.so
 %{_libdir}/libXrdSsiShMap.so
@@ -1064,7 +1044,6 @@ fi
 %endif
 
 %files client
-%defattr(-,root,root,-)
 %{_bindir}/xrdadler32
 %{_bindir}/xrdcks
 %{_bindir}/xrdcopy
@@ -1083,7 +1062,6 @@ fi
 %{_mandir}/man1/xrdmapc.1*
 
 %files fuse
-%defattr(-,root,root,-)
 %{_bindir}/xrootdfs
 %{_mandir}/man1/xrootdfs.1*
 %dir %{_sysconfdir}/xrootd
@@ -1101,7 +1079,6 @@ fi
 %endif
 
 %files voms
-%defattr(-,root,root,-)
 %{_libdir}/libXrdVoms-5.so
 %{_libdir}/libXrdSecgsiVOMS-5.so
 %{_libdir}/libXrdHttpVOMS-5.so
@@ -1110,13 +1087,11 @@ fi
 
 %if 0%{!?_without_doc:1}
 %files doc
-%defattr(-,root,root,-)
 %doc %{_docdir}/%{name}-%{version}
 %endif
 
 %if %{?_with_ceph:1}%{!?_with_ceph:0}
 %files ceph
-%defattr(-,root,root,-)
 %{_libdir}/libXrdCeph-5.so
 %{_libdir}/libXrdCephXattr-5.so
 %{_libdir}/libXrdCephPosix.so*
@@ -1124,20 +1099,17 @@ fi
 
 %if %{?_with_xrdclhttp:1}%{!?_with_xrdclhttp:0}
 %files -n xrdcl-http
-%defattr(-,root,root,-)
 %{_libdir}/libXrdClHttp-5.so
 %{_sysconfdir}/xrootd/client.plugins.d/xrdcl-http-plugin.conf
 %endif
 
 %if %{?_with_scitokens:1}%{!?_with_scitokens:0}
 %files scitokens
-%defattr(-,root,root,-)
 %{_libdir}/libXrdAccSciTokens-5.so
 %endif
 
 %if %{?_with_tests:1}%{!?_with_tests:0}
 %files tests
-%defattr(-,root,root,-)
 %{_bindir}/test-runner
 %{_bindir}/xrdshmap
 %{_libdir}/libXrdClTests.so
@@ -1152,7 +1124,6 @@ fi
 %endif
 
 %files selinux
-%defattr(-,root,root)
 %{_datadir}/selinux/packages/%{name}/%{name}.pp
 
 %if 0%{?_with_compat}
@@ -1211,6 +1182,23 @@ fi
 # Changelog
 #-------------------------------------------------------------------------------
 %changelog
+* Tue Jan 28 2025 Mátyás Selmeci <mselmeci@wisc.edu> - 5.7.3-1.1
+- Update to XRootD 5.7.3 (SOFTWARE-6071)
+- Drop upstreamed patches:
+    - 0003-Fix-FD-leak-when-reading-file-size-from-cinfo-file-i~a219487.patch
+    - 0008-XrdHttp-Set-oss.asize-if-object-size-is-known~d710312.patch
+    - 0010-do_WriteSpan-Add-written-bytes-in-file-statistics~98a22ba.patch
+    - 0011-Xrd-Fix-MacOS-poller~79a5439.patch
+- Replace patches with updated versions:
+    - 0004-Defer-client-TLS-auth-until-after-HTTP-parsing~323a16b.patch
+        -> 0003-XrdTls-Allow-disabling-of-X.509-client-auth.patch~18e1c81.patch
+    - 0005-Add-new-filesystem-load-counter-plugin~3c1be23.patch
+        -> 0004-Add-new-filesystem-load-counter-plugin.patch~3c1be23.patch
+    - 0006-XrdSciTokens-Handle-multiple-authorization-token-set~7433116.patch
+        -> 0005-XrdSciTokens-Handle-multiple-authorization-token-set.patch~a33ca13.patch
+    - 0007-XrdHttp-Add-http.staticheader~2175ae2.patch
+        -> 0006-XrdHttp-Add-http.staticheader.patch~5c6ee05.patch
+
 * Fri Jan 17 2025 Mátyás Selmeci <mselmeci@wisc.edu> - 5.7.2-1.4.purge
 - Add purge plugin patch 0009-Second-rebase-of-alja-purge-main-rb1-onto-master-5.7.patch
     (PelicanPlatform/xrootd #9)
