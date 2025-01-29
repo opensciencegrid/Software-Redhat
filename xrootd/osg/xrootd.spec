@@ -101,29 +101,29 @@ Source0:   xrootd-%{version}.tar.gz
 Source1:   xrootd-%{compat_version}.tar.gz
 
 # PelicanPlatform/xrootd #1 (xrootd/xrootd #1868)
-Patch1: 0001-Allow-hostname-used-by-XRootD-to-be-overridden-by-en.patch
+Patch1: 0001-Allow-hostname-used-by-XRootD-to-be-overridden-by-en~e13587e.patch
 # PelicanPlatform/xrootd #2 (xrootd/xrootd #2348)
-Patch2: 0002-XrdHttp-determines-the-presence-of-the-Age-header-in.patch
+Patch2: 0002-XrdHttp-determines-the-presence-of-the-Age-header-in~092c7a5.patch
 # PelicanPlatform/xrootd #3 (xrootd/xrootd #2395)
-Patch3: 0003-Fix-FD-leak-when-reading-file-size-from-cinfo-file-i.patch
+Patch3: 0003-Fix-FD-leak-when-reading-file-size-from-cinfo-file-i~a219487.patch
 # PelicanPlatform/xrootd #4 (xrootd/xrootd #2269)
-Patch4: 0004-Defer-client-TLS-auth-until-after-HTTP-parsing.patch
+Patch4: 0004-Defer-client-TLS-auth-until-after-HTTP-parsing~323a16b.patch
 # PelicanPlatform/xrootd #5 (xrootd/xrootd #2279)
-Patch5: 0005-Add-new-filesystem-load-counter-plugin.patch
+Patch5: 0005-Add-new-filesystem-load-counter-plugin~3c1be23.patch
 # PelicanPlatform/xrootd #6 (xrootd/xrootd #2397)
-Patch6: 0006-XrdSciTokens-Handle-multiple-authorization-token-set.patch
+Patch6: 0006-XrdSciTokens-Handle-multiple-authorization-token-set~7433116.patch
 # PelicanPlatform/xrootd #7 (xrootd/xrootd #2389)
-Patch7: 0007-XrdHttp-Add-http.staticheader.patch
+Patch7: 0007-XrdHttp-Add-http.staticheader~2175ae2.patch
 # PelicanPlatform/xrootd #8 (xrootd/xrootd #2378)
-Patch8: 0008-XrdHttp-Set-oss.asize-if-object-size-is-known.patch
+Patch8: 0008-XrdHttp-Set-oss.asize-if-object-size-is-known~d710312.patch
 %if 0%{?_with_purge}
 # PelicanPlatform/xrootd #9 (xrootd/xrootd #2406)
-Patch9: 0009-Second-rebase-of-alja-purge-main-rb1-onto-master-5.7.patch
+Patch9: 0009-Second-rebase-of-alja-purge-main-rb1-onto-master-5.7~4f6f775.patch
 %endif
 # PelicanPlatform/xrootd #10
-Patch10: 0010-do_WriteSpan-Add-written-bytes-in-file-statistics.patch
+Patch10: 0010-do_WriteSpan-Add-written-bytes-in-file-statistics~98a22ba.patch
 # PelicanPlatform/xrootd #11
-Patch11: 0011-Xrd-Fix-MacOS-poller.patch
+Patch11: 0011-Xrd-Fix-MacOS-poller~79a5439.patch
 
 ## Debug Patches -- uncomment as needed
 #Patch101: 0003-DEBUG-unset-use-pep517.patch
