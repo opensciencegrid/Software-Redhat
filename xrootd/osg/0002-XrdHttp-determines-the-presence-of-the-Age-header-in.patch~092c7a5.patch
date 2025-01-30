@@ -1,7 +1,7 @@
 From de5ef1cfb4a7d98eeac1300344ab31beaab420d4 Mon Sep 17 00:00:00 2001
 From: Brian Bockelman <bbockelman@morgridge.org>
 Date: Wed, 15 Jan 2025 08:03:48 -0600
-Subject: [PATCH 02/11] XrdHttp determines the presence of the `Age` header
+Subject: [PATCH 02/13] XrdHttp determines the presence of the `Age` header
  (indicating data that is cached) based on whether the `mtime` is zero;
  however, XrdPfc sets `ctime` to 0 if things aren't cached.
 

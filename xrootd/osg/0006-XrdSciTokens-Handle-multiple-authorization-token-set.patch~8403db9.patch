@@ -1,0 +1,5362 @@
+From 15f300f4a5ab968370454a10e35e8e0dd2bd514f Mon Sep 17 00:00:00 2001
+From: Brian Bockelman <bbockelman@morgridge.org>
+Date: Wed, 15 Jan 2025 08:15:53 -0600
+Subject: [PATCH 06/13] [XrdSciTokens] Handle multiple authorization token
+ setups
+
+---
+ src/XrdHttp/XrdHttpReq.cc.orig                | 2991 +++++++++++++++++
+ src/XrdMacaroons/XrdMacaroonsAuthz.cc         |    4 +
+ src/XrdOuc/XrdOucEnv.cc                       |   60 +-
+ src/XrdOuc/XrdOucUtils.cc                     |    2 +-
+ .../{XrdOucUtils.cc => XrdOucUtils.cc.orig}   |    0
+ src/XrdSciTokens.cmake                        |   26 +-
+ src/XrdSciTokens/README.md                    |   11 +
+ src/XrdSciTokens/XrdSciTokensAccess.cc        |  663 ++--
+ src/XrdSciTokens/XrdSciTokensAccess.hh        |  222 ++
+ src/XrdTpc/XrdTpcUtils.cc                     |    5 +-
+ tests/CMakeLists.txt                          |    4 +
+ tests/XRootD/CMakeLists.txt                   |   18 +-
+ tests/XRootD/scitokens-module.cfg             |   12 +
+ tests/XRootD/scitokens.authdb                 |    1 +
+ tests/XRootD/scitokens.cfg                    |   26 +
+ tests/XRootD/scitokens.sh                     |  159 +
+ tests/XrdOucTests/CMakeLists.txt              |    2 +-
+ tests/XrdOucTests/XrdOucEnvTests.cc           |   28 +
+ tests/XrdOucTests/XrdOucUtilsTests.cc         |    3 +
+ tests/scitokens/CMakeLists.txt                |   34 +
+ tests/scitokens/XrdSciTokens.cc               |   73 +
+ tests/scitokens/XrdScitokensCreateJwks.cc     |  215 ++
+ tests/scitokens/XrdScitokensCreateToken.cc    |  145 +
+ tests/scitokens/one-openid-configuration      |    3 +
+ tests/scitokens/setup.sh                      |  127 +
+ tests/scitokens/teardown.sh                   |   11 +
+ tests/scitokens/two-openid-configuration      |    3 +
+ 27 files changed, 4519 insertions(+), 329 deletions(-)
+ create mode 100644 src/XrdHttp/XrdHttpReq.cc.orig
+ copy src/XrdOuc/{XrdOucUtils.cc => XrdOucUtils.cc.orig} (100%)
+ create mode 100644 src/XrdSciTokens/XrdSciTokensAccess.hh
+ create mode 100644 tests/XRootD/scitokens-module.cfg
+ create mode 100644 tests/XRootD/scitokens.authdb
+ create mode 100644 tests/XRootD/scitokens.cfg
+ create mode 100644 tests/XRootD/scitokens.sh
+ create mode 100644 tests/XrdOucTests/XrdOucEnvTests.cc
+ create mode 100644 tests/scitokens/CMakeLists.txt
+ create mode 100644 tests/scitokens/XrdSciTokens.cc
+ create mode 100644 tests/scitokens/XrdScitokensCreateJwks.cc
+ create mode 100644 tests/scitokens/XrdScitokensCreateToken.cc
+ create mode 100644 tests/scitokens/one-openid-configuration
+ create mode 100644 tests/scitokens/setup.sh
+ create mode 100644 tests/scitokens/teardown.sh
+ create mode 100644 tests/scitokens/two-openid-configuration
+
+diff --git a/src/XrdHttp/XrdHttpReq.cc.orig b/src/XrdHttp/XrdHttpReq.cc.orig
+new file mode 100644
+index 000000000..aaa90899e
+--- /dev/null
++++ b/src/XrdHttp/XrdHttpReq.cc.orig
+@@ -0,0 +1,2991 @@
++//------------------------------------------------------------------------------
++// This file is part of XrdHTTP: A pragmatic implementation of the
++// HTTP/WebDAV protocol for the Xrootd framework
++//
++// Copyright (c) 2013 by European Organization for Nuclear Research (CERN)
++// Author: Fabrizio Furano <furano@cern.ch>
++// File Date: Nov 2012
++//------------------------------------------------------------------------------
++// XRootD is free software: you can redistribute it and/or modify
++// it under the terms of the GNU Lesser General Public License as published by
++// the Free Software Foundation, either version 3 of the License, or
++// (at your option) any later version.
++//
++// XRootD is distributed in the hope that it will be useful,
++// but WITHOUT ANY WARRANTY; without even the implied warranty of
++// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++// GNU General Public License for more details.
++//
++// You should have received a copy of the GNU Lesser General Public License
++// along with XRootD.  If not, see <http://www.gnu.org/licenses/>.
++//------------------------------------------------------------------------------
++
++
++
++
++
++
++
++
++
++/** @file  XrdHttpReq.cc
++ * @brief  Main request/response class, handling the logical status of the communication
++ * @author Fabrizio Furano
++ * @date   Nov 2012
++ * 
++ * 
++ * 
++ */
++#include "XrdVersion.hh"
++#include "XrdHttpReq.hh"
++#include "XrdHttpTrace.hh"
++#include "XrdHttpExtHandler.hh"
++#include <cstring>
++#include <arpa/inet.h>
++#include <sstream>
++#include "XrdSys/XrdSysPlatform.hh"
++#include "XrdOuc/XrdOucEnv.hh"
++#include "XrdHttpProtocol.hh"
++#include "Xrd/XrdLink.hh"
++#include "XrdXrootd/XrdXrootdBridge.hh"
++#include "Xrd/XrdBuffer.hh"
++#include <algorithm> 
++#include <functional> 
++#include <cctype>
++#include <locale>
++#include <string>
++#include "XrdOuc/XrdOucTUtils.hh"
++#include "XrdOuc/XrdOucUtils.hh"
++#include "XrdOuc/XrdOucPrivateUtils.hh"
++
++#include "XrdHttpUtils.hh"
++
++#include "XrdHttpStatic.hh"
++
++#define MAX_TK_LEN      256
++#define MAX_RESOURCE_LEN 16384
++
++// This is to fix the trace macros
++#define TRACELINK prot->Link
++
++namespace
++{
++const char *TraceID = "Req";
++}
++
++void trim(std::string &str)
++{
++    XrdOucUtils::trim(str);
++}
++
++
++std::string ISOdatetime(time_t t) {
++  char datebuf[128];
++  struct tm t1;
++
++  memset(&t1, 0, sizeof (t1));
++  gmtime_r(&t, &t1);
++
++  strftime(datebuf, 127, "%a, %d %b %Y %H:%M:%S GMT", &t1);
++  return (std::string) datebuf;
++
++}
++
++int XrdHttpReq::parseBody(char *body, long long len) {
++  /*
++   * The document being in memory, it has no base per RFC 2396,
++   * and the "noname.xml" argument will serve as its base.
++   */
++  //xmlbody = xmlReadMemory(body, len, "noname.xml", NULL, 0);
++  //if (xmlbody == NULL) {
++  //  fprintf(stderr, "Failed to parse document\n");
++  //  return 1;
++  //}
++
++
++
++  return 1;
++}
++
++XrdHttpReq::~XrdHttpReq() {
++  //if (xmlbody) xmlFreeDoc(xmlbody);
++
++  reset();
++}
++
++int XrdHttpReq::parseLine(char *line, int len) {
++
++  char *key = line;
++  int pos;
++
++  // Do the parsing
++  if (!line) return -1;
++
++
++  char *p = strchr((char *) line, (int) ':');
++  if (!p) {
++
++    request = rtMalformed;
++    return -1;
++  }
++
++  pos = (p - line);
++  if (pos > (MAX_TK_LEN - 1)) {
++
++    request = rtMalformed;
++    return -2;
++  }
++
++  if (pos > 0) {
++    line[pos] = 0;
++    char *val = line + pos + 1;
++
++    // Trim left
++    while ( (!isgraph(*val) || (!*val)) && (val < line+len)) val++;
++
++    // We memorize the headers also as a string                                                                                                                                              
++    // because external plugins may need to process it differently                                                                                                                          
++    std::string ss = val;
++    if(ss.length() >= 2 && ss.substr(ss.length() - 2, 2) != "\r\n") {
++      request = rtMalformed;
++      return -3;
++    }
++    trim(ss);
++    allheaders[key] = ss;
++	  
++    // Here we are supposed to initialize whatever flag or variable that is needed
++    // by looking at the first token of the line
++    // The token is key
++    // The value is val
++    
++    // Screen out the needed header lines
++    if (!strcasecmp(key, "connection")) {
++
++      if (!strcasecmp(val, "Keep-Alive\r\n")) {
++        keepalive = true;
++      } else if (!strcasecmp(val, "close\r\n")) {
++        keepalive = false;
++      }
++
++    } else if (!strcasecmp(key, "host")) {
++      parseHost(val);
++    } else if (!strcasecmp(key, "range")) {
++      // (rfc2616 14.35.1) says if Range header contains any range
++      // which is syntactically invalid the Range header should be ignored.
++      // Therefore no need for the range handler to report an error.
++      readRangeHandler.ParseContentRange(val);
++    } else if (!strcasecmp(key, "content-length")) {
++      length = atoll(val);
++
++    } else if (!strcasecmp(key, "destination")) {
++      destination.assign(val, line+len-val);
++      trim(destination);
++    } else if (!strcasecmp(key, "want-digest")) {
++      m_req_digest.assign(val, line + len - val);
++      trim(m_req_digest);
++      //Transform the user requests' want-digest to lowercase
++      std::transform(m_req_digest.begin(),m_req_digest.end(),m_req_digest.begin(),::tolower);
++    } else if (!strcasecmp(key, "depth")) {
++      depth = -1;
++      if (strcmp(val, "infinity"))
++        depth = atoll(val);
++
++    } else if (!strcasecmp(key, "expect") && strstr(val, "100-continue")) {
++      sendcontinue = true;
++    } else if (!strcasecmp(key, "te") && strstr(val, "trailers")) {
++      m_trailer_headers = true;
++    } else if (!strcasecmp(key, "transfer-encoding") && strstr(val, "chunked")) {
++      m_transfer_encoding_chunked = true; 
++    } else if (!strcasecmp(key, "x-transfer-status") && strstr(val, "true")) {
++      m_transfer_encoding_chunked = true;
++      m_status_trailer = true;
++    } else if (!strcasecmp(key, "scitag")) {
++      if(prot->pmarkHandle != nullptr) {
++        parseScitag(val);
++      }
++    } else if (!strcasecmp(key, "user-agent")) {
++      m_user_agent = val;
++      trim(m_user_agent);
++    } else {
++      // Some headers need to be translated into "local" cgi info.
++      auto it = std::find_if(prot->hdr2cgimap.begin(), prot->hdr2cgimap.end(),[key](const auto & item) {
++        return !strcasecmp(key,item.first.c_str());
++      });
++      if (it != prot->hdr2cgimap.end() && (opaque ? (0 == opaque->Get(it->second.c_str())) : true)) {
++        std::string s;
++        s.assign(val, line+len-val);
++        trim(s);
++        addCgi(it->second,s);
++      }
++    }
++
++
++    line[pos] = ':';
++  }
++
++  return 0;
++}
++
++int XrdHttpReq::parseHost(char *line) {
++  host = line;
++  trim(host);
++  return 0;
++}
++
++void XrdHttpReq::parseScitag(const std::string & val) {
++  // The scitag header has been populated and the packet marking was configured, the scitag will either be equal to 0
++  // or to the value passed by the client
++  mScitag = 0;
++  std::string scitagS = val;
++  trim(scitagS);
++  if(scitagS.size()) {
++    if(scitagS[0] != '-') {
++      try {
++        mScitag = std::stoi(scitagS.c_str(), nullptr, 10);
++        if (mScitag > XrdNetPMark::maxTotID || mScitag < XrdNetPMark::minTotID) {
++          mScitag = 0;
++        }
++      } catch (...) {
++        //Nothing to do, scitag = 0 by default
++      }
++    }
++  }
++  addCgi("scitag.flow", std::to_string(mScitag));
++}
++
++int XrdHttpReq::parseFirstLine(char *line, int len) {
++
++  char *key = line;
++
++  int pos;
++
++  // Do the naive parsing
++  if (!line) return -1;
++
++  // Look for the first space-delimited token
++  char *p = strchr((char *) line, (int) ' ');
++  if (!p) {
++    request = rtMalformed;
++    return -1;
++  }
++
++
++  pos = p - line;
++  // The first token cannot be too long
++  if (pos > MAX_TK_LEN - 1) {
++    request = rtMalformed;
++    return -2;
++  }
++
++  // The first space-delimited char cannot be the first one
++  // this allows to deal with the case when a client sends a first line that starts with a space " GET / HTTP/1.1"
++  if(pos == 0) {
++      request = rtMalformed;
++      return -4;
++  }
++
++  // the first token must be non empty
++  if (pos > 0) {
++    line[pos] = 0;
++    char *val = line + pos + 1;
++
++    // Here we are supposed to initialize whatever flag or variable that is needed
++    // by looking at the first token of the line
++
++    // The token is key
++    // The remainder is val, look for the resource
++    p = strchr((char *) val, (int) ' ');
++
++    if (!p) {
++      request = rtMalformed;
++      line[pos] = ' ';
++      return -3;
++    }
++
++    *p = '\0';
++    parseResource(val);
++
++    *p = ' ';
++
++    // Xlate the known header lines
++    if (!strcmp(key, "GET")) {
++      request = rtGET;
++    } else if (!strcmp(key, "HEAD")) {
++      request = rtHEAD;
++    } else if (!strcmp(key, "PUT")) {
++      request = rtPUT;
++    } else if (!strcmp(key, "POST")) {
++      request = rtPOST;
++    } else if (!strcmp(key, "PATCH")) {
++      request = rtPATCH;
++    } else if (!strcmp(key, "OPTIONS")) {
++      request = rtOPTIONS;
++    } else if (!strcmp(key, "DELETE")) {
++      request = rtDELETE;
++    } else if (!strcmp(key, "PROPFIND")) {
++      request = rtPROPFIND;
++
++    } else if (!strcmp(key, "MKCOL")) {
++      request = rtMKCOL;
++
++    } else if (!strcmp(key, "MOVE")) {
++      request = rtMOVE;
++    } else {
++      request = rtUnknown;
++    }
++    
++    requestverb = key;
++
++    // The last token should be the protocol.  If it is HTTP/1.0, then
++    // keepalive is disabled by default.
++    if (!strcmp(p+1, "HTTP/1.0\r\n")) {
++      keepalive = false;
++    }
++    line[pos] = ' ';
++  }
++
++  return 0;
++}
++
++
++
++
++//___________________________________________________________________________
++
++void XrdHttpReq::clientMarshallReadAheadList(int nitems) {
++  // This function applies the network byte order on the
++  // vector of read-ahead information
++  kXR_int64 tmpl;
++
++
++
++  for (int i = 0; i < nitems; i++) {
++    memcpy(&tmpl, &(ralist[i].offset), sizeof (kXR_int64));
++    tmpl = htonll(tmpl);
++    memcpy(&(ralist[i].offset), &tmpl, sizeof (kXR_int64));
++    ralist[i].rlen = htonl(ralist[i].rlen);
++  }
++}
++
++
++//___________________________________________________________________________
++
++void XrdHttpReq::clientUnMarshallReadAheadList(int nitems) {
++  // This function applies the network byte order on the
++  // vector of read-ahead information
++  kXR_int64 tmpl;
++
++
++
++  for (int i = 0; i < nitems; i++) {
++    memcpy(&tmpl, &(ralist[i].offset), sizeof (kXR_int64));
++    tmpl = ntohll(tmpl);
++    memcpy(&(ralist[i].offset), &tmpl, sizeof (kXR_int64));
++    ralist[i].rlen = ntohl(ralist[i].rlen);
++  }
++}
++
++int XrdHttpReq::ReqReadV(const XrdHttpIOList &cl) {
++
++
++  // Now we build the protocol-ready read ahead list
++  //  and also put the correct placeholders inside the cache
++  int n = cl.size();
++  ralist.clear();
++  ralist.reserve(n);
++
++  int j = 0;
++  for (const auto &c: cl) {
++    ralist.emplace_back();
++    auto &ra = ralist.back();
++    memcpy(&ra.fhandle, this->fhandle, 4);
++
++    ra.offset = c.offset;
++    ra.rlen = c.size;
++    j++;
++  }
++
++  if (j > 0) {
++
++    // Prepare a request header 
++
++    memset(&xrdreq, 0, sizeof (xrdreq));
++
++    xrdreq.header.requestid = htons(kXR_readv);
++    xrdreq.readv.dlen = htonl(j * sizeof (struct readahead_list));
++
++    clientMarshallReadAheadList(j);
++
++
++  }
++
++  return (j * sizeof (struct readahead_list));
++}
++
++std::string XrdHttpReq::buildPartialHdr(long long bytestart, long long byteend, long long fsz, char *token) {
++  std::ostringstream s;
++
++  s << "\r\n--" << token << "\r\n";
++  s << "Content-type: text/plain; charset=UTF-8\r\n";
++  s << "Content-range: bytes " << bytestart << "-" << byteend << "/" << fsz << "\r\n\r\n";
++
++  return s.str();
++}
++
++std::string XrdHttpReq::buildPartialHdrEnd(char *token) {
++  std::ostringstream s;
++
++  s << "\r\n--" << token << "--\r\n";
++
++  return s.str();
++}
++
++bool XrdHttpReq::Data(XrdXrootd::Bridge::Context &info, //!< the result context
++        const
++        struct iovec *iovP_, //!< pointer to data array
++        int iovN_, //!< array count
++        int iovL_, //!< byte  count
++        bool final_ //!< true -> final result
++        ) {
++
++  TRACE(REQ, " XrdHttpReq::Data! final=" << final);
++
++  this->xrdresp = kXR_ok;
++  this->iovP = iovP_;
++  this->iovN = iovN_;
++  this->iovL = iovL_;
++  this->final = final_;
++
++  if (PostProcessHTTPReq(final_)) reset();
++
++  return true;
++
++};
++
++int XrdHttpReq::File(XrdXrootd::Bridge::Context &info, //!< the result context
++        int dlen //!< byte  count
++        ) {
++
++  // sendfile about to be sent by bridge for fetching data for GET:
++  // no https, no chunked+trailer, no multirange
++
++  //prot->SendSimpleResp(200, NULL, NULL, NULL, dlen);
++  int rc = info.Send(0, 0, 0, 0);
++  TRACE(REQ, " XrdHttpReq::File dlen:" << dlen << " send rc:" << rc);
++  bool start, finish;
++  // short read will be classed as error
++  if (rc) {
++    readRangeHandler.NotifyError();
++    return false;
++  }
++
++  if (readRangeHandler.NotifyReadResult(dlen, nullptr, start, finish) < 0)
++    return false;
++  
++    
++  return true;
++};
++
++bool XrdHttpReq::Done(XrdXrootd::Bridge::Context & info) {
++
++  TRACE(REQ, " XrdHttpReq::Done");
++
++  xrdresp = kXR_ok;
++
++  this->iovN = 0;
++  
++  int r = PostProcessHTTPReq(true);
++  // Beware, we don't have to reset() if the result is 0
++  if (r) reset();
++  if (r < 0) return false; 
++  
++  
++  return true;
++};
++
++bool XrdHttpReq::Error(XrdXrootd::Bridge::Context &info, //!< the result context
++        int ecode, //!< the "kXR" error code
++        const char *etext_ //!< associated error message
++        ) {
++
++  TRACE(REQ, " XrdHttpReq::Error");
++
++  xrdresp = kXR_error;
++  xrderrcode = (XErrorCode) ecode;
++
++  if (etext_) {
++    char *s = escapeXML(etext_);
++    this->etext = s;
++    free(s);
++  }
++
++  if (PostProcessHTTPReq()) reset();
++
++  // If we are servicing a GET on a directory, it'll generate an error for the default
++  // OSS (we don't assume this is always true).  Catch and suppress the error so we can instead
++  // generate a directory listing (if configured).
++  if ((request == rtGET) && (xrdreq.header.requestid == ntohs(kXR_open)) && (xrderrcode == kXR_isDirectory))
++    return true;
++  
++  return false;
++};
++
++bool XrdHttpReq::Redir(XrdXrootd::Bridge::Context &info, //!< the result context
++        int port, //!< the port number
++        const char *hname //!< the destination host
++        ) {
++
++
++
++  char buf[512];
++  char hash[512];
++  hash[0] = '\0';
++  
++  if (prot->isdesthttps)
++    redirdest = "Location: https://";
++  else
++    redirdest = "Location: http://";
++  
++  // port < 0 signals switch to full URL
++  if (port < 0)
++  {
++    if (strncmp(hname, "file://", 7) == 0)
++    {
++      TRACE(REQ, " XrdHttpReq::Redir Switching to file:// ");
++      redirdest = "Location: "; // "file://" already contained in hname
++    }
++  }
++  // Beware, certain Ofs implementations (e.g. EOS) add opaque data directly to the host name
++  // This must be correctly treated here and appended to the opaque info
++  // that we may already have
++  char *pp = strchr((char *)hname, '?');
++  char *vardata = 0;
++  if (pp) {
++    *pp = '\0';
++    redirdest += hname;
++    vardata = pp+1;
++    int varlen = strlen(vardata);
++    
++    //Now extract the remaining, vardata points to it
++    while(*vardata == '&' && varlen) {vardata++; varlen--;}
++    
++    // Put the question mark back where it was
++    *pp = '?';
++  }
++  else
++    redirdest += hname;
++
++  if (port > 0) {
++    sprintf(buf, ":%d", port);
++    redirdest += buf;
++  }
++
++  redirdest += resource.c_str();
++  
++  // Here we put back the opaque info, if any
++  if (vardata) {
++    char *newvardata = quote(vardata);
++    redirdest += "?&";
++    redirdest += newvardata;
++    free(newvardata);
++  }
++  
++  // Shall we put also the opaque data of the request? Maybe not
++  //int l;
++  //if (opaque && opaque->Env(l))
++  //  redirdest += opaque->Env(l);
++
++
++  time_t timenow = 0;
++  if (!prot->isdesthttps && prot->ishttps) {
++    // If the destination is not https, then we suppose that it
++    // will need this token to fill its authorization info
++    timenow = time(0);
++    calcHashes(hash, this->resource.c_str(), (kXR_int16) request,
++            &prot->SecEntity,
++            timenow,
++            prot->secretkey);
++  }
++
++  if (hash[0]) {
++    appendOpaque(redirdest, &prot->SecEntity, hash, timenow);
++  } else
++    appendOpaque(redirdest, 0, 0, 0);
++
++  
++  TRACE(REQ, " XrdHttpReq::Redir Redirecting to " << obfuscateAuth(redirdest.c_str()).c_str());
++
++  if (request != rtGET)
++    prot->SendSimpleResp(307, NULL, (char *) redirdest.c_str(), 0, 0, keepalive);
++  else
++    prot->SendSimpleResp(302, NULL, (char *) redirdest.c_str(), 0, 0, keepalive);
++  
++  bool ret_keepalive = keepalive; // reset() clears keepalive
++  reset();
++  return ret_keepalive;
++};
++
++
++void XrdHttpReq::appendOpaque(XrdOucString &s, XrdSecEntity *secent, char *hash, time_t tnow) {
++
++  int l = 0;
++  char * p = 0;
++  if (opaque)
++    p = opaque->Env(l);
++
++  if (hdr2cgistr.empty() && (l < 2) && !hash) return;
++
++  // this works in most cases, except if the url already contains the xrdhttp tokens
++  s = s + "?";
++  if (!hdr2cgistr.empty()) {
++    char *s1 = quote(hdr2cgistr.c_str());
++    if (s1) {
++        s += s1;
++        free(s1);
++    }
++  }
++  if (p && (l > 1)) {
++    char *s1 = quote(p+1);
++    if (s1) {
++      if (!hdr2cgistr.empty()) {
++        s = s + "&";
++      }
++      s = s + s1;
++      free(s1);
++    }
++  }
++
++
++
++  if (hash) {
++    if (l > 1) s += "&";
++    s += "xrdhttptk=";
++    s += hash;
++
++    s += "&xrdhttptime=";
++    char buf[256];
++    sprintf(buf, "%lld", (long long) tnow);
++    s += buf;
++
++    if (secent) {
++      if (secent->name) {
++        s += "&xrdhttpname=";
++        char *s1 = quote(secent->name);
++        if (s1) {
++          s += s1;
++          free(s1);
++        }
++      }
++
++      if (secent->vorg) {
++        s += "&xrdhttpvorg=";
++        char *s1 = quote(secent->vorg);
++        if (s1) {
++          s += s1;
++          free(s1);
++        }
++      }
++
++      if (secent->host) {
++        s += "&xrdhttphost=";
++        char *s1 = quote(secent->host);
++        if (s1) {
++          s += s1;
++          free(s1);
++        }
++      }
++      
++      if (secent->moninfo) {
++        s += "&xrdhttpdn=";
++        char *s1 = quote(secent->moninfo);
++        if (s1) {
++          s += s1;
++          free(s1);
++        }
++      }
++
++      if (secent->role) {
++        s += "&xrdhttprole=";
++        char *s1 = quote(secent->role);
++        if (s1) {
++          s += s1;
++          free(s1);
++        }
++      }
++      
++      if (secent->grps) {
++        s += "&xrdhttpgrps=";
++        char *s1 = quote(secent->grps);
++        if (s1) {
++          s += s1;
++          free(s1);
++        }
++      }
++      
++      if (secent->endorsements) {
++        s += "&xrdhttpendorsements=";
++        char *s1 = quote(secent->endorsements);
++        if (s1) {
++          s += s1;
++          free(s1);
++        }
++      }
++      
++      if (secent->credslen) {
++        s += "&xrdhttpcredslen=";
++        char buf[16];
++        sprintf(buf, "%d", secent->credslen);
++        char *s1 = quote(buf);
++        if (s1) {
++          s += s1;
++          free(s1);
++        }
++      }
++      
++      if (secent->credslen) {
++        if (secent->creds) {
++          s += "&xrdhttpcreds=";
++          // Apparently this string might be not 0-terminated (!)
++          char *zerocreds = strndup(secent->creds, secent->credslen);
++          if (zerocreds) {
++            char *s1 = quote(zerocreds);
++            if (s1) {
++              s += s1;
++              free(s1);
++            }
++            free(zerocreds);
++          }
++        }
++      }
++      
++    }
++  }
++
++}
++
++
++// Sanitize the resource from the http[s]://[host]/ questionable prefix
++// https://github.com/xrootd/xrootd/issues/1675
++void XrdHttpReq::sanitizeResourcePfx() {
++  
++  if (resource.beginswith("https://")) {
++    // Find the slash that follows the hostname, and keep it
++    int p = resource.find('/', 8);
++    resource.erasefromstart(p);
++    return;
++  }
++  
++  if (resource.beginswith("http://")) {
++    // Find the slash that follows the hostname, and keep it
++    int p = resource.find('/', 7);
++    resource.erasefromstart(p);
++    return;
++  }
++}
++
++void XrdHttpReq::addCgi(const std::string &key, const std::string &value) {
++  if (hdr2cgistr.length() > 0) {
++    hdr2cgistr.append("&");
++  }
++  hdr2cgistr.append(key);
++  hdr2cgistr.append("=");
++  hdr2cgistr.append(value);
++}
++
++
++// Parse a resource line:
++// - sanitize
++// - extracts the opaque info from the given url
++// - sanitize the resource from http[s]://[host]/ questionable prefix
++void XrdHttpReq::parseResource(char *res) {
++
++
++
++
++  // Look for the first '?'
++  char *p = strchr(res, '?');
++  
++  // Not found, then it's just a filename
++  if (!p) {
++    resource.assign(res, 0);
++    
++    // Some poor client implementations may inject a http[s]://[host]/ prefix
++    // to the resource string. Here we choose to ignore it as a protection measure
++    sanitizeResourcePfx();  
++    
++    char *buf = unquote((char *)resource.c_str());
++    resource.assign(buf, 0);
++    resourceplusopaque.assign(buf, 0);
++    free(buf);
++    
++    // Sanitize the resource string, removing double slashes
++    int pos = 0;
++    do { 
++      pos = resource.find("//", pos);
++      if (pos != STR_NPOS)
++        resource.erase(pos, 1);
++    } while (pos != STR_NPOS);
++    
++    return;
++  }
++
++  // Whatever comes before '?' is a filename
++
++  int cnt = p - res; // Number of chars to copy
++  resource.assign(res, 0, cnt - 1);
++  
++  // Some poor client implementations may inject a http[s]://[host]/ prefix
++  // to the resource string. Here we choose to ignore it as a protection measure
++  sanitizeResourcePfx();  
++  
++  char *buf = unquote((char *)resource.c_str());
++  resource.assign(buf, 0);
++  free(buf);
++      
++  // Sanitize the resource string, removing double slashes
++  int pos = 0;
++  do { 
++    pos = resource.find("//", pos);
++    if (pos != STR_NPOS)
++      resource.erase(pos, 1);
++  } while (pos != STR_NPOS);
++  
++  resourceplusopaque = resource;
++  // Whatever comes after is opaque data to be parsed
++  if (strlen(p) > 1) {
++    buf = unquote(p + 1);
++    opaque = new XrdOucEnv(buf);
++    resourceplusopaque.append('?');
++    resourceplusopaque.append(p + 1);
++    free(buf);
++  }
++  
++  
++  
++}
++
++// Map an XRootD error code to an appropriate HTTP status code and message
++// The variables httpStatusCode and httpStatusText will be populated
++
++void XrdHttpReq::mapXrdErrorToHttpStatus() {
++  // Set default HTTP status values for an error case
++  httpStatusCode = 500;
++  httpStatusText = "Unrecognized error";
++
++  // Do error mapping
++  if (xrdresp == kXR_error) {
++    switch (xrderrcode) {
++      case kXR_AuthFailed:
++        httpStatusCode = 401; httpStatusText = "Unauthorized";
++        break;
++      case kXR_NotAuthorized:
++        httpStatusCode = 403; httpStatusText = "Operation not permitted";
++        break;
++      case kXR_NotFound:
++        httpStatusCode = 404; httpStatusText = "File not found";
++        break;
++      case kXR_Unsupported:
++        httpStatusCode = 405; httpStatusText = "Operation not supported";
++        break;
++      case kXR_FileLocked:
++        httpStatusCode = 423; httpStatusText = "Resource is a locked";
++        break;
++      case kXR_isDirectory:
++        httpStatusCode = 409; httpStatusText = "Resource is a directory";
++        break;
++      case kXR_ItExists:
++        if(request != ReqType::rtDELETE) {
++          httpStatusCode = 409; httpStatusText = "File already exists";
++        } else {
++          // In the case the XRootD layer returns a kXR_ItExists after a deletion
++          // was submitted, we return a 405 status code with the error message set by
++          // the XRootD layer
++          httpStatusCode = 405;
++        }
++        break;
++      case kXR_InvalidRequest:
++        httpStatusCode = 405; httpStatusText = "Method is not allowed";
++        break;
++      case kXR_TimerExpired:
++        httpStatusCode = 504; httpStatusText = "Gateway timeout";
++        break;
++      default:
++        break;
++    }
++
++    if (!etext.empty()) httpStatusText = etext;
++
++    TRACEI(REQ, "PostProcessHTTPReq mapping Xrd error [" << xrderrcode
++                 << "] to status code [" << httpStatusCode << "]");
++
++    httpStatusText += "\n";
++  } else {
++      httpStatusCode = 200;
++      httpStatusText = "OK";
++  }
++}
++
++int XrdHttpReq::ProcessHTTPReq() {
++
++  kXR_int32 l;
++
++  /// If we have to add extra header information, add it here.
++  if (!m_appended_hdr2cgistr && !hdr2cgistr.empty()) {
++    const char *p = strchr(resourceplusopaque.c_str(), '?');
++    if (p) {
++      resourceplusopaque.append("&");
++    } else {
++      resourceplusopaque.append("?");
++    }
++
++    char *q = quote(hdr2cgistr.c_str());
++    resourceplusopaque.append(q);
++    if (TRACING(TRACE_DEBUG)) {
++      // The obfuscation of "authz" will only be done if the server http.header2cgi config contains something that maps a header to this "authz" cgi.
++      // Unfortunately the obfuscation code will be called no matter what is configured in http.header2cgi.
++      std::string header2cgistrObf = obfuscateAuth(hdr2cgistr);
++
++      TRACEI(DEBUG, "Appended header fields to opaque info: '"
++        << header2cgistrObf.c_str() << "'");
++
++    }
++    // We assume that anything appended to the CGI str should also
++    // apply to the destination in case of a MOVE.
++    if (strchr(destination.c_str(), '?')) destination.append("&");
++    else destination.append("?");
++    destination.append(q);
++
++    free(q);
++    m_appended_hdr2cgistr = true;
++    }
++
++  // Verify if we have an external handler for this request
++  if (reqstate == 0) {
++    XrdHttpExtHandler *exthandler = prot->FindMatchingExtHandler(*this);
++    if (exthandler) {
++      XrdHttpExtReq xreq(this, prot);
++      int r = exthandler->ProcessReq(xreq);
++      reset();
++      if (!r) return 1; // All went fine, response sent
++      if (r < 0) return -1; // There was a hard error... close the connection
++
++      return 1; // There was an error and a response was sent
++    }
++  }
++
++  //
++  // Here we process the request locally
++  //
++
++  switch (request) {
++    case XrdHttpReq::rtUnset:
++    case XrdHttpReq::rtUnknown:
++    {
++      prot->SendSimpleResp(400, NULL, NULL, (char *) "Request unknown", 0, false);
++      reset();
++      return -1;
++    }
++    case XrdHttpReq::rtMalformed:
++    {
++      prot->SendSimpleResp(400, NULL, NULL, (char *) "Request malformed", 0, false);
++      reset();
++      return -1;
++    }
++    case XrdHttpReq::rtHEAD:
++    {
++      if (reqstate == 0) {
++        // Always start with Stat; in the case of a checksum request, we'll have a follow-up query
++        if (prot->doStat((char *) resourceplusopaque.c_str())) {
++          prot->SendSimpleResp(404, NULL, NULL, (char *) "Could not run request.", 0, false);
++          return -1;
++        }
++        return 0;
++      } else {
++        const char *opaque = strchr(resourceplusopaque.c_str(), '?');
++        // Note that doChksum requires that the memory stays alive until the callback is invoked.
++        m_resource_with_digest = resourceplusopaque;
++
++        m_req_cksum = prot->cksumHandler.getChecksumToRun(m_req_digest);
++        if(!m_req_cksum) {
++            // No HTTP IANA checksums have been configured by the server admin, return a "METHOD_NOT_ALLOWED" error
++            prot->SendSimpleResp(403, NULL, NULL, (char *) "No HTTP-IANA compatible checksums have been configured.", 0, false);
++            return -1;
++        }
++        if (!opaque) {
++          m_resource_with_digest += "?cks.type=";
++          m_resource_with_digest += m_req_cksum->getXRootDConfigDigestName().c_str();
++        } else {
++          m_resource_with_digest += "&cks.type=";
++          m_resource_with_digest += m_req_cksum->getXRootDConfigDigestName().c_str();
++        }
++        if (prot->doChksum(m_resource_with_digest) < 0) {
++          // In this case, the Want-Digest header was set and PostProcess gave the go-ahead to do a checksum.
++          prot->SendSimpleResp(500, NULL, NULL, (char *) "Failed to create initial checksum request.", 0, false);
++          return -1;
++        }
++        return 1;
++      }
++    }
++    case XrdHttpReq::rtGET:
++    {
++        int retval = keepalive ? 1 : -1; // reset() clears keepalive
++
++        if (resource.beginswith("/static/")) {
++
++            // This is a request for a /static resource
++            // If we have to use the embedded ones then we return the ones in memory as constants
++
++            // The sysadmin can always redirect the request to another host that
++            // contains his static resources
++
++            // We also allow xrootd to preread from the local disk all the files
++            // that have to be served as static resources.
++
++            if (prot->embeddedstatic) {
++
++                // Default case: the icon and the css of the HTML rendering of XrdHttp
++                if (resource == "/static/css/xrdhttp.css") {
++                    prot->SendSimpleResp(200, NULL, NULL, (char *) static_css_xrdhttp_css, static_css_xrdhttp_css_len, keepalive);
++                    reset();
++                    return retval;
++                  }
++                if (resource == "/static/icons/xrdhttp.ico") {
++                    prot->SendSimpleResp(200, NULL, NULL, (char *) favicon_ico, favicon_ico_len, keepalive);
++                    reset();
++                    return retval;
++                  }
++
++              }
++
++              // If we are here then none of the embedded resources match (or they are disabled)
++              // We may have to redirect to a host that is supposed to serve the static resources
++              if (prot->staticredir) {
++
++                  XrdOucString s = "Location: ";
++                  s.append(prot->staticredir);
++
++                  if (s.endswith('/'))
++                    s.erasefromend(1);
++
++                  s.append(resource);
++                  appendOpaque(s, 0, 0, 0);
++
++                  prot->SendSimpleResp(302, NULL, (char *) s.c_str(), 0, 0, false);
++                  return -1;
++
++
++                } else {
++
++                  // We lookup the requested path in a hash containing the preread files
++                  if (prot->staticpreload) {
++                    XrdHttpProtocol::StaticPreloadInfo *mydata = prot->staticpreload->Find(resource.c_str());
++                    if (mydata) {
++                      prot->SendSimpleResp(200, NULL, NULL, (char *) mydata->data, mydata->len, keepalive);
++                      reset();
++                      return retval;
++                    }
++                  }
++                  
++                }
++
++
++          }
++      
++      // The reqstate parameter basically moves us through a simple state machine.
++      // To optimize things, we start off by opening the file; if it turns out to be a directory, then
++      // we close the file handle and switch to doing a HTML-based rendering of the directory.  This
++      // avoids needing to always to do "stat" first to determine the next step (since the file-open also
++      // does a "stat").
++      // - 0: Perform an open on the resource
++      // - 1: Perform a checksum request on the resource (only if requested in header; otherwise skipped)
++      // - 2: Perform a close (for dirlist only)
++      // - 3: Perform a dirlist.
++      // - 4+: Reads from file; if at end, perform a close.
++      switch (reqstate) {
++        case 0: // Open the path for reading.
++        {
++          memset(&xrdreq, 0, sizeof (ClientRequest));
++          xrdreq.open.requestid = htons(kXR_open);
++          l = resourceplusopaque.length() + 1;
++          xrdreq.open.dlen = htonl(l);
++          xrdreq.open.mode = 0;
++          xrdreq.open.options = htons(kXR_retstat | kXR_open_read);
++
++          if (!prot->Bridge->Run((char *) &xrdreq, (char *) resourceplusopaque.c_str(), l)) {
++            prot->SendSimpleResp(404, NULL, NULL, (char *) "Could not run request.", 0, false);
++            return -1;
++          }
++
++          // Prepare to chunk up the request
++          writtenbytes = 0;
++
++          // We want to be invoked again after this request is finished
++          return 0;
++        }
++        case 1: // Checksum request
++          if (!(fileflags & kXR_isDir) && !m_req_digest.empty()) {
++            // In this case, the Want-Digest header was set.
++            bool has_opaque = strchr(resourceplusopaque.c_str(), '?');
++            // Note that doChksum requires that the memory stays alive until the callback is invoked.
++            m_req_cksum = prot->cksumHandler.getChecksumToRun(m_req_digest);
++            if(!m_req_cksum) {
++                // No HTTP IANA checksums have been configured by the server admin, return a "METHOD_NOT_ALLOWED" error
++                prot->SendSimpleResp(403, NULL, NULL, (char *) "No HTTP-IANA compatible checksums have been configured.", 0, false);
++                return -1;
++            }
++            m_resource_with_digest = resourceplusopaque;
++            if (has_opaque) {
++              m_resource_with_digest += "&cks.type=";
++              m_resource_with_digest += m_req_cksum->getXRootDConfigDigestName().c_str();
++            } else {
++              m_resource_with_digest += "?cks.type=";
++              m_resource_with_digest += m_req_cksum->getXRootDConfigDigestName().c_str();
++            }
++            if (prot->doChksum(m_resource_with_digest) < 0) {
++              prot->SendSimpleResp(500, NULL, NULL, (char *) "Failed to start internal checksum request to satisfy Want-Digest header.", 0, false);
++              return -1;
++            }
++            return 0;
++          } else {
++            TRACEI(DEBUG, "No checksum requested; skipping to request state 2");
++            reqstate += 1;
++          }
++        // fallthrough
++        case 2: // Close file handle for directory
++          if ((fileflags & kXR_isDir) && fopened) {
++            memset(&xrdreq, 0, sizeof (ClientRequest));
++            xrdreq.close.requestid = htons(kXR_close);
++            memcpy(xrdreq.close.fhandle, fhandle, 4);
++
++            if (!prot->Bridge->Run((char *) &xrdreq, 0, 0)) {
++              mapXrdErrorToHttpStatus();
++              sendFooterError("Could not run close request on the bridge");
++              return -1;
++            }
++            return 0;
++          } else {
++            reqstate += 1;
++          }
++        // fallthrough
++        case 3: // List directory
++          if (fileflags & kXR_isDir) {
++            if (prot->listdeny) {
++              prot->SendSimpleResp(503, NULL, NULL, (char *) "Listings are disabled.", 0, false);
++              return -1;
++            }
++
++            if (prot->listredir) {
++              XrdOucString s = "Location: ";
++              s.append(prot->listredir);
++
++              if (s.endswith('/'))
++                s.erasefromend(1);
++
++              s.append(resource);
++              appendOpaque(s, 0, 0, 0);
++
++              prot->SendSimpleResp(302, NULL, (char *) s.c_str(), 0, 0, false);
++              return -1;
++            }
++
++            std::string res;
++            res = resourceplusopaque.c_str();
++
++            // --------- DIRLIST
++            memset(&xrdreq, 0, sizeof (ClientRequest));
++            xrdreq.dirlist.requestid = htons(kXR_dirlist);
++            xrdreq.dirlist.options[0] = kXR_dstat;
++            l = res.length() + 1;
++            xrdreq.dirlist.dlen = htonl(l);
++
++            if (!prot->Bridge->Run((char *) &xrdreq, (char *) res.c_str(), l)) {
++              mapXrdErrorToHttpStatus();
++              prot->SendSimpleResp(httpStatusCode, NULL, NULL, httpStatusText.c_str(), httpStatusText.length(), false);
++              sendFooterError("Could not run listing request on the bridge");
++              return -1;
++            }
++
++            // We don't want to be invoked again after this request is finished
++            return 1;
++          }
++          else {
++            reqstate += 1;
++          }
++        // fallthrough
++        case 4:
++        {
++          auto retval = ReturnGetHeaders();
++          if (retval) {
++            return retval;
++          }
++        }
++        // fallthrough
++        default: // Read() or Close(); reqstate is 4+
++        {
++          const XrdHttpIOList &readChunkList = readRangeHandler.NextReadList();
++
++          // Close() if we have finished, otherwise read the next chunk
++
++          // --------- CLOSE
++          if ( readChunkList.empty() )
++          {
++
++            memset(&xrdreq, 0, sizeof (ClientRequest));
++            xrdreq.close.requestid = htons(kXR_close);
++            memcpy(xrdreq.close.fhandle, fhandle, 4);
++
++            if (!prot->Bridge->Run((char *) &xrdreq, 0, 0)) {
++              TRACEI(REQ, " Failed to run close request on the bridge.");
++              // Note: we have already completed the request and sent the data to the client.
++              // Hence, there's no need to send an error.  However, since the bridge is potentially
++              // in a bad state, we close the TCP socket to force the client to reconnect.
++              return -1;
++            }
++
++            // We have finished
++            readClosing = true;
++            return 1;
++
++          }
++          // --------- READ or READV
++
++          if ( readChunkList.size() == 1 ) {
++            // Use a read request for single range
++
++            long l;
++            long long offs;
++            
++            // --------- READ
++            memset(&xrdreq, 0, sizeof (xrdreq));
++            xrdreq.read.requestid = htons(kXR_read);
++            memcpy(xrdreq.read.fhandle, fhandle, 4);
++            xrdreq.read.dlen = 0;
++            
++            offs = readChunkList[0].offset;
++            l = readChunkList[0].size;
++
++            xrdreq.read.offset = htonll(offs);
++            xrdreq.read.rlen = htonl(l);
++
++            // If we are using HTTPS or if the client requested trailers, or if the
++            // read concerns a multirange reponse, disable sendfile
++            // (in the latter two cases, the extra framing is only done in PostProcessHTTPReq)
++            if (prot->ishttps || (m_transfer_encoding_chunked && m_trailer_headers) ||
++                !readRangeHandler.isSingleRange()) {
++              if (!prot->Bridge->setSF((kXR_char *) fhandle, false)) {
++                TRACE(REQ, " XrdBridge::SetSF(false) failed.");
++
++              }
++            }
++
++
++            
++            if (l <= 0) {
++              if (l < 0) {
++                TRACE(ALL, " Data sizes mismatch.");
++                return -1;
++              }
++              else {
++                TRACE(ALL, " No more bytes to send.");
++                reset();
++                return 1;
++              }
++            }
++
++            if ((offs >= filesize) || (offs+l > filesize)) {
++              httpStatusCode = 416;
++              httpStatusText = "Range Not Satisfiable";
++              std::stringstream ss;
++              ss << "Requested range " << l << "@" << offs << " is past the end of file (" << filesize << ")";
++              sendFooterError(ss.str());
++              return -1;
++            }
++            
++            if (!prot->Bridge->Run((char *) &xrdreq, 0, 0)) {
++              mapXrdErrorToHttpStatus();
++              sendFooterError("Could not run read request on the bridge");
++              return -1;
++            }
++          } else {
++            // --------- READV
++
++            length = ReqReadV(readChunkList);
++
++            if (!prot->Bridge->Run((char *) &xrdreq, (char *) &ralist[0], length)) {
++              mapXrdErrorToHttpStatus();
++              sendFooterError("Could not run ReadV request on the bridge");
++              return -1;
++            }
++
++          }
++
++          // We want to be invoked again after this request is finished
++          return 0;
++        } // case 3+
++        
++      } // switch (reqstate)
++
++
++    } // case XrdHttpReq::rtGET
++
++    case XrdHttpReq::rtPUT:
++    {
++      //if (prot->ishttps) {
++      //prot->SendSimpleResp(501, NULL, NULL, (char *) "HTTPS not supported yet for direct writing. Sorry.", 0);
++      //return -1;
++      //}
++
++      if (!fopened) {
++
++        // --------- OPEN for write!
++        memset(&xrdreq, 0, sizeof (ClientRequest));
++        xrdreq.open.requestid = htons(kXR_open);
++        l = resourceplusopaque.length() + 1;
++        xrdreq.open.dlen = htonl(l);
++        xrdreq.open.mode = htons(kXR_ur | kXR_uw | kXR_gw | kXR_gr | kXR_or);
++        if (! XrdHttpProtocol::usingEC) 
++          xrdreq.open.options = htons(kXR_mkpath | kXR_open_wrto | kXR_delete);
++        else
++          xrdreq.open.options = htons(kXR_mkpath | kXR_open_wrto | kXR_new);
++
++        if (!prot->Bridge->Run((char *) &xrdreq, (char *) resourceplusopaque.c_str(), l)) {
++          prot->SendSimpleResp(404, NULL, NULL, (char *) "Could not run request.", 0, keepalive);
++          return -1;
++        }
++
++
++        // We want to be invoked again after this request is finished
++        // Only if there is data to fetch from the socket or there will
++        // never be more data
++        if (prot->BuffUsed() > 0 || (length == 0 && !sendcontinue))
++          return 0;
++
++        return 1;
++
++      } else {
++
++        if (m_transfer_encoding_chunked) {
++          if (m_current_chunk_size == m_current_chunk_offset) {
++            // Chunk has been consumed; we now must process the CRLF.
++            // Note that we don't support trailer headers.
++            if (prot->BuffUsed() < 2) return 1;
++            if (prot->myBuffStart[0] != '\r' || prot->myBuffStart[1] != '\n') {
++              prot->SendSimpleResp(400, NULL, NULL, (char *) "Invalid trailing chunk encoding.", 0, keepalive);
++              return -1;
++            }
++            prot->BuffConsume(2);
++            if (m_current_chunk_size == 0) {
++              // All data has been sent.  Turn off chunk processing and
++              // set the bytes written and length appropriately; on next callback,
++              // we will hit the close() block below.
++              m_transfer_encoding_chunked = false;
++              length = writtenbytes;
++              return ProcessHTTPReq();
++            }
++            m_current_chunk_size = -1;
++            m_current_chunk_offset = 0;
++            // If there is more data, we try to process the next chunk; otherwise, return
++            if (!prot->BuffUsed()) return 1;
++          }
++          if (-1 == m_current_chunk_size) {
++
++              // Parse out the next chunk size.
++            long long idx = 0;
++            bool found_newline = false;
++            // Set a maximum size of chunk we will allow
++            // Nginx sets this to "NGX_MAX_OFF_T_VALUE", which is 9223372036854775807 (a some crazy number)
++            // We set it to 1TB, which is 1099511627776
++            // This is to prevent a malicious client from sending a very large chunk size
++            // or a malformed chunk request.
++            // 1TB in base-16 is 0x40000000000, so only allow 11 characters, plus the CRLF
++            long long max_chunk_size_chars = std::min(static_cast<long long>(prot->BuffUsed()), static_cast<long long>(13));
++            for (; idx < max_chunk_size_chars; idx++) {
++              if (prot->myBuffStart[idx] == '\n') {
++                found_newline = true;
++                break;
++              }
++            }
++            // If we found a new line, but it is the first character in the buffer (no chunk length)
++            // or if the previous character is not a CR.
++            if (found_newline && ((idx == 0) || prot->myBuffStart[idx-1] != '\r')) {
++              prot->SendSimpleResp(400, NULL, NULL, (char *)"Invalid chunked encoding", 0, false);
++              TRACE(REQ, "XrdHTTP PUT: Sending invalid chunk encoding.  Start of chunk should have had a length, followed by a CRLF.");
++              return -1;
++            }
++            if (found_newline) {
++              char *endptr = NULL;
++              std::string line_contents(prot->myBuffStart, idx);
++              long long chunk_contents = strtol(line_contents.c_str(), &endptr, 16);
++                // Chunk sizes can be followed by trailer information or CRLF
++              if (*endptr != ';' && *endptr != '\r') {
++                prot->SendSimpleResp(400, NULL, NULL, (char *)"Invalid chunked encoding", 0, false);
++                TRACE(REQ, "XrdHTTP PUT: Sending invalid chunk encoding. Chunk size was not followed by a ';' or CR." << __LINE__);
++                return -1;
++              }
++              m_current_chunk_size = chunk_contents;
++              m_current_chunk_offset = 0;
++              prot->BuffConsume(idx + 1);
++              TRACE(REQ, "XrdHTTP PUT: next chunk from client will be " << m_current_chunk_size << " bytes");
++            } else {
++                // Need more data!
++              return 1;
++            }
++          }
++
++          if (m_current_chunk_size == 0) {
++            // All data has been sent.  Invoke this routine again immediately to process CRLF
++            return ProcessHTTPReq();
++          } else {
++            // At this point, we have a chunk size defined and should consume payload data
++            memset(&xrdreq, 0, sizeof (xrdreq));
++            xrdreq.write.requestid = htons(kXR_write);
++            memcpy(xrdreq.write.fhandle, fhandle, 4);
++
++            long long chunk_bytes_remaining = m_current_chunk_size - m_current_chunk_offset;
++            long long bytes_to_write = std::min(static_cast<long long>(prot->BuffUsed()),
++                                           chunk_bytes_remaining);
++
++            xrdreq.write.offset = htonll(writtenbytes);
++            xrdreq.write.dlen = htonl(bytes_to_write);
++
++            TRACEI(REQ, "XrdHTTP PUT: Writing chunk of size " << bytes_to_write << " starting with '" << *(prot->myBuffStart) << "'" << " with " << chunk_bytes_remaining << " bytes remaining in the chunk");
++            if (!prot->Bridge->Run((char *) &xrdreq, prot->myBuffStart, bytes_to_write)) {
++              mapXrdErrorToHttpStatus();
++              sendFooterError("Could not run write request on the bridge");
++              return -1;
++            }
++            // If there are more bytes in the buffer, then immediately call us after the
++            // write is finished; otherwise, wait for data.
++            return (prot->BuffUsed() > chunk_bytes_remaining) ? 0 : 1;
++          }
++        } else if (writtenbytes < length) {
++
++
++          // --------- WRITE
++          memset(&xrdreq, 0, sizeof (xrdreq));
++          xrdreq.write.requestid = htons(kXR_write);
++          memcpy(xrdreq.write.fhandle, fhandle, 4);
++
++          long long bytes_to_read = std::min(static_cast<long long>(prot->BuffUsed()),
++                                        length - writtenbytes);
++
++          xrdreq.write.offset = htonll(writtenbytes);
++          xrdreq.write.dlen = htonl(bytes_to_read);
++
++          TRACEI(REQ, "Writing " << bytes_to_read);
++          if (!prot->Bridge->Run((char *) &xrdreq, prot->myBuffStart, bytes_to_read)) {
++            mapXrdErrorToHttpStatus();
++            sendFooterError("Could not run write request on the bridge");
++            return -1;
++          }
++
++          if (writtenbytes + prot->BuffUsed() >= length)
++            // Trigger an immediate recall after this request has finished
++            return 0;
++          else
++            // We want to be invoked again after this request is finished
++            // only if there is pending data
++            return 1;
++
++
++
++        } else {
++
++          // --------- CLOSE
++          memset(&xrdreq, 0, sizeof (ClientRequest));
++          xrdreq.close.requestid = htons(kXR_close);
++          memcpy(xrdreq.close.fhandle, fhandle, 4);
++
++
++          if (!prot->Bridge->Run((char *) &xrdreq, 0, 0)) {
++            mapXrdErrorToHttpStatus();
++            sendFooterError("Could not run close request on the bridge");
++            return -1;
++          }
++
++          // We have finished
++          return 1;
++
++        }
++
++      }
++
++      break;
++
++    }
++    case XrdHttpReq::rtOPTIONS:
++    {
++      prot->SendSimpleResp(200, NULL, (char *) "DAV: 1\r\nDAV: <http://apache.org/dav/propset/fs/1>\r\nAllow: HEAD,GET,PUT,PROPFIND,DELETE,OPTIONS", NULL, 0, keepalive);
++      bool ret_keepalive = keepalive; // reset() clears keepalive
++      reset();
++      return ret_keepalive ? 1 : -1;
++    }
++    case XrdHttpReq::rtDELETE:
++    {
++
++
++      switch (reqstate) {
++
++        case 0: // Stat()
++        {
++
++
++          // --------- STAT is always the first step
++          memset(&xrdreq, 0, sizeof (ClientRequest));
++          xrdreq.stat.requestid = htons(kXR_stat);
++          std::string s = resourceplusopaque.c_str();
++
++
++          l = resourceplusopaque.length() + 1;
++          xrdreq.stat.dlen = htonl(l);
++
++          if (!prot->Bridge->Run((char *) &xrdreq, (char *) resourceplusopaque.c_str(), l)) {
++            prot->SendSimpleResp(501, NULL, NULL, (char *) "Could not run request.", 0, false);
++            return -1;
++          }
++
++          // We need to be invoked again to complete the request
++          return 0;
++        }
++        default:
++
++          if (fileflags & kXR_isDir) {
++            // --------- RMDIR
++            memset(&xrdreq, 0, sizeof (ClientRequest));
++            xrdreq.rmdir.requestid = htons(kXR_rmdir);
++
++            std::string s = resourceplusopaque.c_str();
++
++            l = s.length() + 1;
++            xrdreq.rmdir.dlen = htonl(l);
++
++            if (!prot->Bridge->Run((char *) &xrdreq, (char *) s.c_str(), l)) {
++              prot->SendSimpleResp(501, NULL, NULL, (char *) "Could not run rmdir request.", 0, false);
++              return -1;
++            }
++          } else {
++            // --------- DELETE
++            memset(&xrdreq, 0, sizeof (ClientRequest));
++            xrdreq.rm.requestid = htons(kXR_rm);
++
++            std::string s = resourceplusopaque.c_str();
++
++            l = s.length() + 1;
++            xrdreq.rm.dlen = htonl(l);
++
++            if (!prot->Bridge->Run((char *) &xrdreq, (char *) s.c_str(), l)) {
++              prot->SendSimpleResp(501, NULL, NULL, (char *) "Could not run rm request.", 0, false);
++              return -1;
++            }
++          }
++
++
++          // We don't want to be invoked again after this request is finished
++          return 1;
++
++      }
++
++
++
++    }
++    case XrdHttpReq::rtPATCH:
++    {
++      prot->SendSimpleResp(501, NULL, NULL, (char *) "Request not supported yet.", 0, false);
++
++      return -1;
++    }
++    case XrdHttpReq::rtPROPFIND:
++    {
++
++
++
++      switch (reqstate) {
++
++        case 0: // Stat() and add the current item to the list of the things to send
++        {
++
++          if (length > 0) {
++            TRACE(REQ, "Reading request body " << length << " bytes.");
++            char *p = 0;
++            // We have to specifically read all the request body
++
++            if (prot->BuffgetData(length, &p, true) < length) {
++              prot->SendSimpleResp(501, NULL, NULL, (char *) "Error in getting the PROPFIND request body.", 0, false);
++              return -1;
++            }
++
++            if ((depth > 1) || (depth < 0)) {
++              prot->SendSimpleResp(501, NULL, NULL, (char *) "Invalid depth value.", 0, false);
++              return -1;
++            }
++
++
++            parseBody(p, length);
++          }
++
++
++          // --------- STAT is always the first step
++          memset(&xrdreq, 0, sizeof (ClientRequest));
++          xrdreq.stat.requestid = htons(kXR_stat);
++          std::string s = resourceplusopaque.c_str();
++
++
++          l = resourceplusopaque.length() + 1;
++          xrdreq.stat.dlen = htonl(l);
++
++          if (!prot->Bridge->Run((char *) &xrdreq, (char *) resourceplusopaque.c_str(), l)) {
++            prot->SendSimpleResp(501, NULL, NULL, (char *) "Could not run request.", 0, false);
++            return -1;
++          }
++
++
++          if (depth == 0) {
++            // We don't need to be invoked again
++            return 1;
++          } else
++            // We need to be invoked again to complete the request
++            return 0;
++
++
++
++          break;
++        }
++
++        default: // Dirlist()
++        {
++
++          // --------- DIRLIST
++          memset(&xrdreq, 0, sizeof (ClientRequest));
++          xrdreq.dirlist.requestid = htons(kXR_dirlist);
++
++          std::string s = resourceplusopaque.c_str();
++          xrdreq.dirlist.options[0] = kXR_dstat;
++          //s += "?xrd.dirstat=1";
++
++          l = s.length() + 1;
++          xrdreq.dirlist.dlen = htonl(l);
++
++          if (!prot->Bridge->Run((char *) &xrdreq, (char *) s.c_str(), l)) {
++            prot->SendSimpleResp(501, NULL, NULL, (char *) "Could not run request.", 0, false);
++            return -1;
++          }
++
++          // We don't want to be invoked again after this request is finished
++          return 1;
++        }
++      }
++
++
++      break;
++    }
++    case XrdHttpReq::rtMKCOL:
++    {
++
++      // --------- MKDIR
++      memset(&xrdreq, 0, sizeof (ClientRequest));
++      xrdreq.mkdir.requestid = htons(kXR_mkdir);
++
++      std::string s = resourceplusopaque.c_str();
++      xrdreq.mkdir.options[0] = (kXR_char) kXR_mkdirpath;
++
++      l = s.length() + 1;
++      xrdreq.mkdir.dlen = htonl(l);
++
++      if (!prot->Bridge->Run((char *) &xrdreq, (char *) s.c_str(), l)) {
++        prot->SendSimpleResp(501, NULL, NULL, (char *) "Could not run request.", 0, false);
++        return -1;
++      }
++
++      // We don't want to be invoked again after this request is finished
++      return 1;
++    }
++    case XrdHttpReq::rtMOVE:
++    {
++
++      // --------- MOVE
++      memset(&xrdreq, 0, sizeof (ClientRequest));
++      xrdreq.mv.requestid = htons(kXR_mv);
++
++      std::string s = resourceplusopaque.c_str();
++      s += " ";
++
++      char buf[256];
++      char *ppath;
++      int port = 0;
++      if (parseURL((char *) destination.c_str(), buf, port, &ppath)) {
++        prot->SendSimpleResp(501, NULL, NULL, (char *) "Cannot parse destination url.", 0, false);
++        return -1;
++      }
++
++      char buf2[256];
++      strcpy(buf2, host.c_str());
++      char *pos = strchr(buf2, ':');
++      if (pos) *pos = '\0';
++     
++      // If we are a redirector we enforce that the host field is equal to
++      // whatever was written in the destination url
++      //
++      // If we are a data server instead we cannot enforce anything, we will
++      // just ignore the host part of the destination
++      if ((prot->myRole == kXR_isManager) && strcmp(buf, buf2)) {
++        prot->SendSimpleResp(501, NULL, NULL, (char *) "Only in-place renaming is supported for MOVE.", 0, false);
++        return -1;
++      }
++
++
++
++
++      s += ppath;
++
++      l = s.length() + 1;
++      xrdreq.mv.dlen = htonl(l);
++      xrdreq.mv.arg1len = htons(resourceplusopaque.length());
++      
++      if (!prot->Bridge->Run((char *) &xrdreq, (char *) s.c_str(), l)) {
++        prot->SendSimpleResp(501, NULL, NULL, (char *) "Could not run request.", 0, false);
++        return -1;
++      }
++
++      // We don't want to be invoked again after this request is finished
++      return 1;
++
++    }
++    default:
++    {
++      prot->SendSimpleResp(501, NULL, NULL, (char *) "Request not supported.", 0, false);
++      return -1;
++    }
++
++  }
++
++  return 1;
++}
++
++
++int
++XrdHttpReq::PostProcessChecksum(std::string &digest_header) {
++  if (iovN > 0) {
++    if (xrdresp == kXR_error) {
++      prot->SendSimpleResp(httpStatusCode, NULL, NULL, "Failed to determine checksum", 0, false);
++      return -1;
++    }
++
++    TRACEI(REQ, "Checksum for HEAD " << resource.c_str() << " "
++               << reinterpret_cast<char *>(iovP[0].iov_base) << "=" 
++               << reinterpret_cast<char *>(iovP[iovN-1].iov_base));
++
++    bool convert_to_base64 = m_req_cksum->needsBase64Padding();
++    char *digest_value = reinterpret_cast<char *>(iovP[iovN-1].iov_base);
++    if (convert_to_base64) {
++      size_t digest_length = strlen(digest_value);
++      unsigned char *digest_binary_value = (unsigned char *)malloc(digest_length);
++      if (!Fromhexdigest(reinterpret_cast<unsigned char *>(digest_value), digest_length, digest_binary_value)) {
++        prot->SendSimpleResp(500, NULL, NULL, (char *) "Failed to convert checksum hexdigest to base64.", 0, false);
++        free(digest_binary_value);
++        return -1;
++      }
++      char *digest_base64_value = (char *)malloc(digest_length + 1);
++      // Binary length is precisely half the size of the hex-encoded digest_value; hence, divide length by 2.
++      Tobase64(digest_binary_value, digest_length/2, digest_base64_value);
++      free(digest_binary_value);
++      digest_value = digest_base64_value;
++    }
++
++    digest_header = "Digest: ";
++    digest_header += m_req_cksum->getHttpName();
++    digest_header += "=";
++    digest_header += digest_value;
++    if (convert_to_base64) {free(digest_value);}
++    return 0;
++  } else {
++    prot->SendSimpleResp(httpStatusCode, NULL, NULL, httpStatusText.c_str(), httpStatusText.length(), false);
++    return -1;
++  }
++}
++
++int
++XrdHttpReq::PostProcessListing(bool final_) {
++
++  if (xrdresp == kXR_error) {
++    prot->SendSimpleResp(httpStatusCode, NULL, NULL,
++                          httpStatusText.c_str(), httpStatusText.length(), false);
++    return -1;
++  }
++
++  if (stringresp.empty()) {
++    // Start building the HTML response
++    stringresp = "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">\n"
++            "<html xmlns=\"http://www.w3.org/1999/xhtml\">\n"
++            "<head>\n"
++            "<meta http-equiv=\"content-type\" content=\"text/html;charset=utf-8\"/>\n"
++            "<link rel=\"stylesheet\" type=\"text/css\" href=\"/static/css/xrdhttp.css\"/>\n"
++            "<link rel=\"icon\" type=\"image/png\" href=\"/static/icons/xrdhttp.ico\"/>\n";
++
++    stringresp += "<title>";
++    stringresp += resource.c_str();
++    stringresp += "</title>\n";
++
++    stringresp += "</head>\n"
++            "<body>\n";
++
++    char *estr = escapeXML(resource.c_str());
++
++    stringresp += "<h1>Listing of: ";
++    stringresp += estr;
++    stringresp += "</h1>\n";
++
++    free(estr);
++
++    stringresp += "<div id=\"header\">";
++
++    stringresp += "<table id=\"ft\">\n"
++            "<thead><tr>\n"
++            "<th class=\"mode\">Mode</th>"
++            "<th class=\"flags\">Flags</th>"
++            "<th class=\"size\">Size</th>"
++            "<th class=\"datetime\">Modified</th>"
++            "<th class=\"name\">Name</th>"
++            "</tr></thead>\n";
++  }
++
++  // Now parse the answer building the entries vector
++  if (iovN > 0) {
++    char *startp = (char *) iovP[0].iov_base, *endp = 0;
++    char entry[1024];
++    DirListInfo e;
++    while ( (size_t)(startp - (char *) iovP[0].iov_base) < (size_t)( iovP[0].iov_len - 1) ) {
++      // Find the filename, it comes before the \n
++      if ((endp = (char *) strchr((const char*) startp, '\n'))) {
++        strncpy(entry, (char *) startp, endp - startp);
++        entry[endp - startp] = 0;
++        e.path = entry;
++
++        endp++;
++
++        // Now parse the stat info
++        TRACEI(REQ, "Dirlist " << resource.c_str() << " entry=" << entry
++                  << " stat=" << endp);
++
++        long dummyl;
++        sscanf(endp, "%ld %lld %ld %ld",
++                &dummyl,
++                &e.size,
++                &e.flags,
++                &e.modtime);
++      } else
++        strcpy(entry, (char *) startp);
++
++      if (e.path.length() && (e.path != ".") && (e.path != "..")) {
++        // The entry is filled. <td class="ft-file"><a href="file1.txt">file1.txt</a></td>
++        std::string p = "<tr>"
++                "<td class=\"mode\">";
++
++        if (e.flags & kXR_isDir) p += "d";
++        else p += "-";
++
++        if (e.flags & kXR_other) p += "o";
++        else p += "-";
++
++        if (e.flags & kXR_offline) p += "O";
++        else p += "-";
++
++        if (e.flags & kXR_readable) p += "r";
++        else p += "-";
++
++        if (e.flags & kXR_writable) p += "w";
++        else p += "-";
++
++        if (e.flags & kXR_xset) p += "x";
++        else p += "-";
++
++        p += "</td>";
++        p += "<td class=\"mode\">" + itos(e.flags) + "</td>"
++                "<td class=\"size\">" + itos(e.size) + "</td>"
++                "<td class=\"datetime\">" + ISOdatetime(e.modtime) + "</td>"
++                "<td class=\"name\">"
++                "<a href=\"";
++
++        if (resource != "/") {
++
++          char *estr = escapeXML(resource.c_str());
++
++            p += estr;
++            if (!p.empty() && p[p.size() - 1] != '/')
++              p += "/";
++
++          free(estr);
++        }
++
++        char *estr = escapeXML(e.path.c_str());
++
++        p += e.path + "\">";
++        p += e.path;
++
++        free(estr);
++
++        p += "</a></td></tr>";
++
++        stringresp += p;
++      }
++
++      if (endp) {
++          char *pp = (char *)strchr((const char *)endp, '\n');
++          if (pp) startp = pp+1;
++          else break;
++      } else break;
++
++    }
++  }
++
++  // If this was the last bunch of entries, send the buffer and empty it immediately
++  if (final_) {
++    stringresp += "</table></div><br><br><hr size=1>"
++    "<p><span id=\"requestby\">Request by ";
++
++    if (prot->SecEntity.name)
++      stringresp += prot->SecEntity.name;
++    else
++      stringresp += prot->Link->ID;
++
++    if (prot->SecEntity.vorg ||
++      prot->SecEntity.name ||
++      prot->SecEntity.moninfo ||
++      prot->SecEntity.role)
++      stringresp += " (";
++
++    if (prot->SecEntity.vorg) {
++      stringresp += " VO: ";
++      stringresp += prot->SecEntity.vorg;
++    }
++
++    if (prot->SecEntity.moninfo) {
++      stringresp += " DN: ";
++      stringresp += prot->SecEntity.moninfo;
++    } else
++      if (prot->SecEntity.name) {
++        stringresp += " DN: ";
++        stringresp += prot->SecEntity.name;
++      }
++
++    if (prot->SecEntity.role) {
++      stringresp += " Role: ";
++      stringresp += prot->SecEntity.role;
++      if (prot->SecEntity.endorsements) {
++        stringresp += " (";
++        stringresp += prot->SecEntity.endorsements;
++        stringresp += ") ";
++      }
++    }
++
++    if (prot->SecEntity.vorg ||
++      prot->SecEntity.moninfo ||
++      prot->SecEntity.role)
++      stringresp += " )";
++
++    if (prot->SecEntity.host) {
++      stringresp += " ( ";
++      stringresp += prot->SecEntity.host;
++      stringresp += " )";
++    }
++
++    stringresp += "</span></p>\n";
++    stringresp += "<p>Powered by XrdHTTP ";
++    stringresp += XrdVSTRING;
++    stringresp += " (CERN IT-SDC)</p>\n";
++
++    prot->SendSimpleResp(200, NULL, NULL, (char *) stringresp.c_str(), 0, keepalive);
++    stringresp.clear();
++    return keepalive ? 1 : -1;
++  }
++
++  return 0;
++}
++
++int
++XrdHttpReq::ReturnGetHeaders() {
++  std::string responseHeader;
++  if (!m_digest_header.empty()) {
++    responseHeader = m_digest_header;
++  }
++  long one;
++  if (filemodtime && XrdOucEnv::Import("XRDPFC", one)) {
++      if (!responseHeader.empty()) {
++        responseHeader += "\r\n";
++      }
++      long object_age = time(NULL) - filemodtime;
++      responseHeader += std::string("Age: ") + std::to_string(object_age < 0 ? 0 : object_age);
++  }
++
++  const XrdHttpReadRangeHandler::UserRangeList &uranges = readRangeHandler.ListResolvedRanges();
++  if (uranges.empty() && readRangeHandler.getError()) {
++    prot->SendSimpleResp(readRangeHandler.getError().httpRetCode, NULL, NULL, readRangeHandler.getError().errMsg.c_str(),0,false);
++    return -1;
++  }
++
++  if (readRangeHandler.isFullFile()) {
++    // Full file.
++    TRACEI(REQ, "Sending full file: " << filesize);
++    if (m_transfer_encoding_chunked && m_trailer_headers) {
++      prot->StartChunkedResp(200, NULL, responseHeader.empty() ? NULL : responseHeader.c_str(), -1, keepalive);
++    } else {
++      prot->SendSimpleResp(200, NULL, responseHeader.empty() ? NULL : responseHeader.c_str(), NULL, filesize, keepalive);
++    }
++    return 0;
++  }
++
++  if (readRangeHandler.isSingleRange()) {
++    // Possibly with zero sized file but should have been included
++    // in the FullFile case above
++    if (uranges.size() != 1)
++      return -1;
++
++    // Only one range to return to the user
++    char buf[64];
++    const off_t cnt = uranges[0].end - uranges[0].start + 1;
++
++    XrdOucString s = "Content-Range: bytes ";
++    sprintf(buf, "%lld-%lld/%lld", (long long int)uranges[0].start, (long long int)uranges[0].end, filesize);
++    s += buf;
++    if (!responseHeader.empty()) {
++      s += "\r\n";
++      s += responseHeader.c_str();
++    }
++
++    if (m_transfer_encoding_chunked && m_trailer_headers) {
++      prot->StartChunkedResp(206, NULL, (char *)s.c_str(), -1, keepalive);
++    } else {
++      prot->SendSimpleResp(206, NULL, (char *)s.c_str(), NULL, cnt, keepalive);
++    }
++    return 0;
++  }
++
++  // Multiple reads to perform, compose and send the header
++  off_t cnt = 0;
++  for (auto &ur : uranges) {
++    cnt += ur.end - ur.start + 1;
++
++    cnt += buildPartialHdr(ur.start,
++            ur.end,
++            filesize,
++            (char *) "123456").size();
++
++  }
++  cnt += buildPartialHdrEnd((char *) "123456").size();
++  std::string header = "Content-Type: multipart/byteranges; boundary=123456";
++  if (!m_digest_header.empty()) {
++    header += "\n";
++    header += m_digest_header;
++  }
++
++  if (m_transfer_encoding_chunked && m_trailer_headers) {
++    prot->StartChunkedResp(206, NULL, header.c_str(), -1, keepalive);
++  } else {
++    prot->SendSimpleResp(206, NULL, header.c_str(), NULL, cnt, keepalive);
++  }
++  return 0;
++}
++
++// This is invoked by the callbacks, after something has happened in the bridge
++
++int XrdHttpReq::PostProcessHTTPReq(bool final_) {
++
++  TRACEI(REQ, "PostProcessHTTPReq req: " << request << " reqstate: " << reqstate << " final_:" << final_);
++  mapXrdErrorToHttpStatus();
++
++  if(xrdreq.set.requestid == htons(kXR_set)) {
++    // We have set the user agent, if it fails we return a 500 error, otherwise the callback is successful --> we continue
++    if(xrdresp != kXR_ok) {
++      prot->SendSimpleResp(500, nullptr, nullptr, "Could not set user agent.", 0, false);
++      return -1;
++    }
++    return 0;
++  }
++
++  switch (request) {
++    case XrdHttpReq::rtUnknown:
++    {
++      prot->SendSimpleResp(400, NULL, NULL, (char *) "Request malformed 1", 0, false);
++      return -1;
++    }
++    case XrdHttpReq::rtMalformed:
++    {
++      prot->SendSimpleResp(400, NULL, NULL, (char *) "Request malformed 2", 0, false);
++      return -1;
++    }
++    case XrdHttpReq::rtHEAD:
++    {
++      if (xrdresp != kXR_ok) {
++        // NOTE that HEAD MUST NOT return a body, even in the case of failure.
++        prot->SendSimpleResp(httpStatusCode, NULL, NULL, NULL, 0, false);
++        return -1;
++      } else if (reqstate == 0) {
++        if (iovN > 0) {
++
++          // Now parse the stat info
++          TRACEI(REQ, "Stat for HEAD " << resource.c_str()
++                      << " stat=" << (char *) iovP[0].iov_base);
++
++          long dummyl;
++          sscanf((const char *) iovP[0].iov_base, "%ld %lld %ld %ld",
++                  &dummyl,
++                  &filesize,
++                  &fileflags,
++                  &filemodtime);
++
++          if (m_req_digest.size()) {
++            return 0;
++          } else {
++            prot->SendSimpleResp(200, NULL, "Accept-Ranges: bytes", NULL, filesize, keepalive);
++            return keepalive ? 1 : -1;
++          }
++        }
++
++        prot->SendSimpleResp(httpStatusCode, NULL, NULL, NULL, 0, keepalive);
++        bool ret_keepalive = keepalive; // reset() clears keepalive
++        reset();
++        return ret_keepalive ? 1 : -1;
++      } else { // We requested a checksum and now have its response.
++        if (iovN > 0) {
++          std::string response_headers;
++          int response = PostProcessChecksum(response_headers);
++          if (-1 == response) {
++                return -1;
++          }
++          if (!response_headers.empty()) {response_headers += "\r\n";}
++          response_headers += "Accept-Ranges: bytes";
++          prot->SendSimpleResp(200, NULL, response_headers.c_str(), NULL, filesize, keepalive);
++          return keepalive ? 1 : -1;
++        } else {
++          prot->SendSimpleResp(500, NULL, NULL, "Underlying filesystem failed to calculate checksum.", 0, false);
++          return -1;
++        }
++      }
++    }
++    case XrdHttpReq::rtGET:
++    {
++      // To duplicate the state diagram from the rtGET request state
++      // - 0: Perform an open request
++      // - 1: Perform a checksum request on the resource (only if requested in header; otherwise skipped)
++      // - 2: Perform a close (for directory listings only)
++      // - 3: Perform a dirlist
++      // - 4+: Reads from file; if at end, perform a close.
++      switch (reqstate) {
++        case 0: // open
++        {
++          if (xrdresp == kXR_ok) {
++            fopened = true;
++            getfhandle();
++
++            // Always try to parse response.  In the case of a caching proxy, the open
++            // will have created the file in cache
++            if (iovP[1].iov_len > 1) {
++              TRACEI(REQ, "Stat for GET " << resource.c_str()
++                        << " stat=" << (char *) iovP[1].iov_base);
++
++              long dummyl;
++              sscanf((const char *) iovP[1].iov_base, "%ld %lld %ld %ld",
++                    &dummyl,
++                    &filesize,
++                    &fileflags,
++                    &filemodtime);
++
++              // If this is a directory, bail out early; we will close the file handle
++              // and then issue a directory listing.
++              if (fileflags & kXR_isDir) {
++                return 0;
++              }
++
++              readRangeHandler.SetFilesize(filesize);
++
++              // As above: if the client specified a response size, we use that.
++              // Otherwise, utilize the filesize
++              if (!length) {
++                length = filesize;
++              }
++            }
++            else {
++              TRACEI(ALL, "GET returned no STAT information. Internal error?");
++              prot->SendSimpleResp(500, NULL, NULL, "Storage system did not return stat info.", 0, false);
++              return -1;
++            }
++            return 0;
++          } else if (xrderrcode == kXR_isDirectory) { // This is a directory; trigger directory-handling topic.
++            fileflags = kXR_isDir;
++            return 0;
++          } else { // xrdresp indicates an error occurred
++
++            prot->SendSimpleResp(httpStatusCode, NULL, NULL,
++                                  httpStatusText.c_str(), httpStatusText.length(), false);
++            return -1;
++          }
++          // Case should not be reachable
++          return -1;
++        } // end open
++        case 1:  // checksum was requested and now we have its response.
++        {
++          return PostProcessChecksum(m_digest_header);
++        }
++        case 2: // close file handle in case of the directory
++        {
++          if (xrdresp != kXR_ok) {
++            prot->SendSimpleResp(httpStatusCode, NULL, NULL,
++                                  httpStatusText.c_str(), httpStatusText.length(), false);
++            return -1;
++          }
++          return 0;
++        }
++        case 3: // handle the directory listing response
++        {
++          return PostProcessListing(final_);
++        }
++        default: //read or readv, followed by a close.
++        {
++          // If we are postprocessing a close, potentially send out informational trailers
++          if ((ntohs(xrdreq.header.requestid) == kXR_close) || readClosing)
++          {
++            const XrdHttpReadRangeHandler::Error &rrerror = readRangeHandler.getError();
++            if (rrerror) {
++              httpStatusCode = rrerror.httpRetCode;
++              httpStatusText = rrerror.errMsg;
++            }
++              
++            if (m_transfer_encoding_chunked && m_trailer_headers) {
++              if (prot->ChunkRespHeader(0))
++                return -1;
++
++              const std::string crlf = "\r\n";
++              std::stringstream ss;
++              ss << "X-Transfer-Status: " << httpStatusCode << ": " << httpStatusText << crlf;
++
++              const auto header = ss.str();
++              if (prot->SendData(header.c_str(), header.size()))
++                return -1;
++
++              if (prot->ChunkRespFooter())
++                return -1;
++            }
++
++              if (rrerror) return -1;
++              return keepalive ? 1 : -1;
++          }
++
++          // On error, we can only send out a message if trailers are enabled and the
++          // status response in trailer behavior is requested.
++          if (xrdresp == kXR_error) {
++            sendFooterError("");
++            return -1;
++          }
++
++
++          TRACEI(REQ, "Got data vectors to send:" << iovN);
++
++          XrdHttpIOList received;
++          getReadResponse(received);
++
++          int rc;
++          if (readRangeHandler.isSingleRange()) {
++              rc = sendReadResponseSingleRange(received);
++          } else {
++              rc = sendReadResponsesMultiRanges(received);
++          }
++          if (rc) {
++            // make sure readRangeHandler will trigger close
++            // of file after next NextReadList().
++            readRangeHandler.NotifyError();
++          }
++
++          return 0;
++        } // end read or readv
++
++      } // switch reqstate
++      break;
++    } // case GET
++
++    case XrdHttpReq::rtPUT:
++    {
++      if (!fopened) {
++
++        if (xrdresp != kXR_ok) {
++
++          prot->SendSimpleResp(httpStatusCode, NULL, NULL,
++                               httpStatusText.c_str(), httpStatusText.length(), keepalive);
++          return -1;
++        }
++
++        getfhandle();
++        fopened = true;
++
++        // We try to completely fill up our buffer before flushing
++        prot->ResumeBytes = std::min(length - writtenbytes, (long long) prot->BuffAvailable());
++
++        if (sendcontinue) {
++          prot->SendSimpleResp(100, NULL, NULL, 0, 0, keepalive);
++          return 0;
++        }
++
++        break;
++      } else {
++
++
++        // If we are here it's too late to send a proper error message...
++        if (xrdresp == kXR_error) return -1;
++
++        if (ntohs(xrdreq.header.requestid) == kXR_write) {
++          int l = ntohl(xrdreq.write.dlen);
++
++          // Consume the written bytes
++          prot->BuffConsume(ntohl(xrdreq.write.dlen));
++          writtenbytes += l;
++
++          // Update the chunk offset
++          if (m_transfer_encoding_chunked) {
++            m_current_chunk_offset += l;
++          }
++
++          // We try to completely fill up our buffer before flushing
++          prot->ResumeBytes = std::min(length - writtenbytes, (long long) prot->BuffAvailable());
++
++          return 0;
++        }
++
++        if (ntohs(xrdreq.header.requestid) == kXR_close) {
++          if (xrdresp == kXR_ok) {
++            prot->SendSimpleResp(200, NULL, NULL, (char *) ":-)", 0, keepalive);
++            return keepalive ? 1 : -1;
++          } else {
++            prot->SendSimpleResp(httpStatusCode, NULL, NULL,
++                                 httpStatusText.c_str(), httpStatusText.length(), keepalive);
++            return -1;
++          }
++        }
++
++
++      }
++
++
++
++
++
++      break;
++    }
++
++
++
++    case XrdHttpReq::rtDELETE:
++    {
++
++      if (xrdresp != kXR_ok) {
++        prot->SendSimpleResp(httpStatusCode, NULL, NULL,
++                             httpStatusText.c_str(), httpStatusText.length(), keepalive);
++        return -1;
++      }
++
++
++
++
++      switch (reqstate) {
++
++        case 0: // response to stat()
++        {
++          if (iovN > 0) {
++
++            // Now parse the stat info
++            TRACEI(REQ, "Stat for removal " << resource.c_str() 
++                     << " stat=" << (char *) iovP[0].iov_base);
++
++            long dummyl;
++            sscanf((const char *) iovP[0].iov_base, "%ld %lld %ld %ld",
++                    &dummyl,
++                    &filesize,
++                    &fileflags,
++                    &filemodtime);
++          }
++
++          return 0;
++        }
++        default: // response to rm
++        {
++          if (xrdresp == kXR_ok) {
++            prot->SendSimpleResp(200, NULL, NULL, (char *) ":-)", 0, keepalive);
++            return keepalive ? 1 : -1;
++          }
++          prot->SendSimpleResp(httpStatusCode, NULL, NULL,
++                               httpStatusText.c_str(), httpStatusText.length(), keepalive);
++          return -1;
++        }
++      }
++
++
++    }
++
++    case XrdHttpReq::rtPROPFIND:
++    {
++
++      if (xrdresp == kXR_error) {
++        prot->SendSimpleResp(httpStatusCode, NULL, NULL,
++                             httpStatusText.c_str(), httpStatusText.length(), false);
++        return -1;
++      }
++
++      switch (reqstate) {
++
++        case 0: // response to stat()
++        {
++          DirListInfo e;
++          e.size = 0;
++          e.flags = 0;
++          
++          // Now parse the answer building the entries vector
++          if (iovN > 0) {
++            e.path = resource.c_str();
++
++            // Now parse the stat info
++            TRACEI(REQ, "Collection " << resource.c_str()
++                     << " stat=" << (char *) iovP[0].iov_base);
++
++            long dummyl;
++            sscanf((const char *) iovP[0].iov_base, "%ld %lld %ld %ld",
++                    &dummyl,
++                    &e.size,
++                    &e.flags,
++                    &e.modtime);
++
++            if (e.path.length() && (e.path != ".") && (e.path != "..")) {
++              /* The entry is filled. */
++
++
++              std::string p;
++              stringresp += "<D:response xmlns:lp1=\"DAV:\" xmlns:lp2=\"http://apache.org/dav/props/\" xmlns:lp3=\"LCGDM:\">\n";
++              
++              char *estr = escapeXML(e.path.c_str());
++              
++              stringresp += "<D:href>";
++              stringresp += estr;
++              stringresp += "</D:href>\n";
++              
++              free(estr);
++              
++              stringresp += "<D:propstat>\n<D:prop>\n";
++
++              // Now add the properties that we have to add
++
++              // File size
++              stringresp += "<lp1:getcontentlength>";
++              stringresp += itos(e.size);
++              stringresp += "</lp1:getcontentlength>\n";
++
++
++
++              stringresp += "<lp1:getlastmodified>";
++              stringresp += ISOdatetime(e.modtime);
++              stringresp += "</lp1:getlastmodified>\n";
++
++
++
++              if (e.flags & kXR_isDir) {
++                stringresp += "<lp1:resourcetype><D:collection/></lp1:resourcetype>\n";
++                stringresp += "<lp1:iscollection>1</lp1:iscollection>\n";
++              } else {
++                stringresp += "<lp1:iscollection>0</lp1:iscollection>\n";
++              }
++
++              if (e.flags & kXR_xset) {
++                stringresp += "<lp1:executable>T</lp1:executable>\n";
++                stringresp += "<lp1:iscollection>1</lp1:iscollection>\n";
++              } else {
++                stringresp += "<lp1:executable>F</lp1:executable>\n";
++              }
++
++
++
++              stringresp += "</D:prop>\n<D:status>HTTP/1.1 200 OK</D:status>\n</D:propstat>\n</D:response>\n";
++
++
++            }
++
++
++          }
++
++          // If this was the last bunch of entries, send the buffer and empty it immediately
++          if ((depth == 0) || !(e.flags & kXR_isDir)) {
++            std::string s = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<D:multistatus xmlns:D=\"DAV:\" xmlns:ns1=\"http://apache.org/dav/props/\" xmlns:ns0=\"DAV:\">\n";
++            stringresp.insert(0, s);
++            stringresp += "</D:multistatus>\n";
++            prot->SendSimpleResp(207, (char *) "Multi-Status", (char *) "Content-Type: text/xml; charset=\"utf-8\"",
++                    (char *) stringresp.c_str(), stringresp.length(), keepalive);
++            stringresp.clear();
++            return keepalive ? 1 : -1;
++          }
++
++          break;
++        }
++        default: // response to dirlist()
++        {
++
++
++          // Now parse the answer building the entries vector
++          if (iovN > 0) {
++            char *startp = (char *) iovP[0].iov_base, *endp = 0;
++            char entry[1024];
++            DirListInfo e;
++
++            while ( (size_t)(startp - (char *) iovP[0].iov_base) < (size_t)(iovP[0].iov_len - 1) ) {
++              // Find the filename, it comes before the \n
++              if ((endp = (char *) mystrchrnul((const char*) startp, '\n'))) {
++                strncpy(entry, (char *) startp, endp - startp);
++                entry[endp - startp] = 0;
++                e.path = entry;
++
++                endp++;
++
++                // Now parse the stat info
++                TRACEI(REQ, "Dirlist " <<resource.c_str() <<" entry=" <<entry
++                            << " stat=" << endp);
++
++                long dummyl;
++                sscanf(endp, "%ld %lld %ld %ld",
++                        &dummyl,
++                        &e.size,
++                        &e.flags,
++                        &e.modtime);
++              }
++
++
++              if (e.path.length() && (e.path != ".") && (e.path != "..")) {
++                /* The entry is filled.
++          
++                  <D:response xmlns:lp1="DAV:" xmlns:lp2="http://apache.org/dav/props/" xmlns:lp3="LCGDM:">
++                      <D:href>/dpm/cern.ch/home/testers2.eu-emi.eu/</D:href>
++                      <D:propstat>
++                          <D:prop>
++                              <lp1:getcontentlength>1</lp1:getcontentlength>
++                              <lp1:getlastmodified>Tue, 01 May 2012 02:42:13 GMT</lp1:getlastmodified>
++                              <lp1:resourcetype>
++                                <D:collection/>
++                              </lp1:resourcetype>
++                          </D:prop>
++                      <D:status>HTTP/1.1 200 OK</D:status>
++                      </D:propstat>
++                  </D:response>
++                 */
++
++
++                std::string p = resource.c_str();
++                if (*p.rbegin() != '/') p += "/";
++                
++                p += e.path;
++                
++                stringresp += "<D:response xmlns:lp1=\"DAV:\" xmlns:lp2=\"http://apache.org/dav/props/\" xmlns:lp3=\"LCGDM:\">\n";
++                
++                char *estr = escapeXML(p.c_str());
++                stringresp += "<D:href>";
++                stringresp += estr;
++                stringresp += "</D:href>\n";
++                free(estr);
++                
++                stringresp += "<D:propstat>\n<D:prop>\n";
++
++
++
++                // Now add the properties that we have to add
++
++                // File size
++                stringresp += "<lp1:getcontentlength>";
++                stringresp += itos(e.size);
++                stringresp += "</lp1:getcontentlength>\n";
++
++                stringresp += "<lp1:getlastmodified>";
++                stringresp += ISOdatetime(e.modtime);
++                stringresp += "</lp1:getlastmodified>\n";
++
++                if (e.flags & kXR_isDir) {
++                  stringresp += "<lp1:resourcetype><D:collection/></lp1:resourcetype>\n";
++                  stringresp += "<lp1:iscollection>1</lp1:iscollection>\n";
++                } else {
++                  stringresp += "<lp1:iscollection>0</lp1:iscollection>\n";
++                }
++
++                if (e.flags & kXR_xset) {
++                  stringresp += "<lp1:executable>T</lp1:executable>\n";
++                  stringresp += "<lp1:iscollection>1</lp1:iscollection>\n";
++                } else {
++                  stringresp += "<lp1:executable>F</lp1:executable>\n";
++                }
++
++                stringresp += "</D:prop>\n<D:status>HTTP/1.1 200 OK</D:status>\n</D:propstat>\n</D:response>\n";
++
++
++              }
++
++
++
++              if (endp) {
++                  char *pp = (char *)strchr((const char *)endp, '\n');
++                  if (pp) startp = pp+1;
++                  else break;
++              } else break;
++
++            }
++          }
++
++
++
++          // If this was the last bunch of entries, send the buffer and empty it immediately
++          if (final_) {
++            std::string s = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<D:multistatus xmlns:D=\"DAV:\" xmlns:ns1=\"http://apache.org/dav/props/\" xmlns:ns0=\"DAV:\">\n";
++            stringresp.insert(0, s);
++            stringresp += "</D:multistatus>\n";
++            prot->SendSimpleResp(207, (char *) "Multi-Status", (char *) "Content-Type: text/xml; charset=\"utf-8\"",
++                    (char *) stringresp.c_str(), stringresp.length(), keepalive);
++            stringresp.clear();
++            return keepalive ? 1 : -1;
++          }
++
++          break;
++        } // default reqstate
++      } // switch reqstate
++
++
++      break;
++
++    } // case propfind
++
++    case XrdHttpReq::rtMKCOL:
++    {
++
++      if (xrdresp != kXR_ok) {
++        if (xrderrcode == kXR_ItExists) {
++          prot->SendSimpleResp(405, NULL, NULL, (char *) "Method is not allowed; resource already exists.", 0, false);
++        } else {
++          prot->SendSimpleResp(httpStatusCode, NULL, NULL,
++                               httpStatusText.c_str(), httpStatusText.length(), false);
++        }
++        return -1;
++      }
++
++      prot->SendSimpleResp(201, NULL, NULL, (char *) ":-)", 0, keepalive);
++      return keepalive ? 1 : -1;
++
++    }
++    case XrdHttpReq::rtMOVE:
++    {
++
++      if (xrdresp != kXR_ok) {
++        prot->SendSimpleResp(httpStatusCode, NULL, NULL, (char *) etext.c_str(), 0, false);
++        return -1;
++      }
++
++      prot->SendSimpleResp(201, NULL, NULL, (char *) ":-)", 0, keepalive);
++      return keepalive ? 1 : -1;
++
++    }
++
++    default:
++      break;
++
++  }
++
++
++  switch (xrdresp) {
++    case kXR_error:
++      prot->SendSimpleResp(httpStatusCode, NULL, NULL,
++                           httpStatusText.c_str(), httpStatusText.length(), false);
++      return -1;
++      break;
++
++    default:
++
++      break;
++  }
++
++
++  return 0;
++}
++
++void
++XrdHttpReq::sendFooterError(const std::string &extra_text) {
++  if (m_transfer_encoding_chunked && m_trailer_headers && m_status_trailer) {
++    // A trailer header is appropriate in this case; this is signified by
++    // a chunk with size zero, then the trailer, then a crlf.
++    //
++    // We only send the status trailer when explicitly requested; otherwise a
++    // "normal" HTTP client might simply see a short response and think it's a
++    // success
++
++    if (prot->ChunkRespHeader(0))
++      return;
++
++    std::stringstream ss;
++    ss << httpStatusCode << ": " << httpStatusText;
++    if (!extra_text.empty())
++      ss << ": " << extra_text;
++    TRACEI(REQ, ss.str());
++    ss << "\r\n";
++
++    const auto header = "X-Transfer-Status: " + ss.str();
++    if (prot->SendData(header.c_str(), header.size()))
++      return;
++
++    prot->ChunkRespFooter();
++  } else {
++    TRACEI(REQ, httpStatusCode << ": " << httpStatusText << (extra_text.empty() ? "" : (": " + extra_text)));
++  }
++}
++
++void XrdHttpReq::reset() {
++
++  TRACE(REQ, " XrdHttpReq request ended.");
++
++  //if (xmlbody) xmlFreeDoc(xmlbody);
++  readRangeHandler.reset();
++  readClosing = false;
++  writtenbytes = 0;
++  etext.clear();
++  redirdest = "";
++
++  //        // Here we should deallocate this
++  //        const struct iovec *iovP //!< pointer to data array
++  //                int iovN, //!< array count
++  //                int iovL, //!< byte  count
++  //                bool final //!< true -> final result
++
++
++  //xmlbody = 0;
++  depth = 0;
++  xrdresp = kXR_noResponsesYet;
++  xrderrcode = kXR_noErrorYet;
++  ralist.clear();
++  ralist.shrink_to_fit();
++
++  request = rtUnset;
++  resource = "";
++  allheaders.clear();
++
++  // Reset the state of the request's digest request.
++  m_req_digest.clear();
++  m_digest_header.clear();
++  m_req_cksum = nullptr;
++
++  m_resource_with_digest = "";
++  m_user_agent = "";
++
++  headerok = false;
++  keepalive = true;
++  length = 0;
++  filesize = 0;
++  depth = 0;
++  sendcontinue = false;
++
++  m_transfer_encoding_chunked = false;
++  m_current_chunk_size = -1;
++  m_current_chunk_offset = 0;
++
++  m_trailer_headers = false;
++  m_status_trailer = false;
++
++  /// State machine to talk to the bridge
++  reqstate = 0;
++
++  memset(&xrdreq, 0, sizeof (xrdreq));
++  memset(&xrdresp, 0, sizeof (xrdresp));
++  xrderrcode = kXR_noErrorYet;
++
++  etext.clear();
++  redirdest = "";
++
++  stringresp = "";
++
++  host = "";
++  destination = "";
++  hdr2cgistr = "";
++  m_appended_hdr2cgistr = false;
++
++  iovP = 0;
++  iovN = 0;
++  iovL = 0;
++
++
++  if (opaque) delete(opaque);
++  opaque = 0;
++
++  fopened = false;
++
++  final = false;
++
++  mScitag = -1;
++}
++
++void XrdHttpReq::getfhandle() {
++
++  memcpy(fhandle, iovP[0].iov_base, 4);
++  TRACEI(REQ, "fhandle:" <<
++          (int) fhandle[0] << ":" << (int) fhandle[1] << ":" << (int) fhandle[2] << ":" << (int) fhandle[3]);
++
++}
++
++void XrdHttpReq::getReadResponse(XrdHttpIOList &received) {
++  received.clear();
++
++  if (ntohs(xrdreq.header.requestid) == kXR_readv) {
++    readahead_list *l;
++    char *p;
++    kXR_int32 len;
++
++    // Cycle on all the data that is coming from the server
++    for (int i = 0; i < iovN; i++) {
++
++      for (p = (char *) iovP[i].iov_base; p < (char *) iovP[i].iov_base + iovP[i].iov_len;) {
++        l = (readahead_list *) p;
++        len = ntohl(l->rlen);
++
++        received.emplace_back(p+sizeof(readahead_list), -1, len);
++
++        p += sizeof (readahead_list);
++        p += len;
++
++      }
++    }
++    return;
++  }
++
++  // kXR_read result
++  for (int i = 0; i < iovN; i++) {
++    received.emplace_back((char*)iovP[i].iov_base, -1, iovP[i].iov_len);
++  }
++
++}
++
++int XrdHttpReq::sendReadResponsesMultiRanges(const XrdHttpIOList &received) {
++
++  if (received.size() == 0) {
++    bool start, finish;
++    if (readRangeHandler.NotifyReadResult(0, nullptr, start, finish) < 0) {
++      return -1;
++    }
++    return 0;
++  }
++
++  // user is expecting multiple ranges, we must be prepared to send an
++  // individual header for each and format it according to the http rules
++
++  struct rinfo {
++    bool start;
++    bool finish;
++    const XrdOucIOVec2 *ci;
++    const XrdHttpReadRangeHandler::UserRange *ur;
++    std::string st_header;
++    std::string fin_header;
++  };
++
++  // report each received byte chunk to the range handler and record the details
++  // of original user range it related to and if starts a range or finishes all.
++  // also sum the total of the headers and data which need to be sent to the user,
++  // in case we need it for chunked transfer encoding
++  std::vector<rinfo> rvec;
++  off_t sum_len = 0;
++
++  rvec.reserve(received.size());
++
++  for(const auto &rcv: received) {
++    rinfo rentry;
++    bool start, finish;
++    const XrdHttpReadRangeHandler::UserRange *ur;
++
++    if (readRangeHandler.NotifyReadResult(rcv.size, &ur, start, finish) < 0) {
++      return -1;
++    }
++    rentry.ur = ur;
++    rentry.start = start;
++    rentry.finish = finish;
++    rentry.ci = &rcv;
++
++    if (start) {
++      std::string s = buildPartialHdr(ur->start,
++                         ur->end,
++                         filesize,
++                         (char *) "123456");
++
++      rentry.st_header = s;
++      sum_len += s.size();
++    }
++
++    sum_len += rcv.size;
++
++    if (finish) {
++      std::string s = buildPartialHdrEnd((char *) "123456");
++      rentry.fin_header = s;
++      sum_len += s.size();
++    }
++
++    rvec.push_back(rentry);
++  }
++
++
++  // Send chunked encoding header
++  if (m_transfer_encoding_chunked && m_trailer_headers) {
++    prot->ChunkRespHeader(sum_len);
++  }
++
++  // send the user the headers / data
++  for(const auto &rentry: rvec) {
++
++     if (rentry.start) {
++       TRACEI(REQ, "Sending multipart: " << rentry.ur->start << "-" << rentry.ur->end);
++       if (prot->SendData((char *) rentry.st_header.c_str(), rentry.st_header.size())) {
++         return -1;
++       }
++    }
++
++    // Send all the data we have
++    if (prot->SendData((char *) rentry.ci->data, rentry.ci->size)) {
++      return -1;
++    }
++
++    if (rentry.finish) {
++      if (prot->SendData((char *) rentry.fin_header.c_str(), rentry.fin_header.size())) {
++        return -1;
++      }
++    }
++  }
++
++  // Send chunked encoding footer
++  if (m_transfer_encoding_chunked && m_trailer_headers) {
++    prot->ChunkRespFooter();
++  }
++
++  return 0;
++}
++
++int XrdHttpReq::sendReadResponseSingleRange(const XrdHttpIOList &received) {
++  // single range http transfer
++
++  if (received.size() == 0) {
++    bool start, finish;
++    if (readRangeHandler.NotifyReadResult(0, nullptr, start, finish) < 0) {
++      return -1;
++    }
++    return 0;
++  }
++
++  off_t sum = 0;
++  // notify the range handler and return if error
++  for(const auto &rcv: received) {
++    bool start, finish;
++    if (readRangeHandler.NotifyReadResult(rcv.size, nullptr, start, finish) < 0) {
++      return -1;
++    }
++    sum += rcv.size;
++  }
++
++  // Send chunked encoding header
++  if (m_transfer_encoding_chunked && m_trailer_headers) {
++    prot->ChunkRespHeader(sum);
++  }
++  for(const auto &rcv: received) {
++    if (prot->SendData((char *) rcv.data, rcv.size)) return -1;
++  }
++  if (m_transfer_encoding_chunked && m_trailer_headers) {
++    prot->ChunkRespFooter();
++  }
++  return 0;
++}
+diff --git a/src/XrdMacaroons/XrdMacaroonsAuthz.cc b/src/XrdMacaroons/XrdMacaroonsAuthz.cc
+index df771b06c..aee058442 100644
+--- a/src/XrdMacaroons/XrdMacaroonsAuthz.cc
++++ b/src/XrdMacaroons/XrdMacaroonsAuthz.cc
+@@ -173,6 +173,10 @@ Authz::Access(const XrdSecEntity *Entity, const char *path,
+ 
+     const char *authz = env ? env->Get("authz") : nullptr;
+     if (authz && !strncmp(authz, "Bearer%20", 9))
++    {
++        authz += 9;
++    }
++    else if (!authz && (authz = env ? env->Get("access_token") : nullptr) && !strncmp(authz, "Bearer%20", 9))
+     {
+         authz += 9;
+     }
+diff --git a/src/XrdOuc/XrdOucEnv.cc b/src/XrdOuc/XrdOucEnv.cc
+index b8b65d9bc..a27813077 100644
+--- a/src/XrdOuc/XrdOucEnv.cc
++++ b/src/XrdOuc/XrdOucEnv.cc
+@@ -102,37 +102,55 @@ char *XrdOucEnv::Delimit(char *value)
+ 
+ void XrdOucEnv::EnvBuildTidy()
+ {
+-   char *tidyEnv, *authInfo;
+-   int aBeg, aEnd;
++   char *tidyEnv, *authInfo, *accessAuthInfo = nullptr, *working=global_env;
++   int aBeg, aEnd, aCount = 6;
+ 
+ // We need to sanitize the current env string by removing auth info. If there
+-// is no auth informationn, then we can short cicuit this.
++// is no auth information, then we can short circuit this.
+ //
+-   if ((authInfo = strstr(global_env, "authz=")) == 0)
++   if ((authInfo = strstr(global_env, "authz=")) == 0 && (accessAuthInfo = strstr(global_env, "access_token=")) == 0)
+       {Put(TIDY_ENVVAR, "");
+        return;
+       }
+ 
+ // Get position of the auth string and check if we can do a fast deletion.
+ // Otherwise, we must trudge along.
+ //
+-   aBeg = authInfo - global_env;
+-   if (aBeg && global_env[aBeg-1] == '&') aBeg--;
+-   if (!(tidyEnv = index(authInfo+6, '&')))
+-      {char aSave = global_env[aBeg];
+-       global_env[aBeg] = 0;
+-       Put(TIDY_ENVVAR, global_env);
+-       global_env[aBeg] = aSave;
+-      } else {
+-       XrdOucString tidyStr(global_env);
+-       do{if ((aEnd = tidyStr.find('&', aBeg+6)) == STR_NPOS)
+-             {tidyStr.erase(aBeg);
+-              break;
+-             }
+-          tidyStr.erase(aBeg, aEnd-aBeg);
+-         } while((aBeg = tidyStr.find("&authz=")) != STR_NPOS);
+-       Put(TIDY_ENVVAR, tidyStr.c_str());
+-      }
++   for (int idx = 0; idx < 2; idx++)
++       {if (idx == 1)
++           {if (authInfo)
++               {working=Get(TIDY_ENVVAR);
++                accessAuthInfo = strstr(working, "access_token=");
++               }
++            aCount = 13;
++            authInfo = accessAuthInfo;
++           }
++        if (!authInfo) continue;
++        aBeg = authInfo - working;
++        if (aBeg && working[aBeg-1] == '&') aBeg--;
++        if (!(tidyEnv = index(authInfo+aCount, '&')))
++           {char aSave = working[aBeg];
++            if (aBeg) {
++                working[aBeg] = 0;
++                Put(TIDY_ENVVAR, working);
++                working[aBeg] = aSave;
++               } else {
++                Put(TIDY_ENVVAR, "&");
++               }
++           } else {
++            XrdOucString tidyStr(working);
++            do{if ((aEnd = tidyStr.find('&', aBeg+aCount)) == STR_NPOS)
++                  {tidyStr.erase(aBeg);
++                   break;
++                  }
++               tidyStr.erase(aBeg, aEnd-aBeg);
++              } while((aBeg = tidyStr.find(idx ? "&access_token=" : "&authz=")) != STR_NPOS);
++             if (!tidyStr.length())
++                Put(TIDY_ENVVAR, "&");
++             else
++                Put(TIDY_ENVVAR, tidyStr.c_str());
++           }
++       }
+ }
+  
+ /******************************************************************************/
+diff --git a/src/XrdOuc/XrdOucUtils.cc b/src/XrdOuc/XrdOucUtils.cc
+index 40d4e811f..1f80a72a0 100644
+--- a/src/XrdOuc/XrdOucUtils.cc
++++ b/src/XrdOuc/XrdOucUtils.cc
+@@ -1448,7 +1448,7 @@ std::string obfuscateAuth(const std::string& input)
+ {
+   static const regex_t auth_regex = []() {
+     constexpr char re[] =
+-      "(authz=|(transferheader)?(www-|proxy-)?auth(orization|enticate)[[:space:]]*:[[:space:]]*)"
++      "(access_token=|authz=|(transferheader)?(www-|proxy-)?auth(orization|enticate)[[:space:]]*:[[:space:]]*)"
+       "(Bearer([[:space:]]|%20)?(token([[:space:]]|%20)?)?)?";
+ 
+     regex_t regex;
+diff --git a/src/XrdOuc/XrdOucUtils.cc b/src/XrdOuc/XrdOucUtils.cc.orig
+similarity index 100%
+copy from src/XrdOuc/XrdOucUtils.cc
+copy to src/XrdOuc/XrdOucUtils.cc.orig
+diff --git a/src/XrdSciTokens.cmake b/src/XrdSciTokens.cmake
+index f2def352e..e6360b0ab 100644
+--- a/src/XrdSciTokens.cmake
++++ b/src/XrdSciTokens.cmake
+@@ -7,34 +7,48 @@ find_package( SciTokensCpp REQUIRED )
+ set( LIB_XRD_SCITOKENS  XrdAccSciTokens-${PLUGIN_VERSION} )
+ 
+ #-------------------------------------------------------------------------------
+-# The XrdPfc library
++# The XrdSciTokens object library
++#
++# This separate object library is created so unit tests can link directly to it
++# (linking against a MODULE is forbidden)
+ #-------------------------------------------------------------------------------
+ add_library(
+-   ${LIB_XRD_SCITOKENS}
+-   MODULE
++   XrdSciTokensObj
++   OBJECT
+    XrdSciTokens/XrdSciTokensAccess.cc
+                                        XrdSciTokens/XrdSciTokensHelper.hh
+    XrdSciTokens/XrdSciTokensMon.cc     XrdSciTokens/XrdSciTokensMon.hh )
+ target_link_libraries(
+-   ${LIB_XRD_SCITOKENS}
++   XrdSciTokensObj
+    PRIVATE
+    ${SCITOKENS_CPP_LIBRARIES}
+    XrdUtils
+    XrdServer
+    ${CMAKE_DL_LIBS}
+    ${CMAKE_THREAD_LIBS_INIT} )
+ 
+ target_include_directories(
+-   ${LIB_XRD_SCITOKENS}
++   XrdSciTokensObj
+    PRIVATE
+    ${SCITOKENS_CPP_INCLUDE_DIR}
+    XrdSciTokens/vendor/picojson
+    XrdSciTokens/vendor/inih )
+ 
++set_target_properties(XrdSciTokensObj PROPERTIES POSITION_INDEPENDENT_CODE ON)
+ if (HAVE_SCITOKEN_CONFIG_SET_STR)
+-   target_compile_definitions(${LIB_XRD_SCITOKENS} PRIVATE HAVE_SCITOKEN_CONFIG_SET_STR)
++   target_compile_definitions(XrdSciTokensObj PRIVATE HAVE_SCITOKEN_CONFIG_SET_STR)
+ endif()
+ 
++#-------------------------------------------------------------------------------
++# The XrdSciTokens module
++#-------------------------------------------------------------------------------
++add_library(
++   ${LIB_XRD_SCITOKENS}
++   MODULE
++   "$<TARGET_OBJECTS:XrdSciTokensObj>")
++
++target_link_libraries(${LIB_XRD_SCITOKENS} XrdSciTokensObj)
++
+ #-------------------------------------------------------------------------------
+ # Install
+ #-------------------------------------------------------------------------------
+diff --git a/src/XrdSciTokens/README.md b/src/XrdSciTokens/README.md
+index 1edecf944..ab47f60e2 100644
+--- a/src/XrdSciTokens/README.md
++++ b/src/XrdSciTokens/README.md
+@@ -129,19 +129,30 @@ are:
+       For the `group` and `mapping` cases, the username and group are set in the internal XRootD request credential,
+       but the final authorization must be done by a subsequent plugin.  The default value is `capability group mapping`.
+       *Note*: if `mapping` is present, then a token without a capability may still have authorized actions.
++   -  `required_authorization` (optional): In some configurations, there may be multiple possible issuers for a given path; by
++      default, authorization from any one issuer is sufficient.  This option indicates the issuer's authorization is _required_
++      for the path (meaning that a token from this issuer is always required for the paths it manages, regardless of what
++      other issuers may authorize).  Valid values are `none`, `read`, `write`, or `all`; default is `none`.
++   -  `acceptable_authorization` (optional): Whether a valid token from this issuer is acceptable for the XRootD authorization
++      framework.  If so, the user, issuer, and group information will be extracted from the token and passed to the
++      XRootD credential (the username may, for example, be used by a subsequent OSS plugin for interacting with the
++      filesystem).  This may be useful in cases where a token is required from a given issuer but shouldn't be used
++      to populate the username.  Valid values are `none`, `read`, `write`, or `all`; default is `all`.
+ 
+ 
+ Group- and Scope-based authorization
+ ------------------------------------
+ 
+ WLCG tokens can contain either group- or scope-based attributes.  The scope-based attributes specify a path the user
+ is allowed to access (relative to one of the base paths).  If a request is permitted via a scope-based attribute, then
+ it is approved immediately by the plugin.
+ 
+ If there is a group-based attribute, then the contents are copied into XRootD's internal credential.  The plugin does
+ not necessarily immediately authorize (see the `onmissing` attribute) but rather can be used by a further authorization
+ plugin.
+ 
++If there are multiple tokens in the request, they are processed in order until an acceptable authorization is found.
++
+ Mapfile format
+ --------------
+ 
+diff --git a/src/XrdSciTokens/XrdSciTokensAccess.cc b/src/XrdSciTokens/XrdSciTokensAccess.cc
+index 944149a0d..d4f6373e9 100644
+--- a/src/XrdSciTokens/XrdSciTokensAccess.cc
++++ b/src/XrdSciTokens/XrdSciTokensAccess.cc
+@@ -24,31 +24,27 @@
+ #include "picojson.h"
+ 
+ #include "scitokens/scitokens.h"
++#include "XrdSciTokens/XrdSciTokensAccess.hh"
+ #include "XrdSciTokens/XrdSciTokensHelper.hh"
+ #include "XrdSciTokens/XrdSciTokensMon.hh"
+ 
+ // The status-quo to retrieve the default object is to copy/paste the
+ // linker definition and invoke directly.
+ XrdVERSIONINFO(XrdAccAuthorizeObject, XrdAccSciTokens);
+ XrdVERSIONINFO(XrdAccAuthorizeObjAdd, XrdAccSciTokens);
+ 
++XrdSciTokensHelper *SciTokensHelper = nullptr;
++
+ namespace {
+ 
+ enum LogMask {
+     Debug = 0x01,
+     Info = 0x02,
+     Warning = 0x04,
+     Error = 0x08,
+     All = 0xff
+ };
+ 
+-enum IssuerAuthz {
+-    Capability = 0x01,
+-    Group = 0x02,
+-    Mapping = 0x04,
+-    Default = 0x07
+-};
+-
+ std::string LogMaskToString(int mask) {
+     if (mask == LogMask::All) {return "all";}
+ 
+@@ -73,8 +69,6 @@ std::string LogMaskToString(int mask) {
+     return ss.str();
+ }
+ 
+-typedef std::vector<std::pair<Access_Operation, std::string>> AccessRulesRaw;
+-
+ inline uint64_t monotonic_time() {
+   struct timespec tp;
+ #ifdef CLOCK_MONOTONIC_COARSE
+@@ -224,92 +218,48 @@ void ParseCanonicalPaths(const std::string &path, std::vector<std::string> &resu
+     } while (pos != std::string::npos);
+ }
+ 
+-struct MapRule
+-{
+-    MapRule(const std::string &sub,
+-            const std::string &username,
+-            const std::string &path_prefix,
+-            const std::string &group,
+-            const std::string &result)
+-        : m_sub(sub),
+-          m_username(username),
+-          m_path_prefix(path_prefix),
+-          m_group(group),
+-          m_result(result)
+-    {
+-        //std::cerr << "Making a rule {sub=" << sub << ", username=" << username << ", path=" << path_prefix << ", group=" << group << ", result=" << name << "}" << std::endl;
+-    }
+-
+-    const std::string match(const std::string &sub,
+-                            const std::string &username,
+-                            const std::string &req_path,
+-                            const std::vector<std::string> &groups) const
+-    {
+-        if (!m_sub.empty() && sub != m_sub) {return "";}
+-
+-        if (!m_username.empty() && username != m_username) {return "";}
+-
+-        if (!m_path_prefix.empty() &&
+-            strncmp(req_path.c_str(), m_path_prefix.c_str(), m_path_prefix.size()))
+-        {
+-            return "";
+-        }
+-
+-        if (!m_group.empty()) {
+-            for (const auto &group : groups) {
+-                if (group == m_group)
+-                    return m_result;
+-            }
+-            return "";
+-        }
+-        return m_result;
+-    }
+-
+-    std::string m_sub;
+-    std::string m_username;
+-    std::string m_path_prefix;
+-    std::string m_group;
+-    std::string m_result;
+-};
+-
+ struct IssuerConfig
+ {
+     IssuerConfig(const std::string &issuer_name,
+                  const std::string &issuer_url,
+                  const std::vector<std::string> &base_paths,
+                  const std::vector<std::string> &restricted_paths,
+                  bool map_subject,
+                  uint32_t authz_strategy,
+                  const std::string &default_user,
+                  const std::string &username_claim,
+                  const std::string &groups_claim,
+-                 const std::vector<MapRule> rules)
++                 const std::vector<MapRule> rules,
++                 AuthzSetting acceptable_authz,
++                 AuthzSetting required_authz)
+         : m_map_subject(map_subject || !username_claim.empty()),
++          m_acceptable_authz(acceptable_authz),
++          m_required_authz(required_authz),
+           m_authz_strategy(authz_strategy),
+           m_name(issuer_name),
+           m_url(issuer_url),
+           m_default_user(default_user),
+           m_username_claim(username_claim),
+           m_groups_claim(groups_claim),
+           m_base_paths(base_paths),
+           m_restricted_paths(restricted_paths),
+           m_map_rules(rules)
+     {}
+ 
+     const bool m_map_subject;
++    const AuthzSetting m_acceptable_authz;
++    const AuthzSetting m_required_authz;
+     const uint32_t m_authz_strategy;
+     const std::string m_name;
+     const std::string m_url;
+     const std::string m_default_user;
+     const std::string m_username_claim;
+     const std::string m_groups_claim;
+     const std::vector<std::string> m_base_paths;
+     const std::vector<std::string> m_restricted_paths;
+     const std::vector<MapRule> m_map_rules;
+ };
+ 
+-}
+-
+ class OverrideINIReader: public INIReader {
+ public:
+     OverrideINIReader() {};
+@@ -346,123 +296,142 @@ class OverrideINIReader: public INIReader {
+ 
+ };
+ 
+-class XrdAccRules
+-{
+-public:
+-    XrdAccRules(uint64_t expiry_time, const std::string &username, const std::string &token_subject,
+-        const std::string &issuer, const std::vector<MapRule> &rules, const std::vector<std::string> &groups,
+-        uint32_t authz_strategy) :
+-        m_authz_strategy(authz_strategy),
+-        m_expiry_time(expiry_time),
+-        m_username(username),
+-        m_token_subject(token_subject),
+-        m_issuer(issuer),
+-        m_map_rules(rules),
+-        m_groups(groups)
+-    {}
+-
+-    ~XrdAccRules() {}
+-
+-    bool apply(Access_Operation oper, std::string path) {
+-      auto is_subdirectory = [](const std::string& dir, const std::string& subdir) {
+-        if (subdir.size() < dir.size())
+-          return false;
+-
+-        if (subdir.compare(0, dir.size(), dir, 0, dir.size()) != 0)
+-          return false;
+-
+-        return dir.size() == subdir.size() || subdir[dir.size()] == '/' || dir == "/";
+-      };
+-
+-      for (const auto & rule : m_rules) {
+-        // Skip rules that don't match the current operation
+-        if (rule.first != oper)
+-          continue;
+-
+-        // If the rule allows any path, allow the operation
+-        if (rule.second == "/")
+-          return true;
+ 
+-        // Allow operation if path is a subdirectory of the rule's path
+-        if (is_subdirectory(rule.second, path)) {
+-          return true;
+-        } else {
+-          // Allow stat and mkdir of parent directories to comply with WLCG token specs
+-          if (oper == AOP_Stat || oper == AOP_Mkdir)
+-            if (is_subdirectory(path, rule.second))
+-              return true;
++void
++ParseTokenString(const std::string &param, XrdOucEnv *env, std::vector<std::string_view> &authz_list)
++{
++    if (!env) {return;}
++    const char *authz = env->Get(param.c_str());
++    if (!authz) {return;}
++    std::string_view authz_view(authz);
++    size_t pos;
++    do {
++        // Note: this is more permissive than the plugin was previously.
++        // The prefix 'Bearer%20' used to be required as that's what HTTP
++        // required.  However, to make this more pleasant for XRootD protocol
++        // users, we now simply "handle" the prefix insterad of requiring it.
++        if (authz_view.substr(0, 9) == "Bearer%20") {
++            authz_view = authz_view.substr(9);
+         }
+-      }
+-      return false;
+-    }
+-
+-    bool expired() const {return monotonic_time() > m_expiry_time;}
+-
+-    void parse(const AccessRulesRaw &rules) {
+-        m_rules.reserve(rules.size());
+-        for (const auto &entry : rules) {
+-            m_rules.emplace_back(entry.first, entry.second);
++        pos = authz_view.find(",");
++        authz_list.push_back(authz_view.substr(0, pos));
++        authz_view = authz_view.substr(pos + 1);
++    } while (pos != std::string_view::npos);
++}
++
++} // namespace
++
++std::string
++SubpathMatch::str() const {
++    return AccessRuleStr(m_rules); // Returns a human-friendly representation of the access rules
++}
++
++// Convert a list of authorizations into a human-readable string.
++const std::string
++XrdAccRules::str() const
++{
++    std::stringstream ss;
++    ss << "mapped_username=" << m_username << ", subject=" << m_token_subject
++        << ", issuer=" << m_issuer;
++    if (!m_groups.empty()) {
++        ss << ", groups=";
++        bool first=true;
++        for (const auto &group : m_groups) {
++            ss << (first ? "" : ",") << group;
++            first = false;
+         }
+     }
+-
+-    std::string get_username(const std::string &req_path) const
+-    {
+-        for (const auto &rule : m_map_rules) {
+-            std::string name = rule.match(m_token_subject, m_username, req_path, m_groups);
+-            if (!name.empty()) {
+-                return name;
+-            }
+-        }
+-        return "";
++    if (!m_matcher.empty()) {
++        ss << ", authorizations=" << m_matcher.str();
+     }
++    return ss.str();
++}
++
++bool XrdAccRules::expired() const
++{
++    return monotonic_time() > m_expiry_time;
++}
++
++// Determine whether a list of authorizations contains at least one entry
++// from each of the applicable required issuers.
++//
++// - `oper`: The operation type (read, write) to test for authorization.
++// - `path`: The requested path for the operation.
++// - `required_issuers`: A map from a list of paths to an issuer.
++// - `access_rules_list`: A list of access rules derived from the token
++//
++// If the requested path/operation matches one of the required issuers, then one
++// of the provided authorizations (e.g., the token's scopes) must come from that
++// issuer.
++//
++// The return value indicates whether the required authorization was missing, found,
++// or there was no required issuer for the path.
++bool AuthorizesRequiredIssuers(Access_Operation client_oper, const std::string_view &path,
++    const std::vector<std::pair<std::unique_ptr<SubpathMatch>, std::string>> &required_issuers,
++    const std::vector<std::shared_ptr<XrdAccRules>> &access_rules_list)
++{
+ 
+-    const std::string str() const
+-    {
+-        std::stringstream ss;
+-        ss << "mapped_username=" << m_username << ", subject=" << m_token_subject
+-           << ", issuer=" << m_issuer;
+-        if (!m_groups.empty()) {
+-            ss << ", groups=";
+-            bool first=true;
+-            for (const auto &group : m_groups) {
+-                ss << (first ? "" : ",") << group;
+-                first = false;
++    // Translate the client-attempted operation to one of the simpler operations we've defined.
++    Access_Operation oper;
++    switch (client_oper) {
++        case AOP_Any:
++            return false; // Invalid request
++            break;
++        case AOP_Chmod: [[fallthrough]];
++        case AOP_Chown: [[fallthrough]];
++        case AOP_Create: [[fallthrough]];
++        case AOP_Excl_Create: [[fallthrough]];
++        case AOP_Delete: [[fallthrough]];
++        case AOP_Excl_Insert: [[fallthrough]];
++        case AOP_Insert: [[fallthrough]];
++        case AOP_Lock:
++            oper = AOP_Create;
++            break;
++        case AOP_Mkdir:
++            oper = AOP_Mkdir;
++            break;
++        case AOP_Read:
++            oper = AOP_Read;
++            break;
++        case AOP_Readdir:
++            oper = AOP_Readdir;
++            break;
++        case AOP_Rename:
++            oper = AOP_Create;
++            break;
++        case AOP_Stat:
++            oper = AOP_Stat;
++            break;
++        case AOP_Update:
++            oper = AOP_Update;
++            break;
++        default:
++            return false; // Invalid request
++    };
++
++    // Iterate through all the required issuers
++    for (const auto &info : required_issuers) {
++        // See if this issuer is required for this path/operation.
++        if (info.first->apply(oper, path)) {
++            bool has_authz = false;
++            // If so, see if one of the tokens (a) is from this issuer and (b) authorizes the request.
++            for (const auto &rules : access_rules_list) {
++                if (rules->get_issuer() == info.second && rules->apply(oper, path)) {
++                    has_authz = true;
++                    break;
++                }
++            }
++            if (!has_authz) {
++                return false;
+             }
+         }
+-        if (!m_rules.empty()) {
+-            ss << ", authorizations=" << AccessRuleStr(m_rules);
+-        }
+-        return ss.str();
+     }
+-
+-
+-        // Return the token's subject, an opaque unique string within the issuer's
+-        // namespace.  It may or may not be related to the username one should
+-        // use within the authorization framework.
+-    const std::string & get_token_subject() const {return m_token_subject;}
+-    const std::string & get_default_username() const {return m_username;}
+-    const std::string & get_issuer() const {return m_issuer;}
+-
+-    uint32_t get_authz_strategy() const {return m_authz_strategy;}
+-
+-    size_t size() const {return m_rules.size();}
+-    const std::vector<std::string> &groups() const {return m_groups;}
+-
+-private:
+-    uint32_t m_authz_strategy;
+-    AccessRulesRaw m_rules;
+-    uint64_t m_expiry_time{0};
+-    const std::string m_username;
+-    const std::string m_token_subject;
+-    const std::string m_issuer;
+-    const std::vector<MapRule> m_map_rules;
+-    const std::vector<std::string> m_groups;
+-};
++    return true;
++}
+ 
+ class XrdAccSciTokens;
+ 
+ XrdAccSciTokens *accSciTokens = nullptr;
+-XrdSciTokensHelper *SciTokensHelper = nullptr;
+ 
+ class XrdAccSciTokens : public XrdAccAuthorize, public XrdSciTokensHelper,
+                         public XrdSciTokensMon
+@@ -500,164 +469,197 @@ class XrdAccSciTokens : public XrdAccAuthorize, public XrdSciTokensHelper,
+                                   const Access_Operation oper,
+                                         XrdOucEnv       *env) override
+     {
+-        const char *authz = env ? env->Get("authz") : nullptr;
+-            // Note: this is more permissive than the plugin was previously.
+-            // The prefix 'Bearer%20' used to be required as that's what HTTP
+-            // required.  However, to make this more pleasant for XRootD protocol
+-            // users, we now simply "handle" the prefix insterad of requiring it.
+-        if (authz && !strncmp(authz, "Bearer%20", 9)) {
+-            authz += 9;
+-        }
+-            // If there's no request-specific token, then see if the ZTN authorization
+-            // has provided us with a session token.
+-        if (!authz && Entity && !strcmp("ztn", Entity->prot) && Entity->creds &&
++        std::vector<std::string_view> authz_list;
++        authz_list.reserve(1);
++
++        // Parse the authz environment entry as a comma-separated list of tokens.
++        // Traditionally, `authz` has been used as the parameter for XRootD; however,
++        // RFC 6750 Section 2.3 ("URI Query Parameter") specifies that access_token
++        // is correct.  We support both.
++        ParseTokenString("authz", env, authz_list);
++        ParseTokenString("access_token", env, authz_list);
++
++        if (Entity && !strcmp("ztn", Entity->prot) && Entity->creds &&
+             Entity->credslen && Entity->creds[Entity->credslen] == '\0')
+         {
+-            authz = Entity->creds;
++            authz_list.push_back(Entity->creds);
+         }
+-        if (authz == nullptr) {
++
++        if (authz_list.empty()) {
+             return OnMissing(Entity, path, oper, env);
+         }
++
++        // A potential DoS would be providing a large number of tokens to consider for ACLs.
++        // Have a hardcoded assumption of <10 tokens per request.
++        if (authz_list.size() > 10) {
++            m_log.Log(LogMask::Warning, "Access", "Request had more than 10 tokens attached; ignoring");
++            return OnMissing(Entity, path, oper, env);
++        }
++
+         m_log.Log(LogMask::Debug, "Access", "Trying token-based access control");
+-        std::shared_ptr<XrdAccRules> access_rules;
++        std::vector<std::shared_ptr<XrdAccRules>> access_rules_list;
+         uint64_t now = monotonic_time();
+         Check(now);
+-        {
+-            std::lock_guard<std::mutex> guard(m_mutex);
+-            const auto iter = m_map.find(authz);
+-            if (iter != m_map.end() && !iter->second->expired()) {
+-                access_rules = iter->second;
+-            }
+-        }
+-        if (!access_rules) {
+-            m_log.Log(LogMask::Debug, "Access", "Token not found in recent cache; parsing.");
+-            try {
+-                uint64_t cache_expiry;
+-                AccessRulesRaw rules;
+-                std::string username;
+-                std::string token_subject;
+-                std::string issuer;
+-                std::vector<MapRule> map_rules;
+-                std::vector<std::string> groups;
+-                uint32_t authz_strategy;
+-                if (GenerateAcls(authz, cache_expiry, rules, username, token_subject, issuer, map_rules, groups, authz_strategy)) {
+-                    access_rules.reset(new XrdAccRules(now + cache_expiry, username, token_subject, issuer, map_rules, groups, authz_strategy));
+-                    access_rules->parse(rules);
+-                } else {
+-                    m_log.Log(LogMask::Warning, "Access", "Failed to generate ACLs for token");
+-                    return OnMissing(Entity, path, oper, env);
++        for (const auto &authz : authz_list) {
++            std::shared_ptr<XrdAccRules> access_rules;
++            {
++                std::lock_guard<std::mutex> guard(m_mutex);
++                const auto iter = m_map.find(authz);
++                if (iter != m_map.end() && !iter->second->expired()) {
++                    access_rules = iter->second;
+                 }
+-                if (m_log.getMsgMask() & LogMask::Debug) {
+-                    m_log.Log(LogMask::Debug, "Access", "New valid token", access_rules->str().c_str());
++            }
++            if (!access_rules) {
++                m_log.Log(LogMask::Debug, "Access", "Token not found in recent cache; parsing.");
++                try {
++                    uint64_t cache_expiry;
++                    AccessRulesRaw rules;
++                    std::string username;
++                    std::string token_subject;
++                    std::string issuer;
++                    std::vector<MapRule> map_rules;
++                    std::vector<std::string> groups;
++                    uint32_t authz_strategy;
++                    AuthzSetting acceptable_authz;
++                    if (GenerateAcls(authz, cache_expiry, rules, username, token_subject, issuer, map_rules, groups, authz_strategy, acceptable_authz)) {
++                        access_rules.reset(new XrdAccRules(now + cache_expiry, username, token_subject, issuer, map_rules, groups, authz_strategy, acceptable_authz));
++                        access_rules->parse(rules);
++                    } else {
++                        m_log.Log(LogMask::Warning, "Access", "Failed to generate ACLs for token");
++                        continue;
++                    }
++                    if (m_log.getMsgMask() & LogMask::Debug) {
++                        m_log.Log(LogMask::Debug, "Access", "New valid token", access_rules->str().c_str());
++                    }
++                } catch (std::exception &exc) {
++                    m_log.Log(LogMask::Warning, "Access", "Error generating ACLs for authorization", exc.what());
++                    continue;
+                 }
+-            } catch (std::exception &exc) {
+-                m_log.Log(LogMask::Warning, "Access", "Error generating ACLs for authorization", exc.what());
+-                return OnMissing(Entity, path, oper, env);
++                std::lock_guard<std::mutex> guard(m_mutex);
++                m_map[std::string(authz)] = access_rules;
++            } else if (m_log.getMsgMask() & LogMask::Debug) {
++                m_log.Log(LogMask::Debug, "Access", "Cached token", access_rules->str().c_str());
+             }
+-            std::lock_guard<std::mutex> guard(m_mutex);
+-            m_map[authz] = access_rules;
+-        } else if (m_log.getMsgMask() & LogMask::Debug) {
+-            m_log.Log(LogMask::Debug, "Access", "Cached token", access_rules->str().c_str());
++            access_rules_list.push_back(access_rules);
++        }
++        if (access_rules_list.empty()) {
++            return OnMissing(Entity, path, oper, env);
++        }
++        std::string_view path_view(path, strlen(path));
++
++        // Apply the logic for the required issuers.
++        if (!AuthorizesRequiredIssuers(oper, path_view, m_required_issuers, access_rules_list)) {
++            return OnMissing(Entity, path, oper, env);
+         }
+ 
+         // Strategy: assuming the corresponding strategy is enabled, we populate the name in
+         // the XrdSecEntity if:
+         //    1. There are scopes present in the token that authorize the request,
+         //    2. The token is mapped by some rule in the mapfile (group or subject-based mapping).
+         // The default username for the issuer is only used in (1).
+         // If the scope-based mapping is successful, authorize immediately.  Otherwise, if the
+         // mapping is successful, we potentially chain to another plugin.
+         //
+         // We always populate the issuer and the groups, if present.
+ 
+         // Access may be authorized; populate XrdSecEntity
+-        XrdSecEntity new_secentity;
+-        new_secentity.vorg = nullptr;
+-        new_secentity.grps = nullptr;
+-        new_secentity.role = nullptr;
+-        new_secentity.secMon = Entity->secMon;
+-        new_secentity.addrInfo = Entity->addrInfo;
+-        const auto &issuer = access_rules->get_issuer();
+-        if (!issuer.empty()) {
+-            new_secentity.vorg = strdup(issuer.c_str());
+-        }
+-        bool group_success = false;
+-        if ((access_rules->get_authz_strategy() & IssuerAuthz::Group) && access_rules->groups().size()) {
+-            std::stringstream ss;
+-            for (const auto &grp : access_rules->groups()) {
+-                ss << grp << " ";
+-            }
+-            const auto &groups_str = ss.str();
+-            new_secentity.grps = static_cast<char*>(malloc(groups_str.size() + 1));
+-            if (new_secentity.grps) {
+-                memcpy(new_secentity.grps, groups_str.c_str(), groups_str.size());
+-                new_secentity.grps[groups_str.size()] = '\0';
+-            }
+-            group_success = true;
+-        }
+-
+-        std::string username;
+-        bool mapping_success = false;
+-        bool scope_success = false;
+-        username = access_rules->get_username(path);
+-
+-        mapping_success = (access_rules->get_authz_strategy() & IssuerAuthz::Mapping) && !username.empty();
+-        scope_success = (access_rules->get_authz_strategy() & IssuerAuthz::Capability) && access_rules->apply(oper, path);
+-        if (scope_success && (m_log.getMsgMask() & LogMask::Debug)) {
+-            std::stringstream ss;
+-            ss << "Grant authorization based on scopes for operation=" << OpToName(oper) << ", path=" << path;
+-            m_log.Log(LogMask::Debug, "Access", ss.str().c_str());
+-        }
+-
+-        if (!scope_success && !mapping_success && !group_success) {
+-            auto returned_accs = OnMissing(&new_secentity, path, oper, env);
+-            // Clean up the new_secentity
++        for (const auto &access_rules : access_rules_list) {
++            // Make sure this issuer is acceptable for the given operation.
++            if (!access_rules->acceptable_authz(oper)) {
++                m_log.Log(LogMask::Debug, "Access", "Issuer is not acceptable for given operation:", access_rules->get_issuer().c_str());
++                continue;
++            }
++
++            XrdSecEntity new_secentity;
++            new_secentity.vorg = nullptr;
++            new_secentity.grps = nullptr;
++            new_secentity.role = nullptr;
++            new_secentity.secMon = Entity->secMon;
++            new_secentity.addrInfo = Entity->addrInfo;
++            const auto &issuer = access_rules->get_issuer();
++            if (!issuer.empty()) {
++                new_secentity.vorg = strdup(issuer.c_str());
++            }
++            bool group_success = false;
++            if ((access_rules->get_authz_strategy() & IssuerAuthz::Group) && access_rules->groups().size()) {
++                std::stringstream ss;
++                for (const auto &grp : access_rules->groups()) {
++                    ss << grp << " ";
++                }
++                const auto &groups_str = ss.str();
++                new_secentity.grps = static_cast<char*>(malloc(groups_str.size() + 1));
++                if (new_secentity.grps) {
++                    memcpy(new_secentity.grps, groups_str.c_str(), groups_str.size());
++                    new_secentity.grps[groups_str.size()] = '\0';
++                }
++                group_success = true;
++            }
++
++            std::string username;
++            bool mapping_success = false;
++            bool scope_success = false;
++            username = access_rules->get_username(path_view);
++
++            mapping_success = (access_rules->get_authz_strategy() & IssuerAuthz::Mapping) && !username.empty();
++            scope_success = (access_rules->get_authz_strategy() & IssuerAuthz::Capability) && access_rules->apply(oper, path_view);
++            if (scope_success && (m_log.getMsgMask() & LogMask::Debug)) {
++                std::stringstream ss;
++                ss << "Grant authorization based on scopes for operation=" << OpToName(oper) << ", path=" << path;
++                m_log.Log(LogMask::Debug, "Access", ss.str().c_str());
++            }
++
++            if (!scope_success && !mapping_success && !group_success) {
++                auto returned_accs = OnMissing(&new_secentity, path, oper, env);
++                // Clean up the new_secentity
++                if (new_secentity.vorg != nullptr) free(new_secentity.vorg);
++                if (new_secentity.grps != nullptr) free(new_secentity.grps);
++                if (new_secentity.role != nullptr) free(new_secentity.role);
++
++                return returned_accs;
++            }
++
++            // Default user only applies to scope-based mappings.
++            if (scope_success && username.empty()) {
++                username = access_rules->get_default_username();
++            }
++
++            // Setting the request.name will pass the username to the next plugin.
++            // Ensure we do that only if map-based or scope-based authorization worked.
++            if (scope_success || mapping_success) {
++                // Set scitokens.name in the extra attribute
++                Entity->eaAPI->Add("request.name", username, true);
++                new_secentity.eaAPI->Add("request.name", username, true);
++                m_log.Log(LogMask::Debug, "Access", "Request username", username.c_str());
++            }
++
++                // Make the token subject available.  Even though it's a reasonably bad idea
++                // to use for *authorization* for file access, there may be other use cases.
++                // For example, the combination of (vorg, token.subject) is a reasonable
++                // approximation of a unique 'entity' (either person or a robot) and is
++                // more reasonable to use for resource fairshare in XrdThrottle.
++            const auto &token_subject = access_rules->get_token_subject();
++            if (!token_subject.empty()) {
++                Entity->eaAPI->Add("token.subject", token_subject, true);
++            }
++
++            // When the scope authorized this access, allow immediately.  Otherwise, chain
++            XrdAccPrivs returned_op = scope_success ? AddPriv(oper, XrdAccPriv_None) : OnMissing(&new_secentity, path, oper, env);
++
++            // Since we are doing an early return, insert token info into the
++            // monitoring stream if monitoring is in effect and access granted
++            //
++            if (Entity->secMon && scope_success && returned_op && Mon_isIO(oper))
++            Mon_Report(new_secentity, token_subject, username);
++
++            // Cleanup the new_secentry
+             if (new_secentity.vorg != nullptr) free(new_secentity.vorg);
+             if (new_secentity.grps != nullptr) free(new_secentity.grps);
+             if (new_secentity.role != nullptr) free(new_secentity.role);
+-
+-            return returned_accs;
+-        }
+-
+-        // Default user only applies to scope-based mappings.
+-        if (scope_success && username.empty()) {
+-            username = access_rules->get_default_username();
+-        }
+-
+-        // Setting the request.name will pass the username to the next plugin.
+-        // Ensure we do that only if map-based or scope-based authorization worked.
+-        if (scope_success || mapping_success) {
+-            // Set scitokens.name in the extra attribute
+-            Entity->eaAPI->Add("request.name", username, true);
+-            new_secentity.eaAPI->Add("request.name", username, true);
+-            m_log.Log(LogMask::Debug, "Access", "Request username", username.c_str());
++            return returned_op;
+         }
+ 
+-            // Make the token subject available.  Even though it's a reasonably bad idea
+-            // to use for *authorization* for file access, there may be other use cases.
+-            // For example, the combination of (vorg, token.subject) is a reasonable
+-            // approximation of a unique 'entity' (either person or a robot) and is
+-            // more reasonable to use for resource fairshare in XrdThrottle.
+-        const auto &token_subject = access_rules->get_token_subject();
+-        if (!token_subject.empty()) {
+-            Entity->eaAPI->Add("token.subject", token_subject, true);
+-        }
+-
+-        // When the scope authorized this access, allow immediately.  Otherwise, chain
+-        XrdAccPrivs returned_op = scope_success ? AddPriv(oper, XrdAccPriv_None) : OnMissing(&new_secentity, path, oper, env);
+-
+-        // Since we are doing an early return, insert token info into the
+-        // monitoring stream if monitoring is in effect and access granted
+-        //
+-        if (Entity->secMon && scope_success && returned_op && Mon_isIO(oper))
+-           Mon_Report(new_secentity, token_subject, username);
+-
+-        // Cleanup the new_secentry
+-        if (new_secentity.vorg != nullptr) free(new_secentity.vorg);
+-        if (new_secentity.grps != nullptr) free(new_secentity.grps);
+-        if (new_secentity.role != nullptr) free(new_secentity.role);
+-
+-        return returned_op;
++        // We iterated through all available credentials and none provided authorization; fall back
++        return OnMissing(Entity, path, oper, env);
+     }
+ 
+     virtual  Issuers IssuerList() override
+@@ -762,12 +764,12 @@ class XrdAccSciTokens : public XrdAccAuthorize, public XrdSciTokensHelper,
+         return XrdAccPriv_None;
+     }
+ 
+-    bool GenerateAcls(const std::string &authz, uint64_t &cache_expiry, AccessRulesRaw &rules, std::string &username, std::string &token_subject, std::string &issuer, std::vector<MapRule> &map_rules, std::vector<std::string> &groups, uint32_t &authz_strategy) {
++    bool GenerateAcls(const std::string_view &authz, uint64_t &cache_expiry, AccessRulesRaw &rules, std::string &username, std::string &token_subject, std::string &issuer, std::vector<MapRule> &map_rules, std::vector<std::string> &groups, uint32_t &authz_strategy, AuthzSetting &acceptable_authz) {
+         // Does this look like a JWT?  If not, bail out early and
+         // do not pollute the log.
+         bool looks_good = true;
+         int separator_count = 0;
+-        for (auto cur_char = authz.c_str(); *cur_char; cur_char++) {
++        for (auto cur_char = authz.data(); *cur_char; cur_char++) {
+             if (*cur_char == '.') {
+                 separator_count++;
+                 if (separator_count > 2) {
+@@ -792,7 +794,7 @@ class XrdAccSciTokens : public XrdAccAuthorize, public XrdSciTokensHelper,
+         char *err_msg;
+         SciToken token = nullptr;
+         pthread_rwlock_rdlock(&m_config_lock);
+-        auto retval = scitoken_deserialize(authz.c_str(), &token, &m_valid_issuers_array[0], &err_msg);
++        auto retval = scitoken_deserialize(authz.data(), &token, &m_valid_issuers_array[0], &err_msg);
+         pthread_rwlock_unlock(&m_config_lock);
+         if (retval) {
+             // This originally looked like a JWT so log the failure.
+@@ -1000,6 +1002,7 @@ class XrdAccSciTokens : public XrdAccAuthorize, public XrdSciTokensHelper,
+         username = std::move(tmp_username);
+         issuer = std::move(token_issuer);
+         groups = std::move(groups_parsed);
++        acceptable_authz = config.m_acceptable_authz;
+ 
+         return true;
+     }
+@@ -1137,6 +1140,33 @@ class XrdAccSciTokens : public XrdAccAuthorize, public XrdSciTokensHelper,
+         return true;
+     }
+ 
++    // A helper function for parsing one of the authorization setting variables (required_authz, acceptable_authz).
++    // The result object is only changed if the variable is set to a non-empty string in the configuration.
++    //
++    // Returns false on failure.
++    bool ParseAuthzSetting(OverrideINIReader &reader, const std::string &section, const std::string &variable, AuthzSetting &result) {
++        auto authz_setting_str = reader.Get(section, variable, "");
++        AuthzSetting authz_setting(AuthzSetting::None);
++        if (authz_setting_str == "") {
++            return true;
++        } else if (authz_setting_str == "none") {
++            authz_setting = AuthzSetting::None;
++        } else if (authz_setting_str == "all") {
++            authz_setting = AuthzSetting::All;
++        } else if (authz_setting_str == "read") {
++            authz_setting = AuthzSetting::Read;
++        } else if (authz_setting_str == "write") {
++            authz_setting = AuthzSetting::Write;
++        } else {
++            std::stringstream ss;
++            ss << "Failed to parse " << variable << " in section " << section << ": unknown authorization setting " << authz_setting_str;
++            m_log.Log(LogMask::Error, "Reconfig", ss.str().c_str());
++            return false;
++        }
++        result = authz_setting;
++        return true;
++    }
++
+     bool Reconfig()
+     {
+         errno = 0;
+@@ -1281,6 +1311,14 @@ class XrdAccSciTokens : public XrdAccAuthorize, public XrdSciTokensHelper,
+             auto username_claim = reader.Get(section, "username_claim", "");
+             auto groups_claim = reader.Get(section, "groups_claim", "wlcg.groups");
+ 
++            AuthzSetting required_authz(AuthzSetting::None), acceptable_authz(AuthzSetting::All);
++            if (!ParseAuthzSetting(reader, section, "required_authorization", required_authz)) {
++                m_log.Log(LogMask::Error, "Reconfig", "Ignoring required_authorization and using default of 'none'");
++            }
++            if (!ParseAuthzSetting(reader, section, "acceptable_authorization", acceptable_authz)) {
++                m_log.Log(LogMask::Error, "Reconfig", "Ignoring acceptable_authorization and using default of 'all'");
++            }
++
+             auto authz_strategy_str = reader.Get(section, "authorization_strategy", "");
+             uint32_t authz_strategy = 0;
+             if (authz_strategy_str.empty()) {
+@@ -1304,7 +1342,33 @@ class XrdAccSciTokens : public XrdAccAuthorize, public XrdSciTokensHelper,
+             issuers.emplace(std::piecewise_construct,
+                             std::forward_as_tuple(issuer),
+                             std::forward_as_tuple(name, issuer, base_paths, restricted_paths,
+-                                                  map_subject, authz_strategy, default_user, username_claim, groups_claim, rules));
++                                                  map_subject, authz_strategy, default_user, username_claim, groups_claim, rules,
++                                                  acceptable_authz, required_authz));
++
++            // If this is an issuer that is required for authorization, calculate the paths that it is
++            // responsible for.
++            if (required_authz != AuthzSetting::None) {
++                AccessRulesRaw rules;
++                for (const auto &base_path : base_paths) {
++                    if (restricted_paths.empty()) {
++                        restricted_paths.emplace_back("/");
++                    }
++                    for (const auto &restricted_path : restricted_paths) {
++                        auto full_path = base_path + "/" + restricted_path;
++                        std::string cleaned_path;
++                        MakeCanonical(full_path, cleaned_path);
++                        if (required_authz == AuthzSetting::Read || required_authz == AuthzSetting::All) {
++                            rules.emplace_back(AOP_Read, cleaned_path);
++                            rules.emplace_back(AOP_Stat, cleaned_path);
++                        } else if (required_authz == AuthzSetting::Write || required_authz == AuthzSetting::All) {
++                            rules.emplace_back(AOP_Create, cleaned_path);
++                            rules.emplace_back(AOP_Mkdir, cleaned_path);
++                            rules.emplace_back(AOP_Stat, cleaned_path);
++                        }
++                    }
++                }
++                m_required_issuers.emplace_back(std::make_unique<SubpathMatch>(rules), issuer);
++            }
+         }
+ 
+         if (issuers.empty()) {
+@@ -1358,10 +1422,13 @@ class XrdAccSciTokens : public XrdAccAuthorize, public XrdSciTokensHelper,
+     pthread_rwlock_t m_config_lock;
+     std::vector<std::string> m_audiences;
+     std::vector<const char *> m_audiences_array;
+-    std::map<std::string, std::shared_ptr<XrdAccRules>> m_map;
++    std::map<std::string, std::shared_ptr<XrdAccRules>, std::less<>> m_map; // Note: std::less<> is used as the comparator to enable transparent casting from std::string_view for key lookup
+     XrdAccAuthorize* m_chain;
+     const std::string m_parms;
+     std::vector<const char*> m_valid_issuers_array;
++    // Authorization from these issuers are required for any matching path.  The map tracks the
++    // base prefix to the issuer URL.
++    std::vector<std::pair<std::unique_ptr<SubpathMatch>, std::string>> m_required_issuers;
+     std::unordered_map<std::string, IssuerConfig> m_issuers;
+     uint64_t m_next_clean{0};
+     XrdSysError m_log;
+diff --git a/src/XrdSciTokens/XrdSciTokensAccess.hh b/src/XrdSciTokens/XrdSciTokensAccess.hh
+new file mode 100644
+index 000000000..09b1a8d0d
+--- /dev/null
++++ b/src/XrdSciTokens/XrdSciTokensAccess.hh
+@@ -0,0 +1,222 @@
++
++#include "XrdAcc/XrdAccAuthorize.hh"
++
++#include <memory>
++#include <string>
++#include <string_view>
++#include <vector>
++
++#include <string.h>
++
++/**
++ * Class and function definitions for the SciTokens plugin.
++ */
++
++typedef std::vector<std::pair<Access_Operation, std::string>> AccessRulesRaw;
++
++// Class representing a rule in the administrator-provided mapfile.
++// All predicates must match for the rule to apply.
++struct MapRule
++{
++    MapRule(const std::string &sub,
++            const std::string &username,
++            const std::string &path_prefix,
++            const std::string &group,
++            const std::string &result)
++        : m_sub(sub),
++          m_username(username),
++          m_path_prefix(path_prefix),
++          m_group(group),
++          m_result(result)
++    {
++        //std::cerr << "Making a rule {sub=" << sub << ", username=" << username << ", path=" << path_prefix << ", group=" << group << ", result=" << name << "}" << std::endl;
++    }
++
++    const std::string match(const std::string &sub,
++                            const std::string &username,
++                            const std::string_view &req_path,
++                            const std::vector<std::string> &groups) const
++    {
++        if (!m_sub.empty() && sub != m_sub) {return "";}
++
++        if (!m_username.empty() && username != m_username) {return "";}
++
++        if (!m_path_prefix.empty() &&
++            strncmp(req_path.data(), m_path_prefix.c_str(), m_path_prefix.size()))
++        {
++            return "";
++        }
++
++        if (!m_group.empty()) {
++            for (const auto &group : groups) {
++                if (group == m_group)
++                    return m_result;
++            }
++            return "";
++        }
++        return m_result;
++    }
++
++    std::string m_sub;
++    std::string m_username;
++    std::string m_path_prefix;
++    std::string m_group;
++    std::string m_result;
++};
++
++// Control whether a given issuer is required for the paths it authorizes
++enum class AuthzSetting {
++    None, // Issuer's authorization is not necessary
++    Read, // Authorization from this issuer is necessary for reads.
++    Write, // Authorization from this issuer is necessary for writes.
++    All, // Authorization from this issuer is necessary for all operations.
++};
++
++// Controls what part of the token is used to determine a positive authorization.
++//
++// E.g., if IssuerAuthz::Group is set, then the positive authorization may be based
++// on the groups embedded in the token.
++enum IssuerAuthz {
++    Capability = 0x01,
++    Group = 0x02,
++    Mapping = 0x04,
++    Default = 0x07
++};
++
++// Given a list of access rules, this class determines whether a requested operation / path
++// is permitted by the access rules.
++class SubpathMatch final {
++public:
++    SubpathMatch() = default;
++    SubpathMatch(const AccessRulesRaw &rules)
++    : m_rules(rules)
++    {}
++
++    // Determine whether the known access rules permit the requested `oper` on `path`.
++    bool apply(Access_Operation oper, const std::string_view path) const {
++        auto is_subdirectory = [](const std::string_view& dir, const std::string_view& subdir) {
++            if (subdir.size() < dir.size())
++                return false;
++
++            if (subdir.compare(0, dir.size(), dir, 0, dir.size()) != 0)
++                return false;
++
++            return dir.size() == subdir.size() || subdir[dir.size()] == '/' || dir == "/";
++        };
++
++        for (const auto & rule : m_rules) {
++            // Skip rules that don't match the current operation
++            if (rule.first != oper)
++                continue;
++
++            // If the rule allows any path, allow the operation
++            if (rule.second == "/")
++                return true;
++
++            // Allow operation if path is a subdirectory of the rule's path
++            if (is_subdirectory(rule.second, path)) {
++                return true;
++            } else {
++                // Allow stat and mkdir of parent directories to comply with WLCG token specs
++                if (oper == AOP_Stat || oper == AOP_Mkdir)
++                if (is_subdirectory(path, rule.second))
++                    return true;
++            }
++        }
++        return false;
++    }
++
++    bool empty() const {return m_rules.empty();} // Returns true if there are no rules to match
++
++    std::string str() const; // Returns a human-friendly representation of the access rules
++
++    size_t size() const {return m_rules.size();} // Returns the count of rules
++private:
++
++    AccessRulesRaw m_rules;
++};
++
++/**
++ * A class that encapsulates the access rules generated from a token.
++ * 
++ * The access rules are generated from the token's claims; the object
++ * is intended to be kept in a cache and periodically checked for expiration.
++ */
++class XrdAccRules
++{
++public:
++    XrdAccRules(uint64_t expiry_time, const std::string &username, const std::string &token_subject,
++        const std::string &issuer, const std::vector<MapRule> &rules, const std::vector<std::string> &groups,
++        uint32_t authz_strategy, AuthzSetting acceptable_authz) :
++        m_authz_strategy(authz_strategy),
++        m_acceptable_authz(acceptable_authz),
++        m_expiry_time(expiry_time),
++        m_username(username),
++        m_token_subject(token_subject),
++        m_issuer(issuer),
++        m_map_rules(rules),
++        m_groups(groups)
++    {}
++
++    ~XrdAccRules() {}
++
++    bool apply(Access_Operation oper, const std::string_view path) {
++        return m_matcher.apply(oper, path);
++    }
++
++    // Check to see if the access rules generated for this token have expired
++    bool expired() const;
++
++    void parse(const AccessRulesRaw &rules) {
++        m_matcher = SubpathMatch(rules);
++    }
++
++    std::string get_username(const std::string_view &req_path) const
++    {
++        for (const auto &rule : m_map_rules) {
++            std::string name = rule.match(m_token_subject, m_username, req_path, m_groups);
++            if (!name.empty()) {
++                return name;
++            }
++        }
++        return "";
++    }
++
++    const std::string str() const;
++
++        // Return the token's subject, an opaque unique string within the issuer's
++        // namespace.  It may or may not be related to the username one should
++        // use within the authorization framework.
++    const std::string & get_token_subject() const {return m_token_subject;}
++    const std::string & get_default_username() const {return m_username;}
++    const std::string & get_issuer() const {return m_issuer;}
++
++    uint32_t get_authz_strategy() const {return m_authz_strategy;}
++    bool acceptable_authz(Access_Operation oper) const {
++        if (m_acceptable_authz == AuthzSetting::All) return true;
++        if (m_acceptable_authz == AuthzSetting::None) return false;
++
++        bool is_read = oper == AOP_Read || oper == AOP_Readdir || oper == AOP_Stat;
++        if (is_read) return m_acceptable_authz == AuthzSetting::Read;
++        else return m_acceptable_authz == AuthzSetting::Write;
++    }
++
++    size_t size() const {return m_matcher.size();}
++    const std::vector<std::string> &groups() const {return m_groups;}
++
++private:
++    const uint32_t m_authz_strategy;
++    const AuthzSetting m_acceptable_authz;
++    SubpathMatch m_matcher;
++    const uint64_t m_expiry_time{0};
++    const std::string m_username;
++    const std::string m_token_subject;
++    const std::string m_issuer;
++    const std::vector<MapRule> m_map_rules;
++    const std::vector<std::string> m_groups;
++};
++
++bool AuthorizesRequiredIssuers(Access_Operation client_oper, const std::string_view &path,
++    const std::vector<std::pair<std::unique_ptr<SubpathMatch>, std::string>> &required_issuers,
++    const std::vector<std::shared_ptr<XrdAccRules>> &access_rules_list);
++
+diff --git a/src/XrdTpc/XrdTpcUtils.cc b/src/XrdTpc/XrdTpcUtils.cc
+index 26863cf9a..4f068f716 100644
+--- a/src/XrdTpc/XrdTpcUtils.cc
++++ b/src/XrdTpc/XrdTpcUtils.cc
+@@ -40,6 +40,9 @@ std::string XrdTpcUtils::prepareOpenURL(const std::string & reqResource, std::ma
+           reqHeaders["Authorization"] = token.substr(6);
+           has_authz_header = true;
+         }
++      } else if (!strncmp(token.c_str(), "access_token=", 13) && !has_authz_header) {
++        reqHeaders["Authorization"] = token.substr(13);
++        has_authz_header = true;
+       } else {
+         opaque << (found_first_header ? "&" : "?") << token;
+         found_first_header = true;
+@@ -59,4 +62,4 @@ std::string XrdTpcUtils::prepareOpenURL(const std::string & reqResource, std::ma
+   }
+   hasSetOpaque = found_first_header;
+   return reqResource + opaque.str();
+-}
+\ No newline at end of file
++}
+diff --git a/tests/CMakeLists.txt b/tests/CMakeLists.txt
+index 523682553..be570c3ce 100644
+--- a/tests/CMakeLists.txt
++++ b/tests/CMakeLists.txt
+@@ -18,6 +18,10 @@ add_subdirectory( XrdSsiTests )
+ 
+ add_subdirectory(XrdTpcTests)
+ 
++if( BUILD_SCITOKENS )
++  add_subdirectory( scitokens )
++endif()
++
+ if(NOT ENABLE_SERVER_TESTS)
+   return()
+ endif()
+diff --git a/tests/XRootD/CMakeLists.txt b/tests/XRootD/CMakeLists.txt
+index 6b469eb38..bd549ca95 100644
+--- a/tests/XRootD/CMakeLists.txt
++++ b/tests/XRootD/CMakeLists.txt
+@@ -9,6 +9,13 @@ if(ENABLE_HTTP_TESTS)
+   list(APPEND XROOTD_CONFIGS http)
+ endif()
+ 
++# Note: HAVE_SCITOKEN_CONFIG_SET_STR is required to override the CA file
++# for the scitokens library; otherwise, the test will fail with TLS errors.
++if(BUILD_SCITOKENS AND HAVE_SCITOKEN_CONFIG_SET_STR)
++  list(APPEND XROOTD_CONFIGS scitokens)
++  list(APPEND scitokens_FIXTURES SciTokens)
++endif()
++
+ foreach(CONFIG ${XROOTD_CONFIGS})
+   add_test(NAME XRootD::${CONFIG}::setup
+     COMMAND sh -c "${CMAKE_CURRENT_SOURCE_DIR}/test.sh ${CONFIG} setup")
+@@ -34,10 +41,19 @@ foreach(CONFIG ${XROOTD_CONFIGS})
+   list(APPEND ${CONFIG}_LOGS ${CMAKE_CURRENT_BINARY_DIR}/${CONFIG}/client.log)
+   list(APPEND ${CONFIG}_LOGS ${CMAKE_CURRENT_BINARY_DIR}/${CONFIG}/xrootd.log)
+ 
++  list(APPEND ${CONFIG}_FIXTURES XRootD::${CONFIG})
++
+   set_tests_properties(XRootD::${CONFIG}::test
+     PROPERTIES
+-      FIXTURES_REQUIRED XRootD::${CONFIG}
++      FIXTURES_REQUIRED "${${CONFIG}_FIXTURES}"
+       ENVIRONMENT "BINARY_DIR=${CMAKE_BINARY_DIR}"
+       ATTACHED_FILES_ON_FAIL "${${CONFIG}_LOGS}"
+   )
+ endforeach()
++
++if(BUILD_SCITOKENS AND HAVE_SCITOKEN_CONFIG_SET_STR)
++  set_tests_properties(XRootD::scitokens::setup
++    PROPERTIES
++      FIXTURES_REQUIRED SciTokens
++  )
++endif()
+diff --git a/tests/XRootD/scitokens-module.cfg b/tests/XRootD/scitokens-module.cfg
+new file mode 100644
+index 000000000..014e61f32
+--- /dev/null
++++ b/tests/XRootD/scitokens-module.cfg
+@@ -0,0 +1,12 @@
++[Global]
++audience = https://localhost:7095
++
++[Issuer test]
++issuer = https://localhost:7095/issuer/one
++base_path = /protected, /dual
++
++[Issuer test2]
++issuer = https://localhost:7095/issuer/two
++base_path = /dual
++required_authorization = all
++acceptable_authorization = none
+diff --git a/tests/XRootD/scitokens.authdb b/tests/XRootD/scitokens.authdb
+new file mode 100644
+index 000000000..ac17e381c
+--- /dev/null
++++ b/tests/XRootD/scitokens.authdb
+@@ -0,0 +1 @@
++u * /issuer lr
+diff --git a/tests/XRootD/scitokens.cfg b/tests/XRootD/scitokens.cfg
+new file mode 100644
+index 000000000..fb802fe6e
+--- /dev/null
++++ b/tests/XRootD/scitokens.cfg
+@@ -0,0 +1,26 @@
++set name = scitokens
++set port = 7095
++
++set pwd = $PWD
++set src = $SOURCE_DIR
++
++set scitokensdir = $PWD
++
++xrootd.seclib libXrdSec.so
++xrd.protocol XrdHttp:7095 libXrdHttp.so
++
++xrd.tlsca certfile $scitokensdir/../issuer/tlsca.pem
++xrd.tls $scitokensdir/../issuer/tls.crt $scitokensdir/../issuer/tls.key
++
++ofs.authlib ++ libXrdAccSciTokens.so config=$src/scitokens-module.cfg
++ofs.authorize 1
++acc.authdb $src/scitokens.authdb
++
++http.header2cgi Authorization authz
++http.exthandler xrdtpc libXrdHttpTPC.so
++
++# For root://-protocol test, force usage of a token.
++sec.protocol ztn
++sec.protbind * only ztn
++
++continue $src/common.cfg
+diff --git a/tests/XRootD/scitokens.sh b/tests/XRootD/scitokens.sh
+new file mode 100644
+index 000000000..621889dd6
+--- /dev/null
++++ b/tests/XRootD/scitokens.sh
+@@ -0,0 +1,159 @@
++#!/usr/bin/env bash
++
++function setup_scitokens() {
++	require_commands curl
++
++	# Setup the issuer and protected directory
++	ln -sf "$PWD/../issuer/export" scitokens/xrootd/issuer
++	mkdir -p scitokens/xrootd/protected
++	echo 'Hello, World' > scitokens/xrootd/protected/hello_world.txt
++	mkdir -p "$PWD/scitokens/xrootd/dual"
++	echo 'Hello, World' > "$PWD/scitokens/xrootd/dual/hello_world.txt"
++
++	# Override the scitoken cache location; otherwise, contents of prior test runs may be cached
++	XDG_CACHE_HOME="${NAME}/cache"
++	export XDG_CACHE_HOME
++	mkdir -p "$XDG_CACHE_HOME/scitokens"
++
++	# Add the xrdscitokens-create-token command to the PATH to simplify invocations below.
++	PATH="$PWD/../scitokens:$PATH"
++
++	# Create a read-only token
++	OUTPUTDIR=$PWD/scitokens
++	pushd ../issuer || exit 1
++	if ! xrdscitokens-create-token issuer_pub_1.pem issuer_key_1.pem test_1 \
++		"https://localhost:7095/issuer/one" storage.read:/ > "$OUTPUTDIR/token"; then
++		echo "Failed to create token"
++		exit 1
++	fi
++	chmod 0600 "$OUTPUTDIR/token"
++
++	# Create a create-only token
++	if ! xrdscitokens-create-token issuer_pub_1.pem issuer_key_1.pem test_1 \
++		"https://localhost:7095/issuer/one" storage.create:/subdir > "$OUTPUTDIR/token_create"; then
++		echo "Failed to create 'storage.create' token"
++		exit 1
++	fi
++	chmod 0600 "$OUTPUTDIR/token_create"
++
++	# Create a modify token
++	if ! xrdscitokens-create-token issuer_pub_1.pem issuer_key_1.pem test_1 \
++		"https://localhost:7095/issuer/one" storage.modify:/subdir_modify > "$OUTPUTDIR/token_modify"; then
++		echo "Failed to create 'storage.modify' token"
++		exit 1
++	fi
++	chmod 0600 "$OUTPUTDIR/token_modify"
++
++	# Create an issuer-two read token
++	if ! xrdscitokens-create-token issuer_pub_2.pem issuer_key_2.pem test_2 \
++		"https://localhost:7095/issuer/two" storage.read:/ > "$OUTPUTDIR/token_two"; then
++		echo "Failed to create second 'storage.read' token from issuer two"
++		exit 1
++	fi
++
++	popd || exit 1
++}
++
++function execute_curl() {
++	url="$1"
++	expected_status="$2"
++	expected_contents="$3"
++	token_file="$4"
++	http_verb="$5"
++
++	token_arg=()
++	if [ -n "$token_file" ]; then
++		token_arg=(-H "Authorization: Bearer $(cat "$token_file")")
++	fi
++	verb_arg=()
++	if [ -n "$http_verb" ]; then
++		verb_arg=(-X "$http_verb" -d "$expected_contents")
++		echo -n "$http_verb $url "
++	else
++		echo -n "GET $url "
++	fi
++	token_arg=()
++	if [ -n "$token_file" ]; then
++		token_arg=(-H "Authorization: Bearer $(cat "$token_file")")
++		echo -n "with token file $token_file "
++	else
++		echo -n "with no token "
++	fi
++	echo "(expected $expected_status)"
++
++	# This does not use the "assert" helper function as we must redirect curl's output;
++	# "assert" does not allow redirects
++	if ! curl -s "${verb_arg[@]}" "${token_arg[@]}" -o "$TMPDIR/curl_output" -w "%{http_code}" \
++		--cacert "../issuer/tlsca.pem" "$url" > "$TMPDIR/curl_status"; then
++
++		echo "HTTP request failed.  Retrying with verbose output enabled:"
++		curl -s "${verb_arg[@]}" "${token_arg[@]}" -v --cacert "../issuer/tlsca.pem" "$url"
++		exit 1
++	fi
++	assert_eq "$expected_status" "$(cat "$TMPDIR/curl_status")"
++	if [ -n "$expected_contents" ] && [ -z "$http_verb" ]; then
++		assert_eq "$expected_contents" "$(cat "$TMPDIR/curl_output")"
++	fi
++}
++
++function test_scitokens() {
++	# The default $HOST construction uses $HOSTNAME in the URL; that will
++	# fail here because of the TLS verification (the certificate is generated
++	# with "localhost" instead).
++	HOST="roots://localhost:${XRD_PORT}/"
++	export X509_CERT_FILE=../issuer/tlsca.pem
++	export BEARER_TOKEN_FILE=scitokens/token
++	echo
++	echo "server: XRootD $(xrdfs "${HOST}" query config version 2>&1)"
++	echo
++
++	# create local temporary directory
++	TMPDIR=$(mktemp -d "${NAME}/test-XXXXXX")
++
++	# Perform tests over the root protocol using ZTN
++	unset BEARER_TOKEN_FILE
++	assert_failure xrdcp "$SOURCE_DIR/scitokens.cfg" "$HOST/protected/subdir/root/scitokens.cfg"
++	export BEARER_TOKEN_FILE=scitokens/token_create
++	xrdcp "$SOURCE_DIR/scitokens.cfg" "$HOST/protected/subdir/root/scitokens.cfg"
++	assert_failure xrdcp -f "$HOST/protected/subdir/root/scitokens.cfg" .
++	export BEARER_TOKEN_FILE=scitokens/token
++	assert xrdcp -f "$HOST/protected/subdir/root/scitokens.cfg" .
++	assert diff -u "$SOURCE_DIR/scitokens.cfg" scitokens.cfg
++
++	# from now on, we use HTTP
++	export HOST=https://localhost:7095
++
++	execute_curl "$HOST/issuer/one/issuer.jwks" 200 "$(cat scitokens/xrootd/issuer/one/issuer.jwks)"
++	execute_curl "$HOST/protected/hello_world.txt" 403 ""
++	execute_curl "$HOST/protected/hello_world.txt" 200 "Hello, World" scitokens/token
++
++	# Downloading $HOST/protected/hello_world.txt with create-only token (expected 403)
++	execute_curl "$HOST/protected/hello_world.txt" 403 "" scitokens/token_create
++
++	# Uploading $HOST/protected/subdir/hello_world.txt with create-only token (expected 201)
++	execute_curl "$HOST/protected/subdir/hello_world.txt" 201 "hello, world" scitokens/token_create PUT
++	execute_curl "$HOST/protected/subdir/hello_world.txt" 200 "hello, world" scitokens/token
++
++	# Re-uploading $HOST/protected/subdir/hello_world.txt with create-only token (expected 403)
++	execute_curl "$HOST/protected/subdir/hello_world.txt" 403 "hello, world" scitokens/token_create PUT
++
++	# Uploading $HOST/protected/subdir_modify/hello_world.txt with modify token (expected 201)"
++	execute_curl "$HOST/protected/subdir_modify/hello_world.txt" 201 test scitokens/token_modify PUT
++	execute_curl "$HOST/protected/subdir_modify/hello_world.txt" 200 test scitokens/token
++
++	# Re-uploading $HOST/protected/subdir_modify/hello_world.txt with modify token (expected 201)
++	execute_curl "$HOST/protected/subdir_modify/hello_world.txt" 201 'hello, world' scitokens/token_modify PUT
++	execute_curl "$HOST/protected/subdir_modify/hello_world.txt" 200 'hello, world' scitokens/token
++
++	###
++	## Tests for requiring multiple tokens to authorize an operation
++	###
++	execute_curl "$HOST/dual/hello_world.txt" 403 "" scitokens/token
++	execute_curl "$HOST/dual/hello_world.txt" 403 "" scitokens/token_two
++	execute_curl "$HOST/dual/hello_world.txt?access_token=$(cat scitokens/token)" 200 "" scitokens/token_two
++
++	HOST="roots://localhost:${XRD_PORT}/"
++	export BEARER_TOKEN_FILE=scitokens/token
++	assert xrdcp -f "$HOST/dual/hello_world.txt?authz=$(cat scitokens/token_two)" .
++	assert_eq "Hello, World" "$(cat hello_world.txt)"
++}
+diff --git a/tests/XrdOucTests/CMakeLists.txt b/tests/XrdOucTests/CMakeLists.txt
+index 3a7236752..4928f88ac 100644
+--- a/tests/XrdOucTests/CMakeLists.txt
++++ b/tests/XrdOucTests/CMakeLists.txt
+@@ -1,4 +1,4 @@
+-add_executable(xrdoucutils-unit-tests XrdOucUtilsTests.cc)
++add_executable(xrdoucutils-unit-tests XrdOucUtilsTests.cc XrdOucEnvTests.cc)
+ 
+ target_link_libraries(xrdoucutils-unit-tests XrdUtils GTest::GTest GTest::Main)
+ target_include_directories(xrdoucutils-unit-tests PRIVATE ${CMAKE_SOURCE_DIR}/src)
+diff --git a/tests/XrdOucTests/XrdOucEnvTests.cc b/tests/XrdOucTests/XrdOucEnvTests.cc
+new file mode 100644
+index 000000000..ac8fe6da6
+--- /dev/null
++++ b/tests/XrdOucTests/XrdOucEnvTests.cc
+@@ -0,0 +1,28 @@
++
++#include "XrdOuc/XrdOucEnv.hh"
++
++#include <gtest/gtest.h>
++
++static const std::pair<std::string, std::string> env_tests[] = {
++    {"foo=bar", "&foo=bar"},
++    {"authz=bar", "&"},
++    {"authz=bar&foo=1", "&foo=1"},
++    {"&authz=bar&authz=1", "&"},
++    {"authz=bar&authz=1", "&"},
++    {"&authz=bar", "&"},
++    {"&access_token=bar", "&"},
++    {"foo=1&authz=bar", "&foo=1"},
++    {"foo=1&authz=foo&access_token=bar", "&foo=1"},
++    {"authz=foo&access_token=bar", "&"},
++    {"authz=foo&foo=bar", "&foo=bar"},
++    {"authz=foo&foo=bar&access_token=3", "&foo=bar"},
++    {"authz=1&access_token=2&authz=3&access_token=4", "&"},
++};
++
++TEST(XrdOucEnv, EnvTidy) {
++    for (const auto &env_str : env_tests) {
++        int envlen;
++        XrdOucEnv env(env_str.first.c_str(), env_str.first.size());
++        ASSERT_STREQ(env_str.second.c_str(), env.EnvTidy(envlen)) << "Testing tidy of " << env_str.first;
++    }	    
++}
+diff --git a/tests/XrdOucTests/XrdOucUtilsTests.cc b/tests/XrdOucTests/XrdOucUtilsTests.cc
+index 3deafc95e..84961f9ad 100644
+--- a/tests/XrdOucTests/XrdOucUtilsTests.cc
++++ b/tests/XrdOucTests/XrdOucUtilsTests.cc
+@@ -92,13 +92,16 @@ static const std::string plain_urls[] = {
+ 
+ static const std::string authz_strings[] = {
+   "authz=REDACTED",
++  "access_token=REDACTED",
+   " authz=REDACTED ",
+   " 'authz=REDACTED' ",
+   " \"authz=REDACTED\" ",
+   "authz=REDACTED&scitag.flow=144&test=abcd",
++  "access_token=REDACTED&scitag.flow=144&test=abcd",
+   "scitag.flow=144&authz=REDACTED&test=abcd",
+   "scitag.flow=144&test=abcd&authz=REDACTED",
+   "authz=REDACTED&test=test2&authz=REDACTED",
++  "authz=REDACTED&test=test2&access_token=REDACTED",
+   "authz=REDACTED&test=test2&authz=REDACTED&authz=REDACTED&test=test2&authz=REDACTED",
+   "/path/test.txt?scitag.flow=44&authz=REDACTED done close.",
+   "/path/test.txt?authz=REDACTED&scitag.flow=44 done close.",
+diff --git a/tests/scitokens/CMakeLists.txt b/tests/scitokens/CMakeLists.txt
+new file mode 100644
+index 000000000..16d2ef56d
+--- /dev/null
++++ b/tests/scitokens/CMakeLists.txt
+@@ -0,0 +1,34 @@
++
++add_executable(xrdscitokens-create-jwks XrdScitokensCreateJwks.cc)
++target_link_libraries(xrdscitokens-create-jwks PRIVATE OpenSSL::Crypto)
++
++add_executable(xrdscitokens-create-token XrdScitokensCreateToken.cc)
++target_link_libraries(xrdscitokens-create-token PRIVATE ${SCITOKENS_CPP_LIBRARIES})
++target_include_directories(xrdscitokens-create-token PRIVATE ${SCITOKENS_CPP_INCLUDE_DIR})
++
++add_executable(xrdscitokens-unit-tests
++  XrdSciTokens.cc
++)
++
++target_link_libraries(xrdscitokens-unit-tests
++  XrdSciTokensObj GTest::GTest GTest::Main)
++
++gtest_discover_tests(xrdscitokens-unit-tests)
++
++add_test(NAME SciTokens::setup
++  COMMAND sh -c "${CMAKE_CURRENT_SOURCE_DIR}/setup.sh ${CMAKE_BINARY_DIR}/tests/issuer")
++
++set_tests_properties(SciTokens::setup
++  PROPERTIES
++    FIXTURES_SETUP SciTokens
++    ENVIRONMENT "BINARY_DIR=${CMAKE_BINARY_DIR}"
++)
++
++add_test(NAME SciTokens::teardown
++  COMMAND sh -c "${CMAKE_CURRENT_SOURCE_DIR}/teardown.sh ${CMAKE_BINARY_DIR}/tests/issuer")
++
++set_tests_properties(SciTokens::teardown
++  PROPERTIES
++    FIXTURES_CLEANUP SciTokens
++    ENVIRONMENT "BINARY_DIR=${CMAKE_BINARY_DIR}"
++)
+diff --git a/tests/scitokens/XrdSciTokens.cc b/tests/scitokens/XrdSciTokens.cc
+new file mode 100644
+index 000000000..9f85263c4
+--- /dev/null
++++ b/tests/scitokens/XrdSciTokens.cc
+@@ -0,0 +1,73 @@
++
++#include "XrdSciTokens/XrdSciTokensAccess.hh"
++
++#include <gtest/gtest.h>
++
++TEST(XrdSciTokens, MapRule) {
++  MapRule rule("subject", "user", "/prefix", "group", "result");
++  ASSERT_EQ("", rule.match("not subject", "not user", "/foo", {"not group"}));
++  ASSERT_EQ("", rule.match("subject", "not user", "/foo", {"not group"}));
++  ASSERT_EQ("", rule.match("subject", "not user", "/foo", {"not group"}));
++  ASSERT_EQ("", rule.match("not subject", "user", "/foo", {"not group"}));
++  ASSERT_EQ("", rule.match("not subject", "not user", "/prefix/baz", {"not group"}));
++  ASSERT_EQ("", rule.match("not subject", "not user", "/foo", {"group"}));
++  ASSERT_EQ("result", rule.match("subject", "user", "/prefix/foo", {"group"}));
++  ASSERT_EQ("result", rule.match("subject", "user", "/prefix/foo", {"not group", "group"}));
++}
++
++TEST(XrdSciTokens, SubpathMatch) {
++  SubpathMatch matcher({{AOP_Read, "/prefix"}});
++  ASSERT_EQ(false, matcher.apply(AOP_Read, "/prefix1"));
++  ASSERT_EQ(false, matcher.apply(AOP_Create, "/prefix"));
++  ASSERT_EQ(true, matcher.apply(AOP_Read, "/prefix"));
++  ASSERT_EQ(true, matcher.apply(AOP_Read, "/prefix/foo"));
++
++  // Test handling of root paths
++  matcher = SubpathMatch({{AOP_Create, "/"}});
++  ASSERT_EQ(true, matcher.apply(AOP_Create, "/bar/baz"));
++  ASSERT_EQ(false, matcher.apply(AOP_Stat, "/bar/baz"));
++
++  // Test special handling of parent prefixes
++  matcher = SubpathMatch({{AOP_Stat, "/foo/bar"}});
++  ASSERT_EQ(true, matcher.apply(AOP_Stat, "/foo"));
++  ASSERT_EQ(false, matcher.apply(AOP_Read, "/foo"));
++  matcher = SubpathMatch({{AOP_Mkdir, "/foo/bar"}});
++  ASSERT_EQ(true, matcher.apply(AOP_Mkdir, "/foo"));
++  ASSERT_EQ(1, matcher.size());
++  ASSERT_FALSE(matcher.empty());
++  ASSERT_EQ("/foo/bar:mkdir", matcher.str());
++
++  matcher = SubpathMatch();
++  ASSERT_EQ(0, matcher.size());
++  ASSERT_TRUE(matcher.empty());
++}
++
++
++TEST(XrdSciTokens, AuthorizesRequiredIssuers) {
++  AccessRulesRaw rules{{AOP_Read, "/prefix"}, {AOP_Mkdir, "/prefix2/nested"}};
++  auto matcher = std::make_unique<SubpathMatch>(rules);
++  std::vector<std::pair<std::unique_ptr<SubpathMatch>, std::string>> required_issuers;
++  required_issuers.emplace_back(std::move(matcher), "https://example.com");
++
++  auto access_rule_entry_ptr = new XrdAccRules(0, "username", "token_sub", "https://example.com", {}, {}, IssuerAuthz::Capability, AuthzSetting::None);
++  std::shared_ptr<XrdAccRules> access_rule_entry(access_rule_entry_ptr);
++  access_rule_entry->parse({{AOP_Read, "/prefix"}});
++
++  access_rule_entry_ptr = new XrdAccRules(0, "username", "token_sub", "https://example-other.com", {}, {}, IssuerAuthz::Capability, AuthzSetting::None);
++  std::shared_ptr<XrdAccRules> access_rule_entry_other(access_rule_entry_ptr);
++  access_rule_entry_other->parse({{AOP_Read, "/prefix"}});
++
++  ASSERT_EQ(true, AuthorizesRequiredIssuers(AOP_Read, "/prefix/foo", required_issuers, {access_rule_entry}));
++  ASSERT_EQ(true, AuthorizesRequiredIssuers(AOP_Read, "/foo", required_issuers, {access_rule_entry}));
++  ASSERT_EQ(false, AuthorizesRequiredIssuers(AOP_Read, "/prefix/foo", required_issuers, {access_rule_entry_other}));
++  ASSERT_EQ(false, AuthorizesRequiredIssuers(AOP_Read, "/prefix", required_issuers, {access_rule_entry_other}));
++  ASSERT_EQ(true, AuthorizesRequiredIssuers(AOP_Read, "/prefix2", required_issuers, {access_rule_entry_other}));
++  ASSERT_EQ(true, AuthorizesRequiredIssuers(AOP_Create, "/prefix/foo", required_issuers, {access_rule_entry_other}));
++  ASSERT_EQ(true, AuthorizesRequiredIssuers(AOP_Mkdir, "/prefix", required_issuers, {access_rule_entry_other}));
++  ASSERT_EQ(true, AuthorizesRequiredIssuers(AOP_Mkdir, "/prefix", required_issuers, {access_rule_entry}));
++  ASSERT_EQ(false, AuthorizesRequiredIssuers(AOP_Mkdir, "/prefix2", required_issuers, {access_rule_entry}));
++
++  required_issuers.emplace_back(std::make_unique<SubpathMatch>(rules), "https://example-other.com");
++  ASSERT_EQ(false, AuthorizesRequiredIssuers(AOP_Read, "/prefix/foo", required_issuers, {access_rule_entry}));
++  ASSERT_EQ(true, AuthorizesRequiredIssuers(AOP_Read, "/prefix/foo", required_issuers, {access_rule_entry, access_rule_entry_other}));
++}
+\ No newline at end of file
+diff --git a/tests/scitokens/XrdScitokensCreateJwks.cc b/tests/scitokens/XrdScitokensCreateJwks.cc
+new file mode 100644
+index 000000000..db89ceafe
+--- /dev/null
++++ b/tests/scitokens/XrdScitokensCreateJwks.cc
+@@ -0,0 +1,215 @@
++
++
++///
++// Given a PEM-formatted EC public key, create an equivalent JWKS file
++// with the specified KID
++
++/*
++
++Example JWKS:
++
++```
++{
++  "keys": [
++    {
++      "alg": "ES256",
++      "kid": "key",
++      "kty": "EC",
++      "use": "sig",
++      "x": "ncSCrGTBTXXOhNiAOTwNdPjwRz1hVY4saDNiHQK9Bh4=",
++      "y": "sCsFXvx7FAAklwq3CzRCBcghqZOFPB2dKUayS6LY_Lo="
++    }
++  ]
++}
++```
++
++*/
++
++#include <openssl/bio.h>
++#include <openssl/bn.h>
++#include <openssl/ec.h>
++#include <openssl/evp.h>
++#if OPENSSL_VERSION_NUMBER >= 0x30000000L
++#include <openssl/param_build.h>
++#endif
++#include <openssl/pem.h>
++
++#define EC_NAME NID_X9_62_prime256v1
++
++
++#include <stdio.h>
++#include <string.h>
++
++#include <algorithm>
++#include <iostream>
++#include <memory>
++#include <string>
++#include <string_view>
++#include <vector>
++
++std::string b64url_encode_nopadding(std::string_view input) {
++    std::unique_ptr<BIO, decltype(&BIO_free_all)> mem_bio(
++        BIO_new(BIO_s_mem()), BIO_free_all);
++    std::unique_ptr<BIO, decltype(&BIO_free_all)> b64_bio(
++        BIO_new(BIO_f_base64()), BIO_free_all);
++    BIO_push(b64_bio.get(), mem_bio.get());
++    auto mem_ptr = mem_bio.release();
++    BIO_set_flags(b64_bio.get(), BIO_FLAGS_BASE64_NO_NL);
++    BIO_write(b64_bio.get(), input.data(), input.length());
++    BIO_flush(b64_bio.get());
++
++    char *b64_data;
++    auto len = BIO_get_mem_data(mem_ptr, &b64_data);
++    if (len < 0) {
++        return "";
++    }
++
++    std::string result(b64_data, len);
++    std::replace(result.begin(), result.end(), '+', '-');
++    std::replace(result.begin(), result.end(), '/', '_');
++    return result.substr(0, result.find('='));
++}
++
++bool readPubkey(const std::string &fname, std::string &x, std::string &y) {
++    std::unique_ptr<BIO, decltype(&BIO_free_all)> pubkey_bio(
++        BIO_new_file(fname.c_str(), "r"), BIO_free_all);
++
++    if (!pubkey_bio) {
++      std::cerr << "Failed to load public key from " << fname << ": " << strerror(errno) << std::endl;
++      return false;
++    }
++
++    std::unique_ptr<BIGNUM, decltype(&BN_free)> x_bignum(BN_new(), BN_free);
++    std::unique_ptr<BIGNUM, decltype(&BN_free)> y_bignum(BN_new(), BN_free);
++
++#if OPENSSL_VERSION_NUMBER >= 0x30000000L
++    std::unique_ptr<EVP_PKEY, decltype(&EVP_PKEY_free)> pkey(
++        PEM_read_bio_PUBKEY(pubkey_bio.get(), nullptr, nullptr, nullptr),
++        EVP_PKEY_free);
++    if (!pkey.get()) {
++        return false;
++    }
++
++    std::unique_ptr<EC_GROUP, decltype(&EC_GROUP_free)> ec_group(
++        EC_GROUP_new_by_curve_name(EC_NAME), EC_GROUP_free);
++    if (!ec_group.get()) {
++        std::cerr << "Unable to get OpenSSL EC group" << std::endl;
++        return false;
++    }
++
++    std::unique_ptr<EC_POINT, decltype(&EC_POINT_free)> q_point(
++        EC_POINT_new(ec_group.get()), EC_POINT_free);
++    if (!q_point.get()) {
++        std::cerr << "Unable to get OpenSSL EC point" << std::endl;
++        return false;
++    }
++
++    OSSL_PARAM *params;
++    if (!EVP_PKEY_todata(pkey.get(), EVP_PKEY_PUBLIC_KEY, &params)) {
++        std::cerr << "Unable to get OpenSSL public key parameters" << std::endl;
++        return false;
++    }
++
++    void *buf = NULL;
++    size_t buf_len, max_len = 256;
++    OSSL_PARAM *p = OSSL_PARAM_locate(params, "pub");
++    if (!p || !OSSL_PARAM_get_octet_string(p, &buf, max_len, &buf_len) ||
++        !EC_POINT_oct2point(ec_group.get(), q_point.get(),
++                            static_cast<unsigned char *>(buf), buf_len,
++                            nullptr)) {
++        std::cerr << "Failed to to set OpenSSL EC point with public key information" << std::endl;
++        return false;
++    }
++
++    if (!EC_POINT_get_affine_coordinates(ec_group.get(), q_point.get(),
++                                         x_bignum.get(), y_bignum.get(),
++                                         NULL)) {
++        std::cerr << "Unable to get OpenSSL affine coordinates" << std::endl;
++        return false;
++    }
++
++    OSSL_PARAM_free(params);
++#else
++    std::unique_ptr<EC_KEY, decltype(&EC_KEY_free)> pkey(
++        PEM_read_bio_EC_PUBKEY(pubkey_bio.get(), nullptr, nullptr, nullptr),
++        EC_KEY_free);
++    if (!pkey) {
++        return false;
++    }
++
++    EC_GROUP *params = (EC_GROUP *)EC_KEY_get0_group(pkey.get());
++    if (!params) {
++        std::cerr << "Unable to get OpenSSL EC group" << std::endl;
++        return false;
++    }
++
++    const EC_POINT *point = EC_KEY_get0_public_key(pkey.get());
++    if (!point) {
++        std::cerr << "Unable to get OpenSSL EC point" << std::endl;
++        return false;
++    }
++
++    if (!EC_POINT_get_affine_coordinates_GFp(params, point, x_bignum.get(),
++                                             y_bignum.get(), nullptr)) {
++        std::cerr << "Unable to get OpenSSL affine coordinates" << std::endl;
++        return false;
++    }
++#endif
++
++    auto x_num = BN_num_bytes(x_bignum.get());
++    auto y_num = BN_num_bytes(y_bignum.get());
++    std::vector<unsigned char> x_bin;
++    x_bin.resize(x_num);
++    std::vector<unsigned char> y_bin;
++    y_bin.resize(y_num);
++    BN_bn2bin(x_bignum.get(), &x_bin[0]);
++    BN_bn2bin(y_bignum.get(), &y_bin[0]);
++    x = b64url_encode_nopadding(std::string(reinterpret_cast<char *>(&x_bin[0]), x_num));
++    y = b64url_encode_nopadding(std::string(reinterpret_cast<char *>(&y_bin[0]), y_num));
++
++    return true;
++}
++
++int main(int argc, char *argv[]) {
++    if (argc != 4) {
++        std::cerr << "Usage: " << argv[0] << " issuer.pem issuer.jwks kid" << std::endl;
++        return 1;
++    }
++
++    std::string x, y;
++    if (!readPubkey(argv[1], x, y)) {
++        std::cerr << "Failed to read EC pubkey " << argv[1] << std::endl;
++        return 2;
++    }
++
++    auto fd = fopen(argv[2], "w");
++    if (!fd) {
++        std::cerr << "Failed to open output JWKS " << argv[2] << ": " << strerror(errno) << std::endl;
++        return 3;
++    }
++
++    auto rc = fprintf(fd, R"(
++{
++  "keys": [
++    {
++      "alg": "ES256",
++      "crv": "P-256",
++      "kid": "%s",
++      "kty": "EC",
++      "use": "sig",
++      "x": "%s",
++      "y": "%s"
++    }
++  ]
++}
++)",
++    argv[3],
++    x.c_str(),
++    y.c_str());
++
++    if (rc < 0) {
++        std::cerr << "Error writing to output file: " << strerror(errno) << std::endl;
++        return 4;
++    }
++    return 0;
++}
+diff --git a/tests/scitokens/XrdScitokensCreateToken.cc b/tests/scitokens/XrdScitokensCreateToken.cc
+new file mode 100644
+index 000000000..2962a693e
+--- /dev/null
++++ b/tests/scitokens/XrdScitokensCreateToken.cc
+@@ -0,0 +1,145 @@
++
++
++///
++// Create a sample token useful for unit tests
++///
++
++#include <scitokens/scitokens.h>
++
++#include <fcntl.h>
++#include <stdio.h>
++#include <string.h>
++#include <sys/stat.h>
++#include <unistd.h>
++
++#include <iostream>
++#include <memory>
++#include <string>
++#include <string_view>
++#include <vector>
++
++
++ssize_t fullRead(int fd, void *ptr, size_t nbytes) {
++    ssize_t nleft, nread;
++
++    nleft = nbytes;
++    while (nleft > 0) {
++REISSUE_READ:
++        nread = read(fd, ptr, nleft);
++        if (nread < 0) {
++            if (errno == EINTR) {
++                goto REISSUE_READ;
++            }
++
++            return -1;
++        } else if (nread == 0) {
++            break;
++        }
++
++        nleft -= nread;
++        ptr = ((char *)ptr) + nread;
++    }
++
++    return (nbytes - nleft);
++}
++
++
++bool readShortFile(const std::string &fileName, std::string &contents) {
++    int fd = open(fileName.c_str(), O_RDONLY, 0600);
++
++    if (fd < 0) {
++        std::cerr << "Failed to open " << fileName << ": " << strerror(errno) << std::endl;
++        return false;
++    }
++
++    struct stat statbuf;
++    int rv = fstat(fd, &statbuf);
++    if (rv < 0) {
++        std::cerr << "Failed to fstat " << fileName << ": " << strerror(errno) << std::endl;
++        return false;
++    }
++    unsigned long fileSize = statbuf.st_size;
++    if (fileSize > 1024*1024) {
++        std::cerr << "File " << fileName << " too large for reading to memory" << std::endl;
++        return false;
++    }
++
++    std::unique_ptr<char, decltype(&std::free)> rawBuffer((char*)malloc(fileSize + 1), &std::free);
++    if (!rawBuffer) {
++        std::cerr << "Failed to allocate memory buffer" << std::endl;
++        return false;
++    }
++    unsigned long totalRead = fullRead(fd, rawBuffer.get(), fileSize);
++    if (totalRead != fileSize) {
++        std::cerr << "Failed to fully read file " << fileName << ": " << strerror(errno) << std::endl;
++        close(fd);
++        return false;
++    }
++    close(fd);
++    contents.assign(rawBuffer.get(), fileSize);
++
++    return true;
++}
++
++
++int main(int argc, char *argv[]) {
++    if (argc != 6) {
++        std::cerr << "Usage: " << argv[0] << " issuer.pem issuer.key kid iss prefix" << std::endl;
++        return 1;
++    }
++
++    std::string pubkey, privkey;
++    if (!readShortFile(argv[1], pubkey)) {
++        return 2;
++    }
++    if (!readShortFile(argv[2], privkey)) {
++        return 3;
++    }
++
++    using KeyPtr = std::unique_ptr<void, decltype(&scitoken_key_destroy)>;
++    using TokenPtr = std::unique_ptr<void, decltype(&scitoken_destroy)>;
++
++    char *err_msg = nullptr;
++    KeyPtr key(scitoken_key_create(argv[3], "ES256", pubkey.c_str(), privkey.c_str(), &err_msg), scitoken_key_destroy);
++    if (!key) {
++        std::cerr << err_msg << std::endl;
++        return 4;
++    }
++
++    TokenPtr token(scitoken_create(key.get()), scitoken_destroy);
++    if (!token) {
++        std::cerr << err_msg << std::endl;
++        return 5;
++    }
++
++    auto rv = scitoken_set_claim_string(token.get(), "iss", argv[4], &err_msg);
++    if (rv) {
++        std::cerr << err_msg << std::endl;
++        return 6;
++    }
++
++    rv = scitoken_set_claim_string(token.get(), "scope", argv[5], &err_msg);
++    if (rv) {
++        std::cerr << err_msg << std::endl;
++        return 7;
++    }
++
++    rv = scitoken_set_claim_string(token.get(), "sub", "test", &err_msg);
++    if (rv) {
++        std::cerr << err_msg << std::endl;
++        return 8;
++    }
++
++    scitoken_set_lifetime(token.get(), 60);
++    scitoken_set_serialize_profile(token.get(), SciTokenProfile::WLCG_1_0);
++
++    char *token_value;
++    rv = scitoken_serialize(token.get(), &token_value, &err_msg);
++    if (rv) {
++        std::cerr << err_msg << std::endl;
++        return 9;
++    }
++    printf("%s\n", token_value);
++    free(token_value);
++    return 0;
++}
+diff --git a/tests/scitokens/one-openid-configuration b/tests/scitokens/one-openid-configuration
+new file mode 100644
+index 000000000..18c607be7
+--- /dev/null
++++ b/tests/scitokens/one-openid-configuration
+@@ -0,0 +1,3 @@
++{
++  "jwks_uri": "https://localhost:7095/issuer/one/issuer.jwks"
++}
+diff --git a/tests/scitokens/setup.sh b/tests/scitokens/setup.sh
+new file mode 100644
+index 000000000..e8f07647f
+--- /dev/null
++++ b/tests/scitokens/setup.sh
+@@ -0,0 +1,127 @@
++#!/bin/bash
++
++ISSUERDIR="$1"
++
++mkdir -p "$ISSUERDIR"
++pushd "$ISSUERDIR" || exit 1
++
++###
++## Generate two different issuer keys
++###
++
++for idx in 1 2; do
++  # Generate signing key and public version
++  if ! openssl ecparam -name prime256v1 -genkey -noout -out "issuer_key_$idx.pem"; then
++    echo "Failed to generate EC private key"
++    exit 1
++  fi
++
++  if ! openssl ec -in "issuer_key_$idx.pem" -pubout -out "issuer_pub_$idx.pem"; then
++    echo "Failed to generate EC public key"
++    exit 1
++  fi
++
++  # Generate the JWKS file
++  if ! "$BINARY_DIR/tests/scitokens/xrdscitokens-create-jwks" "issuer_pub_$idx.pem" "issuer_$idx.jwks" "test_$idx"; then
++    echo "Failed to generate JWKS file"
++    exit 1
++  fi
++done
++
++###
++## Create the CA & host certificate setup
++###
++
++if ! openssl genrsa -out tlscakey.pem 4096; then
++  echo "Failed to generate CA private key"
++  exit 1
++fi
++
++mkdir -p ca
++touch ca/index.txt
++echo '01' > ca/serial.txt
++
++cat > tlsca.ini <<EOF
++
++[ ca ]
++default_ca = CA_test
++
++[ CA_test ]
++
++default_days = 365
++default_md = sha256
++private_key = $ISSUERDIR/tlscakey.pem
++certificate = $ISSUERDIR/tlsca.pem
++new_certs_dir = $ISSUERDIR/ca
++database = $ISSUERDIR/ca/index.txt
++serial = $ISSUERDIR/ca/serial.txt
++
++[ req ]
++default_bits = 4096
++distinguished_name = ca_test_dn
++x509_extensions = ca_extensions
++string_mask = utf8only
++
++[ ca_test_dn ]
++
++commonName_default = Xrootd CA
++
++[ ca_extensions ]
++
++basicConstraints = critical,CA:true
++keyUsage = keyCertSign,cRLSign
++subjectKeyIdentifier = hash
++authorityKeyIdentifier = keyid
++
++[ signing_policy ]
++countryName            = optional
++stateOrProvinceName    = optional
++localityName           = optional
++organizationName       = optional
++organizationalUnitName = optional
++commonName             = supplied
++emailAddress           = optional
++
++[ cert_extensions ]
++
++basicConstraints = critical,CA:false
++keyUsage = digitalSignature, keyEncipherment
++extendedKeyUsage = critical, serverAuth, clientAuth
++
++EOF
++
++# Create the CA certificate
++echo "Creating TLS CA certificate in $ISSUERDIR/tlsca.pem"
++if ! openssl req -x509 -key tlscakey.pem -config tlsca.ini -out tlsca.pem -outform PEM -subj "/CN=XRootD CA" 0<&-; then
++  echo "Failed to generate CA request"
++  exit 1
++fi
++
++# Create the host certificate request
++openssl genrsa -out tls.key 4096
++chmod 0400 tls.key
++if ! openssl req -new -key tls.key -config tlsca.ini -out tls.csr -outform PEM -subj /CN=localhost 0<&-; then
++  echo "Failed to generate host certificate request"
++  exit 1
++fi
++
++if ! openssl ca -config tlsca.ini -batch -policy signing_policy -extensions cert_extensions -out tls.crt -infiles tls.csr 0<&-; then
++  echo "Failed to sign host certificate request"
++  exit 1
++fi
++chmod 0600 tls.crt
++
++###
++## Create the directory structure to export
++###
++: "${SOURCE_DIR:="$(realpath "$(dirname "${BASH_SOURCE[0]}")")"}"
++
++mkdir -p export/one/.well-known
++cp issuer_1.jwks export/one/issuer.jwks
++cp "$SOURCE_DIR/one-openid-configuration" export/one/.well-known/openid-configuration
++
++mkdir -p export/two/.well-known
++cp issuer_2.jwks export/two/issuer.jwks
++cp "$SOURCE_DIR/two-openid-configuration" export/two/.well-known/openid-configuration
++
++popd || exit 1
+diff --git a/tests/scitokens/teardown.sh b/tests/scitokens/teardown.sh
+new file mode 100644
+index 000000000..d4a57f98d
+--- /dev/null
++++ b/tests/scitokens/teardown.sh
+@@ -0,0 +1,11 @@
++#!/bin/sh
++
++ISSUERDIR="$1"
++
++rm -rf "$ISSUERDIR/issuer_key_1.pem" "$ISSUERDIR/issuer_key_2.pem"
++rm -rf "$ISSUERDIR/issuer_pub_1.pem" "$ISSUERDIR/issuer_pub_2.pem"
++rm -rf "$ISSUERDIR/issuer_1.jwks" "$ISSUERDIR/issuer_2.jwks"
++rm -rf "$ISSUERDIR/ca"
++rm -rf "$ISSUERDIR/export"
++rm -rf "$ISSUERDIR/tlsca.ini" "$ISSUERDIR/tlsca.pem" "$ISSUERDIR/tlscakey.pem"
++rm -rf "$ISSUERDIR/tls.crt" "$ISSUERDIR/tls.key" "$ISSUERDIR/tls.csr"
+diff --git a/tests/scitokens/two-openid-configuration b/tests/scitokens/two-openid-configuration
+new file mode 100644
+index 000000000..2ceebc6ac
+--- /dev/null
++++ b/tests/scitokens/two-openid-configuration
+@@ -0,0 +1,3 @@
++{
++  "jwks_uri": "https://localhost:7095/issuer/two/issuer.jwks"
++}
+-- 
+2.43.5
+

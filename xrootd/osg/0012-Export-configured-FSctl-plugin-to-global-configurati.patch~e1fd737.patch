@@ -1,0 +1,39 @@
+From 2ce2de0660244ca413a344ace0e70a9396a46f44 Mon Sep 17 00:00:00 2001
+From: Brian Bockelman <bbockelman@morgridge.org>
+Date: Mon, 27 Jan 2025 07:54:07 -0600
+Subject: [PATCH 12/13] Export configured FSctl plugin to global configuration
+
+The FSctl plugin is necessary to invoke filesystem-level operations
+on the PFC.  However, unlike the `XrdOss` and `XrdAccAuthorize`
+plugins, it is only exported in the xrootd protocol environment,
+not the global process-wide environment.
+
+This provides symmetry between the FSctl and the other plugins.
+It joins other parts of the PFC available via the global export.
+
+I also investigated invoking the plugin indirectly through some
+other layer (such as the xrootd protocol bridge) but, unfortunately,
+the use case for needing to invoke the plugin is a `XrdHttpExtHandler`;
+the handler framework does not provide access to the protocol bridge.
+---
+ src/XrdOfs/XrdOfsConfig.cc | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/src/XrdOfs/XrdOfsConfig.cc b/src/XrdOfs/XrdOfsConfig.cc
+index 0b9873a6d..cffaef4d1 100644
+--- a/src/XrdOfs/XrdOfsConfig.cc
++++ b/src/XrdOfs/XrdOfsConfig.cc
+@@ -299,7 +299,9 @@ int XrdOfs::Configure(XrdSysError &Eroute, XrdOucEnv *EnvInfo) {
+ // the cache-specific FSctl() operation. We check if a plugin was provided.
+ //
+    if (ossFeatures & XRDOSS_HASCACH)
+-      FSctl_PC = (XrdOfsFSctl_PI*)EnvInfo->GetPtr("XrdFSCtl_PC*");
++      {FSctl_PC = (XrdOfsFSctl_PI*)EnvInfo->GetPtr("XrdFSCtl_PC*");
++       if (xrdEnv && FSctl_PC) xrdEnv->PutPtr("XrdFSCtl_PC*", FSctl_PC);
++      }
+ 
+ // Configure third party copy phase 2, but only if we are not a manager.
+ //
+-- 
+2.43.5
+
