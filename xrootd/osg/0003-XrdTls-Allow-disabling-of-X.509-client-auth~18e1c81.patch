@@ -1,7 +1,7 @@
 From 1156d407eb117468efd0652e47d5f96848868db6 Mon Sep 17 00:00:00 2001
 From: Brian Bockelman <bbockelman@morgridge.org>
 Date: Fri, 17 May 2024 15:47:40 +0200
-Subject: [PATCH 3/6] [XrdTls] Allow disabling of X.509 client auth
+Subject: [PATCH 3/8] [XrdTls] Allow disabling of X.509 client auth
 
 The X.509 client auth request is fairly disruptive for communities
 that are browser-based (since this is an extremely uncommon flow
