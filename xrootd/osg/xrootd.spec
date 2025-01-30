@@ -84,7 +84,7 @@
 Name:		xrootd
 Epoch:		1
 Version:	5.7.3
-Release:	1.1%{?_with_purge:.purge}%{?dist}%{?_with_clang:.clang}%{?_with_asan:.asan}
+Release:	1.2%{?_with_purge:.purge}%{?dist}%{?_with_clang:.clang}%{?_with_asan:.asan}
 Summary:	Extended ROOT File Server
 Group:		System Environment/Daemons
 License:	LGPL-3.0-or-later AND BSD-2-Clause AND BSD-3-Clause AND curl AND MIT AND Zlib
@@ -105,13 +105,17 @@ Patch1: 0001-Allow-hostname-used-by-XRootD-to-be-overridden-by-en~e13587e.patch
 # PelicanPlatform/xrootd #2 (xrootd/xrootd #2348)
 Patch2: 0002-XrdHttp-determines-the-presence-of-the-Age-header-in~092c7a5.patch
 # PelicanPlatform/xrootd #4 (xrootd/xrootd #2269)
-Patch3: 0003-XrdTls-Allow-disabling-of-X.509-client-auth.patch~18e1c81.patch
+Patch3: 0003-XrdTls-Allow-disabling-of-X.509-client-auth~18e1c81.patch
 # PelicanPlatform/xrootd #5 (xrootd/xrootd #2279)
-Patch4: 0004-Add-new-filesystem-load-counter-plugin.patch~3c1be23.patch
+Patch4: 0004-Add-new-filesystem-load-counter-plugin~3c1be23.patch
 # PelicanPlatform/xrootd #6 (xrootd/xrootd #2397)
-Patch5: 0005-XrdSciTokens-Handle-multiple-authorization-token-set.patch~a33ca13.patch
+Patch5: 0005-XrdSciTokens-Handle-multiple-authorization-token-set~a33ca13.patch
 # PelicanPlatform/xrootd #7 (xrootd/xrootd #2389)
-Patch6: 0006-XrdHttp-Add-http.staticheader.patch~5c6ee05.patch
+Patch6: 0006-XrdHttp-Add-http.staticheader~5c6ee05.patch
+# PelicanPlatform/xrootd #13
+Patch7: 0007-XrdPfc-Check-for-a-null-pointer-dereference~121f60b.patch
+# PelicanPlatform/xrootd #14
+Patch8: 0008-XrdHttp-Undo-HTTP-PUT-response-code-change~956b9fa.patch
 %if 0%{?_with_purge}
 # PelicanPlatform/xrootd #9 (xrootd/xrootd #2406)
 #Patch9: 0009-Second-rebase-of-alja-purge-main-rb1-onto-master-5.7~4f6f775.patch
@@ -1182,6 +1186,12 @@ fi
 # Changelog
 #-------------------------------------------------------------------------------
 %changelog
+* Thu Jan 30 2025 Mátyás Selmeci <mselmeci@wisc.edu> - 5.7.3-1.2
+- Fix patch file names
+- Add:
+    - 0007-XrdPfc-Check-for-a-null-pointer-dereference~121f60b.patch
+    - 0008-XrdHttp-Undo-HTTP-PUT-response-code-change~956b9fa.patch
+
 * Tue Jan 28 2025 Mátyás Selmeci <mselmeci@wisc.edu> - 5.7.3-1.1
 - Update to XRootD 5.7.3 (SOFTWARE-6071)
 - Drop upstreamed patches:

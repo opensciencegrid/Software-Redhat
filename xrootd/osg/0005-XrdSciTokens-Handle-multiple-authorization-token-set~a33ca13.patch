@@ -1,7 +1,7 @@
 From c4b8fc2b80385a0f152e901f9ec653e79a3a6c6a Mon Sep 17 00:00:00 2001
 From: Brian Bockelman <bbockelman@morgridge.org>
 Date: Tue, 28 Jan 2025 09:57:02 -0600
-Subject: [PATCH 5/6] [XrdSciTokens] Handle multiple authorization token setups
+Subject: [PATCH 5/8] [XrdSciTokens] Handle multiple authorization token setups
 
 ---
  src/XrdMacaroons/XrdMacaroonsAuthz.cc  |   4 +
