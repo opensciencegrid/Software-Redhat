@@ -7,7 +7,7 @@
     %global _with_xrdclhttp 1
 
     # Enable/disable this to build with purge plugin support
-    #%%global _with_purge 1
+    %global _with_purge 1
 %endif
 
 # Set _with_debug to build with debug messages and asserts.  The build will have a .dbg in the Release field.
@@ -1215,6 +1215,10 @@ fi
 # Changelog
 #-------------------------------------------------------------------------------
 %changelog
+* Tue Feb 04 2025 Mátyás Selmeci <mselmeci@wisc.edu> - 5.7.2-1.5.purge
+- Add purge plugin patch 0009-Second-rebase-of-alja-purge-main-rb1-onto-master-5.7.patch
+    (PelicanPlatform/xrootd #9)
+
 * Thu Jan 30 2025 Mátyás Selmeci <mselmeci@wisc.edu> - 5.7.2-1.5
 - Update patches
 - Add 0012-Export-configured-FSctl-plugin-to-global-configurati.patch~e1fd737.patch (PelicanPlatform/xrootd #12)
