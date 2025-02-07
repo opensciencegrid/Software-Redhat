@@ -20,7 +20,7 @@
 # For Release Candidate builds, check with Software team on release string
 # ------------------------------------------------------------------------------
 %define version 3.11.0
-%define release 0.8.rc8
+%define release 0.9.rc
 
 %define frontend_xml frontend.xml
 %define factory_xml glideinWMS.xml
@@ -68,7 +68,7 @@ BuildRequires:  python3-devel
 %description
 This is a package for the glidein workload management system.
 GlideinWMS provides a simple way to access the Grid, Cloud and HPC
-resources through a dynamic condor pool of grid-submitted resources.
+resources through a dynamic HTCondor pool of grid-submitted resources.
 
 
 %package vofrontend
@@ -1109,12 +1109,17 @@ rm -rf $RPM_BUILD_ROOT
 * Fri Jan 14 2025 Bruno Coimbra <coimbra@fnal.gov> - 3.11.0
 - Glideinwms v3.11.0
 - Release Notes: http://glideinwms.fnal.gov/doc.v3_11_0/history.html
-- Release candidates 3.11.0-01.rc1 to 3.11.0-08.rc8
+- Release candidates 3.11.0-01.rc1 to 3.11.0-09.rc9
 
-* Fri Dec 20 2024 Marco Mambelli <marcom@fnal.gov> - 3.10.9
+* Fri Jan 24 2025 Marco Mambelli <marcom@fnal.gov> - 3.10.10
+- Glideinwms v3.10.10
+- Release Notes: http://glideinwms.fnal.gov/doc.v3_10_10/history.html
+- Release candidates 3.10.10-01.rc1
+
+* Thu Jan 16 2025 Marco Mambelli <marcom@fnal.gov> - 3.10.9
 - Glideinwms v3.10.9
 - Release Notes: http://glideinwms.fnal.gov/doc.v3_10_9/history.html
-- Release candidates 3.10.9-01.rc1
+- Release candidates 3.10.9-01.rc1 to 3.10.9-03.rc3
 
 * Mon Nov 25 2024 Marco Mambelli <marcom@fnal.gov> - 3.10.8
 - Glideinwms v3.10.8
