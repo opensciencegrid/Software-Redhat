@@ -1,14 +1,14 @@
-From 7eaf8a0ba96ba9b0387bcfa16140bf20f4fa770d Mon Sep 17 00:00:00 2001
+From ea00d59a2d09ee00b90c01591c419c4ce08ed392 Mon Sep 17 00:00:00 2001
 From: Guilherme Amadio <amadio@cern.ch>
 Date: Sun, 1 Sep 2024 17:01:40 +0200
-Subject: [PATCH 09/13] Second rebase of alja/purge-main-rb1 onto master /
+Subject: [PATCH 09/11] Second rebase of alja/purge-main-rb1 onto master /
  5.7.2.
 
 ---
  docs/ReleaseNotes.txt                |    1 -
  src/XrdHeaders.cmake                 |    1 +
  src/XrdOss/XrdOssAt.hh               |    2 +
- src/XrdPfc.cmake                     |   40 +-
+ src/XrdPfc.cmake                     |   38 +-
  src/XrdPfc/README                    |    8 +-
  src/XrdPfc/XrdPfc.cc                 |  155 ++--
  src/XrdPfc/XrdPfc.hh                 |  192 +----
@@ -42,7 +42,7 @@ Subject: [PATCH 09/13] Second rebase of alja/purge-main-rb1 onto master /
  src/XrdPfc/XrdPfcStats.hh            |  151 +++-
  src/XrdPfc/XrdPfcTypes.hh            |    4 +
  src/XrdVersionPlugin.hh              |    3 +-
- 37 files changed, 3443 insertions(+), 1314 deletions(-)
+ 37 files changed, 3441 insertions(+), 1314 deletions(-)
  create mode 100644 src/XrdPfc/XrdPfcDirState.cc
  create mode 100644 src/XrdPfc/XrdPfcDirState.hh
  create mode 100644 src/XrdPfc/XrdPfcDirStateSnapshot.cc
@@ -92,10 +92,10 @@ index 6bcfb17e6..2c0dcfe21 100644
  #include <sys/types.h>
  
 diff --git a/src/XrdPfc.cmake b/src/XrdPfc.cmake
-index 34d73b692..615c82913 100644
+index 34d73b692..9e8e59f06 100644
 --- a/src/XrdPfc.cmake
 +++ b/src/XrdPfc.cmake
-@@ -5,31 +5,41 @@
+@@ -5,21 +5,29 @@
  set( LIB_XRD_FILECACHE  XrdPfc-${PLUGIN_VERSION} )
  set( LIB_XRD_FILECACHE_LEGACY XrdFileCache-${PLUGIN_VERSION} )
  set( LIB_XRD_BLACKLIST  XrdBlacklistDecision-${PLUGIN_VERSION} )
@@ -126,19 +126,7 @@ index 34d73b692..615c82913 100644
    XrdPfc/XrdPfcCommand.cc
    XrdPfc/XrdPfcFile.cc          XrdPfc/XrdPfcFile.hh
    XrdPfc/XrdPfcFSctl.cc         XrdPfc/XrdPfcFSctl.hh
-   XrdPfc/XrdPfcStats.hh
-   XrdPfc/XrdPfcInfo.cc          XrdPfc/XrdPfcInfo.hh
-   XrdPfc/XrdPfcIO.cc            XrdPfc/XrdPfcIO.hh
-   XrdPfc/XrdPfcIOFile.cc        XrdPfc/XrdPfcIOFile.hh
-   XrdPfc/XrdPfcIOFileBlock.cc   XrdPfc/XrdPfcIOFileBlock.hh
-   XrdPfc/XrdPfcDecision.hh)
- 
-+set_target_properties( ${LIB_XRD_FILECACHE} PROPERTIES SUFFIX ".so" )
-+
- target_link_libraries(
-   ${LIB_XRD_FILECACHE}
-   PRIVATE
-@@ -53,6 +63,21 @@ target_link_libraries(
+@@ -53,6 +61,21 @@ target_link_libraries(
    XrdUtils
    )
  
@@ -160,7 +148,7 @@ index 34d73b692..615c82913 100644
  #-------------------------------------------------------------------------------
  # xrdpfc_print
  #-------------------------------------------------------------------------------
-@@ -81,6 +106,19 @@ install(
+@@ -81,6 +104,19 @@ install(
        COMMAND ln -sf lib${LIB_XRD_FILECACHE}.so lib${LIB_XRD_FILECACHE_LEGACY}.so
        WORKING_DIRECTORY \$ENV{DESTDIR}/${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR} )" )
  
