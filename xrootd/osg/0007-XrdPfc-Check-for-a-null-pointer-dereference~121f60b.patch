@@ -1,7 +1,7 @@
-From ecbf0b8ceeae90b9f000d632f8f19055d1ffc7ed Mon Sep 17 00:00:00 2001
+From 68ea01046cabd08490b1904aba50866625c8c374 Mon Sep 17 00:00:00 2001
 From: Brian Bockelman <bbockelman@morgridge.org>
 Date: Thu, 30 Jan 2025 10:30:10 -0600
-Subject: [PATCH 13/13] [XrdPfc] Check for a null pointer dereference
+Subject: [PATCH 7/8] [XrdPfc] Check for a null pointer dereference
 
 When looking up the map of active files, the returned value is a
 a `nullptr` if the file-open is ongoing.  Check for this case and
@@ -18,10 +18,10 @@ now use that code instead of crashing.
  1 file changed, 13 insertions(+), 2 deletions(-)
 
 diff --git a/src/XrdPfc/XrdPfc.cc b/src/XrdPfc/XrdPfc.cc
-index 1bd61b4e0..f35894550 100644
+index 4ab1c5659..d4f236122 100644
 --- a/src/XrdPfc/XrdPfc.cc
 +++ b/src/XrdPfc/XrdPfc.cc
-@@ -997,7 +997,13 @@ int Cache::ConsiderCached(const char *curl)
+@@ -1014,7 +1014,13 @@ int Cache::ConsiderCached(const char *curl)
        auto it = m_active.find(f_name);
        if (it != m_active.end()) {
           file = it->second;
@@ -36,7 +36,7 @@ index 1bd61b4e0..f35894550 100644
        }
     }
     if (file) {
-@@ -1106,7 +1112,12 @@ int Cache::Stat(const char *curl, struct stat &sbuff)
+@@ -1123,7 +1129,12 @@ int Cache::Stat(const char *curl, struct stat &sbuff)
        auto it = m_active.find(f_name);
        if (it != m_active.end()) {
           file = it->second;
