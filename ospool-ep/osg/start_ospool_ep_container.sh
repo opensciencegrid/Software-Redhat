@@ -3,6 +3,7 @@
 DOCKER_ARGS=()
 USER=1000
 ENV_FILE=/etc/osg/ospool-ep.cfg
+EP_IMG=release
 # explicitly true:
 # y(es), t(rue), 1, on; uppercase or lowercase
 is_true () {
@@ -63,9 +64,13 @@ fi
 # fi
 
 
-# Mount /etc/OpenCl/vendors if providing NVIDIA GPU resources
+# Mount /etc/OpenCl/vendors if providing NVIDIA GPU resources,
+# and use the cuda_11_8_0-release flavor of the ospool-ep img
 if is_true "$PROVIDE_NVIDIA_GPU"; then
   add_docker_arg -v "/etc/OpenCL/vendors:/etc/OpenCL/vendors:ro"
+  # Testing indicates that singularity PID namespaces conflict with GPU mount requirements
+  add_docker_arg -e SINGULARITY_DISABLE_PID_NAMESPACES=True
+  EP_IMG=cuda_11_8_0-release
 fi
 
 # Limit docker's CPU usage if the NUM_CPUS condor config param is set
@@ -88,4 +93,4 @@ docker run --user $USER --name ospool-ep-container \
     --ulimit nofile=2048:2048 \
     --env-file $ENV_FILE \
     "${DOCKER_ARGS[@]}" \
-    hub.opensciencegrid.org/osg-htc/ospool-ep:%{OSGVER}-release
+    hub.opensciencegrid.org/osg-htc/ospool-ep:%{OSGVER}-$EP_IMG
