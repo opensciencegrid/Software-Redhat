@@ -41,7 +41,7 @@ mv %{SOURCE2} %{buildroot}/etc/osg/
 
 %changelog
 
-* Tue Nov 14 2023 Matt Westphall <westphall@wisc.edu> 1.0-6
+* Wed Feb 19 2025 Matt Westphall <westphall@wisc.edu> 1.0-6
 - Use the CUDA ospool-ep image when PROVIDE_NVIDIA_GPU=true
 
 * Tue Oct 15 2024 Matt Westphall <westphall@wisc.edu> 1.0-5
