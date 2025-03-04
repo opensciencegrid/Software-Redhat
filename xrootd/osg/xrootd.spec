@@ -84,7 +84,7 @@
 Name:		xrootd
 Epoch:		1
 Version:	5.7.3
-Release:	1.2%{?_with_purge:.purge}%{?dist}%{?_with_clang:.clang}%{?_with_asan:.asan}
+Release:	1.3%{?_with_purge:.purge}%{?dist}%{?_with_clang:.clang}%{?_with_asan:.asan}
 Summary:	Extended ROOT File Server
 Group:		System Environment/Daemons
 License:	LGPL-3.0-or-later AND BSD-2-Clause AND BSD-3-Clause AND curl AND MIT AND Zlib
@@ -120,6 +120,8 @@ Patch8: 0008-XrdHttp-Undo-HTTP-PUT-response-code-change~956b9fa.patch
 # PelicanPlatform/xrootd #9 (xrootd/xrootd #2406)
 #Patch9: 0009-Second-rebase-of-alja-purge-main-rb1-onto-master-5.7~4f6f775.patch
 %endif
+# xrootd/xrootd #2442
+Patch10: 0010-gstream-config-processing.patch
 
 
 %if %{use_cmake3}
@@ -542,7 +544,7 @@ cd %{build_dir}
 #patch -p1 -P9
 %endif
 # patch #10 and more
-#autopatch -p1 -m10
+%autopatch -p1 -m10
 cd ..
 
 %build
@@ -1186,6 +1188,9 @@ fi
 # Changelog
 #-------------------------------------------------------------------------------
 %changelog
+* Tue Mar 04 2025 Mátyás Selmeci <mselmeci@wisc.edu> - 5.7.3-1.3
+- Add 0010-gstream-config-processing.patch (SOFTWARE-6099)
+
 * Thu Jan 30 2025 Mátyás Selmeci <mselmeci@wisc.edu> - 5.7.3-1.2
 - Fix patch file names
 - Add:
