@@ -1,50 +1,80 @@
-From ea00d59a2d09ee00b90c01591c419c4ce08ed392 Mon Sep 17 00:00:00 2001
-From: Guilherme Amadio <amadio@cern.ch>
+From 20f59ebdce3399be6769535c2b3a7d31f24728e7 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Matev=C5=BE=20Tadel?= <mtadel@ucsd.edu>
 Date: Sun, 1 Sep 2024 17:01:40 +0200
-Subject: [PATCH 09/11] Second rebase of alja/purge-main-rb1 onto master /
- 5.7.2.
+Subject: [PATCH] Add ResourceMonitor and PurgePlugin
 
+Resource Monitor (main class XrdPfcResourceMonitor) provides detailed and
+accurate snapshots of state and usage of existing directories. It allows
+optimization of per-directory statistics information collection and storage,
+and reduces the number of required cache namespace traversals. It can
+periodically export the state into JSON and binary files for viewing of
+current state and for further processing or aggregation. This
+information also serves as input to purge process.
+
+Purge plugin provides a class-based API that allows users to implement their
+own steering of the purge priority selection. The purge is still directory
+driven, i.e., the purge plugin is given a per-directory snapshot of resource
+monitor state and responds with a list of { directory-path, bytes_to_remove }
+structures. Pfc still drives the actual low-level directory traversal and file
+purge -- though this could be relaxed in the future. If the plugin does not
+schedule sufficient removals, the classic LRU algorithm kicks in to satisfy
+the high/low watermark and file-based limits.
+
+The purge-plugin API is defined in class Pfc::PurgePin. Reference
+implementation, directory-quota based purging, is provided in the core PFC
+library class XrdPfcPurgeQuota and enabled as:
+  pfc.purgelib libXrdPfcPurgeQuota /etc/xrootd/quota.cfg
+with entries in quota cfg file looking like:
+  /store/mc 10T
+  /store/data 12T
+
+Co-authored-by: Alja Mrak-Tadel <amraktadel@ucsd.edu>
 ---
- docs/ReleaseNotes.txt                |    1 -
- src/XrdHeaders.cmake                 |    1 +
- src/XrdOss/XrdOssAt.hh               |    2 +
- src/XrdPfc.cmake                     |   38 +-
- src/XrdPfc/README                    |    8 +-
- src/XrdPfc/XrdPfc.cc                 |  155 ++--
- src/XrdPfc/XrdPfc.hh                 |  192 +----
- src/XrdPfc/XrdPfcCommand.cc          |   23 +-
- src/XrdPfc/XrdPfcConfiguration.cc    |   90 ++-
- src/XrdPfc/XrdPfcDecision.hh         |    4 +-
- src/XrdPfc/XrdPfcDirState.cc         |  246 ++++++
- src/XrdPfc/XrdPfcDirState.hh         |  204 +++++
- src/XrdPfc/XrdPfcDirStateSnapshot.cc |  121 +++
- src/XrdPfc/XrdPfcDirStateSnapshot.hh |   94 +++
- src/XrdPfc/XrdPfcFPurgeState.cc      |  202 +++++
- src/XrdPfc/XrdPfcFPurgeState.hh      |   77 ++
- src/XrdPfc/XrdPfcFSctl.cc            |   14 +-
- src/XrdPfc/XrdPfcFile.cc             |  120 ++-
- src/XrdPfc/XrdPfcFile.hh             |   43 +-
- src/XrdPfc/XrdPfcFsTraversal.cc      |  215 ++++++
- src/XrdPfc/XrdPfcFsTraversal.hh      |   85 +++
- src/XrdPfc/XrdPfcIO.hh               |    2 -
- src/XrdPfc/XrdPfcIOFile.cc           |   14 +-
- src/XrdPfc/XrdPfcIOFile.hh           |    3 +-
- src/XrdPfc/XrdPfcIOFileBlock.cc      |   17 +-
- src/XrdPfc/XrdPfcIOFileBlock.hh      |    3 +-
- src/XrdPfc/XrdPfcInfo.cc             |    2 +-
- src/XrdPfc/XrdPfcInfo.hh             |   12 +-
- src/XrdPfc/XrdPfcPathParseTools.hh   |  138 ++++
- src/XrdPfc/XrdPfcPurge.cc            | 1051 ++++----------------------
- src/XrdPfc/XrdPfcPurgePin.hh         |   79 ++
- src/XrdPfc/XrdPfcPurgeQuota.cc       |  137 ++++
- src/XrdPfc/XrdPfcResourceMonitor.cc  |  940 +++++++++++++++++++++++
- src/XrdPfc/XrdPfcResourceMonitor.hh  |  264 +++++++
- src/XrdPfc/XrdPfcStats.hh            |  151 +++-
- src/XrdPfc/XrdPfcTypes.hh            |    4 +
- src/XrdVersionPlugin.hh              |    3 +-
- 37 files changed, 3441 insertions(+), 1314 deletions(-)
+ src/XrdHeaders.cmake                  |    1 +
+ src/XrdOss/XrdOssAt.hh                |    2 +
+ src/XrdOuc/XrdOuca2x.cc               |   18 +-
+ src/XrdPfc.cmake                      |   39 +-
+ src/XrdPfc/README                     |    8 +-
+ src/XrdPfc/XrdPfc.cc                  |  189 ++---
+ src/XrdPfc/XrdPfc.hh                  |  191 +----
+ src/XrdPfc/XrdPfcCommand.cc           |  126 +--
+ src/XrdPfc/XrdPfcConfiguration.cc     |  122 ++-
+ src/XrdPfc/XrdPfcDecision.hh          |    4 +-
+ src/XrdPfc/XrdPfcDirState.cc          |  302 +++++++
+ src/XrdPfc/XrdPfcDirState.hh          |  146 ++++
+ src/XrdPfc/XrdPfcDirStateBase.hh      |   80 ++
+ src/XrdPfc/XrdPfcDirStatePurgeshot.hh |   81 ++
+ src/XrdPfc/XrdPfcDirStateSnapshot.cc  |  158 ++++
+ src/XrdPfc/XrdPfcDirStateSnapshot.hh  |   55 ++
+ src/XrdPfc/XrdPfcFPurgeState.cc       |  164 ++++
+ src/XrdPfc/XrdPfcFPurgeState.hh       |   77 ++
+ src/XrdPfc/XrdPfcFSctl.cc             |   14 +-
+ src/XrdPfc/XrdPfcFile.cc              |  199 +++--
+ src/XrdPfc/XrdPfcFile.hh              |   67 +-
+ src/XrdPfc/XrdPfcFsTraversal.cc       |  215 +++++
+ src/XrdPfc/XrdPfcFsTraversal.hh       |   85 ++
+ src/XrdPfc/XrdPfcIO.cc                |    8 +-
+ src/XrdPfc/XrdPfcIO.hh                |    6 +-
+ src/XrdPfc/XrdPfcIOFile.cc            |   14 +-
+ src/XrdPfc/XrdPfcIOFile.hh            |    3 +-
+ src/XrdPfc/XrdPfcIOFileBlock.cc       |   17 +-
+ src/XrdPfc/XrdPfcIOFileBlock.hh       |    3 +-
+ src/XrdPfc/XrdPfcInfo.cc              |    4 +-
+ src/XrdPfc/XrdPfcInfo.hh              |   12 +-
+ src/XrdPfc/XrdPfcPathParseTools.hh    |  150 ++++
+ src/XrdPfc/XrdPfcPurge.cc             | 1051 +++----------------------
+ src/XrdPfc/XrdPfcPurgePin.hh          |   79 ++
+ src/XrdPfc/XrdPfcPurgeQuota.cc        |  137 ++++
+ src/XrdPfc/XrdPfcResourceMonitor.cc   |  962 ++++++++++++++++++++++
+ src/XrdPfc/XrdPfcResourceMonitor.hh   |  264 +++++++
+ src/XrdPfc/XrdPfcStats.hh             |  158 +++-
+ src/XrdPfc/XrdPfcTypes.hh             |    4 +
+ src/XrdVersionPlugin.hh               |    3 +-
+ 40 files changed, 3790 insertions(+), 1428 deletions(-)
  create mode 100644 src/XrdPfc/XrdPfcDirState.cc
  create mode 100644 src/XrdPfc/XrdPfcDirState.hh
+ create mode 100644 src/XrdPfc/XrdPfcDirStateBase.hh
+ create mode 100644 src/XrdPfc/XrdPfcDirStatePurgeshot.hh
  create mode 100644 src/XrdPfc/XrdPfcDirStateSnapshot.cc
  create mode 100644 src/XrdPfc/XrdPfcDirStateSnapshot.hh
  create mode 100644 src/XrdPfc/XrdPfcFPurgeState.cc
@@ -57,15 +87,6 @@ Subject: [PATCH 09/11] Second rebase of alja/purge-main-rb1 onto master /
  create mode 100644 src/XrdPfc/XrdPfcResourceMonitor.cc
  create mode 100644 src/XrdPfc/XrdPfcResourceMonitor.hh
 
-diff --git a/docs/ReleaseNotes.txt b/docs/ReleaseNotes.txt
-index fb00f6409..f94481db8 100644
---- a/docs/ReleaseNotes.txt
-+++ b/docs/ReleaseNotes.txt
-@@ -1,4 +1,3 @@
--======
- XRootD
- ======
- 
 diff --git a/src/XrdHeaders.cmake b/src/XrdHeaders.cmake
 index 5836be561..aa4eecaa9 100644
 --- a/src/XrdHeaders.cmake
@@ -91,11 +112,51 @@ index 6bcfb17e6..2c0dcfe21 100644
  #include <cstdint>
  #include <sys/types.h>
  
+diff --git a/src/XrdOuc/XrdOuca2x.cc b/src/XrdOuc/XrdOuca2x.cc
+index d729bc14f..e9627e699 100644
+--- a/src/XrdOuc/XrdOuca2x.cc
++++ b/src/XrdOuc/XrdOuca2x.cc
+@@ -256,13 +256,13 @@ int XrdOuca2x::a2sp(XrdSysError &Eroute, const char *emsg, const char *item,
+ 
+ int XrdOuca2x::a2sz(XrdSysError &Eroute, const char *emsg, const char *item,
+                                 long long *val, long long minv, long long maxv)
+-{   long long qmult;
+-    char *eP, *fP = (char *)item + strlen(item) - 1;
+-
+-    if (!item || !*item)
++{   if (!item || !*item)
+        {Eroute.Emsg("a2x", emsg, "value not specified"); return -1;}
+ 
+-         if (*fP == 'k' || *fP == 'K') qmult = 1024LL;
++    long long qmult;
++    char *eP, *fP = (char *)item + strlen(item) - 1;
++
++             if (*fP == 'k' || *fP == 'K') qmult = 1024LL;
+     else if (*fP == 'm' || *fP == 'M') qmult = 1024LL*1024LL;
+     else if (*fP == 'g' || *fP == 'G') qmult = 1024LL*1024LL*1024LL;
+     else if (*fP == 't' || *fP == 'T') qmult = 1024LL*1024LL*1024LL*1024LL;
+@@ -287,12 +287,12 @@ int XrdOuca2x::a2sz(XrdSysError &Eroute, const char *emsg, const char *item,
+ 
+ int XrdOuca2x::a2tm(XrdSysError &Eroute, const char *emsg, const char *item, int *val,
+                           int minv, int maxv)
+-{   int qmult;
+-    char *eP, *fP = (char *)item + strlen(item) - 1;
+-
+-    if (!item || !*item)
++{   if (!item || !*item)
+        {Eroute.Emsg("a2x", emsg, "value not specified"); return -1;}
+ 
++    int qmult;
++    char *eP, *fP = (char *)item + strlen(item) - 1;
++
+          if (*fP == 's' || *fP == 'S') qmult = 1;
+     else if (*fP == 'm' || *fP == 'M') qmult = 60;
+     else if (*fP == 'h' || *fP == 'H') qmult = 60*60;
 diff --git a/src/XrdPfc.cmake b/src/XrdPfc.cmake
-index 34d73b692..9e8e59f06 100644
+index 34d73b692..04a9e105d 100644
 --- a/src/XrdPfc.cmake
 +++ b/src/XrdPfc.cmake
-@@ -5,21 +5,29 @@
+@@ -5,6 +5,7 @@
  set( LIB_XRD_FILECACHE  XrdPfc-${PLUGIN_VERSION} )
  set( LIB_XRD_FILECACHE_LEGACY XrdFileCache-${PLUGIN_VERSION} )
  set( LIB_XRD_BLACKLIST  XrdBlacklistDecision-${PLUGIN_VERSION} )
@@ -103,30 +164,38 @@ index 34d73b692..9e8e59f06 100644
  
  #-------------------------------------------------------------------------------
  # Shared library version
- #-------------------------------------------------------------------------------
- 
- #-------------------------------------------------------------------------------
- # The XrdPfc library
- #-------------------------------------------------------------------------------
- add_library(
-   ${LIB_XRD_FILECACHE}
--  MODULE
-+  SHARED
+@@ -19,21 +20,29 @@ add_library(
    XrdPfc/XrdPfcTypes.hh
    XrdPfc/XrdPfc.cc              XrdPfc/XrdPfc.hh
    XrdPfc/XrdPfcConfiguration.cc
++  XrdPfc/XrdPfcDirStateBase.hh
 +  XrdPfc/XrdPfcDirState.cc      XrdPfc/XrdPfcDirState.hh
 +  XrdPfc/XrdPfcDirStateSnapshot.cc      XrdPfc/XrdPfcDirStateSnapshot.hh
 +  XrdPfc/XrdPfcFPurgeState.cc   XrdPfc/XrdPfcFPurgeState.hh
    XrdPfc/XrdPfcPurge.cc
 +  XrdPfc/XrdPfcPurgePin.hh
++  XrdPfc/XrdPfcDirStatePurgeshot.hh
 +  XrdPfc/XrdPfcResourceMonitor.cc XrdPfc/XrdPfcResourceMonitor.hh
 +  XrdPfc/XrdPfcPathParseTools.hh
 +  XrdPfc/XrdPfcFsTraversal.cc   XrdPfc/XrdPfcFsTraversal.hh
    XrdPfc/XrdPfcCommand.cc
    XrdPfc/XrdPfcFile.cc          XrdPfc/XrdPfcFile.hh
    XrdPfc/XrdPfcFSctl.cc         XrdPfc/XrdPfcFSctl.hh
-@@ -53,6 +61,21 @@ target_link_libraries(
+   XrdPfc/XrdPfcStats.hh
+   XrdPfc/XrdPfcInfo.cc          XrdPfc/XrdPfcInfo.hh
+   XrdPfc/XrdPfcIO.cc            XrdPfc/XrdPfcIO.hh
+   XrdPfc/XrdPfcIOFile.cc        XrdPfc/XrdPfcIOFile.hh
+   XrdPfc/XrdPfcIOFileBlock.cc   XrdPfc/XrdPfcIOFileBlock.hh
+   XrdPfc/XrdPfcDecision.hh)
+ 
+ target_link_libraries(
+   ${LIB_XRD_FILECACHE}
+   PRIVATE
+-# XrdPosix
+   XrdCl
+   XrdUtils
+   XrdServer
+@@ -53,6 +62,20 @@ target_link_libraries(
    XrdUtils
    )
  
@@ -142,22 +211,22 @@ index 34d73b692..9e8e59f06 100644
 +    ${LIB_XRD_PURGEQUOTA}
 +    PRIVATE
 +    XrdUtils
-+    ${LIB_XRD_FILECACHE}
 +    )
 +
  #-------------------------------------------------------------------------------
  # xrdpfc_print
  #-------------------------------------------------------------------------------
-@@ -81,6 +104,19 @@ install(
+@@ -81,6 +104,20 @@ install(
        COMMAND ln -sf lib${LIB_XRD_FILECACHE}.so lib${LIB_XRD_FILECACHE_LEGACY}.so
        WORKING_DIRECTORY \$ENV{DESTDIR}/${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR} )" )
  
 +install(
 +  FILES
 +    ${CMAKE_CURRENT_SOURCE_DIR}/XrdPfc/XrdPfcPurgePin.hh
-+    ${CMAKE_CURRENT_SOURCE_DIR}/XrdPfc/XrdPfcDirStateSnapshot.hh
-+    ${CMAKE_CURRENT_SOURCE_DIR}/XrdPfc/XrdPfcDirState.hh
++    ${CMAKE_CURRENT_SOURCE_DIR}/XrdPfc/XrdPfcDirStateBase.hh
++    ${CMAKE_CURRENT_SOURCE_DIR}/XrdPfc/XrdPfcDirStatePurgeshot.hh
 +    ${CMAKE_CURRENT_SOURCE_DIR}/XrdPfc/XrdPfcStats.hh
++    ${CMAKE_CURRENT_SOURCE_DIR}/XrdPfc/XrdPfcPathParseTools.hh
 +    ${CMAKE_CURRENT_SOURCE_DIR}/XrdPfc/XrdPfc.hh
 +    ${CMAKE_CURRENT_SOURCE_DIR}/XrdPfc/XrdPfcFile.hh
 +    ${CMAKE_CURRENT_SOURCE_DIR}/XrdPfc/XrdPfcTypes.hh
@@ -202,10 +271,17 @@ index 488b31eeb..673c72808 100644
  a) Enable proxy file prefetching:
  pps.cachelib libXrdPfc.so
 diff --git a/src/XrdPfc/XrdPfc.cc b/src/XrdPfc/XrdPfc.cc
-index dffdd9847..1bd61b4e0 100644
+index d4f236122..80f14c928 100644
 --- a/src/XrdPfc/XrdPfc.cc
 +++ b/src/XrdPfc/XrdPfc.cc
-@@ -28,7 +28,6 @@
+@@ -21,14 +21,12 @@
+ #include <algorithm>
+ #include <sys/statvfs.h>
+ 
+-#include "XrdCl/XrdClConstants.hh"
+ #include "XrdCl/XrdClURL.hh"
+ 
+ #include "XrdOuc/XrdOucEnv.hh"
  #include "XrdOuc/XrdOucUtils.hh"
  #include "XrdOuc/XrdOucPrivateUtils.hh"
  
@@ -213,7 +289,7 @@ index dffdd9847..1bd61b4e0 100644
  #include "XrdSys/XrdSysTimer.hh"
  #include "XrdSys/XrdSysTrace.hh"
  #include "XrdSys/XrdSysXAttr.hh"
-@@ -43,25 +42,19 @@
+@@ -43,25 +41,19 @@
  #include "XrdPfcInfo.hh"
  #include "XrdPfcIOFile.hh"
  #include "XrdPfcIOFileBlock.hh"
@@ -244,7 +320,7 @@ index dffdd9847..1bd61b4e0 100644
     return 0;
  }
  
-@@ -103,66 +96,44 @@ XrdOucCache *XrdOucGetCache(XrdSysLogger *logger,
+@@ -103,66 +95,44 @@ XrdOucCache *XrdOucGetCache(XrdSysLogger *logger,
        err.Say("Config Proxy file cache initialization failed.");
        return 0;
     }
@@ -318,7 +394,7 @@ index dffdd9847..1bd61b4e0 100644
  
  bool Cache::Decide(XrdOucCacheIO* io)
  {
-@@ -193,19 +164,14 @@ Cache::Cache(XrdSysLogger *logger, XrdOucEnv *env) :
+@@ -193,19 +163,14 @@ Cache::Cache(XrdSysLogger *logger, XrdOucEnv *env) :
     m_traceID("Cache"),
     m_oss(0),
     m_gstream(0),
@@ -340,7 +416,7 @@ index dffdd9847..1bd61b4e0 100644
  {
     // Default log level is Warning.
     m_trace->What = 2;
-@@ -352,6 +318,15 @@ void Cache::ProcessWriteTasks()
+@@ -352,6 +317,15 @@ void Cache::ProcessWriteTasks()
     }
  }
  
@@ -356,7 +432,7 @@ index dffdd9847..1bd61b4e0 100644
  //==============================================================================
  
  char* Cache::RequestRAM(long long size)
-@@ -497,9 +472,9 @@ File* Cache::GetFile(const std::string& path, IO* io, long long off, long long f
+@@ -497,9 +471,9 @@ File* Cache::GetFile(const std::string& path, IO* io, long long off, long long f
  void Cache::ReleaseFile(File* f, IO* io)
  {
     // Called from virtual IO::DetachFinalize.
@@ -368,11 +444,53 @@ index dffdd9847..1bd61b4e0 100644
     {
       XrdSysCondVarHelper lock(&m_active_cond);
  
-@@ -635,60 +610,68 @@ void Cache::dec_ref_cnt(File* f, bool high_debug)
+@@ -591,6 +565,7 @@ void Cache::dec_ref_cnt(File* f, bool high_debug)
+    int tlvl = high_debug ? TRACE_Debug : TRACE_Dump;
+    int cnt;
+ 
++   bool emergency_close = false;
+    {
+      XrdSysCondVarHelper lock(&m_active_cond);
+ 
+@@ -605,22 +580,29 @@ void Cache::dec_ref_cnt(File* f, bool high_debug)
+         if (cnt == 1)
+         {
+            TRACE_INT(tlvl, "dec_ref_cnt " << f->GetLocalPath() << " is in shutdown, ref_cnt = " << cnt
+-                     << " -- deleting File object without further ado");
+-           delete f;
++                     << " -- closing and deleting File object without further ado");
++            emergency_close = true;
+         }
+         else
+         {
+            TRACE_INT(tlvl, "dec_ref_cnt " << f->GetLocalPath() << " is in shutdown, ref_cnt = " << cnt
+                      << " -- waiting");
++           f->dec_ref_cnt();
++           return;
+         }
+-        return;
+      }
+      if (cnt > 1)
+      {
+         f->dec_ref_cnt();
+         return;
+      }
+    }
++   if (emergency_close)
++   {
++      f->Close();
++      delete f;
++      return;
++   }
+ 
+    if (cnt == 1)
+    {
+@@ -635,60 +617,75 @@ void Cache::dec_ref_cnt(File* f, bool high_debug)
        }
     }
  
 +   bool finished_p = false;
++   ActiveMap_i act_it;
     {
        XrdSysCondVarHelper lock(&m_active_cond);
  
@@ -380,8 +498,10 @@ index dffdd9847..1bd61b4e0 100644
        TRACE_INT(tlvl, "dec_ref_cnt " << f->GetLocalPath() << ", cnt after sync_check and dec_ref_cnt = " << cnt);
        if (cnt == 0)
        {
-          ActiveMap_i it = m_active.find(f->GetLocalPath());
-          m_active.erase(it);
+-         ActiveMap_i it = m_active.find(f->GetLocalPath());
+-         m_active.erase(it);
++         act_it = m_active.find(f->GetLocalPath());
++         act_it->second = 0;
  
 -         m_closed_files_stats.insert(std::make_pair(f->GetLocalPath(), f->DeltaStatsFromLastCall()));
 +         finished_p = true;
@@ -389,12 +509,43 @@ index dffdd9847..1bd61b4e0 100644
 +   }
 +   if (finished_p)
 +   {
++      f->Close();
++      {
++         XrdSysCondVarHelper lock(&m_active_cond);
++         m_active.erase(act_it);
++      }
+ 
+-         if (m_gstream)
+-         {
+-            const Stats       &st = f->RefStats();
+-            const Info::AStat *as = f->GetLastAccessStats();
 +      if (m_gstream)
 +      {
 +         const Stats       &st = f->RefStats();
 +         const Info::AStat *as = f->GetLastAccessStats();
  
--         if (m_gstream)
+-            char buf[4096];
+-            int  len = snprintf(buf, 4096, "{\"event\":\"file_close\","
+-                                 "\"lfn\":\"%s\",\"size\":%lld,\"blk_size\":%d,\"n_blks\":%d,\"n_blks_done\":%d,"
+-                                 "\"access_cnt\":%zu,\"attach_t\":%lld,\"detach_t\":%lld,\"remotes\":%s,"
+-                                 "\"b_hit\":%lld,\"b_miss\":%lld,\"b_bypass\":%lld,"
+-                                 "\"b_todisk\":%lld,\"b_prefetch\":%lld,\"n_cks_errs\":%d}",
+-                                 f->GetLocalPath().c_str(), f->GetFileSize(), f->GetBlockSize(),
+-                                 f->GetNBlocks(), f->GetNDownloadedBlocks(),
+-                                 f->GetAccessCnt(), (long long) as->AttachTime, (long long) as->DetachTime,
+-                                 f->GetRemoteLocations().c_str(),
+-                                 as->BytesHit, as->BytesMissed, as->BytesBypassed,
+-                                 st.m_BytesWritten, f->GetPrefetchedBytes(), st.m_NCksumErrors
+-            );
+-            bool suc = false;
+-            if (len < 4096)
+-            {
+-               suc = m_gstream->Insert(buf, len + 1);
+-            }
+-            if ( ! suc)
+-            {
+-               TRACE(Error, "Failed g-stream insertion of file_close record, len=" << len);
+-            }
 +         char buf[4096];
 +         int  len = snprintf(buf, 4096, "{\"event\":\"file_close\","
 +                              "\"lfn\":\"%s\",\"size\":%lld,\"blk_size\":%d,\"n_blks\":%d,\"n_blks_done\":%d,"
@@ -410,32 +561,7 @@ index dffdd9847..1bd61b4e0 100644
 +         );
 +         bool suc = false;
 +         if (len < 4096)
-          {
--            const Stats       &st = f->RefStats();
--            const Info::AStat *as = f->GetLastAccessStats();
--
--            char buf[4096];
--            int  len = snprintf(buf, 4096, "{\"event\":\"file_close\","
--                                 "\"lfn\":\"%s\",\"size\":%lld,\"blk_size\":%d,\"n_blks\":%d,\"n_blks_done\":%d,"
--                                 "\"access_cnt\":%lu,\"attach_t\":%lld,\"detach_t\":%lld,\"remotes\":%s,"
--                                 "\"b_hit\":%lld,\"b_miss\":%lld,\"b_bypass\":%lld,"
--                                 "\"b_todisk\":%lld,\"b_prefetch\":%lld,\"n_cks_errs\":%d}",
--                                 f->GetLocalPath().c_str(), f->GetFileSize(), f->GetBlockSize(),
--                                 f->GetNBlocks(), f->GetNDownloadedBlocks(),
--                                 (unsigned long) f->GetAccessCnt(), (long long) as->AttachTime, (long long) as->DetachTime,
--                                 f->GetRemoteLocations().c_str(),
--                                 as->BytesHit, as->BytesMissed, as->BytesBypassed,
--                                 st.m_BytesWritten, f->GetPrefetchedBytes(), st.m_NCksumErrors
--            );
--            bool suc = false;
--            if (len < 4096)
--            {
--               suc = m_gstream->Insert(buf, len + 1);
--            }
--            if ( ! suc)
--            {
--               TRACE(Error, "Failed g-stream insertion of file_close record, len=" << len);
--            }
++         {
 +            suc = m_gstream->Insert(buf, len + 1);
 +         }
 +         if ( ! suc)
@@ -467,13 +593,14 @@ index dffdd9847..1bd61b4e0 100644
  
  //==============================================================================
  //=== PREFETCH
-@@ -1179,26 +1162,27 @@ int Cache::Unlink(const char *curl)
+@@ -1190,51 +1187,59 @@ int Cache::Unlink(const char *curl)
  
  int Cache::UnlinkFile(const std::string& f_name, bool fail_if_open)
  {
 +   static const char* trc_pfx = "UnlinkFile ";
     ActiveMap_i  it;
     File        *file = 0;
++   long long    st_blocks_to_purge = 0;
     {
        XrdSysCondVarHelper lock(&m_active_cond);
  
@@ -497,36 +624,45 @@ index dffdd9847..1bd61b4e0 100644
              return -EAGAIN;
           }
  
-@@ -1220,10 +1204,15 @@ int Cache::UnlinkFile(const std::string& f_name, bool fail_if_open)
+          file = it->second;
+-         file->initiate_emergency_shutdown();
++         st_blocks_to_purge = file->initiate_emergency_shutdown();
+          it->second = 0;
+       }
+       else
+       {
+          it = m_active.insert(std::make_pair(f_name, (File*) 0)).first;
+       }
+    }
+ 
+-   if (file)
+-   {
++   if (file) {
+       RemoveWriteQEntriesFor(file);
++   } else {
++      struct stat f_stat;
++      if (m_oss->Stat(f_name.c_str(), &f_stat) == XrdOssOK)
++         st_blocks_to_purge = f_stat.st_blocks;
+    }
+ 
     std::string i_name = f_name + Info::s_infoExtension;
  
     // Unlink file & cinfo
-+   struct stat f_stat;
-+   bool stat_ok = (m_oss->Stat(f_name.c_str(), &f_stat) == XrdOssOK);
     int f_ret = m_oss->Unlink(f_name.c_str());
     int i_ret = m_oss->Unlink(i_name.c_str());
  
 -   TRACE(Debug, "UnlinkCommon " << f_name << ", f_ret=" << f_ret << ", i_ret=" << i_ret);
-+   if (stat_ok)
-+      m_res_mon->register_file_purge(f_name, f_stat.st_blocks);
++   if (st_blocks_to_purge)
++      m_res_mon->register_file_purge(f_name, st_blocks_to_purge);
 +
 +   TRACE(Debug, trc_pfx << f_name << ", f_ret=" << f_ret << ", i_ret=" << i_ret);
  
     {
        XrdSysCondVarHelper lock(&m_active_cond);
 diff --git a/src/XrdPfc/XrdPfc.hh b/src/XrdPfc/XrdPfc.hh
-index f22591eb1..a65153fca 100644
+index f22591eb1..45c9448b6 100644
 --- a/src/XrdPfc/XrdPfc.hh
 +++ b/src/XrdPfc/XrdPfc.hh
-@@ -9,7 +9,7 @@
- // the Free Software Foundation, either version 3 of the License, or
- // (at your option) any later version.
- //
--// XRootD is distributed in the hope that it will be useful,
-+// XRootD is distributed in the hope that it will be useful,fm_pu
- // but WITHOUT ANY emacs WARRANTY; without even the implied warranty of
- // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- // GNU General Public License for more details.
 @@ -27,22 +27,30 @@
  #include "XrdSys/XrdSysPthread.hh"
  #include "XrdOuc/XrdOucCache.hh"
@@ -569,7 +705,15 @@ index f22591eb1..a65153fca 100644
     CkSumCheck_e get_cs_Chk() const { return (CkSumCheck_e) m_cs_Chk; }
  
     bool is_cschk_cache() const { return m_cs_Chk & CSChk_Cache; }
-@@ -133,128 +139,6 @@ struct TmpConfiguration
+@@ -95,6 +101,7 @@ struct Configuration
+ 
+    std::set<std::string> m_dirStatsDirs;     //!< directories for which stat reporting was requested
+    std::set<std::string> m_dirStatsDirGlobs; //!< directory globs for which stat reporting was requested
++   int       m_dirStatsInterval;        //!< time between resource monitor statistics dump in seconds
+    int       m_dirStatsMaxDepth;        //!< maximum depth for statistics write out
+    int       m_dirStatsStoreDepth;      //!< depth to which statistics should be collected
+ 
+@@ -133,128 +140,6 @@ struct TmpConfiguration
     {}
  };
  
@@ -698,7 +842,7 @@ index f22591eb1..a65153fca 100644
  
  //==============================================================================
  // Cache
-@@ -340,21 +224,13 @@ class Cache : public XrdOucCache
+@@ -340,21 +225,13 @@ class Cache : public XrdOucCache
     static const Cache         &TheOne();
     static const Configuration &Conf();
  
@@ -722,7 +866,7 @@ index f22591eb1..a65153fca 100644
     //---------------------------------------------------------------------
     //! Remove cinfo and data files from cache.
     //---------------------------------------------------------------------
-@@ -376,42 +252,48 @@ class Cache : public XrdOucCache
+@@ -376,42 +253,48 @@ class Cache : public XrdOucCache
     //---------------------------------------------------------------------
     void ProcessWriteTasks();
  
@@ -774,7 +918,7 @@ index f22591eb1..a65153fca 100644
     bool xtrace(XrdOucStream &);
     bool test_oss_basics_and_features();
  
-@@ -428,7 +310,10 @@ class Cache : public XrdOucCache
+@@ -428,7 +311,10 @@ class Cache : public XrdOucCache
  
     XrdXrootdGStream *m_gstream;
  
@@ -786,7 +930,7 @@ index f22591eb1..a65153fca 100644
  
     Configuration m_configuration;           //!< configurable parameters
  
-@@ -460,39 +345,20 @@ class Cache : public XrdOucCache
+@@ -460,39 +346,20 @@ class Cache : public XrdOucCache
     // active map, purge delay set
     typedef std::map<std::string, File*>               ActiveMap_t;
     typedef ActiveMap_t::iterator                      ActiveMap_i;
@@ -830,10 +974,10 @@ index f22591eb1..a65153fca 100644
  
  }
 diff --git a/src/XrdPfc/XrdPfcCommand.cc b/src/XrdPfc/XrdPfcCommand.cc
-index 60d0ca3f1..15c527a75 100644
+index 60d0ca3f1..f9d94e764 100644
 --- a/src/XrdPfc/XrdPfcCommand.cc
 +++ b/src/XrdPfc/XrdPfcCommand.cc
-@@ -19,6 +19,8 @@
+@@ -19,32 +19,35 @@
  #include "XrdPfcInfo.hh"
  #include "XrdPfc.hh"
  #include "XrdPfcTrace.hh"
@@ -842,7 +986,199 @@ index 60d0ca3f1..15c527a75 100644
  
  #include "XrdOfs/XrdOfsConfigPI.hh"
  #include "XrdOss/XrdOss.hh"
-@@ -245,16 +247,33 @@ void Cache::ExecuteCommandUrl(const std::string& command_url)
+ #include "XrdOuc/XrdOuca2x.hh"
+-#include "XrdOuc/XrdOucArgs.hh"
+ #include "XrdOuc/XrdOucEnv.hh"
+ #include "XrdOuc/XrdOucStream.hh"
+ #include "XrdSys/XrdSysLogger.hh"
+ #include "XrdSys/XrdSysFallocate.hh"
+ 
+ #include <algorithm>
+ #include <cstring>
+ #include <iostream>
+ #include <fcntl.h>
+ #include <vector>
+ #include <sys/time.h>
+ 
++namespace
++{
++   const int MAX_ACCESSES = 20;
++   const long long ONE_MB = 1024ll * 1024;
++   const long long ONE_GB = 1024ll * 1024 * 1024;
++}
++
+ using namespace XrdPfc;
+ 
+ //______________________________________________________________________________
+ 
+-const int MAX_ACCESSES = 20;
+-
+-const long long ONE_MB = 1024ll * 1024;
+-const long long ONE_GB = 1024ll * 1024 * 1024;
+-
+ void Cache::ExecuteCommandUrl(const std::string& command_url)
+ {
+    static const char *top_epfx = "ExecuteCommandUrl ";
+@@ -60,8 +63,15 @@ void Cache::ExecuteCommandUrl(const std::string& command_url)
+    }
+ 
+    // Get the command
+-   token = cp.get_token();
++   token = cp.get_token_as_string();
+ 
++   auto get_opt = [](SplitParser &sp) -> char {
++      char *t = sp.get_token();
++      if (t)
++         return (t[0] == '-' && t[1] != 0) ? t[1] : 0;
++      else
++         return -1;
++   };
+ 
+    //================================================================
+    // create_file
+@@ -82,76 +92,67 @@ void Cache::ExecuteCommandUrl(const std::string& command_url)
+ 
+       const Configuration &conf = m_configuration;
+ 
+-      token = cp.get_token();
+-
++      token = cp.get_token_as_string();
+       TRACE(Debug, err_prefix << "Entered with argument string '" << token <<"'.");
+-
+-      std::vector<char*> argv;
+-      SplitParser ap(token, " ");
+-      int argc = ap.fill_argv(argv);
++      if (token.empty()) {
++         TRACE(Error, err_prefix << "Options section must not be empty, a single space character is OK.");
++         return;
++      }
++      TRACE(Debug, err_prefix << "File path (reminder of URL) is '" << cp.get_reminder() <<"'.");
++      if ( ! cp.has_reminder()) {
++         TRACE(Error, err_prefix << "Path section must not be empty.");
++         return;
++      }
+ 
+       long long   file_size    = ONE_GB;
+       long long   block_size   = conf.m_bufferSize;
+       int         access_time    [MAX_ACCESSES];
+       int         access_duration[MAX_ACCESSES];
+       int         at_count = 0, ad_count = 0;
+-      XrdOucArgs  Spec(&m_log, err_prefix, "hvs:b:t:d:",
+-                       "help",         1, "h",
+-                       "verbose",      1, "v",
+-                       "size",         1, "s",
+-                       "blocksize",    1, "b",
+-                       "time",         1, "t",
+-                       "duration",     1, "d",
+-                       (const char *) 0);
+ 
+       time_t time_now = time(0);
+ 
+-      Spec.Set(argc, &argv[0]);
++      SplitParser ap(token, " ");
+       char theOpt;
+ 
+-      while ((theOpt = Spec.getopt()) != (char) -1)
++      while ((theOpt = get_opt(ap)) != (char) -1)
+       {
+          switch (theOpt)
+          {
+             case 'h': {
+                m_log.Say(err_prefix, " -- printing help, no action will be taken\n", usage);
+                return;
+             }
+             case 's': {
+-               if (XrdOuca2x::a2sz(m_log, "Error getting filesize", Spec.getarg(),
++               if (XrdOuca2x::a2sz(m_log, "Error getting filesize", ap.get_token(),
+                                    &file_size, 0ll, 32 * ONE_GB))
+                   return;
+                break;
+             }
+             case 'b': {
+-               if (XrdOuca2x::a2sz(m_log, "Error getting blocksize", Spec.getarg(),
++               if (XrdOuca2x::a2sz(m_log, "Error getting blocksize", ap.get_token(),
+                                    &block_size, 0ll, 64 * ONE_MB))
+                   return;
+                break;
+             }
+             case 't': {
+-               if (XrdOuca2x::a2i(m_log, "Error getting access time", Spec.getarg(),
++               if (XrdOuca2x::a2i(m_log, "Error getting access time", ap.get_token(),
+                                   &access_time[at_count++], INT_MIN, INT_MAX))
+                   return;
+                break;
+             }
+             case 'd': {
+-               if (XrdOuca2x::a2i(m_log, "Error getting access duration", Spec.getarg(),
++               if (XrdOuca2x::a2i(m_log, "Error getting access duration", ap.get_token(),
+                                   &access_duration[ad_count++], 0, 24 * 3600))
+                   return;
+                break;
+             }
+             default: {
+                TRACE(Error, err_prefix << "Unhandled command argument.");
+                return;
+             }
+          }
+       }
+-      if (Spec.getarg())
+-      {
+-         TRACE(Error, err_prefix << "Options must take up all the arguments.");
+-         return;
+-      }
+ 
+       if (at_count < 1) access_time    [at_count++] = time_now - 10;
+       if (ad_count < 1) access_duration[ad_count++] = 10;
+@@ -191,43 +192,43 @@ void Cache::ExecuteCommandUrl(const std::string& command_url)
+          int cret;
+          if ((cret = GetOss()->Create(myUser, file_path.c_str(), 0600, myEnv, XRDOSS_mkpath)) != XrdOssOK)
+          {
+-            TRACE(Error, err_prefix << "Create failed for data file " << file_path << ", " << ERRNO_AND_ERRSTR(-cret));
++            TRACE(Error, err_prefix << "Create failed for data file " << file_path << ERRNO_AND_ERRSTR(-cret));
+             return;
+          }
+ 
+          XrdOssDF *myFile = GetOss()->newFile(myUser);
+          if ((cret = myFile->Open(file_path.c_str(), O_RDWR, 0600, myEnv)) != XrdOssOK)
+          {
+-            TRACE(Error, err_prefix << "Open failed for data file " << file_path << ", " << ERRNO_AND_ERRSTR(-cret));
++            TRACE(Error, err_prefix << "Open failed for data file " << file_path << ERRNO_AND_ERRSTR(-cret));
+             delete myFile;
+             return;
+          }
+ 
+          // Create the info file.
+ 
+          myEnv.Put("oss.asize", "64k"); // TODO: Calculate? Get it from configuration? Do not know length of access lists ...
+          myEnv.Put("oss.cgroup", conf.m_meta_space.c_str());
+          if ((cret = GetOss()->Create(myUser, cinfo_path.c_str(), 0600, myEnv, XRDOSS_mkpath)) != XrdOssOK)
+          {
+-            TRACE(Error, err_prefix << "Create failed for info file " << cinfo_path << ", " << ERRNO_AND_ERRSTR(-cret));
++            TRACE(Error, err_prefix << "Create failed for info file " << cinfo_path << ERRNO_AND_ERRSTR(-cret));
+             myFile->Close(); delete myFile;
+             return;
+          }
+ 
+          XrdOssDF *myInfoFile = GetOss()->newFile(myUser);
+          if ((cret = myInfoFile->Open(cinfo_path.c_str(), O_RDWR, 0600, myEnv)) != XrdOssOK)
+          {
+-            TRACE(Error, err_prefix << "Open failed for info file " << cinfo_path << ", " << ERRNO_AND_ERRSTR(-cret));
++            TRACE(Error, err_prefix << "Open failed for info file " << cinfo_path << ERRNO_AND_ERRSTR(-cret));
+             delete myInfoFile;
+             myFile->Close(); delete myFile;
+             return;
+          }
+ 
+          // Allocate space for the data file.
+ 
+          if ((cret = posix_fallocate(myFile->getFD(), 0, file_size)))
+          {
+-            TRACE(Error, err_prefix << "posix_fallocate failed for data file " << file_path << ", " << ERRNO_AND_ERRSTR(cret));
++            TRACE(Error, err_prefix << "posix_fallocate failed for data file " << file_path << ERRNO_AND_ERRSTR(cret));
+          }
+ 
+          // Fill up cinfo.
+@@ -245,16 +246,36 @@ void Cache::ExecuteCommandUrl(const std::string& command_url)
  
           myInfo.Write(myInfoFile, cinfo_path.c_str());
  
@@ -858,7 +1194,11 @@ index 60d0ca3f1..15c527a75 100644
           myInfoFile->Close(); delete myInfoFile;
           myFile->Close();     delete myFile;
  
-          TRACE(Info, err_prefix << "Created file '" << file_path << "', size=" << (file_size>>20) << "MB.");
+-         TRACE(Info, err_prefix << "Created file '" << file_path << "', size=" << (file_size>>20) << "MB.");
++         struct stat dstat;
++         GetOss()->Stat(file_path.c_str(), &dstat);
++         TRACE(Info, err_prefix << "Created file '" << file_path << "', size=" << (file_size>>20) << "MB, "
++                                << "st_blocks=" << dstat.st_blocks);
  
           {
              XrdSysCondVarHelper lock(&m_writeQ.condVar);
@@ -869,25 +1209,62 @@ index 60d0ca3f1..15c527a75 100644
 +            int token = m_res_mon->register_file_open(file_path, time_now, false);
 +            XrdPfc::Stats stats;
 +            stats.m_BytesWritten  = file_size;
-+            stats.m_StBlocksAdded = (file_size & 0x1ff) ? (file_size >> 9) + 1 : file_size >> 9;
++            stats.m_StBlocksAdded = dstat.st_blocks;
 +            m_res_mon->register_file_update_stats(token, stats);
 +            m_res_mon->register_file_close(token, time(0), stats);
 +         }
        }
     }
  
-@@ -280,7 +299,7 @@ void Cache::ExecuteCommandUrl(const std::string& command_url)
+@@ -272,42 +293,37 @@ void Cache::ExecuteCommandUrl(const std::string& command_url)
+          "Notes:\n"
+          "  . If no options are needed one should still leave a space between / separators, ie., '/ /'\n";
+ 
+-      token = cp.get_token();
+-
++      token = cp.get_token_as_string();
+       TRACE(Debug, err_prefix << "Entered with argument string '" << token <<"'.");
++      if (token.empty()) {
++         TRACE(Error, err_prefix << "Options section must not be empty, a single space character is OK.");
++         return;
++      }
++      TRACE(Debug, err_prefix << "File path (reminder of URL) is '" << cp.get_reminder() <<"'.");
++      if ( ! cp.has_reminder()) {
++         TRACE(Error, err_prefix << "Path section must not be empty.");
++         return;
++      }
+ 
+-      std::vector<char*> argv;
        SplitParser ap(token, " ");
-       int argc = ap.fill_argv(argv);
- 
+-      int argc = ap.fill_argv(argv);
+-
 -      XrdOucArgs  Spec(&m_log, err_prefix, "hvs:b:t:d:",
-+      XrdOucArgs  Spec(&m_log, err_prefix, "h",
-                        "help",         1, "h",
-                        (const char *) 0);
+-                       "help",         1, "h",
+-                       (const char *) 0);
+-
+-      Spec.Set(argc, &argv[0]);
+       char theOpt;
  
-@@ -307,7 +326,7 @@ void Cache::ExecuteCommandUrl(const std::string& command_url)
-          return;
+-      while ((theOpt = Spec.getopt()) != (char) -1)
++      while ((theOpt = get_opt(ap)) != (char) -1)
+       {
+          switch (theOpt)
+          {
+             case 'h': {
+                m_log.Say(err_prefix, " -- printing help, no action will be taken\n", usage);
+                return;
+             }
+             default: {
+                TRACE(Error, err_prefix << "Unhandled command argument.");
+                return;
+             }
+          }
        }
+-      if (Spec.getarg())
+-      {
+-         TRACE(Error, err_prefix << "Options must take up all the arguments.");
+-         return;
+-      }
  
 -      std::string f_name(cp.get_reminder());
 +      std::string f_name(cp.get_reminder_with_delim());
@@ -895,7 +1272,7 @@ index 60d0ca3f1..15c527a75 100644
        TRACE(Debug, err_prefix << "file argument '" << f_name << "'.");
  
 diff --git a/src/XrdPfc/XrdPfcConfiguration.cc b/src/XrdPfc/XrdPfcConfiguration.cc
-index 74e4a0986..4db023a29 100644
+index 74e4a0986..ddc00334a 100644
 --- a/src/XrdPfc/XrdPfcConfiguration.cc
 +++ b/src/XrdPfc/XrdPfcConfiguration.cc
 @@ -2,6 +2,9 @@
@@ -908,7 +1285,15 @@ index 74e4a0986..4db023a29 100644
  #include "XrdOss/XrdOss.hh"
  
  #include "XrdOuc/XrdOucEnv.hh"
-@@ -236,6 +239,59 @@ bool Cache::xdlib(XrdOucStream &Config)
+@@ -42,6 +45,7 @@ Configuration::Configuration() :
+    m_purgeColdFilesAge(-1),
+    m_purgeAgeBasedPeriod(10),
+    m_accHistorySize(20),
++   m_dirStatsInterval(1500),
+    m_dirStatsMaxDepth(-1),
+    m_dirStatsStoreDepth(0),
+    m_bufferSize(128*1024),
+@@ -236,6 +240,59 @@ bool Cache::xdlib(XrdOucStream &Config)
     return true;
  }
  
@@ -968,7 +1353,7 @@ index 74e4a0986..4db023a29 100644
  /* Function: xtrace
  
     Purpose:  To parse the directive: trace <level>
-@@ -412,6 +468,10 @@ bool Cache::Config(const char *config_filename, const char *parameters)
+@@ -412,6 +469,10 @@ bool Cache::Config(const char *config_filename, const char *parameters)
        {
           retval = xdlib(Config);
        }
@@ -979,7 +1364,7 @@ index 74e4a0986..4db023a29 100644
        else if (! strcmp(var,"pfc.trace"))
        {
           retval = xtrace(Config);
-@@ -463,6 +523,18 @@ bool Cache::Config(const char *config_filename, const char *parameters)
+@@ -463,6 +524,18 @@ bool Cache::Config(const char *config_filename, const char *parameters)
     // sets default value for disk usage
     XrdOssVSInfo sP;
     {
@@ -998,7 +1383,7 @@ index 74e4a0986..4db023a29 100644
        if (m_oss->StatVS(&sP, m_configuration.m_data_space.c_str(), 1) < 0)
        {
           m_log.Emsg("ConfigParameters()", "error obtaining stat info for data space ", m_configuration.m_data_space.c_str());
-@@ -500,6 +572,13 @@ bool Cache::Config(const char *config_filename, const char *parameters)
+@@ -500,6 +573,13 @@ bool Cache::Config(const char *config_filename, const char *parameters)
              m_log.Emsg("ConfigParameters()", "pfc.diskusage files should have baseline < nominal < max.");
              aOK = false;
            }
@@ -1012,7 +1397,18 @@ index 74e4a0986..4db023a29 100644
          }
          else aOK = false;
        }
-@@ -633,9 +712,16 @@ bool Cache::Config(const char *config_filename, const char *parameters)
+@@ -595,8 +675,8 @@ bool Cache::Config(const char *config_filename, const char *parameters)
+       if (m_configuration.is_dir_stat_reporting_on())
+       {
+          loff += snprintf(buff + loff, sizeof(buff) - loff,
+-                          "       pfc.dirstats maxdepth %d ((internal: store_depth %d, size_of_dirlist %d, size_of_globlist %d))\n",
+-                          m_configuration.m_dirStatsMaxDepth, m_configuration.m_dirStatsStoreDepth,
++                          "       pfc.dirstats interval %d maxdepth %d ((internal: store_depth %d, size_of_dirlist %d, size_of_globlist %d))\n",
++                          m_configuration.m_dirStatsInterval, m_configuration.m_dirStatsMaxDepth, m_configuration.m_dirStatsStoreDepth,
+                           (int) m_configuration.m_dirStatsDirs.size(), (int) m_configuration.m_dirStatsDirGlobs.size());
+          loff += snprintf(buff + loff, sizeof(buff) - loff, "           dirlist:\n");
+          for (std::set<std::string>::iterator i = m_configuration.m_dirStatsDirs.begin(); i != m_configuration.m_dirStatsDirs.end(); ++i)
+@@ -633,9 +713,16 @@ bool Cache::Config(const char *config_filename, const char *parameters)
  
     m_gstream = (XrdXrootdGStream*) m_env->GetPtr("pfc.gStream*");
  
@@ -1031,6 +1427,40 @@ index 74e4a0986..4db023a29 100644
  
     if (ofsCfg) delete ofsCfg;
  
+@@ -748,7 +835,32 @@ bool Cache::ConfigParameters(std::string part, XrdOucStream& config, TmpConfigur
+       const char *p = 0;
+       while ((p = cwg.GetWord()) && cwg.HasLast())
+       {
+-         if (strcmp(p, "maxdepth") == 0)
++         if (strcmp(p, "interval") == 0)
++         {
++            if (XrdOuca2x::a2i(m_log, "Error getting dirstsat interval", cwg.GetWord(), &m_configuration.m_dirStatsInterval, 0, 7 * 24 * 3600))
++            {
++               return false;
++            }
++            int validIntervals[] = {60, 300, 600, 900, 1800, 3600};
++            int size = sizeof(validIntervals) / sizeof(int);
++            bool match = false;
++            std::string vvl;
++            for (int i = 0; i < size; i++) {
++              if (validIntervals[i] == m_configuration.m_dirStatsInterval) {
++                 match = true;
++                 break;
++              }
++              vvl += std::to_string(validIntervals[i]);
++              if ((i+1) != size) vvl += ", ";
++            }
++
++            if (!match) {
++                m_log.Emsg("Config", "Error: Dirstat interval is not valid. Possible interval values are ", vvl.c_str());
++                return false;
++            }
++
++         }
++         else if (strcmp(p, "maxdepth") == 0)
+          {
+             if (XrdOuca2x::a2i(m_log, "Error getting maxdepth value", cwg.GetWord(), &m_configuration.m_dirStatsMaxDepth, 0, 16))
+             {
 diff --git a/src/XrdPfc/XrdPfcDecision.hh b/src/XrdPfc/XrdPfcDecision.hh
 index 3f62c8776..9e85f8651 100644
 --- a/src/XrdPfc/XrdPfcDecision.hh
@@ -1049,14 +1479,15 @@ index 3f62c8776..9e85f8651 100644
  namespace XrdPfc
 diff --git a/src/XrdPfc/XrdPfcDirState.cc b/src/XrdPfc/XrdPfcDirState.cc
 new file mode 100644
-index 000000000..9b777661e
+index 000000000..449e2e19c
 --- /dev/null
 +++ b/src/XrdPfc/XrdPfcDirState.cc
-@@ -0,0 +1,246 @@
+@@ -0,0 +1,302 @@
 +#include "XrdPfcDirState.hh"
 +#include "XrdPfcPathParseTools.hh"
 +
 +#include <string>
++#include <cassert>
 +
 +using namespace XrdPfc;
 +
@@ -1164,6 +1595,21 @@ index 000000000..9b777661e
 +}
 +
 +//----------------------------------------------------------------------------
++//! Parent-recursively height-first append '/' and directory names to the
++//! result string.
++//! Returns total number of added characters.
++int DirState::generate_dir_path(std::string &result)
++{
++   int n_chars = 0;
++   if (m_parent) {
++      n_chars += m_parent->generate_dir_path(result) + 1 + m_dir_name.length();
++      result += '/';
++      result += m_dir_name;
++   }
++   return n_chars;
++}
++
++//----------------------------------------------------------------------------
 +//! Propagate usages to parents after initial directory scan.
 +//! Called from ResourceMonitor::perform_initial_scan()
 +//----------------------------------------------------------------------------
@@ -1188,37 +1634,67 @@ index 000000000..9b777661e
 +}
 +
 +//----------------------------------------------------------------------------
-+//! Propagate stat to parents
-+//! Called from ResourceMonitor::heart_beat()
-+//----------------------------------------------------------------------------
-+void DirState::upward_propagate_stats_and_times()
-+{
-+   for (DsMap_i i = m_subdirs.begin(); i != m_subdirs.end(); ++i)
-+   {
-+      i->second.upward_propagate_stats_and_times();
++//! Upward propagate stats to parents, join last open/close timestamps, and
++//! apply deltas / stats to usages.
++//!
++//! Additionally, manage removal of empty leaf directories and destruction
++//! of corresponding leaf DirState objects.
 +
-+      m_recursive_subdir_stats.AddUp(i->second.m_recursive_subdir_stats);
-+      m_recursive_subdir_stats.AddUp(i->second.m_here_stats);
++void DirState::update_stats_and_usages(bool purge_empty_dirs, unlink_func unlink_foo)
++{
++   // Hmmh.
++   DsMap_i i = m_subdirs.begin();
++   while (i != m_subdirs.end())
++   {
++      DirState &sub_ds = i->second;
++
++      sub_ds.update_stats_and_usages(purge_empty_dirs, unlink_foo);
++
++      m_recursive_subdir_stats.AddUp(sub_ds.m_recursive_subdir_stats);
++      m_recursive_subdir_stats.AddUp(sub_ds.m_here_stats);
 +      // nothing to do for m_here_stats.
 +
-+      m_recursive_subdir_usage.update_last_times(i->second.m_recursive_subdir_usage);
-+      m_recursive_subdir_usage.update_last_times(i->second.m_here_usage);
-+   }
-+}
++      // Join timestamps from daugters and their sub-daugter trees.
++      m_recursive_subdir_usage.update_last_times(sub_ds.m_recursive_subdir_usage);
++      m_recursive_subdir_usage.update_last_times(sub_ds.m_here_usage);
 +
-+void DirState::apply_stats_to_usages()
-+{
-+   for (DsMap_i i = m_subdirs.begin(); i != m_subdirs.end(); ++i)
-+   {
-+      i->second.apply_stats_to_usages();
++      // Clean empty leaf directories. Only do one level at a time.
++      // Note that root will never get purged.
++      bool increment_iter = true;
++      if (purge_empty_dirs && sub_ds.m_here_stats.m_NDirectoriesRemoved == 0 &&
++          sub_ds.m_here_usage.m_NDirectories == 0 && sub_ds.m_here_usage.m_NFiles == 0)
++      {
++         assert(sub_ds.m_subdirs.empty());
++
++         std::string dir_path;
++         dir_path.reserve(1024);
++         sub_ds.generate_dir_path(dir_path);
++
++         if (unlink_foo(dir_path) == 0) {
++            DsMap_i j = i++;
++            m_subdirs.erase(j);
++            ++m_here_stats.m_NDirectoriesRemoved;
++            increment_iter = false;
++         }
++      }
++      if (increment_iter)
++         ++i;
 +   }
++
++   // Apply current deltas to sshot_stats (and, if eventually needed, purge_stats).
++   m_sshot_stats.AddUp(m_recursive_subdir_stats);
++   m_sshot_stats.AddUp(m_here_stats);
++
++   // Apply deltas / stats to usages.
 +   m_here_usage.update_from_stats(m_here_stats);
 +   m_recursive_subdir_usage.update_from_stats(m_recursive_subdir_stats);
++
++   // Once we have m_report_stats and m_purge_stats, update them here.
 +}
 +
 +//----------------------------------------------------------------------------
-+//! Reset current transaction statistics.
-+//! Called from ... to be seen if needed at all XXXX
++//! Reset current transaction deltas / stats.
++//! Called from ResourceMonitor::heart_beat()
 +//----------------------------------------------------------------------------
 +void DirState::reset_stats()
 +{
@@ -1228,6 +1704,15 @@ index 000000000..9b777661e
 +   }
 +   m_here_stats.Reset();
 +   m_recursive_subdir_stats.Reset();
++}
++
++void DirState::reset_sshot_stats()
++{
++   for (DsMap_i i = m_subdirs.begin(); i != m_subdirs.end(); ++i)
++   {
++      i->second.reset_sshot_stats();
++   }
++   m_sshot_stats.Reset();
 +}
 +
 +int DirState::count_dirs_to_level(int max_depth) const
@@ -1272,21 +1757,22 @@ index 000000000..9b777661e
 +// DataFsState
 +//==============================================================================
 +
-+void DataFsState::upward_propagate_stats_and_times()
++void DataFsState::update_stats_and_usages(time_t last_update, bool purge_empty_dirs, unlink_func unlink_foo)
 +{
-+   m_root.upward_propagate_stats_and_times();
++   m_root.update_stats_and_usages(purge_empty_dirs, unlink_foo);
++   m_usage_update_time = last_update;
 +}
 +
-+void DataFsState::apply_stats_to_usages()
-+{
-+   m_usage_update_time = time(0);
-+   m_root.apply_stats_to_usages();
-+}
-+
-+void DataFsState::reset_stats()
++void DataFsState::reset_stats(time_t last_update)
 +{
 +   m_root.reset_stats();
-+   m_stats_reset_time = time(0);
++   m_stats_reset_time = last_update;
++}
++
++void DataFsState::reset_sshot_stats(time_t last_update)
++{
++   m_root.reset_sshot_stats();
++   m_sshot_stats_reset_time = last_update;
 +}
 +
 +void DataFsState::dump_recursively(int max_depth) const
@@ -1301,16 +1787,18 @@ index 000000000..9b777661e
 +}
 diff --git a/src/XrdPfc/XrdPfcDirState.hh b/src/XrdPfc/XrdPfcDirState.hh
 new file mode 100644
-index 000000000..39f6952a8
+index 000000000..e099bedb3
 --- /dev/null
 +++ b/src/XrdPfc/XrdPfcDirState.hh
-@@ -0,0 +1,204 @@
+@@ -0,0 +1,146 @@
 +#ifndef __XRDPFC_DIRSTATE_HH__
 +#define __XRDPFC_DIRSTATE_HH__
 +
 +#include "XrdPfcStats.hh"
++#include "XrdPfcDirStateBase.hh"
 +
 +#include <ctime>
++#include <functional>
 +#include <map>
 +#include <string>
 +
@@ -1336,10 +1824,134 @@ index 000000000..39f6952a8
 +
 +//==============================================================================
 +
-+
 +namespace XrdPfc
 +{
 +class PathTokenizer;
++
++using unlink_func = std::function<int(const std::string&)>;
++
++//==============================================================================
++// Structs for DirState export in vector form
++//==============================================================================
++
++struct DirStateElement;
++struct DataFsSnapshot;
++
++struct DirPurgeElement;
++struct DataFsPurgeshot;
++
++
++//==============================================================================
++// DirState
++//==============================================================================
++
++struct DirState : public DirStateBase
++{
++   typedef std::map<std::string, DirState> DsMap_t;
++   typedef DsMap_t::iterator               DsMap_i;
++
++   DirStats     m_here_stats;
++   DirStats     m_recursive_subdir_stats;
++
++   DirUsage     m_here_usage;
++   DirUsage     m_recursive_subdir_usage;
++
++   // This should be optional, only if needed and only up to some max level.
++   // Preferably stored in some extrnal vector (as AccessTokens are) and indexed from here.
++   DirStats     m_sshot_stats; // here + subdir, reset after sshot dump
++   // DirStats     m_purge_stats;  // here + subdir, running avg., as per purge params
++
++   DirState    *m_parent = nullptr;
++   DsMap_t      m_subdirs;
++   int          m_depth;
++   bool         m_scanned = false; // set to true after files in this directory are scanned.
++
++   void init();
++
++   DirState* create_child(const std::string &dir);
++
++   DirState* find_path_tok(PathTokenizer &pt, int pos, bool create_subdirs,
++                           DirState **last_existing_dir = nullptr);
++
++   // --- public part ---
++
++   DirState();
++
++   DirState(DirState *parent);
++
++   DirState(DirState *parent, const std::string& dname);
++
++   DirState* get_parent() { return m_parent; }
++
++   DirState* find_path(const std::string &path, int max_depth, bool parse_as_lfn, bool create_subdirs,
++                       DirState **last_existing_dir = nullptr);
++
++   DirState* find_dir(const std::string &dir, bool create_subdirs);
++
++   int generate_dir_path(std::string &result);
++
++   // initial scan support
++   void upward_propagate_initial_scan_usages();
++
++   // stat & usages updates / management
++   void update_stats_and_usages(bool purge_empty_dirs, unlink_func unlink_foo);
++   void reset_stats();
++   void reset_sshot_stats();
++
++   int count_dirs_to_level(int max_depth) const;
++
++   void dump_recursively(const char *name, int max_depth) const;
++};
++
++
++//==============================================================================
++// DataFsState
++//==============================================================================
++
++struct DataFsState : public DataFsStateBase
++{
++   DirState        m_root;
++   time_t          m_stats_reset_time = 0;
++   time_t          m_sshot_stats_reset_time = 0;
++   // time_t          m_purge_stats_reset_time = 0;
++
++   DataFsState() : m_root() {}
++
++   void init_stat_reset_times(time_t t) { m_stats_reset_time = m_sshot_stats_reset_time = t; }
++
++   DirState* get_root() { return & m_root; }
++
++   DirState* find_dirstate_for_lfn(const std::string& lfn, DirState **last_existing_dir = nullptr)
++   {
++      return m_root.find_path(lfn, -1, true, true, last_existing_dir);
++   }
++
++   void update_stats_and_usages(time_t last_update, bool purge_empty_dirs, unlink_func unlink_foo);
++   void reset_stats(time_t last_update);
++   void reset_sshot_stats(time_t last_update);
++   // void reset_purge_stats();
++
++   void dump_recursively(int max_depth) const;
++};
++
++}
++
++#endif
+diff --git a/src/XrdPfc/XrdPfcDirStateBase.hh b/src/XrdPfc/XrdPfcDirStateBase.hh
+new file mode 100644
+index 000000000..e62cd9b98
+--- /dev/null
++++ b/src/XrdPfc/XrdPfcDirStateBase.hh
+@@ -0,0 +1,80 @@
++#ifndef __XRDPFC_DIRSTATEBASE_HH__
++#define __XRDPFC_DIRSTATEBASE_HH__
++
++#include <XrdPfc/XrdPfcStats.hh>
++#include <ctime>
++#include <string>
++
++namespace XrdPfc
++{
 +
 +//==============================================================================
 +// Data-holding struct DirUsage -- complementary to Stats.
@@ -1386,7 +1998,7 @@ index 000000000..39f6952a8
 +
 +
 +//==============================================================================
-+// Base classes, shared between in-memory tree form and snap-shot vector form.
++// Base classes, shared between in-memory tree form and snap-shot vector forms.
 +//==============================================================================
 +
 +struct DirStateBase
@@ -1400,7 +2012,6 @@ index 000000000..39f6952a8
 +struct DataFsStateBase
 +{
 +   time_t    m_usage_update_time = 0;
-+   time_t    m_stats_reset_time = 0;
 +
 +   long long m_disk_total = 0; // In bytes, from Oss::StatVS() on space data
 +   long long m_disk_used  = 0; // ""
@@ -1409,121 +2020,117 @@ index 000000000..39f6952a8
 +   long long m_meta_used  = 0; // ""
 +};
 +
++}
 +
-+//==============================================================================
-+// Structs for DirState export in vector form
-+//==============================================================================
++#endif
+diff --git a/src/XrdPfc/XrdPfcDirStatePurgeshot.hh b/src/XrdPfc/XrdPfcDirStatePurgeshot.hh
+new file mode 100644
+index 000000000..85bd36dae
+--- /dev/null
++++ b/src/XrdPfc/XrdPfcDirStatePurgeshot.hh
+@@ -0,0 +1,81 @@
++#ifndef __XRDPFC_DIRSTATEPURGESHOT_HH__
++#define __XRDPFC_DIRSTATEPURGESHOT_HH__
 +
-+struct DirStateElement;
-+struct DataFsSnapshot;
++#include "XrdPfc/XrdPfcDirStateBase.hh"
++#include "XrdPfc/XrdPfcPathParseTools.hh"
 +
-+struct DirPurgeElement;
-+struct DataFsPurgeshot;
-+
-+
-+//==============================================================================
-+// DirState
-+//==============================================================================
-+
-+struct DirState : public DirStateBase
++namespace XrdPfc
 +{
-+   typedef std::map<std::string, DirState> DsMap_t;
-+   typedef DsMap_t::iterator               DsMap_i;
++struct DirPurgeElement : public DirStateBase
++{
++   DirUsage m_usage;
 +
-+   DirStats     m_here_stats;
-+   DirStats     m_recursive_subdir_stats;
++   int m_parent = -1;
++   int m_daughters_begin = -1, m_daughters_end = -1;
 +
-+   DirUsage     m_here_usage;
-+   DirUsage     m_recursive_subdir_usage;
++   DirPurgeElement() {}
++   DirPurgeElement(const DirStateBase &b, const DirUsage &here_usage, const DirUsage &subdir_usage, int parent) :
++     DirStateBase(b),
++     m_usage(here_usage, subdir_usage),
++     m_parent(parent)
++   {}
++};
 +
-+   // This should be optional, only if needed and only up to some max level.
-+   // Preferably stored in some extrnal vector (as AccessTokens are) and indexed from here.
-+   // DirStats     m_purge_stats;  // here + subdir, running avg., as per purge params
-+   // DirStats     m_report_stats; // here + subdir, reset after sshot dump
++struct DataFsPurgeshot : public DataFsStateBase
++{
++   long long m_bytes_to_remove = 0;
++   long long m_estimated_writes_from_writeq = 0;
 +
-+   DirState    *m_parent = nullptr;
-+   DsMap_t      m_subdirs;
-+   int          m_depth;
-+   bool         m_scanned = false; // set to true after files in this directory are scanned.
++   bool m_space_based_purge = false;
++   bool m_age_based_purge = false;
 +
-+   void init();
++   std::vector<DirPurgeElement> m_dir_vec;
++   // could have parallel vector of DirState* ... or store them in the DirPurgeElement.
++   // requires some interlock / ref-counting with the source tree.
++   // or .... just block DirState removal for the duration of the purge :) Yay.
 +
-+   DirState* create_child(const std::string &dir);
++   DataFsPurgeshot() {}
++   DataFsPurgeshot(const DataFsStateBase &b) :
++     DataFsStateBase(b)
++   {}
 +
-+   DirState* find_path_tok(PathTokenizer &pt, int pos, bool create_subdirs,
-+                           DirState **last_existing_dir = nullptr);
++  int find_dir_entry_from_tok(int entry, PathTokenizer &pt, int pos, int *last_existing_entry) const;
 +
-+   // --- public part ---
++  int find_dir_entry_for_dir_path(const std::string &dir_path) const;
 +
-+   DirState();
-+
-+   DirState(DirState *parent);
-+
-+   DirState(DirState *parent, const std::string& dname);
-+
-+   DirState* get_parent() { return m_parent; }
-+
-+   DirState* find_path(const std::string &path, int max_depth, bool parse_as_lfn, bool create_subdirs,
-+                       DirState **last_existing_dir = nullptr);
-+
-+   DirState* find_dir(const std::string &dir, bool create_subdirs);
-+
-+   // initial scan support
-+   void upward_propagate_initial_scan_usages();
-+
-+   // stat support
-+   void upward_propagate_stats_and_times();
-+   void apply_stats_to_usages();
-+   void reset_stats();
-+
-+   int count_dirs_to_level(int max_depth) const;
-+
-+   void dump_recursively(const char *name, int max_depth) const;
++  const DirUsage* find_dir_usage_for_dir_path(const std::string &dir_path) const;
 +};
 +
 +
-+//==============================================================================
-+// DataFsState
-+//==============================================================================
-+
-+struct DataFsState : public DataFsStateBase
++inline int DataFsPurgeshot::find_dir_entry_from_tok(int entry, PathTokenizer &pt, int pos, int *last_existing_entry) const
 +{
-+   DirState        m_root;
++   if (pos == pt.get_n_dirs())
++      return entry;
 +
-+   DataFsState() : m_root() {}
-+
-+   DirState* get_root() { return & m_root; }
-+
-+   DirState* find_dirstate_for_lfn(const std::string& lfn, DirState **last_existing_dir = nullptr)
++   const DirPurgeElement &dpe = m_dir_vec[entry];
++   for (int i = dpe.m_daughters_begin; i != dpe.m_daughters_end; ++i)
 +   {
-+      return m_root.find_path(lfn, -1, true, true, last_existing_dir);
++      if (m_dir_vec[i].m_dir_name == pt.get_dir(pos)) {
++         return find_dir_entry_from_tok(i, pt, pos + 1, last_existing_entry);
++      }
 +   }
++   if (last_existing_entry)
++      *last_existing_entry = entry;
++   return -1;
++}
 +
-+   void upward_propagate_stats_and_times();
-+   void apply_stats_to_usages();
-+   void reset_stats();
++inline int DataFsPurgeshot::find_dir_entry_for_dir_path(const std::string &dir_path) const
++{
++   PathTokenizer pt(dir_path, -1, false);
++   return find_dir_entry_from_tok(0, pt, 0, nullptr);
++}
 +
-+   void dump_recursively(int max_depth) const;
-+};
++inline const DirUsage* DataFsPurgeshot::find_dir_usage_for_dir_path(const std::string &dir_path) const
++{
++   int entry = find_dir_entry_for_dir_path(dir_path);
++   return entry >= 0 ? &m_dir_vec[entry].m_usage : nullptr;
++}
 +
 +}
 +
 +#endif
 diff --git a/src/XrdPfc/XrdPfcDirStateSnapshot.cc b/src/XrdPfc/XrdPfcDirStateSnapshot.cc
 new file mode 100644
-index 000000000..2bc1422c2
+index 000000000..6de61869e
 --- /dev/null
 +++ b/src/XrdPfc/XrdPfcDirStateSnapshot.cc
-@@ -0,0 +1,121 @@
+@@ -0,0 +1,158 @@
 +#include "XrdPfcDirStateSnapshot.hh"
 +#include "XrdPfcPathParseTools.hh"
++#include "XrdPfc.hh"
++#include "XrdPfcTrace.hh"
 +
 +#include "XrdOuc/XrdOucJson.hh"
++#include "XrdOuc/XrdOucEnv.hh"
++#include "XrdOuc/XrdOucEnv.hh"
++#include "XrdOss/XrdOss.hh"
 +
 +#include <fstream>
++#include <sstream>
 +#include <iostream>
 +#include <iomanip>
-+
++#include <fcntl.h>
 +
 +// Redefine to also support ordered_json ... we want to keep variable order in JSON save files.
 +#define PFC_DEFINE_TYPE_NON_INTRUSIVE(Type, ...)                                                \
@@ -1551,10 +2158,10 @@ index 000000000..2bc1422c2
 +   m_dir_name, m_stats, m_usage,
 +   m_parent, m_daughters_begin, m_daughters_end)
 +PFC_DEFINE_TYPE_NON_INTRUSIVE(DataFsSnapshot, 
-+   m_usage_update_time, m_stats_reset_time, m_disk_total, m_disk_used, m_file_usage, m_meta_total, m_meta_used,
++   m_sshot_stats_reset_time, m_usage_update_time, m_disk_total, m_disk_used, m_file_usage, m_meta_total, m_meta_used,
 +   m_dir_states)
 +}
-+
++/*
 +namespace
 +{
 +// Open file for writing, throw exception on failure.
@@ -1569,79 +2176,110 @@ index 000000000..2bc1422c2
 +   }
 +}
 +}
-+
++*/
 +using namespace XrdPfc;
 +
-+void DataFsSnapshot::write_json_file(const std::string &fname, bool include_preamble)
++namespace
 +{
-+   // Throws exception on failed file-open.
++   XrdSysTrace* GetTrace() { return Cache::GetInstance().GetTrace(); }
++   const char *m_traceID = "DirStateSnapshot";
++}
 +
-+   std::ofstream ofs;
-+   open_ofstream(ofs, fname, __func__);
++void DataFsSnapshot::write_json_file(const std::string &file_path, XrdOss& oss, bool include_preamble)
++{
++  // Create the data file.const
++   const Configuration &conf    =  Cache::Conf();
++   const char          *myUser = conf.m_username.c_str();
++   XrdOucEnv            myEnv;
++
++   const char* size_str = "524288";
++   myEnv.Put("oss.asize",  size_str); // advisory size
++   myEnv.Put("oss.cgroup", conf.m_data_space.c_str()); // AMT: data or metadata space
++
++   mode_t mode = 0644;
++
++   int cret;
++   if ((cret = oss.Create(myUser, file_path.c_str(), mode, myEnv, XRDOSS_mkpath)) != XrdOssOK)
++   {
++      TRACE(Error, "Create failed for data file " << file_path << ERRNO_AND_ERRSTR(-cret));
++      return;
++   }
++
++   XrdOssDF *myFile = oss.newFile(myUser);
++   if ((cret = myFile->Open(file_path.c_str(), O_RDWR, mode, myEnv)) != XrdOssOK)
++   {
++      TRACE(Error, "Open failed for data file " << file_path << ERRNO_AND_ERRSTR(-cret));
++      delete myFile;
++      return;
++   }
++
++   // Fill the data file.
++   std::ostringstream os;
 +
 +   if (include_preamble)
 +   {
-+      ofs << "{ \"dirstate_snapshot\": ";
++      os << "{ \"dirstate_snapshot\": ";
 +   }
 +
 +   nlohmann::ordered_json j;
 +   to_json(j, *this);
 +
-+   ofs << std::setw(1);
-+   ofs << j;
++   os << std::setw(1);
++   os << j;
 +
 +   if (include_preamble)
 +   {
-+      ofs << " }";
++      os << " }";
 +   }
 +
-+   ofs << "\n";
-+   ofs.close();
++   os << "\n";
++   myFile->Ftruncate(0);
++   myFile->Write(os.str().c_str(), 0, os.str().size());
++   myFile->Close();     delete myFile;
++
++   // Create the info file.
++
++   std::string cinfo_path(file_path + Info::s_infoExtension);
++
++   if ((cret = oss.Create(myUser, cinfo_path.c_str(), mode, myEnv, XRDOSS_mkpath)) != XrdOssOK)
++   {
++      TRACE(Error, "Create failed for info file " << cinfo_path << ERRNO_AND_ERRSTR(-cret));
++      myFile->Close(); delete myFile;
++      return;
++   }
++
++   XrdOssDF *myInfoFile = oss.newFile(myUser);
++   if ((cret = myInfoFile->Open(cinfo_path.c_str(), O_RDWR, mode, myEnv)) != XrdOssOK)
++   {
++      TRACE(Error, "Open failed for info file " << cinfo_path << ERRNO_AND_ERRSTR(-cret));
++      delete myInfoFile;
++      myFile->Close(); delete myFile;
++      return;
++   }
++
++   // Fill up cinfo.
++
++   Info myInfo(GetTrace(), false);
++   myInfo.SetBufferSizeFileSizeAndCreationTime(512*1024, os.str().size());
++   myInfo.SetAllBitsSynced();
++
++   myInfo.Write(myInfoFile, cinfo_path.c_str());
++   myInfoFile->Close();
++   delete myInfoFile;
 +}
 +
 +void DataFsSnapshot::dump()
 +{
-+   nlohmann::ordered_json j; //  = *this;
++   nlohmann::ordered_json j;
 +   to_json(j, *this);
 +   std::cout << j.dump(3) << "\n";
 +}
-+
-+// DataFsPurgeshot
-+
-+int DataFsPurgeshot::find_dir_entry_from_tok(int entry, PathTokenizer &pt, int pos, int *last_existing_entry) const
-+{
-+   if (pos == pt.get_n_dirs())
-+      return entry;
-+
-+   const DirPurgeElement &dpe = m_dir_vec[entry];
-+   for (int i = dpe.m_daughters_begin; i != dpe.m_daughters_end; ++i)
-+   {
-+      if (m_dir_vec[i].m_dir_name == pt.get_dir(pos)) {
-+         return find_dir_entry_from_tok(i, pt, pos + 1, last_existing_entry);
-+      }
-+   }
-+   if (last_existing_entry)
-+      *last_existing_entry = entry;
-+   return -1;
-+}
-+
-+int DataFsPurgeshot::find_dir_entry_for_dir_path(const std::string &dir_path) const
-+{
-+   PathTokenizer pt(dir_path, -1, false);
-+   return find_dir_entry_from_tok(0, pt, 0, nullptr);
-+}
-+
-+const DirUsage* DataFsPurgeshot::find_dir_usage_for_dir_path(const std::string &dir_path) const
-+{
-+   int entry = find_dir_entry_for_dir_path(dir_path);
-+   return entry >= 0 ? &m_dir_vec[entry].m_usage : nullptr;
-+}
 diff --git a/src/XrdPfc/XrdPfcDirStateSnapshot.hh b/src/XrdPfc/XrdPfcDirStateSnapshot.hh
 new file mode 100644
-index 000000000..045f5854f
+index 000000000..75cbdcaf3
 --- /dev/null
 +++ b/src/XrdPfc/XrdPfcDirStateSnapshot.hh
-@@ -0,0 +1,94 @@
+@@ -0,0 +1,55 @@
 +#ifndef __XRDPFC_DIRSTATESNAPSHOT_HH__
 +#define __XRDPFC_DIRSTATESNAPSHOT_HH__
 +
@@ -1649,14 +2287,15 @@ index 000000000..045f5854f
 +
 +#include <vector>
 +
++class XrdOss;
++
++
 +//==============================================================================
 +// Structs for DirState export in vector form
 +//==============================================================================
 +
 +namespace XrdPfc
 +{
-+
-+// For usage / stat reporting
 +
 +struct DirStateElement : public DirStateBase
 +{
@@ -1669,7 +2308,7 @@ index 000000000..045f5854f
 +   DirStateElement() {}
 +   DirStateElement(const DirState &b, int parent) :
 +     DirStateBase(b),
-+     m_stats(b.m_here_stats, b.m_recursive_subdir_stats),
++     m_stats(b.m_sshot_stats),
 +     m_usage(b.m_here_usage, b.m_recursive_subdir_usage),
 +     m_parent(parent)
 +   {}
@@ -1678,59 +2317,19 @@ index 000000000..045f5854f
 +struct DataFsSnapshot : public DataFsStateBase
 +{
 +   std::vector<DirStateElement> m_dir_states;
++   time_t                       m_sshot_stats_reset_time = 0;
 +
 +   DataFsSnapshot() {}
-+   DataFsSnapshot(const DataFsState &b) :
-+     DataFsStateBase(b)
++   DataFsSnapshot(const DataFsStateBase &b, time_t sshot_stats_reset_time) :
++     DataFsStateBase(b),
++     m_sshot_stats_reset_time(sshot_stats_reset_time)
 +   {}
 +
 +   // Import of data into vector form is implemented in ResourceMonitor
 +   // in order to avoid dependence of this struct on DirState.
 +
-+   void write_json_file(const std::string &fname, bool include_preamble);
++   void write_json_file(const std::string &fname, XrdOss& oss, bool include_preamble);
 +   void dump();
-+};
-+
-+// For purge planning & execution
-+
-+struct DirPurgeElement : public DirStateBase
-+{
-+   DirUsage m_usage;
-+
-+   int m_parent = -1;
-+   int m_daughters_begin = -1, m_daughters_end = -1;
-+
-+   DirPurgeElement() {}
-+   DirPurgeElement(const DirState &b, int parent) :
-+     DirStateBase(b),
-+     m_usage(b.m_here_usage, b.m_recursive_subdir_usage),
-+     m_parent(parent)
-+   {}
-+};
-+
-+struct DataFsPurgeshot : public DataFsStateBase
-+{
-+   long long m_bytes_to_remove = 0;
-+   long long m_estimated_writes_from_writeq = 0;
-+
-+   bool m_space_based_purge = false;
-+   bool m_age_based_purge = false;
-+
-+   std::vector<DirPurgeElement> m_dir_vec;
-+   // could have parallel vector of DirState* ... or store them in the DirPurgeElement.
-+   // requires some interlock / ref-counting with the source tree.
-+   // or .... just block DirState removal for the duration of the purge :) Yay.
-+
-+   DataFsPurgeshot() {}
-+   DataFsPurgeshot(const DataFsState &b) :
-+     DataFsStateBase(b)
-+   {}
-+
-+  int find_dir_entry_from_tok(int entry, PathTokenizer &pt, int pos, int *last_existing_entry) const;
-+
-+  int find_dir_entry_for_dir_path(const std::string &dir_path) const;
-+
-+  const DirUsage* find_dir_usage_for_dir_path(const std::string &dir_path) const;
 +};
 +
 +}
@@ -1738,10 +2337,10 @@ index 000000000..045f5854f
 +#endif
 diff --git a/src/XrdPfc/XrdPfcFPurgeState.cc b/src/XrdPfc/XrdPfcFPurgeState.cc
 new file mode 100644
-index 000000000..3aa3f5077
+index 000000000..2629abd23
 --- /dev/null
 +++ b/src/XrdPfc/XrdPfcFPurgeState.cc
-@@ -0,0 +1,202 @@
+@@ -0,0 +1,164 @@
 +#include "XrdPfcFPurgeState.hh"
 +#include "XrdPfcFsTraversal.hh"
 +#include "XrdPfcInfo.hh"
@@ -1759,11 +2358,6 @@ index 000000000..3aa3f5077
 +#define TRACE_PURGE(x)
 +
 +using namespace XrdPfc;
-+
-+namespace
-+{
-+    XrdSysTrace* GetTrace() { return Cache::GetInstance().GetTrace(); }
-+}
 +
 +const char *FPurgeState::m_traceID = "Purge";
 +
@@ -1799,19 +2393,10 @@ index 000000000..3aa3f5077
 +//! @param stat of the given file
 +//!
 +//----------------------------------------------------------------------------
-+void FPurgeState::CheckFile(const FsTraversal &fst, const char *fname, Info &info, struct stat &fstat)
++void FPurgeState::CheckFile(const FsTraversal &fst, const char *fname, time_t atime, struct stat &fstat)
 +{
-+   static const char *trc_pfx = "FPurgeState::CheckFile ";
-+
 +   long long nblocks = fstat.st_blocks;
-+   time_t atime;
-+   if (!info.GetLatestDetachTime(atime))
-+   {
-+      // cinfo file does not contain any known accesses, use fstat.mtime instead.
-+      TRACE(Debug, trc_pfx << "could not get access time for " << fst.m_current_path << fname << ", using mtime from stat instead.");
-+      atime = fstat.st_mtime;
-+   }
-+   // TRACE(Dump, trc_pfx << "checking " << fname << " accessTime  " << atime);
++   // TRACE(Dump, trc_pfx << "FPurgeState::CheckFile checking " << fname << " accessTime  " << atime);
 +
 +   m_nStBlocksTotal += nblocks;
 +
@@ -1822,13 +2407,6 @@ index 000000000..3aa3f5077
 +   // disk-space has been freed.
 +
 +   if (m_tMinTimeStamp > 0 && atime < m_tMinTimeStamp)
-+   {
-+      m_flist.push_back(PurgeCandidate(fst.m_current_path, fname, nblocks, 0));
-+      m_nStBlocksAccum += nblocks;
-+   }
-+   else if (m_tMinUVKeepTimeStamp > 0 &&
-+            Cache::Conf().does_cschk_have_missing_bits(info.GetCkSumState()) &&
-+            info.GetNoCkSumTimeForUVKeep() < m_tMinUVKeepTimeStamp)
 +   {
 +      m_flist.push_back(PurgeCandidate(fst.m_current_path, fname, nblocks, 0));
 +      m_nStBlocksAccum += nblocks;
@@ -1849,16 +2427,11 @@ index 000000000..3aa3f5077
 +
 +void FPurgeState::ProcessDirAndRecurse(FsTraversal &fst)
 +{
-+   static const char *trc_pfx = "FPurgeState::ProcessDirAndRecurse ";
-+
 +   for (auto it = fst.m_current_files.begin(); it != fst.m_current_files.end(); ++it)
 +   {
 +        // Check if the file is currently opened / purge-protected is done before unlinking of the file.
 +      const std::string &f_name = it->first;
 +      const std::string  i_name = f_name + Info::s_infoExtension;
-+
-+      XrdOssDF    *fh = nullptr;
-+      Info         cinfo(GetTrace());
 +
 +      // XXX Note, the initial scan now uses stat information only!
 +
@@ -1868,20 +2441,8 @@ index 000000000..3aa3f5077
 +         continue;
 +      }
 +
-+      if (fst.open_at_ro(i_name.c_str(), fh) == XrdOssOK &&
-+          cinfo.Read(fh, fst.m_current_path.c_str(), i_name.c_str()))
-+      {
-+         CheckFile(fst, i_name.c_str(), cinfo, it->second.stat_data);
-+      }
-+      else
-+      {
-+         TRACE(Warning, trc_pfx << "can't open or read " << fst.m_current_path << i_name << ", err " << XrdSysE2T(errno) << "; purging.");
-+         fst.unlink_at(i_name.c_str());
-+         fst.unlink_at(f_name.c_str());
-+         // generate purge event or not? or just flag possible discrepancy?
-+         // should this really be done in some other consistency-check traversal?
-+      }
-+      fst.close_delete(fh);
++      time_t atime = it->second.stat_cinfo.st_mtime;
++      CheckFile(fst, i_name.c_str(), atime, it->second.stat_data);
 +
 +      // Protected top-directories are skipped.
 +   }
@@ -1946,7 +2507,7 @@ index 000000000..3aa3f5077
 +*/
 diff --git a/src/XrdPfc/XrdPfcFPurgeState.hh b/src/XrdPfc/XrdPfcFPurgeState.hh
 new file mode 100644
-index 000000000..a3167a424
+index 000000000..107ece9bc
 --- /dev/null
 +++ b/src/XrdPfc/XrdPfcFPurgeState.hh
 @@ -0,0 +1,77 @@
@@ -2018,7 +2579,7 @@ index 000000000..a3167a424
 +
 +   void MoveListEntriesToMap();
 +
-+   void CheckFile(const FsTraversal &fst, const char *fname, Info &info, struct stat &fstat);
++   void CheckFile(const FsTraversal &fst, const char *fname, time_t atime, struct stat &fstat);
 +
 +   void ProcessDirAndRecurse(FsTraversal &fst);
 +   bool TraverseNamespace(const char *root_path);
@@ -2082,10 +2643,10 @@ index 2298bfd75..bde0b5840 100644
        }
  
 diff --git a/src/XrdPfc/XrdPfcFile.cc b/src/XrdPfc/XrdPfcFile.cc
-index f96eae375..9aaaef77e 100644
+index f96eae375..c00ba9e55 100644
 --- a/src/XrdPfc/XrdPfcFile.cc
 +++ b/src/XrdPfc/XrdPfcFile.cc
-@@ -18,21 +18,23 @@
+@@ -18,21 +18,21 @@
  
  
  #include "XrdPfcFile.hh"
@@ -2097,11 +2658,12 @@ index f96eae375..9aaaef77e 100644
 -#include <sstream>
 -#include <fcntl.h>
 -#include <assert.h>
-+
- #include "XrdCl/XrdClLog.hh"
- #include "XrdCl/XrdClConstants.hh"
- #include "XrdCl/XrdClFile.hh"
+-#include "XrdCl/XrdClLog.hh"
+-#include "XrdCl/XrdClConstants.hh"
+-#include "XrdCl/XrdClFile.hh"
 -#include "XrdSys/XrdSysPthread.hh"
++
++#include "XProtocol/XProtocol.hh"
  #include "XrdSys/XrdSysTimer.hh"
  #include "XrdOss/XrdOss.hh"
  #include "XrdOuc/XrdOucEnv.hh"
@@ -2115,7 +2677,7 @@ index f96eae375..9aaaef77e 100644
  
  
  using namespace XrdPfc;
-@@ -67,6 +69,7 @@ File::File(const std::string& path, long long iOffset, long long iFileSize) :
+@@ -67,32 +67,70 @@ File::File(const std::string& path, long long iOffset, long long iFileSize) :
     m_state_cond(0),
     m_block_size(0),
     m_num_blocks(0),
@@ -2123,8 +2685,34 @@ index f96eae375..9aaaef77e 100644
     m_prefetch_state(kOff),
     m_prefetch_bytes(0),
     m_prefetch_read_cnt(0),
-@@ -81,15 +84,21 @@ File::~File()
-       TRACEF(Debug, "~File() close info ");
+    m_prefetch_hit_cnt(0),
+    m_prefetch_score(0)
+ {}
+ 
+ File::~File()
+ {
++   TRACEF(Debug, "~File() for ");
++}
++
++void File::Close()
++{
++   // Close is called while nullptr is put into Cache::m_active map, see Cache::dec_ref_count(File*).
++   // A stat is called after close to re-check that m_stat_blocks have been reported correctly
++   // to the resource-monitor. Note that the reporting is already clamped down to m_file_size
++   // in report_and_merge_delta_stats() below.
++   //
++   // XFS can pre-allocate significant amount of blocks (1 GB at 1GB mark, 4 GB above 4GB) and those
++   // get reported in as stat.st_blocks.
++   // The reported number is correct in a stat immediately following a close.
++   // If one starts off by writing the last byte of the file, this pre-allocation does not get
++   // triggered up to that point. But comes back with a vengeance right after.
++   //
++   // To be determined if other FSes do something similar (Ceph, ZFS, ...). Ext4 doesn't.
++
+    if (m_info_file)
+    {
+-      TRACEF(Debug, "~File() close info ");
++      TRACEF(Debug, "Close() closing info-file ");
        m_info_file->Close();
        delete m_info_file;
 -      m_info_file = NULL;
@@ -2133,25 +2721,80 @@ index f96eae375..9aaaef77e 100644
  
     if (m_data_file)
     {
-       TRACEF(Debug, "~File() close output  ");
+-      TRACEF(Debug, "~File() close output  ");
++      TRACEF(Debug, "Close() closing data-file ");
        m_data_file->Close();
        delete m_data_file;
 -      m_data_file = NULL;
 +      m_data_file = nullptr;
-+   }
-+
-+   if (m_resmon_token >= 0)
-+   {
-+      // Last update of file stats has been sent from the final Sync.
-+      Cache::ResMon().register_file_close(m_resmon_token, time(0), m_stats);
     }
  
-    TRACEF(Debug, "~File() ended, prefetch score = " <<  m_prefetch_score);
-@@ -135,22 +144,28 @@ void File::initiate_emergency_shutdown()
-          cache()->DeRegisterPrefetchFile(this);
-       }
-    }
+-   TRACEF(Debug, "~File() ended, prefetch score = " <<  m_prefetch_score);
++   if (m_resmon_token >= 0)
++   {
++      // Last update of file stats has been sent from the final Sync unless we are in_shutdown --
++      // but in this case the file will get unlinked by the cache and reported as purge event.
++      // We check if the reported st_blocks so far is correct.
++      if (m_stats.m_BytesWritten > 0 && ! m_in_shutdown) {
++         struct stat s;
++         int sr = Cache::GetInstance().GetOss()->Stat(m_filename.c_str(), &s);
++         if (sr == 0 && s.st_blocks != m_st_blocks) {
++            Stats stats;
++            stats.m_StBlocksAdded = s.st_blocks - m_st_blocks;
++            m_st_blocks = s.st_blocks;
++            Cache::ResMon().register_file_update_stats(m_resmon_token, stats);
++         }
++      }
++
++      Cache::ResMon().register_file_close(m_resmon_token, time(0), m_stats);
++   }
++
++   TRACEF(Debug, "Close() finished, prefetch score = " <<  m_prefetch_score);
+ }
+ 
+ //------------------------------------------------------------------------------
+@@ -110,47 +148,59 @@ File* File::FileOpen(const std::string &path, long long offset, long long fileSi
+ 
+ //------------------------------------------------------------------------------
+ 
+-void File::initiate_emergency_shutdown()
++long long File::initiate_emergency_shutdown()
+ {
+    // Called from Cache::Unlink() when the file is currently open.
+    // Cache::Unlink is also called on FSync error and when wrong number of bytes
+    // is received from a remote read.
+    //
+    // From this point onward the file will not be written to, cinfo file will
+    // not be updated, and all new read requests will return -ENOENT.
+    //
+    // File's entry in the Cache's active map is set to nullptr and will be
+    // removed from there shortly, in any case, well before this File object
+-   // shuts down. So we do not communicate to Cache about our destruction when
+-   // it happens.
++   // shuts down. Cache::Unlink() also reports the appropriate purge event.
+ 
++   XrdSysCondVarHelper _lck(m_state_cond);
++
++   m_in_shutdown = true;
++
++   if (m_prefetch_state != kStopped && m_prefetch_state != kComplete)
+    {
+-      XrdSysCondVarHelper _lck(m_state_cond);
 -
+-      m_in_shutdown = true;
+-
+-      if (m_prefetch_state != kStopped && m_prefetch_state != kComplete)
+-      {
+-         m_prefetch_state = kStopped;
+-         cache()->DeRegisterPrefetchFile(this);
+-      }
++      m_prefetch_state = kStopped;
++      cache()->DeRegisterPrefetchFile(this);
+    }
+ 
++   report_and_merge_delta_stats();
++
++   return m_st_blocks;
  }
  
  //------------------------------------------------------------------------------
@@ -2162,7 +2805,7 @@ index f96eae375..9aaaef77e 100644
 -   // Not locked, only used from Cache / Purge thread.
 +   // Called under m_state_cond lock.
 +   // BytesWritten indirectly trigger an unconditional merge through periodic Sync().
-+   if (m_delta_stats.BytesRead() >= m_resmon_report_threshold)
++   if (m_delta_stats.BytesReadAndWritten() >= m_resmon_report_threshold && ! m_in_shutdown)
 +      report_and_merge_delta_stats();
 +}
  
@@ -2178,15 +2821,20 @@ index f96eae375..9aaaef77e 100644
 +   // Called under m_state_cond lock.
 +   struct stat s;
 +   m_data_file->Fstat(&s);
-+   m_delta_stats.m_StBlocksAdded = s.st_blocks - m_st_blocks;
-+   m_st_blocks = s.st_blocks;
++   // Do not report st_blocks beyond 4kB round-up over m_file_size. Some FSs report
++   // aggressive pre-allocation in this field (XFS, 4GB).
++   long long max_st_blocks_to_report = (m_file_size & 0xfff) ? ((m_file_size >> 12) + 1) << 3
++                                                             :   m_file_size >> 9;
++   long long st_blocks_to_report = std::min((long long) s.st_blocks, max_st_blocks_to_report);
++   m_delta_stats.m_StBlocksAdded = st_blocks_to_report - m_st_blocks;
++   m_st_blocks = st_blocks_to_report;
 +   Cache::ResMon().register_file_update_stats(m_resmon_token, m_delta_stats);
 +   m_stats.AddUp(m_delta_stats);
 +   m_delta_stats.Reset();
  }
  
  //------------------------------------------------------------------------------
-@@ -279,8 +294,8 @@ bool File::FinalizeSyncBeforeExit()
+@@ -279,8 +329,8 @@ bool File::FinalizeSyncBeforeExit()
     {
       if ( ! m_writes_during_sync.empty() || m_non_flushed_cnt > 0 || ! m_detach_time_logged)
       {
@@ -2197,7 +2845,7 @@ index f96eae375..9aaaef77e 100644
         m_detach_time_logged = true;
         m_in_sync            = true;
         TRACEF(Debug, "FinalizeSyncBeforeExit requesting sync to write detach stats");
-@@ -310,7 +325,7 @@ void File::AddIO(IO *io)
+@@ -310,7 +360,7 @@ void File::AddIO(IO *io)
     {
        m_io_set.insert(io);
        io->m_attach_time = now;
@@ -2206,7 +2854,7 @@ index f96eae375..9aaaef77e 100644
  
        insert_remote_location(loc);
  
-@@ -349,7 +364,7 @@ void File::RemoveIO(IO *io)
+@@ -349,7 +399,7 @@ void File::RemoveIO(IO *io)
           ++m_current_io;
        }
  
@@ -2215,7 +2863,7 @@ index f96eae375..9aaaef77e 100644
        m_io_set.erase(mi);
        --m_ios_in_detach;
  
-@@ -376,7 +391,11 @@ bool File::Open()
+@@ -376,7 +426,11 @@ bool File::Open()
  
     static const char *tpfx = "Open() ";
  
@@ -2228,7 +2876,7 @@ index f96eae375..9aaaef77e 100644
  
     const Configuration &conf = Cache::GetInstance().RefConfiguration();
  
-@@ -413,7 +432,7 @@ bool File::Open()
+@@ -413,7 +467,7 @@ bool File::Open()
        return false;
     }
  
@@ -2237,7 +2885,7 @@ index f96eae375..9aaaef77e 100644
     myEnv.Put("oss.cgroup", conf.m_meta_space.c_str());
     if ((res = myOss.Create(myUser, ifn.c_str(), 0600, myEnv, XRDOSS_mkpath)) != XrdOssOK)
     {
-@@ -449,18 +468,20 @@ bool File::Open()
+@@ -449,18 +503,20 @@ bool File::Open()
           TRACEF(Warning, tpfx << "Basic sanity checks on data file failed, resetting info file, truncating data file.");
           m_cfi.ResetAllAccessStats();
           m_data_file->Ftruncate(0);
@@ -2258,7 +2906,7 @@ index f96eae375..9aaaef77e 100644
        } else {
           // TODO: If the file is complete, we don't need to reset net cksums.
           m_cfi.DowngradeCkSumState(conf.get_cs_Chk());
-@@ -477,12 +498,27 @@ bool File::Open()
+@@ -477,12 +533,28 @@ bool File::Open()
        cache()->WriteFileSizeXAttr(m_info_file->getFD(), m_file_size);
        TRACEF(Debug, tpfx << "Creating new file info, data size = " <<  m_file_size << " num blocks = "  << m_cfi.GetNBlocks());
     }
@@ -2279,14 +2927,15 @@ index f96eae375..9aaaef77e 100644
 +   m_st_blocks = data_stat.st_blocks;
 +
 +   m_resmon_token = Cache::ResMon().register_file_open(m_filename, time(0), data_existed);
-+   m_resmon_report_threshold = std::min(std::max(200ll * 1024, m_file_size / 50), 500ll * 1024 * 1024);
++   constexpr long long MB = 1024 * 1024;
++   m_resmon_report_threshold = std::min(std::max(10 * MB, m_file_size / 20), 500 * MB);
 +   // m_resmon_report_threshold_scaler; // something like 10% of original threshold, to adjust
 +   // actual threshold based on return values from register_file_update_stats().
 +
     m_state_cond.UnLock();
  
     return true;
-@@ -695,7 +731,11 @@ int File::Read(IO *io, char* iUserBuff, long long iUserOff, int iUserSize, ReadR
+@@ -695,7 +767,11 @@ int File::Read(IO *io, char* iUserBuff, long long iUserOff, int iUserSize, ReadR
     {
        m_state_cond.UnLock();
        int ret = m_data_file->Read(iUserBuff, iUserOff, iUserSize);
@@ -2299,7 +2948,7 @@ index f96eae375..9aaaef77e 100644
        return ret;
     }
  
-@@ -724,7 +764,11 @@ int File::ReadV(IO *io, const XrdOucIOVec *readV, int readVnum, ReadReqRH *rh)
+@@ -724,7 +800,11 @@ int File::ReadV(IO *io, const XrdOucIOVec *readV, int readVnum, ReadReqRH *rh)
     {
        m_state_cond.UnLock();
        int ret = m_data_file->ReadV(const_cast<XrdOucIOVec*>(readV), readVnum);
@@ -2312,7 +2961,7 @@ index f96eae375..9aaaef77e 100644
        return ret;
     }
  
-@@ -954,23 +998,24 @@ int File::ReadOpusCoalescere(IO *io, const XrdOucIOVec *readV, int readVnum,
+@@ -954,23 +1034,24 @@ int File::ReadOpusCoalescere(IO *io, const XrdOucIOVec *readV, int readVnum,
        if (read_req->is_complete())
        {
           // Almost like FinalizeReadRequest(read_req) -- but no callout!
@@ -2340,7 +2989,23 @@ index f96eae375..9aaaef77e 100644
        m_state_cond.UnLock();
  
        // !!! No callout.
-@@ -1075,7 +1120,12 @@ void File::Sync()
+@@ -1001,12 +1082,9 @@ void File::WriteBlockToDisk(Block* b)
+ 
+    if (retval < size)
+    {
+-      if (retval < 0)
+-      {
+-         GetLog()->Emsg("WriteToDisk()", -retval, "write block to disk", GetLocalPath().c_str());
+-      }
+-      else
+-      {
++      if (retval < 0) {
++         TRACEF(Error, "WriteToDisk() write error " << retval);
++      } else {
+          TRACEF(Error, "WriteToDisk() incomplete block write ret=" << retval << " (should be " << size << ")");
+       }
+ 
+@@ -1075,7 +1153,12 @@ void File::Sync()
     bool errorp = false;
     if (ret == XrdOssOK)
     {
@@ -2354,7 +3019,7 @@ index f96eae375..9aaaef77e 100644
        m_cfi.WriteIOStat(loc_stats);
        m_cfi.Write(m_info_file, m_filename.c_str());
        int cret = m_info_file->Fsync();
-@@ -1289,8 +1339,11 @@ void File::FinalizeReadRequest(ReadRequest *rreq)
+@@ -1289,8 +1372,11 @@ void File::FinalizeReadRequest(ReadRequest *rreq)
  {
     // called from ProcessBlockResponse()
     // NOT under lock -- does callout
@@ -2368,7 +3033,7 @@ index f96eae375..9aaaef77e 100644
  
     rreq->m_rh->Done(rreq->return_value());
     delete rreq;
-@@ -1360,7 +1413,8 @@ void File::ProcessBlockResponse(Block *b, int res)
+@@ -1360,7 +1446,8 @@ void File::ProcessBlockResponse(Block *b, int res)
        {
           // Increase ref-count for the writer.
           inc_ref_count(b);
@@ -2379,31 +3044,40 @@ index f96eae375..9aaaef77e 100644
        }
  
 diff --git a/src/XrdPfc/XrdPfcFile.hh b/src/XrdPfc/XrdPfcFile.hh
-index 58d10d987..5917f1971 100644
+index 58d10d987..c3e19a905 100644
 --- a/src/XrdPfc/XrdPfcFile.hh
 +++ b/src/XrdPfc/XrdPfcFile.hh
-@@ -18,15 +18,15 @@
+@@ -18,44 +18,33 @@
  // along with XRootD.  If not, see <http://www.gnu.org/licenses/>.
  //----------------------------------------------------------------------------------
  
-+#include "XrdPfcTypes.hh"
-+#include "XrdPfcInfo.hh"
-+#include "XrdPfcStats.hh"
-+
- #include "XrdCl/XrdClXRootDResponses.hh"
+-#include "XrdCl/XrdClXRootDResponses.hh"
 -#include "XrdCl/XrdClDefaultEnv.hh"
- 
- #include "XrdOuc/XrdOucCache.hh"
- #include "XrdOuc/XrdOucIOVec.hh"
- 
--#include "XrdPfcInfo.hh"
--#include "XrdPfcStats.hh"
 -
+-#include "XrdOuc/XrdOucCache.hh"
+-#include "XrdOuc/XrdOucIOVec.hh"
+-
++#include "XrdPfcTypes.hh"
+ #include "XrdPfcInfo.hh"
+ #include "XrdPfcStats.hh"
+ 
++#include "XrdOuc/XrdOucCache.hh"
++#include "XrdOuc/XrdOucIOVec.hh"
++
  #include <functional>
++#include <list>
  #include <map>
  #include <set>
-@@ -42,20 +42,15 @@ class Log;
+ #include <string>
  
+ class XrdJob;
+ class XrdOucIOVec;
+ 
+-namespace XrdCl
+-{
+-class Log;
+-}
+-
  namespace XrdPfc
  {
 +class File;
@@ -2424,7 +3098,7 @@ index 58d10d987..5917f1971 100644
  
  struct ReadReqRH : public XrdOucCacheIOCB
  {
-@@ -103,7 +98,7 @@ struct ChunkRequest
+@@ -103,7 +92,7 @@ struct ChunkRequest
     char        *m_buf;      // Where to place the data chunk.
     long long    m_off;      // Offset *within* the corresponding block.
     int          m_size;     // Size of the data chunk.
@@ -2433,7 +3107,27 @@ index 58d10d987..5917f1971 100644
     ChunkRequest(ReadRequest *rreq, char *buf, long long off, int size) :
        m_read_req(rreq), m_buf(buf), m_off(off), m_size(size)
     {}
-@@ -245,7 +240,7 @@ class File
+@@ -212,17 +201,15 @@ class DirectResponseHandler : public XrdOucCacheIOCB
+ 
+ class File
+ {
++   friend class Cache;
+    friend class BlockResponseHandler;
+    friend class DirectResponseHandler;
+ public:
+-   // Constructor and Open() are private.
++   // Constructor, destructor, Open() and Close() are private.
+ 
+    //! Static constructor that also does Open. Returns null ptr if Open fails.
+    static File* FileOpen(const std::string &path, long long offset, long long fileSize);
+ 
+-   //! Destructor.
+-   ~File();
+-
+    //! Handle removal of a block from Cache's write queue.
+    void BlockRemovedFromWriteQ(Block*);
+ 
+@@ -245,7 +232,7 @@ class File
     //! Used in XrdPosixXrootd::Close()
     //----------------------------------------------------------------------
     bool ioActive(IO *io);
@@ -2442,7 +3136,7 @@ index 58d10d987..5917f1971 100644
     //----------------------------------------------------------------------
     //! \brief Flags that detach stats should be written out in final sync.
     //! Called from CacheIO upon Detach.
-@@ -272,20 +267,18 @@ class File
+@@ -272,20 +259,18 @@ class File
     //! Log path
     const char* lPath() const;
  
@@ -2465,7 +3159,33 @@ index 58d10d987..5917f1971 100644
     std::string        GetRemoteLocations()   const;
     const Info::AStat* GetLastAccessStats()   const { return m_cfi.GetLastAccessStats(); }
     size_t             GetAccessCnt()         const { return m_cfi.GetAccessCnt(); }
-@@ -320,9 +313,9 @@ class File
+@@ -302,27 +287,33 @@ class File
+    int inc_ref_cnt() { return ++m_ref_cnt; }
+    int dec_ref_cnt() { return --m_ref_cnt; }
+ 
+-   void initiate_emergency_shutdown();
+-   bool is_in_emergency_shutdown() { return m_in_shutdown; }
++   long long initiate_emergency_shutdown();
++   bool      is_in_emergency_shutdown() { return m_in_shutdown; }
+ 
+ private:
+    //! Constructor.
+    File(const std::string &path, long long offset, long long fileSize);
+ 
++   //! Destructor.
++   ~File();
++
++   //! Close data and cinfo file.
++   void Close();
++
+    //! Open file handle for data file and info file on local disk.
+    bool Open();
+ 
+    static const char *m_traceID;
+ 
+    int            m_ref_cnt;            //!< number of references from IO or sync
+ 
+    XrdOssDF      *m_data_file;          //!< file handle for data file on disk
     XrdOssDF      *m_info_file;          //!< file handle for data-info file on disk
     Info           m_cfi;                //!< download status of file blocks and access statistics
  
@@ -2478,7 +3198,7 @@ index 58d10d987..5917f1971 100644
  
     // IO objects attached to this file.
  
-@@ -354,10 +347,16 @@ class File
+@@ -354,10 +345,16 @@ class File
     long long     m_block_size;
     int           m_num_blocks;
  
@@ -2497,7 +3217,7 @@ index 58d10d987..5917f1971 100644
  
     std::set<std::string> m_remote_locations; //!< Gathered in AddIO / ioUpdate / ioActive.
     void insert_remote_location(const std::string &loc);
-@@ -375,7 +374,7 @@ class File
+@@ -375,7 +372,7 @@ class File
  
     void inc_prefetch_read_cnt(int prc) { if (prc) { m_prefetch_read_cnt += prc; calc_prefetch_score(); } }
     void inc_prefetch_hit_cnt (int phc) { if (phc) { m_prefetch_hit_cnt  += phc; calc_prefetch_score(); } }
@@ -2818,19 +3538,62 @@ index 000000000..183a4de37
 +}
 +
 +#endif
+diff --git a/src/XrdPfc/XrdPfcIO.cc b/src/XrdPfc/XrdPfcIO.cc
+index 058d3e78a..25de8d1e1 100644
+--- a/src/XrdPfc/XrdPfcIO.cc
++++ b/src/XrdPfc/XrdPfcIO.cc
+@@ -1,5 +1,6 @@
+ #include "XrdPfcIO.hh"
+ #include "XrdPfcTrace.hh"
++#include "XrdCl/XrdClURL.hh"
+ 
+ using namespace XrdPfc;
+ 
+@@ -32,6 +33,11 @@ XrdOucCacheIO* IO::GetInput()
+    return m_io;
+ }
+ 
++std::string IO::GetFilename()
++{
++   return XrdCl::URL(GetPath()).GetPath();
++}
++
+ //==============================================================================
+ 
+ bool IO::Detach(XrdOucCacheIOCD &iocdP)
+@@ -82,7 +88,7 @@ bool IO::Detach(XrdOucCacheIOCD &iocdP)
+          }
+       };
+ 
+-      (new FutureDetach(this, &iocdP, 30))->Schedule();
++      (new FutureDetach(this, &iocdP, 10))->Schedule();
+ 
+       return false;
+    }
 diff --git a/src/XrdPfc/XrdPfcIO.hh b/src/XrdPfc/XrdPfcIO.hh
-index a8298927c..434d1de49 100644
+index a8298927c..940d3fcc4 100644
 --- a/src/XrdPfc/XrdPfcIO.hh
 +++ b/src/XrdPfc/XrdPfcIO.hh
-@@ -5,8 +5,6 @@ class XrdSysTrace;
+@@ -5,9 +5,7 @@ class XrdSysTrace;
  
  #include "XrdPfc.hh"
  #include "XrdOuc/XrdOucCache.hh"
 -#include "XrdCl/XrdClDefaultEnv.hh"
 -#include "XrdSys/XrdSysPthread.hh"
- #include <XrdSys/XrdSysRAtomic.hh>
+-#include <XrdSys/XrdSysRAtomic.hh>
++#include "XrdSys/XrdSysRAtomic.hh"
  
  namespace XrdPfc
+ {
+@@ -53,7 +51,7 @@ class IO : public XrdOucCacheIO
+    const char  *m_traceID;
+ 
+    const char*  GetPath()         { return m_io->Path(); }
+-   std::string  GetFilename()     { return XrdCl::URL(GetPath()).GetPath(); }
++   std::string  GetFilename();
+    const char*  RefreshLocation() { return m_io->Location(true);  }
+ 
+    unsigned short ObtainReadSid() { return m_read_seqid++; }
 diff --git a/src/XrdPfc/XrdPfcIOFile.cc b/src/XrdPfc/XrdPfcIOFile.cc
 index 3c39966d7..0bac86c7f 100644
 --- a/src/XrdPfc/XrdPfcIOFile.cc
@@ -2943,10 +3706,19 @@ index 31a3c5e77..8b5effc3e 100644
  
     long long FSize() override;
 diff --git a/src/XrdPfc/XrdPfcInfo.cc b/src/XrdPfc/XrdPfcInfo.cc
-index d063affd3..218f175ea 100644
+index d063affd3..414da8bb9 100644
 --- a/src/XrdPfc/XrdPfcInfo.cc
 +++ b/src/XrdPfc/XrdPfcInfo.cc
-@@ -66,7 +66,7 @@ struct FpHelper
+@@ -27,8 +27,6 @@
+ #include "XrdOuc/XrdOucCRC32C.hh"
+ #include "XrdCks/XrdCksCalcmd5.hh"
+ #include "XrdSys/XrdSysTrace.hh"
+-#include "XrdCl/XrdClLog.hh"
+-#include "XrdCl/XrdClConstants.hh"
+ #include "XrdPfcInfo.hh"
+ #include "XrdPfc.hh"
+ #include "XrdPfcStats.hh"
+@@ -66,7 +64,7 @@ struct FpHelper
     XrdSysTrace* GetTrace() const { return f_trace; }
  
     FpHelper(XrdOssDF* fp, off_t off, XrdSysTrace *trace, const char *tid, const TraceHeader &thdr) :
@@ -2991,10 +3763,10 @@ index 36a5bc37a..9d199dbad 100644
  
 diff --git a/src/XrdPfc/XrdPfcPathParseTools.hh b/src/XrdPfc/XrdPfcPathParseTools.hh
 new file mode 100644
-index 000000000..be33eaabd
+index 000000000..2d445c6eb
 --- /dev/null
 +++ b/src/XrdPfc/XrdPfcPathParseTools.hh
-@@ -0,0 +1,138 @@
+@@ -0,0 +1,150 @@
 +#ifndef __XRDPFC_PATHPARSETOOLS_HH__
 +#define __XRDPFC_PATHPARSETOOLS_HH__
 +
@@ -3024,6 +3796,12 @@ index 000000000..be33eaabd
 +      else         { return strtok_r(0, f_delim, &f_state); }
 +   }
 +
++   std::string get_token_as_string()
++   {
++      char *t = get_token();
++      return std::string(t ? t : "");
++   }
++
 +   char* get_reminder_with_delim()
 +   {
 +      if (f_first) { return f_str; }
@@ -3033,6 +3811,12 @@ index 000000000..be33eaabd
 +   char *get_reminder()
 +   {
 +      return f_first ? f_str : f_state;
++   }
++
++   bool has_reminder()
++   {
++      char *r = get_reminder();
++      return r && r[0] != 0;
 +   }
 +
 +   int fill_argv(std::vector<char*> &argv)
@@ -3134,12 +3918,12 @@ index 000000000..be33eaabd
 +
 +#endif
 diff --git a/src/XrdPfc/XrdPfcPurge.cc b/src/XrdPfc/XrdPfcPurge.cc
-index 8f5fccc04..cec0d64ab 100644
+index 8f5fccc04..56637e687 100644
 --- a/src/XrdPfc/XrdPfcPurge.cc
 +++ b/src/XrdPfc/XrdPfcPurge.cc
 @@ -1,972 +1,183 @@
  #include "XrdPfc.hh"
-+#include "XrdPfcDirStateSnapshot.hh"
++#include "XrdPfcDirStatePurgeshot.hh"
 +#include "XrdPfcResourceMonitor.hh"
 +#include "XrdPfcFPurgeState.hh"
 +#include "XrdPfcPurgePin.hh"
@@ -4328,13 +5112,12 @@ index 000000000..63e440b51
 +#endif
 diff --git a/src/XrdPfc/XrdPfcPurgeQuota.cc b/src/XrdPfc/XrdPfcPurgeQuota.cc
 new file mode 100644
-index 000000000..cb74d84cc
+index 000000000..5c4292c2b
 --- /dev/null
 +++ b/src/XrdPfc/XrdPfcPurgeQuota.cc
 @@ -0,0 +1,137 @@
-+#include "XrdPfc.hh"
-+#include "XrdPfcPurgePin.hh"
-+#include "XrdPfcDirStateSnapshot.hh"
++#include "XrdPfc/XrdPfcPurgePin.hh"
++#include "XrdPfc/XrdPfcDirStatePurgeshot.hh"
 +
 +#include "XrdOuc/XrdOucEnv.hh"
 +#include "XrdOuc/XrdOucUtils.hh"
@@ -4345,9 +5128,10 @@ index 000000000..cb74d84cc
 +
 +class XrdPfcPurgeQuota : public XrdPfc::PurgePin
 +{
-+   XrdSysError *log;
++   XrdSysError &m_log;
 +public:
-+   XrdPfcPurgeQuota() : log(XrdPfc::Cache::GetInstance().GetLog()) {}
++
++   XrdPfcPurgeQuota(XrdSysError &log) : m_log(log) {}
 +
 +   //----------------------------------------------------------------------------
 +   //! Set directory statistics
@@ -4374,7 +5158,7 @@ index 000000000..cb74d84cc
 +      {
 +         if (it->dirUsage == nullptr)
 +         {
-+            log->Emsg("PurgeQuotaPin--GetBytesToRecover", "directory not found:", it->path.c_str());
++            m_log.Emsg("PurgeQuotaPin--GetBytesToRecover", "directory not found:", it->path.c_str());
 +            continue;
 +         }
 +         long long cv = 512ll * it->dirUsage->m_StBlocks - it->nBytesQuota;
@@ -4397,21 +5181,21 @@ index 000000000..cb74d84cc
 +      // retrive configuration file name
 +      if (!parms || !parms[0] || (strlen(parms) == 0))
 +      {
-+         log->Emsg("ConfigPurgePin", "Quota file not specified.");
++         m_log.Emsg("ConfigPurgePin", "Quota file not specified.");
 +         return false;
 +      }
-+      log->Emsg("ConfigPurgePin", "Using directory list", parms);
++      m_log.Emsg("ConfigPurgePin", "Using directory list", parms);
 +
 +      //  parse the file to get directory quotas
 +      const char *config_filename = parms;
 +      const char *theINS = getenv("XRDINSTANCE");
 +      XrdOucEnv myEnv;
-+      XrdOucStream Config(log, theINS, &myEnv, "=====> PurgeQuota ");
++      XrdOucStream Config(&m_log, theINS, &myEnv, "=====> PurgeQuota ");
 +
 +      int fd;
 +      if ((fd = open(config_filename, O_RDONLY, 0)) < 0)
 +      {
-+         log->Emsg("ConfigPurgePin() can't open configuration file ", config_filename);
++         m_log.Emsg("ConfigPurgePin() can't open configuration file ", config_filename);
 +      }
 +
 +      Config.Attach(fd);
@@ -4426,7 +5210,7 @@ index 000000000..cb74d84cc
 +
 +         if (!(val = Config.GetWord()))
 +         {
-+            log->Emsg("PurgeQuota plugin", "quota not specified");
++            m_log.Emsg("PurgeQuota plugin", "quota not specified");
 +            continue;
 +         }
 +
@@ -4434,14 +5218,14 @@ index 000000000..cb74d84cc
 +         long long quota = 0;
 +         if (::isalpha(*(tmpc.rbegin())))
 +         {
-+            if (XrdOuca2x::a2sz(*log, "Error getting quota", tmpc.c_str(), &quota))
++            if (XrdOuca2x::a2sz(m_log, "Error getting quota", tmpc.c_str(), &quota))
 +            {
 +               continue;
 +            }
 +         }
 +         else
 +         {
-+            if (XrdOuca2x::a2ll(*log, "Error getting quota", tmpc.c_str(), &quota))
++            if (XrdOuca2x::a2ll(m_log, "Error getting quota", tmpc.c_str(), &quota))
 +            {
 +               continue;
 +            }
@@ -4464,23 +5248,24 @@ index 000000000..cb74d84cc
 +// Return a purge object to use.
 +extern "C"
 +{
-+   XrdPfc::PurgePin *XrdPfcGetPurgePin(XrdSysError &)
++   XrdPfc::PurgePin *XrdPfcGetPurgePin(XrdSysError &log)
 +   {
-+      return new XrdPfcPurgeQuota();
++      return new XrdPfcPurgeQuota(log);
 +   }
 +}
 diff --git a/src/XrdPfc/XrdPfcResourceMonitor.cc b/src/XrdPfc/XrdPfcResourceMonitor.cc
 new file mode 100644
-index 000000000..69e0b223a
+index 000000000..174ed15c7
 --- /dev/null
 +++ b/src/XrdPfc/XrdPfcResourceMonitor.cc
-@@ -0,0 +1,940 @@
+@@ -0,0 +1,962 @@
 +#include "XrdPfcResourceMonitor.hh"
 +#include "XrdPfc.hh"
 +#include "XrdPfcPathParseTools.hh"
 +#include "XrdPfcFsTraversal.hh"
 +#include "XrdPfcDirState.hh"
 +#include "XrdPfcDirStateSnapshot.hh"
++#include "XrdPfcDirStatePurgeshot.hh"
 +#include "XrdPfcTrace.hh"
 +#include "XrdPfcPurgePin.hh"
 +
@@ -4827,11 +5612,10 @@ index 000000000..69e0b223a
 +{
 +   static const char *tpfx = "heart_beat() ";
 +
-+   const Configuration &conf    =  Cache::Conf();
++   const Configuration &conf = Cache::Conf();
 +
 +   const int s_queue_proc_interval   = 10;
-+   // const s_stats_up_prop_interval = 60; -- for when we have dedicated purge / stat report structs
-+   const int s_sshot_report_interval = 60; // to be bumped (300s?) or made configurable.
++   const int s_sshot_report_interval = conf.m_dirStatsInterval; // 1, 5, 10, 15, 30 or 60 minutes
 +   const int s_purge_check_interval  = 60;
 +   const int s_purge_report_interval = conf.m_purgeInterval;
 +   const int s_purge_cold_files_interval = conf.m_purgeInterval * conf.m_purgeAgeBasedPeriod;
@@ -4840,13 +5624,10 @@ index 000000000..69e0b223a
 +
 +   time_t now = time(0);
 +   time_t next_queue_proc_time       = now + s_queue_proc_interval;
-+   time_t next_sshot_report_time     = now + s_sshot_report_interval;
++   time_t next_sshot_report_time     = (now / 60) * 60 + 60; // at next full minute
 +   time_t next_purge_check_time      = now + s_purge_check_interval;
 +   time_t next_purge_report_time     = now + s_purge_report_interval;
 +   time_t next_purge_cold_files_time = now + s_purge_cold_files_interval;
-+
-+   // XXXXX On initial entry should reclaim space from queues as they might have grown
-+   // very large during the initial scan.
 +
 +   while (true)
 +   {
@@ -4872,60 +5653,82 @@ index 000000000..69e0b223a
 +         }
 +      }
 +
++      time_t queue_swap_time = time(0);
++
 +      // Always process the queues.
 +      int n_processed = process_queues();
-+      next_queue_proc_time += s_queue_proc_interval;
++      next_queue_proc_time = queue_swap_time + s_queue_proc_interval;
 +      TRACE(Debug, tpfx << "process_queues -- n_records=" << n_processed);
 +
 +      // Always update basic info on m_fs_state (space, usage, file_usage).
 +      update_vs_and_file_usage_info();
 +
 +      now = time(0);
-+      if (next_sshot_report_time <= now)
-+      {
-+         next_sshot_report_time += s_sshot_report_interval;
 +
-+         // XXXX pass in m_purge_task_active as control over "should empty dirs be purged";
-+         // Or should this be separate pass or variant in purge?
-+         m_fs_state.upward_propagate_stats_and_times();
-+
-+         m_fs_state.apply_stats_to_usages();
-+
-+         // Dump statistics before actual purging so maximum usage values get recorded.
-+         // This should dump out binary snapshot into /pfc-stats/, if so configured.
-+         // Also, optionally, json.
-+         // Could also go to gstream but this easily gets too large.
-+         if (conf.is_dir_stat_reporting_on())
-+         {
-+            const int store_depth  =  conf.m_dirStatsStoreDepth;
-+            #ifdef RM_DEBUG
-+            const DirState      &root_ds = *m_fs_state.get_root();
-+            dprintf("Snapshot n_dirs=%d, total n_dirs=%d\n", root_ds.count_dirs_to_level(store_depth),
-+                  root_ds.m_here_usage.m_NDirectories + root_ds.m_recursive_subdir_usage.m_NDirectories + 1);
-+            #endif
-+            m_fs_state.dump_recursively(store_depth);
-+
-+            /*
-+            // json dump to std::out for debug purpose
-+            DataFsSnapshot ss(m_fs_state);
-+            ss.m_dir_states.reserve(n_sshot_dirs);
-+
-+            ss.m_dir_states.emplace_back( DirStateElement(root_ds, -1) );
-+            fill_sshot_vec_children(root_ds, 0, ss.m_dir_states, store_depth);
-+
-+            // This should really be export to a file (preferably binary, but then bin->json command is needed, too).
-+            ss.dump();
-+            */
-+         }
-+
-+         m_fs_state.reset_stats();
-+
-+         now = time(0);
-+      }
-+
++      // Make planning for fs_state_update, sshot dump and purge task.
++      // Second two require the first, so figure out what is going to happen.
++      bool do_sshot_report     = next_sshot_report_time <= now;
 +      bool do_purge_check      = next_purge_check_time <= now;
 +      bool do_purge_report     = next_purge_report_time <= now;
 +      bool do_purge_cold_files = next_purge_cold_files_time <= now;
++
++      // Update stats in usages if any secondary activity will happen.
++      if (do_sshot_report || do_purge_check || do_purge_report || do_purge_cold_files)
++      {
++         unlink_func unlink_foo = [&](const std::string &dp)->int {
++            int ret = m_oss.Unlink(dp.c_str());
++            if (ret != 0) {
++               TRACE(Info, tpfx << "Empty dir unlink error: " << ret << " at " << dp);
++            } else {
++               TRACE(Debug, tpfx << "Empty dir unlink success: " << dp);
++            }
++            return ret;
++         };
++
++         // Potentially prune the empty leaf dirs even less frequently, once per hour, maybe?
++         bool purge_leaf_dirs = do_sshot_report && ! m_purge_task_active;
++         m_fs_state.update_stats_and_usages(queue_swap_time, purge_leaf_dirs, unlink_foo);
++
++         // This reporting into log/stdout is to be removed.
++         // Meaning of conf.is_dir_stat_reporting_on() etc is to be clarified / improved.
++         if (do_sshot_report && conf.is_dir_stat_reporting_on())
++         {
++            const int store_depth  =  conf.m_dirStatsStoreDepth;
++         #ifdef RM_DEBUG
++            const DirState      &root_ds = *m_fs_state.get_root();
++            dprintf("Snapshot n_dirs=%d, total n_dirs=%d\n", root_ds.count_dirs_to_level(store_depth),
++                  root_ds.m_here_usage.m_NDirectories + root_ds.m_recursive_subdir_usage.m_NDirectories + 1);
++         #endif
++            m_fs_state.dump_recursively(store_depth);
++         }
++
++         m_fs_state.reset_stats(queue_swap_time);
++      }
++
++      if (do_sshot_report)
++      {
++         // Sshot reports are equidistant, at "full" reporting interval.
++         next_sshot_report_time = ((now + 1) / s_sshot_report_interval) * s_sshot_report_interval + s_sshot_report_interval;
++
++         // This should dump out binary snapshot into /pfc-stats/, if so configured.
++
++         // json dump to std::out for debug purpose
++         DataFsSnapshot ss(m_fs_state, m_fs_state.m_sshot_stats_reset_time);
++         const DirState &root_ds = *m_fs_state.get_root();
++         const int store_depth  =  conf.m_dirStatsStoreDepth;
++         const int n_sshot_dirs = root_ds.count_dirs_to_level(store_depth);
++         ss.m_dir_states.reserve(n_sshot_dirs);
++         ss.m_dir_states.emplace_back( DirStateElement(root_ds, -1) );
++         fill_sshot_vec_children(root_ds, 0, ss.m_dir_states, store_depth);
++
++         // This should really be export to a file (preferably binary, but then bin->json command is needed, too).
++         // ss.dump();
++
++         const char* dumpfile = "/pfc-stats/DirStat.json";
++         ss.write_json_file(dumpfile, m_oss, false);
++         m_fs_state.reset_sshot_stats(queue_swap_time);
++      }
++
 +      if (do_purge_check || do_purge_report || do_purge_cold_files)
 +      {
 +         perform_purge_check(do_purge_cold_files, do_purge_report ? TRACE_Info : TRACE_Debug);
@@ -4950,6 +5753,12 @@ index 000000000..69e0b223a
 +   int pos = vec.size();
 +   int n_children = parent_ds.m_subdirs.size();
 +
++   DirStateElement &parent_dse = vec[parent_idx];
++   parent_dse.m_daughters_begin = pos;
++   parent_dse.m_daughters_end   = pos + n_children;
++
++   if (n_children == 0) return;
++
 +   for (auto const & [name, child] : parent_ds.m_subdirs)
 +   {
 +      vec.emplace_back( DirStateElement(child, parent_idx) );
@@ -4957,14 +5766,9 @@ index 000000000..69e0b223a
 +
 +   if (parent_ds.m_depth < max_depth)
 +   {
-+      DirStateElement &parent_dse = vec[parent_idx];
-+      parent_dse.m_daughters_begin = pos;
-+      parent_dse.m_daughters_end   = pos + n_children;
-+
 +      for (auto const & [name, child] : parent_ds.m_subdirs)
 +      {
-+         if (n_children > 0)
-+            fill_sshot_vec_children(child, pos, vec, max_depth);
++         fill_sshot_vec_children(child, pos, vec, max_depth);
 +         ++pos;
 +      }
 +   }
@@ -4978,21 +5782,22 @@ index 000000000..69e0b223a
 +   int pos = vec.size();
 +   int n_children = parent_ds.m_subdirs.size();
 +
++   DirPurgeElement &parent_dpe = vec[parent_idx];
++   parent_dpe.m_daughters_begin = pos;
++   parent_dpe.m_daughters_end   = pos + n_children;
++
++   if (n_children == 0) return;
++
 +   for (auto const & [name, child] : parent_ds.m_subdirs)
 +   {
-+      vec.emplace_back( DirPurgeElement(child, parent_idx) );
++      vec.emplace_back( DirPurgeElement(child, child.m_here_usage, child.m_recursive_subdir_usage, parent_idx) );
 +   }
 +
 +   if (parent_ds.m_depth < max_depth)
 +   {
-+      DirPurgeElement &parent_dpe = vec[parent_idx];
-+      parent_dpe.m_daughters_begin = pos;
-+      parent_dpe.m_daughters_end   = pos + n_children;
-+
 +      for (auto const & [name, child] : parent_ds.m_subdirs)
 +      {
-+         if (n_children > 0)
-+            fill_pshot_vec_children(child, pos, vec, max_depth);
++         fill_pshot_vec_children(child, pos, vec, max_depth);
 +         ++pos;
 +      }
 +   }
@@ -5061,7 +5866,7 @@ index 000000000..69e0b223a
 +      // removed too little
 +      if (newval > highval)
 +      {
-+         return highval - val;
++         return val - highval;
 +      }
 +      // keep the original value
 +      return bytes_to_remove;
@@ -5209,7 +6014,7 @@ index 000000000..69e0b223a
 +   dprintf("purge dir count recursive=%d vs from_usage=%d\n", n_pshot_dirs, n_calc_dirs);
 +#endif
 +   ps.m_dir_vec.reserve(n_calc_dirs);
-+   ps.m_dir_vec.emplace_back( DirPurgeElement(root_ds, -1) );
++   ps.m_dir_vec.emplace_back( DirPurgeElement(root_ds, root_ds.m_here_usage, root_ds.m_recursive_subdir_usage, -1) );
 +   fill_pshot_vec_children(root_ds, 0, ps.m_dir_vec, 9999);
 +
 +   m_purge_task_active = true;
@@ -5290,6 +6095,7 @@ index 000000000..69e0b223a
 +   const char *tpfx = "main_thread_function ";
 +   {
 +      time_t is_start = time(0);
++      m_fs_state.init_stat_reset_times(is_start);
 +      TRACE(Info, tpfx << "Stating initial directory scan.");
 +
 +      if ( ! perform_initial_scan()) {
@@ -5686,10 +6492,10 @@ index 000000000..770c7ed7b
 +
 +#endif
 diff --git a/src/XrdPfc/XrdPfcStats.hh b/src/XrdPfc/XrdPfcStats.hh
-index ae06f194d..1a94426bf 100644
+index ae06f194d..3baec31c0 100644
 --- a/src/XrdPfc/XrdPfcStats.hh
 +++ b/src/XrdPfc/XrdPfcStats.hh
-@@ -19,130 +19,197 @@
+@@ -19,130 +19,202 @@
  // along with XRootD.  If not, see <http://www.gnu.org/licenses/>.
  //----------------------------------------------------------------------------------
  
@@ -5797,18 +6603,24 @@ index ae06f194d..1a94426bf 100644
     }
  
 -   Stats Clone()
-+   //----------------------------------------------------------------------
-+
-+   long long BytesRead() const
-    {
+-   {
 -      XrdSysMutexHelper _lock(&m_Mutex);
 -
 -      return Stats(*this);
-+      return m_BytesHit + m_BytesMissed + m_BytesBypassed;
-    }
- 
--   //----------------------------------------------------------------------
+-   }
 -
+    //----------------------------------------------------------------------
+ 
++   long long BytesRead() const
++   {
++      return m_BytesHit + m_BytesMissed + m_BytesBypassed;
++   }
++
++   long long BytesReadAndWritten() const
++   {
++      return BytesRead() + m_BytesWritten;
++   }
++
     void DeltaToReference(const Stats& ref)
     {
 -      // Not locked, only used from Cache / Purge thread.

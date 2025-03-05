@@ -7,7 +7,7 @@
     %global _with_xrdclhttp 1
 
     # Enable/disable this to build with purge plugin support
-    #%%global _with_purge 1
+    %global _with_purge 1
 %endif
 
 # Set _with_debug to build with debug messages and asserts.  The build will have a .dbg in the Release field.
@@ -117,8 +117,8 @@ Patch7: 0007-XrdPfc-Check-for-a-null-pointer-dereference~121f60b.patch
 # PelicanPlatform/xrootd #14
 Patch8: 0008-XrdHttp-Undo-HTTP-PUT-response-code-change~956b9fa.patch
 %if 0%{?_with_purge}
-# PelicanPlatform/xrootd #9 (xrootd/xrootd #2406)
-#Patch9: 0009-Second-rebase-of-alja-purge-main-rb1-onto-master-5.7~4f6f775.patch
+# xrootd/xrootd #2436
+Patch9: 0009-Add-ResourceMonitor-and-PurgePlugin~f34a39d.patch
 %endif
 # xrootd/xrootd #2442
 Patch10: 0010-gstream-config-processing.patch
@@ -541,7 +541,7 @@ cd %{build_dir}
 %autopatch -p1 -M8
 # maybe apply #9
 %if 0%{?_with_purge}
-#patch -p1 -P9
+%patch -p1 -P9
 %endif
 # patch #10 and more
 %autopatch -p1 -m10
@@ -1188,6 +1188,9 @@ fi
 # Changelog
 #-------------------------------------------------------------------------------
 %changelog
+* Tue Mar 04 2025 Mátyás Selmeci <mselmeci@wisc.edu> - 5.7.3-1.3.purge
+- Add purge plugin patch 0009-Add-ResourceMonitor-and-PurgePlugin~f34a39d.patch
+
 * Tue Mar 04 2025 Mátyás Selmeci <mselmeci@wisc.edu> - 5.7.3-1.3
 - Add 0010-gstream-config-processing.patch (SOFTWARE-6099)
 
