@@ -1,2 +1,2 @@
-type=git url=https://github.com/opensciencegrid/osg-pki-tools.git tag=v3.7.1 spec=rpm/osg-pki-tools.spec hash=097ebaf2f20a3201764779b269757e83a0fced2f
+type=git url=https://github.com/opensciencegrid/osg-pki-tools.git tag=v3.7.2 spec=rpm/osg-pki-tools.spec hash=7962f746a8995c586cbd871135d92fbf28db329d
 
