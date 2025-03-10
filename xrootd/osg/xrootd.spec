@@ -5,9 +5,6 @@
     %endif
     %global _with_scitokens 1
     %global _with_xrdclhttp 1
-
-    # Enable/disable this to build with purge plugin support
-    %global _with_purge 1
 %endif
 
 # Set _with_debug to build with debug messages and asserts.  The build will have a .dbg in the Release field.
@@ -84,7 +81,7 @@
 Name:		xrootd
 Epoch:		1
 Version:	5.7.3
-Release:	1.3%{?_with_purge:.purge}%{?dist}%{?_with_clang:.clang}%{?_with_asan:.asan}
+Release:	1.4%{?dist}%{?_with_clang:.clang}%{?_with_asan:.asan}
 Summary:	Extended ROOT File Server
 Group:		System Environment/Daemons
 License:	LGPL-3.0-or-later AND BSD-2-Clause AND BSD-3-Clause AND curl AND MIT AND Zlib
@@ -100,28 +97,26 @@ Source0:   xrootd-%{version}.tar.gz
 # SRPM build may have a different build environment than the RPM build
 Source1:   xrootd-%{compat_version}.tar.gz
 
-# PelicanPlatform/xrootd #1 (xrootd/xrootd #1868)
+# PelicanPlatform/xrootd #1 (xrootd/xrootd #1868):
 Patch1: 0001-Allow-hostname-used-by-XRootD-to-be-overridden-by-en~e13587e.patch
-# PelicanPlatform/xrootd #2 (xrootd/xrootd #2348)
+# PelicanPlatform/xrootd #2 (xrootd/xrootd #2348):
 Patch2: 0002-XrdHttp-determines-the-presence-of-the-Age-header-in~092c7a5.patch
-# PelicanPlatform/xrootd #4 (xrootd/xrootd #2269)
+# PelicanPlatform/xrootd #4 (xrootd/xrootd #2269):
 Patch3: 0003-XrdTls-Allow-disabling-of-X.509-client-auth~18e1c81.patch
-# PelicanPlatform/xrootd #5 (xrootd/xrootd #2279)
+# PelicanPlatform/xrootd #5 (xrootd/xrootd #2279):
 Patch4: 0004-Add-new-filesystem-load-counter-plugin~3c1be23.patch
-# PelicanPlatform/xrootd #6 (xrootd/xrootd #2397)
+# PelicanPlatform/xrootd #6 (xrootd/xrootd #2397):
 Patch5: 0005-XrdSciTokens-Handle-multiple-authorization-token-set~a33ca13.patch
-# PelicanPlatform/xrootd #7 (xrootd/xrootd #2389)
+# PelicanPlatform/xrootd #7 (xrootd/xrootd #2389):
 Patch6: 0006-XrdHttp-Add-http.staticheader~5c6ee05.patch
-# PelicanPlatform/xrootd #13
+# PelicanPlatform/xrootd #13 (xrootd/xrootd#2421):
 Patch7: 0007-XrdPfc-Check-for-a-null-pointer-dereference~121f60b.patch
-# PelicanPlatform/xrootd #14
+# PelicanPlatform/xrootd #14 (no upstream):
 Patch8: 0008-XrdHttp-Undo-HTTP-PUT-response-code-change~956b9fa.patch
-%if 0%{?_with_purge}
-# xrootd/xrootd #2436
+# PelicanPlatform/xrootd #9 (xrootd/xrootd #2436):
 Patch9: 0009-Add-ResourceMonitor-and-PurgePlugin~f34a39d.patch
-%endif
-# xrootd/xrootd #2442
-Patch10: 0010-gstream-config-processing.patch
+# PelicanPlatform/xrootd #15 (xrootd/xrootd #2442):
+Patch10: 0010-Fix-gstream-configuration-processing~bece0de.patch
 
 
 %if %{use_cmake3}
@@ -537,14 +532,7 @@ This package contains compatibility binaries for XRootD 4 servers.
 
 %setup -c -n %{build_dir}
 cd %{build_dir}
-# patch up to #8
-%autopatch -p1 -M8
-# maybe apply #9
-%if 0%{?_with_purge}
-%patch -p1 -P9
-%endif
-# patch #10 and more
-%autopatch -p1 -m10
+%autopatch -p1
 cd ..
 
 %build
@@ -1188,6 +1176,9 @@ fi
 # Changelog
 #-------------------------------------------------------------------------------
 %changelog
+* Mon Mar 10 2025 Mátyás Selmeci <mselmeci@wisc.edu> - 5.7.3-1.4
+- Fix patch file name; always build with purge plugin patch (SOFTWARE-6100)
+
 * Tue Mar 04 2025 Mátyás Selmeci <mselmeci@wisc.edu> - 5.7.3-1.3.purge
 - Add purge plugin patch 0009-Add-ResourceMonitor-and-PurgePlugin~f34a39d.patch
 
