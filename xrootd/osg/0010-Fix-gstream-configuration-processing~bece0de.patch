@@ -1,14 +1,14 @@
-From f963e96834da0a1d8fe069dc99025fe069873205 Mon Sep 17 00:00:00 2001
+From 4785adb1aea65fcc841e69757cf68dfc7f5cf15e Mon Sep 17 00:00:00 2001
 From: Matevz Tadel <mtadel@ucsd.edu>
 Date: Fri, 28 Feb 2025 09:21:39 -0800
-Subject: [PATCH] [Xrootd] Fix gstream configuration processing.
+Subject: [PATCH 10/10] Fix gstream configuration processing.
 
 ---
  src/XrdXrootd/XrdXrootdConfigMon.cc | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/src/XrdXrootd/XrdXrootdConfigMon.cc b/src/XrdXrootd/XrdXrootdConfigMon.cc
-index 6f4cdc2b771..282a7e7c8de 100644
+index 46b07b435..51a790393 100644
 --- a/src/XrdXrootd/XrdXrootdConfigMon.cc
 +++ b/src/XrdXrootd/XrdXrootdConfigMon.cc
 @@ -104,7 +104,7 @@ bool XrdXrootdProtocol::ConfigGStream(XrdOucEnv &myEnv, XrdOucEnv *urEnv)
@@ -20,3 +20,6 @@ index 6f4cdc2b771..282a7e7c8de 100644
  
  // For each enabled monitoring provider, allocate a g-stream and put
  // its address in our environment.
+-- 
+2.43.5
+
