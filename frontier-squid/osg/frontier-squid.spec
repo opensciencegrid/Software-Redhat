@@ -10,7 +10,7 @@ Summary: The Frontier distribution of the Squid proxy caching server
 Name: frontier-squid%{?squidsuffix}
 Version: 5.9
 %define release4source 3
-%define releasenum 2%{?dist}
+%define releasenum 3%{?dist}
 Release: %{?release4source}.%{?releasenum}
 Epoch: 11
 License: GPL
@@ -70,7 +70,7 @@ BuildRequires: redhat-rpm-config
 BuildRequires: libffi-devel
 BuildRequires: cargo
 
-ExclusiveArch: x86_64
+# ExclusiveArch: x86_64
 
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -102,6 +102,11 @@ tar zxf %{SOURCE1}
 # starts out in the shoal-downloads directory
 
 set -ex
+
+
+# Shoal-agent has an x86_64 exclusive python wheel dependency
+%ifarch x86_64
+
 PYVERS="python3$(python3 -V|cut -d. -f2)"
 PYDIR=$PWD/$PYVERS/.local
 PATH=$PYDIR/bin:$PATH
@@ -150,6 +155,8 @@ fi
 ln -s %{etcdirsquid}/shoal_agent.conf dist/shoal-agent/
 
 cd ..
+
+%endif
 
 # unpack squid code and patch it
 cd ../%{frontiersquidtarball}/squid
@@ -304,6 +311,9 @@ rm -f ${RPM_BUILD_ROOT}$CRON_DIR/crontab.dat
 
 # Finally, install the shoal files
 popd
+
+# Shoal-agent has an x86_64 exclusive python wheel dependency
+%ifarch x86_64
 cd ../shoal-%{shoalname}
 # fix bad permissions on cryptography directory (causes problem on src rebuild)
 find shoal-agent/dist/shoal-agent -type d ! -perm -1|xargs -r chmod +x
@@ -319,6 +329,7 @@ touch ${RPM_BUILD_ROOT}%{etcdirsquid}/shoal_agent.conf
 # make symlink for shoal_agent.conf https://github.com/hep-gc/shoal/issues/168
 mkdir ${RPM_BUILD_ROOT}/etc/shoal
 ln -s ../squid/shoal_agent.conf ${RPM_BUILD_ROOT}/etc/shoal
+%endif
 
 # In the squid4 to squid5 update, there is a problem in yum (not rpm) where
 # files in the "es" directory cause conflict errors in the transaction test.
@@ -336,7 +347,11 @@ rm -rf $RPM_BUILD_ROOT
 /usr/sbin/fn-local-squid%{?squidsuffix}.sh
 /usr/sbin/squid%{?squidsuffix}
 /usr/bin/*
+
+%ifarch x86_64
 %config(noreplace) %verify(not owner group mtime) /etc/shoal/shoal_agent.conf
+%endif
+
 %{libexecdirsquid}
 %{datadirsquid}
 %{homedirsquid}
@@ -364,8 +379,10 @@ rm -rf $RPM_BUILD_ROOT
 #  this rpm is uninstalled
 %verify(not user group mode) %ghost %{etcdirsquid}/squid.conf.old
 # shoal_agent.conf is a ghost file because it is generated
+%ifarch x86_64
 %verify(not user group mode) %ghost %{etcdirsquid}/shoal_agent.conf
 %verify(not user group size md5 mtime) %{etcdirsquid}/shoal_agent.conf.frontierdefault
+%endif
 # cachedirsquid and logdirsquid are ghost in case someone turned them
 #  into symlinks (since they're commonly relocated); if we let rpm install 
 #  these directories it will change the symlink target's owner to root
@@ -537,6 +554,10 @@ if [ $1 -eq 0 ]; then
 fi
 
 %changelog
+
+* Tue Mar 11 2025 Matt Westphall <westphall@wisc.edu> 5.9-3.3
+ - Re-add ARM build
+ - Exclude shoal-agent frrom ARM builds
 
 * Fri Dec 13 2024 Carl Vuosalo <carl.vuosalo@cern.ch> 5.9-3.2
  - Fix building of RPM to properly choose Python36 or Python39.
