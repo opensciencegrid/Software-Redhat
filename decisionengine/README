@@ -1,0 +1,12 @@
+Package: decisionengine
+
+This HEPCloud's Decision Engine package for OSG.
+
+The source code is on GitHub:
+https://github.com/HEPCloud/decisionengine
+https://github.com/HEPCloud/decisionengine_modules
+
+Here the documentation:
+https://hepcloud.github.io/decisionengine/
+https://hepcloud.github.io/decisionengine_modules/
+
