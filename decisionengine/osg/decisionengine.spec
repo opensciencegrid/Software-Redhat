@@ -18,8 +18,8 @@
 %define auto_version %(FULLVER=$(git describe --tag | sed 's/-/_/g');  GVER=$(sed 's/.*_\\\([[:digit:]].*\\\)_/dev\\\1+/g' <<< ${FULLVER}); VER=${FULLVER//_*}; echo ${VER%.*}.$((${VER##*.}+1)).${GVER})
 %define auto_release 1
 
-%define version __HCDE_RPM_VERSION__
-%define release __HCDE_RPM_RELEASE__
+%define version 2.0.5
+%define release 1
 
 %define decisionengine_home %{_sharedstatedir}/decisionengine
 #%define systemddir %{_prefix}/lib/systemd/system
@@ -228,3 +228,7 @@ systemctl daemon-reload || true
 %files standalone
 
 %files onenode
+
+%changelog
+* Wed Mar 12 2025 Marco Mambelli <marcom@fnal.gov> - 2.0.5
+- Decision Engine 2.0.5
