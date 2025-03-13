@@ -1,0 +1,1 @@
+type=git url=https://github.com/DrDaveD/openbao-rpm.git tag=v2.2.0 spec=openbao.spec hash=69b208b2c3302833f1fa5a8c3dbeeb0a20a97e54
