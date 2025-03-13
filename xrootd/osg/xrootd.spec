@@ -81,7 +81,7 @@
 Name:		xrootd
 Epoch:		1
 Version:	5.7.3
-Release:	1.4%{?dist}%{?_with_clang:.clang}%{?_with_asan:.asan}
+Release:	1.5%{?dist}%{?_with_clang:.clang}%{?_with_asan:.asan}
 Summary:	Extended ROOT File Server
 Group:		System Environment/Daemons
 License:	LGPL-3.0-or-later AND BSD-2-Clause AND BSD-3-Clause AND curl AND MIT AND Zlib
@@ -117,6 +117,10 @@ Patch8: 0008-XrdHttp-Undo-HTTP-PUT-response-code-change~956b9fa.patch
 Patch9: 0009-Add-ResourceMonitor-and-PurgePlugin~f34a39d.patch
 # PelicanPlatform/xrootd #15 (xrootd/xrootd #2442):
 Patch10: 0010-Fix-gstream-configuration-processing~bece0de.patch
+# PelicanPlatform/xrootd #11 (xrootd/xrootd #2408)
+Patch11: 0011-Xrd-Fix-MacOS-poller~9704d2a.patch
+# https://github.com/PelicanPlatform/xrootd/commit/d28399667342c6d9df22b1490a19ca06bf395b2a (xrootd/xrootd #2450)
+Patch12: 0012-Temporary-workaround-for-segfault-noted-in-upstream~3b485c0.patch
 
 
 %if %{use_cmake3}
@@ -1176,6 +1180,12 @@ fi
 # Changelog
 #-------------------------------------------------------------------------------
 %changelog
+* Thu Mar 13 2025 Mátyás Selmeci <mselmeci@wisc.edu> - 5.7.3-1.5
+- Add:
+    - 0010-Fix-gstream-configuration-processing~bece0de.patch
+- Re-add (with update):
+    - 0011-Xrd-Fix-MacOS-poller~9704d2a.patch
+
 * Mon Mar 10 2025 Mátyás Selmeci <mselmeci@wisc.edu> - 5.7.3-1.4
 - Fix patch file name; always build with purge plugin patch (SOFTWARE-6100)
 
