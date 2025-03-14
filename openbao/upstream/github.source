@@ -1,0 +1,1 @@
+type=git url=https://github.com/opensciencegrid/openbao-rpm.git tag=v2.2.0 spec=openbao.spec hash=f74dc2dfd4822157cdcfa7ce496924d40878d137
