@@ -1183,6 +1183,7 @@ fi
 * Thu Mar 13 2025 Mátyás Selmeci <mselmeci@wisc.edu> - 5.7.3-1.5
 - Add:
     - 0010-Fix-gstream-configuration-processing~bece0de.patch
+    - 0012-Temporary-workaround-for-segfault-noted-in-upstream~3b485c0.patch
 - Re-add (with update):
     - 0011-Xrd-Fix-MacOS-poller~9704d2a.patch
 
