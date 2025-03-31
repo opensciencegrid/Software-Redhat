@@ -1,16 +1,17 @@
-From c4b8fc2b80385a0f152e901f9ec653e79a3a6c6a Mon Sep 17 00:00:00 2001
+From 9a51758bdcd0a962f85536ca7e1dfb805253c416 Mon Sep 17 00:00:00 2001
 From: Brian Bockelman <bbockelman@morgridge.org>
 Date: Tue, 28 Jan 2025 09:57:02 -0600
-Subject: [PATCH 5/8] [XrdSciTokens] Handle multiple authorization token setups
+Subject: [PATCH 3/7] [XrdSciTokens] Handle multiple authorization token setups
 
 ---
  src/XrdMacaroons/XrdMacaroonsAuthz.cc  |   4 +
  src/XrdOuc/XrdOucEnv.cc                |  60 ++-
+ src/XrdOuc/XrdOucPrivateUtils.hh       |   4 +-
  src/XrdOuc/XrdOucUtils.cc              |   2 +-
  src/XrdSciTokens.cmake                 |  26 +-
  src/XrdSciTokens/README.md             |  11 +
- src/XrdSciTokens/XrdSciTokensAccess.cc | 663 ++++++++++++++-----------
- src/XrdSciTokens/XrdSciTokensAccess.hh | 222 +++++++++
+ src/XrdSciTokens/XrdSciTokensAccess.cc | 645 ++++++++++++++-----------
+ src/XrdSciTokens/XrdSciTokensAccess.hh | 214 ++++++++
  src/XrdTpc/XrdTpcUtils.cc              |   5 +-
  tests/XRootD/scitokens-module.cfg      |   8 +-
  tests/XRootD/scitokens.sh              |  21 +
@@ -19,7 +20,7 @@ Subject: [PATCH 5/8] [XrdSciTokens] Handle multiple authorization token setups
  tests/XrdOucTests/XrdOucUtilsTests.cc  |   3 +
  tests/scitokens/CMakeLists.txt         |   9 +
  tests/scitokens/XrdSciTokens.cc        |  73 +++
- 15 files changed, 808 insertions(+), 329 deletions(-)
+ 16 files changed, 798 insertions(+), 317 deletions(-)
  create mode 100644 src/XrdSciTokens/XrdSciTokensAccess.hh
  create mode 100644 tests/XrdOucTests/XrdOucEnvTests.cc
  create mode 100644 tests/scitokens/XrdSciTokens.cc
@@ -120,11 +121,26 @@ index b8b65d9bc..a27813077 100644
  }
   
  /******************************************************************************/
+diff --git a/src/XrdOuc/XrdOucPrivateUtils.hh b/src/XrdOuc/XrdOucPrivateUtils.hh
+index e5e220000..d7d1b391b 100644
+--- a/src/XrdOuc/XrdOucPrivateUtils.hh
++++ b/src/XrdOuc/XrdOucPrivateUtils.hh
+@@ -30,8 +30,8 @@
+ /**
+  * Returns true if path @p subdir is a subdirectory of @p dir.
+  */
+-static inline bool is_subdirectory(const std::string& dir,
+-                                   const std::string& subdir)
++static inline bool is_subdirectory(const std::string_view dir,
++                                   const std::string_view subdir)
+ {
+     if (subdir.size() < dir.size())
+       return false;
 diff --git a/src/XrdOuc/XrdOucUtils.cc b/src/XrdOuc/XrdOucUtils.cc
-index 40d4e811f..1f80a72a0 100644
+index 573c474c8..23df854ee 100644
 --- a/src/XrdOuc/XrdOucUtils.cc
 +++ b/src/XrdOuc/XrdOucUtils.cc
-@@ -1448,7 +1448,7 @@ std::string obfuscateAuth(const std::string& input)
+@@ -1480,7 +1480,7 @@ std::string obfuscateAuth(const std::string& input)
  {
    static const regex_t auth_regex = []() {
      constexpr char re[] =
@@ -228,10 +244,10 @@ index 1edecf944..ab47f60e2 100644
  --------------
  
 diff --git a/src/XrdSciTokens/XrdSciTokensAccess.cc b/src/XrdSciTokens/XrdSciTokensAccess.cc
-index 944149a0d..d4f6373e9 100644
+index f982556a3..3eda05f82 100644
 --- a/src/XrdSciTokens/XrdSciTokensAccess.cc
 +++ b/src/XrdSciTokens/XrdSciTokensAccess.cc
-@@ -24,31 +24,27 @@
+@@ -25,31 +25,27 @@
  #include "picojson.h"
  
  #include "scitokens/scitokens.h"
@@ -266,7 +282,7 @@ index 944149a0d..d4f6373e9 100644
  std::string LogMaskToString(int mask) {
      if (mask == LogMask::All) {return "all";}
  
-@@ -73,8 +69,6 @@ std::string LogMaskToString(int mask) {
+@@ -74,8 +70,6 @@ std::string LogMaskToString(int mask) {
      return ss.str();
  }
  
@@ -275,7 +291,7 @@ index 944149a0d..d4f6373e9 100644
  inline uint64_t monotonic_time() {
    struct timespec tp;
  #ifdef CLOCK_MONOTONIC_COARSE
-@@ -224,92 +218,48 @@ void ParseCanonicalPaths(const std::string &path, std::vector<std::string> &resu
+@@ -225,92 +219,48 @@ void ParseCanonicalPaths(const std::string &path, std::vector<std::string> &resu
      } while (pos != std::string::npos);
  }
  
@@ -375,7 +391,7 @@ index 944149a0d..d4f6373e9 100644
  class OverrideINIReader: public INIReader {
  public:
      OverrideINIReader() {};
-@@ -346,123 +296,142 @@ class OverrideINIReader: public INIReader {
+@@ -347,113 +297,142 @@ class OverrideINIReader: public INIReader {
  
  };
  
@@ -393,37 +409,8 @@ index 944149a0d..d4f6373e9 100644
 -        m_map_rules(rules),
 -        m_groups(groups)
 -    {}
--
--    ~XrdAccRules() {}
--
--    bool apply(Access_Operation oper, std::string path) {
--      auto is_subdirectory = [](const std::string& dir, const std::string& subdir) {
--        if (subdir.size() < dir.size())
--          return false;
--
--        if (subdir.compare(0, dir.size(), dir, 0, dir.size()) != 0)
--          return false;
--
--        return dir.size() == subdir.size() || subdir[dir.size()] == '/' || dir == "/";
--      };
--
--      for (const auto & rule : m_rules) {
--        // Skip rules that don't match the current operation
--        if (rule.first != oper)
--          continue;
--
--        // If the rule allows any path, allow the operation
--        if (rule.second == "/")
--          return true;
  
--        // Allow operation if path is a subdirectory of the rule's path
--        if (is_subdirectory(rule.second, path)) {
--          return true;
--        } else {
--          // Allow stat and mkdir of parent directories to comply with WLCG token specs
--          if (oper == AOP_Stat || oper == AOP_Mkdir)
--            if (is_subdirectory(path, rule.second))
--              return true;
+-    ~XrdAccRules() {}
 +void
 +ParseTokenString(const std::string &param, XrdOucEnv *env, std::vector<std::string_view> &authz_list)
 +{
@@ -439,30 +426,36 @@ index 944149a0d..d4f6373e9 100644
 +        // users, we now simply "handle" the prefix insterad of requiring it.
 +        if (authz_view.substr(0, 9) == "Bearer%20") {
 +            authz_view = authz_view.substr(9);
-         }
--      }
--      return false;
--    }
--
--    bool expired() const {return monotonic_time() > m_expiry_time;}
--
--    void parse(const AccessRulesRaw &rules) {
--        m_rules.reserve(rules.size());
--        for (const auto &entry : rules) {
--            m_rules.emplace_back(entry.first, entry.second);
++        }
 +        pos = authz_view.find(",");
 +        authz_list.push_back(authz_view.substr(0, pos));
 +        authz_view = authz_view.substr(pos + 1);
 +    } while (pos != std::string_view::npos);
 +}
-+
+ 
+-    bool apply(Access_Operation oper, std::string path) {
+-      for (const auto & rule : m_rules) {
+-        // Skip rules that don't match the current operation
+-        if (rule.first != oper)
+-          continue;
 +} // namespace
-+
+ 
+-        // If the rule allows any path, allow the operation
+-        if (rule.second == "/")
+-          return true;
 +std::string
 +SubpathMatch::str() const {
 +    return AccessRuleStr(m_rules); // Returns a human-friendly representation of the access rules
 +}
-+
+ 
+-        // Allow operation if path is a subdirectory of the rule's path
+-        if (is_subdirectory(rule.second, path)) {
+-          return true;
+-        } else {
+-          // Allow stat and mkdir of parent directories to comply with WLCG token specs
+-          if (oper == AOP_Stat || oper == AOP_Mkdir)
+-            if (is_subdirectory(path, rule.second))
+-              return true;
 +// Convert a list of authorizations into a human-readable string.
 +const std::string
 +XrdAccRules::str() const
@@ -477,28 +470,27 @@ index 944149a0d..d4f6373e9 100644
 +            ss << (first ? "" : ",") << group;
 +            first = false;
          }
+-      }
+-      return false;
      }
--
--    std::string get_username(const std::string &req_path) const
--    {
--        for (const auto &rule : m_map_rules) {
--            std::string name = rule.match(m_token_subject, m_username, req_path, m_groups);
--            if (!name.empty()) {
--                return name;
--            }
--        }
--        return "";
 +    if (!m_matcher.empty()) {
 +        ss << ", authorizations=" << m_matcher.str();
-     }
++    }
 +    return ss.str();
 +}
-+
+ 
+-    bool expired() const {return monotonic_time() > m_expiry_time;}
 +bool XrdAccRules::expired() const
 +{
 +    return monotonic_time() > m_expiry_time;
 +}
-+
+ 
+-    void parse(const AccessRulesRaw &rules) {
+-        m_rules.reserve(rules.size());
+-        for (const auto &entry : rules) {
+-            m_rules.emplace_back(entry.first, entry.second);
+-        }
+-    }
 +// Determine whether a list of authorizations contains at least one entry
 +// from each of the applicable required issuers.
 +//
@@ -518,17 +510,16 @@ index 944149a0d..d4f6373e9 100644
 +    const std::vector<std::shared_ptr<XrdAccRules>> &access_rules_list)
 +{
  
--    const std::string str() const
+-    std::string get_username(const std::string &req_path) const
 -    {
--        std::stringstream ss;
--        ss << "mapped_username=" << m_username << ", subject=" << m_token_subject
--           << ", issuer=" << m_issuer;
--        if (!m_groups.empty()) {
--            ss << ", groups=";
--            bool first=true;
--            for (const auto &group : m_groups) {
--                ss << (first ? "" : ",") << group;
--                first = false;
+-        for (const auto &rule : m_map_rules) {
+-            std::string name = rule.match(m_token_subject, m_username, req_path, m_groups);
+-            if (!name.empty()) {
+-                return name;
+-            }
+-        }
+-        return "";
+-    }
 +    // Translate the client-attempted operation to one of the simpler operations we've defined.
 +    Access_Operation oper;
 +    switch (client_oper) {
@@ -566,7 +557,18 @@ index 944149a0d..d4f6373e9 100644
 +        default:
 +            return false; // Invalid request
 +    };
-+
+ 
+-    const std::string str() const
+-    {
+-        std::stringstream ss;
+-        ss << "mapped_username=" << m_username << ", subject=" << m_token_subject
+-           << ", issuer=" << m_issuer;
+-        if (!m_groups.empty()) {
+-            ss << ", groups=";
+-            bool first=true;
+-            for (const auto &group : m_groups) {
+-                ss << (first ? "" : ",") << group;
+-                first = false;
 +    // Iterate through all the required issuers
 +    for (const auto &info : required_issuers) {
 +        // See if this issuer is required for this path/operation.
@@ -622,7 +624,7 @@ index 944149a0d..d4f6373e9 100644
  
  class XrdAccSciTokens : public XrdAccAuthorize, public XrdSciTokensHelper,
                          public XrdSciTokensMon
-@@ -500,164 +469,197 @@ class XrdAccSciTokens : public XrdAccAuthorize, public XrdSciTokensHelper,
+@@ -491,164 +470,197 @@ class XrdAccSciTokens : public XrdAccAuthorize, public XrdSciTokensHelper,
                                    const Access_Operation oper,
                                          XrdOucEnv       *env) override
      {
@@ -949,7 +951,7 @@ index 944149a0d..d4f6373e9 100644
      }
  
      virtual  Issuers IssuerList() override
-@@ -762,12 +764,12 @@ class XrdAccSciTokens : public XrdAccAuthorize, public XrdSciTokensHelper,
+@@ -753,12 +765,12 @@ class XrdAccSciTokens : public XrdAccAuthorize, public XrdSciTokensHelper,
          return XrdAccPriv_None;
      }
  
@@ -964,7 +966,7 @@ index 944149a0d..d4f6373e9 100644
              if (*cur_char == '.') {
                  separator_count++;
                  if (separator_count > 2) {
-@@ -792,7 +794,7 @@ class XrdAccSciTokens : public XrdAccAuthorize, public XrdSciTokensHelper,
+@@ -783,7 +795,7 @@ class XrdAccSciTokens : public XrdAccAuthorize, public XrdSciTokensHelper,
          char *err_msg;
          SciToken token = nullptr;
          pthread_rwlock_rdlock(&m_config_lock);
@@ -973,7 +975,7 @@ index 944149a0d..d4f6373e9 100644
          pthread_rwlock_unlock(&m_config_lock);
          if (retval) {
              // This originally looked like a JWT so log the failure.
-@@ -1000,6 +1002,7 @@ class XrdAccSciTokens : public XrdAccAuthorize, public XrdSciTokensHelper,
+@@ -991,6 +1003,7 @@ class XrdAccSciTokens : public XrdAccAuthorize, public XrdSciTokensHelper,
          username = std::move(tmp_username);
          issuer = std::move(token_issuer);
          groups = std::move(groups_parsed);
@@ -981,7 +983,7 @@ index 944149a0d..d4f6373e9 100644
  
          return true;
      }
-@@ -1137,6 +1140,33 @@ class XrdAccSciTokens : public XrdAccAuthorize, public XrdSciTokensHelper,
+@@ -1128,6 +1141,33 @@ class XrdAccSciTokens : public XrdAccAuthorize, public XrdSciTokensHelper,
          return true;
      }
  
@@ -1015,7 +1017,7 @@ index 944149a0d..d4f6373e9 100644
      bool Reconfig()
      {
          errno = 0;
-@@ -1281,6 +1311,14 @@ class XrdAccSciTokens : public XrdAccAuthorize, public XrdSciTokensHelper,
+@@ -1272,6 +1312,14 @@ class XrdAccSciTokens : public XrdAccAuthorize, public XrdSciTokensHelper,
              auto username_claim = reader.Get(section, "username_claim", "");
              auto groups_claim = reader.Get(section, "groups_claim", "wlcg.groups");
  
@@ -1030,7 +1032,7 @@ index 944149a0d..d4f6373e9 100644
              auto authz_strategy_str = reader.Get(section, "authorization_strategy", "");
              uint32_t authz_strategy = 0;
              if (authz_strategy_str.empty()) {
-@@ -1304,7 +1342,33 @@ class XrdAccSciTokens : public XrdAccAuthorize, public XrdSciTokensHelper,
+@@ -1295,7 +1343,33 @@ class XrdAccSciTokens : public XrdAccAuthorize, public XrdSciTokensHelper,
              issuers.emplace(std::piecewise_construct,
                              std::forward_as_tuple(issuer),
                              std::forward_as_tuple(name, issuer, base_paths, restricted_paths,
@@ -1065,7 +1067,7 @@ index 944149a0d..d4f6373e9 100644
          }
  
          if (issuers.empty()) {
-@@ -1358,10 +1422,13 @@ class XrdAccSciTokens : public XrdAccAuthorize, public XrdSciTokensHelper,
+@@ -1349,10 +1423,13 @@ class XrdAccSciTokens : public XrdAccAuthorize, public XrdSciTokensHelper,
      pthread_rwlock_t m_config_lock;
      std::vector<std::string> m_audiences;
      std::vector<const char *> m_audiences_array;
@@ -1082,12 +1084,13 @@ index 944149a0d..d4f6373e9 100644
      XrdSysError m_log;
 diff --git a/src/XrdSciTokens/XrdSciTokensAccess.hh b/src/XrdSciTokens/XrdSciTokensAccess.hh
 new file mode 100644
-index 000000000..09b1a8d0d
+index 000000000..fa330a7d5
 --- /dev/null
 +++ b/src/XrdSciTokens/XrdSciTokensAccess.hh
-@@ -0,0 +1,222 @@
+@@ -0,0 +1,214 @@
 +
 +#include "XrdAcc/XrdAccAuthorize.hh"
++#include "XrdOuc/XrdOucPrivateUtils.hh"
 +
 +#include <memory>
 +#include <string>
@@ -1182,15 +1185,6 @@ index 000000000..09b1a8d0d
 +
 +    // Determine whether the known access rules permit the requested `oper` on `path`.
 +    bool apply(Access_Operation oper, const std::string_view path) const {
-+        auto is_subdirectory = [](const std::string_view& dir, const std::string_view& subdir) {
-+            if (subdir.size() < dir.size())
-+                return false;
-+
-+            if (subdir.compare(0, dir.size(), dir, 0, dir.size()) != 0)
-+                return false;
-+
-+            return dir.size() == subdir.size() || subdir[dir.size()] == '/' || dir == "/";
-+        };
 +
 +        for (const auto & rule : m_rules) {
 +            // Skip rules that don't match the current operation
@@ -1309,10 +1303,10 @@ index 000000000..09b1a8d0d
 +    const std::vector<std::shared_ptr<XrdAccRules>> &access_rules_list);
 +
 diff --git a/src/XrdTpc/XrdTpcUtils.cc b/src/XrdTpc/XrdTpcUtils.cc
-index 26863cf9a..4f068f716 100644
+index e83425b56..db2a21970 100644
 --- a/src/XrdTpc/XrdTpcUtils.cc
 +++ b/src/XrdTpc/XrdTpcUtils.cc
-@@ -40,6 +40,9 @@ std::string XrdTpcUtils::prepareOpenURL(const std::string & reqResource, std::ma
+@@ -43,6 +43,9 @@ std::string XrdTpcUtils::prepareOpenURL(const std::string & reqResource, std::ma
            reqHeaders["Authorization"] = token.substr(6);
            has_authz_header = true;
          }
@@ -1320,11 +1314,11 @@ index 26863cf9a..4f068f716 100644
 +        reqHeaders["Authorization"] = token.substr(13);
 +        has_authz_header = true;
        } else {
-         opaque << (found_first_header ? "&" : "?") << token;
-         found_first_header = true;
-@@ -59,4 +62,4 @@ std::string XrdTpcUtils::prepareOpenURL(const std::string & reqResource, std::ma
+         opaque << "&" << token;
+       }
+@@ -60,4 +63,4 @@ std::string XrdTpcUtils::prepareOpenURL(const std::string & reqResource, std::ma
    }
-   hasSetOpaque = found_first_header;
+ 
    return reqResource + opaque.str();
 -}
 \ No newline at end of file

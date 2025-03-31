@@ -1,7 +1,7 @@
-From fc325df54157bebf3cdff20cf642bf9477e2e6d3 Mon Sep 17 00:00:00 2001
+From afd296682544d690bb8de69011b11c0207d14a38 Mon Sep 17 00:00:00 2001
 From: Brian Bockelman <bbockelman@morgridge.org>
 Date: Wed, 15 Jan 2025 08:01:58 -0600
-Subject: [PATCH 1/8] Allow hostname used by XRootD to be overridden by env
+Subject: [PATCH 1/7] Allow hostname used by XRootD to be overridden by env
  var.
 
 This affects how the host advertises itself to other servers in a cluster
@@ -21,10 +21,10 @@ especially in Kubernetes-based environments).
  10 files changed, 117 insertions(+), 78 deletions(-)
 
 diff --git a/src/Xrd/XrdConfig.cc b/src/Xrd/XrdConfig.cc
-index 65a8303a6..71bfd2df4 100644
+index 68cb35a10..b8cabb225 100644
 --- a/src/Xrd/XrdConfig.cc
 +++ b/src/Xrd/XrdConfig.cc
-@@ -580,24 +580,33 @@ int XrdConfig::Configure(int argc, char **argv)
+@@ -587,24 +587,33 @@ int XrdConfig::Configure(int argc, char **argv)
  // run in v4 mode and that doesn't get set until after the options are scanned.
  //
     static XrdNetAddr *myIPAddr = new XrdNetAddr((int)0);
@@ -62,7 +62,7 @@ index 65a8303a6..71bfd2df4 100644
     XrdOucEnv::Export("XRDNAME", ProtInfo.myInst);
     XrdOucEnv::Export("XRDPROG", myProg);
  
-@@ -616,7 +625,7 @@ int XrdConfig::Configure(int argc, char **argv)
+@@ -623,7 +632,7 @@ int XrdConfig::Configure(int argc, char **argv)
  // We can't really continue without some kind of name at this point. Note that
  // vriable temp should still be valid from the previous NetAddr call.
  //
@@ -71,7 +71,7 @@ index 65a8303a6..71bfd2df4 100644
        {Log.Emsg("Config", "Unable to determine host name; ",
                             (temp ? temp : "reason unknown"),
                             "; execution terminated.");
-@@ -641,13 +650,13 @@ int XrdConfig::Configure(int argc, char **argv)
+@@ -648,13 +657,13 @@ int XrdConfig::Configure(int argc, char **argv)
  // Otherwise, determine our domain name.
  //
     if (!myIPAddr->isRegistered())
@@ -88,7 +88,7 @@ index 65a8303a6..71bfd2df4 100644
                              ", is registered without a domain qualification.");
  
  // Setup the initial required protocol.
-@@ -1951,7 +1960,7 @@ int XrdConfig::xport(XrdSysError *eDest, XrdOucStream &Config)
+@@ -1962,7 +1971,7 @@ int XrdConfig::xport(XrdSysError *eDest, XrdOucStream &Config)
      strncpy(cport, val, sizeof(cport)-1); cport[sizeof(cport)-1] = '\0';
  
      if ((val = Config.GetWord()) && !strcmp("if", val))
@@ -98,7 +98,7 @@ index 65a8303a6..71bfd2df4 100644
            {if (!rc) Config.noEcho(); return (rc < 0);}
  
 diff --git a/src/Xrd/XrdConfig.hh b/src/Xrd/XrdConfig.hh
-index f29dc6005..249eb6006 100644
+index 504f61b6e..8e4a98978 100644
 --- a/src/Xrd/XrdConfig.hh
 +++ b/src/Xrd/XrdConfig.hh
 @@ -30,6 +30,7 @@
@@ -109,9 +109,9 @@ index f29dc6005..249eb6006 100644
  
  #include "Xrd/XrdProtLoad.hh"
  #include "Xrd/XrdProtocol.hh"
-@@ -97,7 +98,7 @@ static const char  *TraceID;
- XrdNetSecurity     *Police;
+@@ -99,7 +100,7 @@ XrdNetSecurity     *Police;
  XrdTcpMonInfo      *tmoInfo;
+ XrdMonitor         *theMon;
  const char         *myProg;
 -const char         *myName;
 +std::string         myName;
