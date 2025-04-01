@@ -2,7 +2,7 @@
 
 Name: ospool-ep
 Version: %{osgver}
-Release: 2%{?dist}
+Release: 3%{?dist}
 Summary: Systemd service for the OSPool Backfill Container
 
 License: Unknown
@@ -41,10 +41,13 @@ mv %{SOURCE2} %{buildroot}/etc/osg/
 
 %changelog
 
-* Tue Nov 14 2023 Matt Westphall <westphall@wisc.edu> 24-2
+* Tue Apr 01 2025 Matt Westphall <westphall@wisc.edu> 24-3
+- Add retry logic to systemd service (SOFTWARE-6118)
+
+* Thu Feb 20 2025 Matt Westphall <westphall@wisc.edu> 24-2
 - Use the CUDA ospool-ep image when PROVIDE_NVIDIA_GPU=true
 
-* Tue Nov 14 2023 Matt Westphall <westphall@wisc.edu> 24-1
+* Wed Oct 16 2024 Matt Westphall <westphall@wisc.edu> 24-1
 - OSG 24 release
 
 * Tue Nov 14 2023 Matt Westphall <westphall@wisc.edu> 1.0-1
