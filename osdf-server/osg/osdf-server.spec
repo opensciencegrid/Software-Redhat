@@ -1,7 +1,7 @@
 Summary: Service files for Pelican-based OSDF daemons
 Name: osdf-server
 Version: 7.11.7
-Release: 1%{?dist}
+Release: 2%{?dist}
 License: ASL 2.0
 Url: https://github.com/PelicanPlatform/pelican
 BuildArch: noarch
@@ -56,10 +56,10 @@ systemctl daemon-reload
 %%endif
 
 %%triggerin -n %1 -- pelican
-systemctl condrestart %1.service
+[ \! -d /run/systemd/system ] || systemctl condrestart %1.service
 
 %{-x:%%triggerin -n %1 -- xrootd-server}
-%{-x:systemctl condrestart %1.service}
+%{-x:[ \! -d /run/systemd/system ] || systemctl condrestart %1.service}
 }
 
 # end of subpackage helper macro
@@ -104,6 +104,9 @@ install -m 0644 systemd/pelican.logrotate       $RPM_BUILD_ROOT/etc/logrotate.d/
 
 
 %changelog
+* Tue Mar 25 2025 Mátyás Selmeci <mselmeci@wisc.edu> - 7.11.7-2
+- Do not attempt to restart systemd services if we were not booted with systemd
+
 * Thu Dec 05 2024 Mátyás Selmeci <matyas@cs.wisc.edu> - 7.11.7-1
 - Upgrade to Pelican 7.11.7 (SOFTWARE-6028)
 
