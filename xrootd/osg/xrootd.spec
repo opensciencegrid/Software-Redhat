@@ -80,7 +80,7 @@
 #-------------------------------------------------------------------------------
 Name:		xrootd
 Epoch:		1
-Version:	5.8.0
+Version:	5.8.1
 Release:	1.1%{?dist}%{?_with_clang:.clang}%{?_with_asan:.asan}
 Summary:	Extended ROOT File Server
 Group:		System Environment/Daemons
@@ -105,12 +105,12 @@ Patch2: 0002-XrdTls-Allow-disabling-of-X.509-client-auth~18e1c81.patch
 Patch3: 0003-XrdSciTokens-Handle-multiple-authorization-token-set~ec1eb0c.patch
 # PelicanPlatform/xrootd #14 (no upstream):
 Patch4: 0004-XrdHttp-Undo-HTTP-PUT-response-code-change~956b9fa.patch
-# PelicanPlatform/xrootd #16 (xrootd/xrootd #2454):
-Patch5: 0005-Since-the-XrdPss-did-not-implement-the-auto-stat-pro~4c5e0ae.patch
-# PelicanPlatform/xrootd #17 (xrootd/xrootd #2457):
-Patch6: 0006-XrdPss-Fix-proxy-when-using-tokens-and-crc32c~328ae18.patch
 # PelicanPlatform/xrootd #18 (xrootd/xrootd #2443):
-Patch7: 0007-XrdHttp-Fix-HTTP-protocol-errors-on-failure~4fb2221.patch
+Patch5: 0005-XrdHttp-Fix-HTTP-protocol-errors-on-failure~4fb2221.patch
+# PelicanPlatform/xrootd #21 (xrootd/xrootd #2482):
+Patch6: 0006-XrdPosix-Map-operation-timeouts-to-ETIME~9480232.patch
+# PelicanPlatform/xrootd #20 (xrootd/xrootd #2417):
+Patch7: 0007-XrdSciTokens-Automatically-add-WLCG-audiences-upon-r~92c168c.patch
 
 %if %{use_cmake3}
 BuildRequires:	cmake3
@@ -1169,6 +1169,17 @@ fi
 # Changelog
 #-------------------------------------------------------------------------------
 %changelog
+* Wed Apr 16 2025 Mátyás Selmeci <mselmeci@wisc.edu> - 5.8.1-1.1
+- Update to 5.8.1 (SOFTWARE-6114)
+    - Patches added:
+        - 0006-XrdPosix-Map-operation-timeouts-to-ETIME~9480232.patch
+        - 0007-XrdSciTokens-Automatically-add-WLCG-audiences-upon-r~92c168c.patch
+    - Patches kept:
+        - 0007-XrdHttp-Fix-HTTP-protocol-errors-on-failure~4fb2221.patch -> 0005-XrdHttp-Fix-HTTP-protocol-errors-on-failure~4fb2221.patch
+    - Patches dropped:
+        - 0005-Since-the-XrdPss-did-not-implement-the-auto-stat-pro~4c5e0ae.patch
+        - 0006-XrdPss-Fix-proxy-when-using-tokens-and-crc32c~328ae18.patch
+
 * Mon Mar 31 2025 Mátyás Selmeci <mselmeci@wisc.edu> - 5.8.0-1.1
 - Update to 5.8.0 (SOFTWARE-6114)
     - Patches added:

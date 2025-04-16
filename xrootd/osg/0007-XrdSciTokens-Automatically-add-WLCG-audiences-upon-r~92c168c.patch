@@ -1,0 +1,508 @@
+From 11edb95e15768929aa586ea0e84f259aa67f9c2f Mon Sep 17 00:00:00 2001
+From: Brian Bockelman <bbockelman@morgridge.org>
+Date: Sat, 25 Jan 2025 12:58:59 -0600
+Subject: [PATCH 7/7] [XrdSciTokens] Automatically add WLCG-audiences upon
+ request
+
+WLCG-style audiences are now added if the following is set in the
+`[Global]` section:
+
+```
+append_wlcg_audiences = true
+```
+
+Further, one can customize the hostnames used for the audiences by
+adding the following in the same section:
+
+```
+wlcg_audience_hostnames = redirector.site.example.com
+```
+---
+ src/XrdSciTokens/XrdSciTokensAccess.cc     | 142 +++++++++++++++++--
+ src/XrdSciTokens/XrdSciTokensAccess.hh     |   7 +
+ tests/XRootD/scitokens-module.cfg          |   2 +
+ tests/XRootD/scitokens.sh                  |  22 +++
+ tests/scitokens/XrdSciTokens.cc            | 153 ++++++++++++++++++++-
+ tests/scitokens/XrdScitokensCreateToken.cc |  14 +-
+ 6 files changed, 326 insertions(+), 14 deletions(-)
+
+diff --git a/src/XrdSciTokens/XrdSciTokensAccess.cc b/src/XrdSciTokens/XrdSciTokensAccess.cc
+index 3eda05f82..aeccb08f1 100644
+--- a/src/XrdSciTokens/XrdSciTokensAccess.cc
++++ b/src/XrdSciTokens/XrdSciTokensAccess.cc
+@@ -322,6 +322,112 @@ ParseTokenString(const std::string &param, XrdOucEnv *env, std::vector<std::stri
+ 
+ } // namespace
+ 
++
++// Split strings in the SciTokens configuration
++//
++// Assuming ',' is not a valid character, assume the administrator
++// is allowed to have a ',' or a whitespace as a separator.
++void splitEntries(const std::string_view entry_string, std::vector<std::string> &entries) {
++    auto pos = entry_string.begin();
++    do {
++        while (pos != entry_string.end() && (*pos == ',' || isspace(*pos))) {pos++;}
++        auto next_pos = std::find_if(pos, entry_string.end(), [](unsigned char c){return c == ',' || isspace(c);});
++        auto next_entry = entry_string.substr(std::distance(entry_string.begin(), pos), std::distance(pos, next_pos));
++        pos = next_pos;
++        if (!next_entry.empty()) {
++            if (std::find(entries.begin(), entries.end(), next_entry) == entries.end()) {
++                entries.emplace_back(next_entry);
++            }
++        }
++    } while (pos != entry_string.end());
++}
++
++// Append the WLCG-style audiences that can be automatically determined.
++//
++// These include:
++// - The "any" audience (for compatibility with older scitokens libraries that do not
++//   understand it).
++// - The hostname (and any additional hostnames provided by the configuration).
++// - The hostname with various potential schemas attached.
++//
++// Returns false on failure (e.g., if the XRDHOST or XRDPORT are not set or not valid).
++bool
++appendWLCGAudiences(const std::vector<std::string> &hostnames, XrdOucEnv *env,
++    XrdSysError &eDest, std::vector<std::string> &audiences)
++{
++    auto xrdEnv = static_cast<XrdOucEnv*>(env ? env->GetPtr("xrdEnv*") : nullptr);
++    auto tlsCtx = static_cast<XrdTlsContext*>(xrdEnv ? xrdEnv->GetPtr("XrdTlsContext*") : nullptr);
++    auto hasTLS = tlsCtx != nullptr;
++
++    auto hostname = getenv("XRDHOST");
++    if (!hostname || !hostname[0]) {
++        eDest.Log(LogMask::Error, "AppendWLCGAudiences", "Internal error: XRDHOST variable not set");
++        return false;
++    }
++
++    // Guess the reasonable protocols we might support for protocol-specific
++    // audience names.
++    // This doesn't have to be exact -- little harm in being forgiving here.
++    // Note we don't include 'http' as that should never accept tokens.
++    std::vector<std::string> schemes = {"root"};
++    if (hasTLS) {
++        schemes.push_back("roots");
++        schemes.push_back("https");
++    }
++
++    auto port_char = getenv("XRDPORT");
++    if (!port_char || !port_char[0]) {
++        eDest.Log(LogMask::Error, "AppendWLCGAudiences", "Internal error: XRDPORT variable not set");
++        return false;
++    }
++    std::string port(port_char);
++    int portnum = 0;
++    size_t char_processed = 0;
++    try {
++        portnum = std::stoi(port, &char_processed);
++    } catch (std::exception &exc) {
++        eDest.Log(LogMask::Error, "AppendWLCGAudiences", "Failed to convert port to int:", exc.what());
++        return false;
++    }
++    if (char_processed != port.size()) {
++        eDest.Log(LogMask::Error, "AppendWLCGAudiences", "XRDPORT variable had unprocessed characters in it:", port_char);
++        return false;
++    }
++
++    std::set<std::string> hostname_set;
++    hostname_set.insert(hostname);
++    for (const auto &hname : hostnames) {
++        hostname_set.insert(hname);
++    }
++
++    for (const auto &hname : hostname_set) {
++        // Add the hostname directly to the audiences
++        if (std::find(audiences.begin(), audiences.end(), hname) == audiences.end()) {
++            audiences.push_back(hname);
++        }
++        for (const auto &scheme : schemes) {
++            auto aud = scheme + "://" + hname;
++            if ((scheme == "root" || scheme == "roots") && portnum != 1094) {
++                aud += ":" + port;
++            } else if (scheme == "https" && portnum != 443) {
++                aud += ":" + port;
++            }
++            if (std::find(audiences.begin(), audiences.end(), aud) == audiences.end()) {
++                audiences.push_back(aud);
++            }
++        }
++    }
++
++    // Default "ANY" audience.  Newer versions of the scitokens library accept this
++    // automatically; there's little penalty to have this to support older setups.
++    static const std::string any = "https://wlcg.cern.ch/jwt/v1/any";
++    if (std::find(audiences.begin(), audiences.end(), any) == audiences.end()) {
++        audiences.push_back(any);
++    }
++
++    return true;
++}
++
+ std::string
+ SubpathMatch::str() const {
+     return AccessRuleStr(m_rules); // Returns a human-friendly representation of the access rules
+@@ -447,6 +553,7 @@ class XrdAccSciTokens : public XrdAccAuthorize, public XrdSciTokensHelper,
+ public:
+     XrdAccSciTokens(XrdSysLogger *lp, const char *parms, XrdAccAuthorize* chain, XrdOucEnv *envP) :
+         m_chain(chain),
++        m_env(envP),
+         m_parms(parms ? parms : ""),
+         m_next_clean(monotonic_time() + m_expiry_secs),
+         m_log(lp, "scitokens_")
+@@ -1217,16 +1324,7 @@ class XrdAccSciTokens : public XrdAccAuthorize, public XrdSciTokensHelper,
+             if (section_lower.substr(0, 6) == "global") {
+                 auto audience = reader.Get(section, "audience", "");
+                 if (!audience.empty()) {
+-                    size_t pos = 0;
+-                    do {
+-                        while (audience.size() > pos && (audience[pos] == ',' || audience[pos] == ' ')) {pos++;}
+-                        auto next_pos = audience.find_first_of(", ", pos);
+-                        auto next_aud = audience.substr(pos, next_pos - pos);
+-                        pos = next_pos;
+-                        if (!next_aud.empty()) {
+-                            audiences.push_back(next_aud);
+-                        }
+-                    } while (pos != std::string::npos);
++                    splitEntries(audience, audiences);
+                 }
+                 audience = reader.Get(section, "audience_json", "");
+                 if (!audience.empty()) {
+@@ -1248,6 +1346,19 @@ class XrdAccSciTokens : public XrdAccAuthorize, public XrdSciTokensHelper,
+                         audiences.push_back(val.get<std::string>());
+                     }
+                 }
++                auto hostnames_string = reader.Get(section, "wlcg_audience_hostnames", "");
++                std::vector<std::string> hostnames;
++                splitEntries(hostnames_string, hostnames);
++                auto wlcg_auto_str = reader.Get(section, "append_wlcg_audiences", "");
++                std::transform(wlcg_auto_str.begin(), wlcg_auto_str.end(), wlcg_auto_str.begin(), [](unsigned char c){return std::tolower(c);});
++                if (wlcg_auto_str == "1" || wlcg_auto_str == "on" || wlcg_auto_str == "true") {
++                    if (!appendWLCGAudiences(hostnames, m_env, m_log, audiences)) {
++                        return false;
++                    }
++                } else if (wlcg_auto_str != "0" && wlcg_auto_str != "off" && wlcg_auto_str != "false") {
++                    m_log.Log(LogMask::Error, "Reconfig", "invalid value for append_wlcg_audience (must be true or false):", wlcg_auto_str.c_str());
++                    return false;
++                }
+                 auto onmissing = reader.Get(section, "onmissing", "");
+                 if (onmissing == "passthrough") {
+                     m_authz_behavior = AuthzBehavior::PASSTHROUGH;
+@@ -1375,6 +1486,16 @@ class XrdAccSciTokens : public XrdAccAuthorize, public XrdSciTokensHelper,
+         if (issuers.empty()) {
+             m_log.Log(LogMask::Warning, "Reconfig", "No issuers configured.");
+         }
++        if (audiences.empty()) {
++            m_log.Log(LogMask::Warning, "Reconfig", "No audiences configured.");
++        } else {
++            std::stringstream ss;
++            ss << "Configured audiences:";
++            for (const auto &aud : audiences) {
++                ss << " " << aud;
++            }
++            m_log.Log(LogMask::Info, "Reconfig", ss.str().c_str());
++        }
+ 
+         pthread_rwlock_wrlock(&m_config_lock);
+         try {
+@@ -1425,6 +1546,7 @@ class XrdAccSciTokens : public XrdAccAuthorize, public XrdSciTokensHelper,
+     std::vector<const char *> m_audiences_array;
+     std::map<std::string, std::shared_ptr<XrdAccRules>, std::less<>> m_map; // Note: std::less<> is used as the comparator to enable transparent casting from std::string_view for key lookup
+     XrdAccAuthorize* m_chain;
++    XrdOucEnv* m_env{nullptr};
+     const std::string m_parms;
+     std::vector<const char*> m_valid_issuers_array;
+     // Authorization from these issuers are required for any matching path.  The map tracks the
+diff --git a/src/XrdSciTokens/XrdSciTokensAccess.hh b/src/XrdSciTokens/XrdSciTokensAccess.hh
+index fa330a7d5..d3f4b65c0 100644
+--- a/src/XrdSciTokens/XrdSciTokensAccess.hh
++++ b/src/XrdSciTokens/XrdSciTokensAccess.hh
+@@ -9,6 +9,8 @@
+ 
+ #include <string.h>
+ 
++class XrdSysError;
++
+ /**
+  * Class and function definitions for the SciTokens plugin.
+  */
+@@ -212,3 +214,8 @@ bool AuthorizesRequiredIssuers(Access_Operation client_oper, const std::string_v
+     const std::vector<std::pair<std::unique_ptr<SubpathMatch>, std::string>> &required_issuers,
+     const std::vector<std::shared_ptr<XrdAccRules>> &access_rules_list);
+ 
++bool
++appendWLCGAudiences(const std::vector<std::string> &hostnames, XrdOucEnv *env,
++    XrdSysError &eDest, std::vector<std::string> &audiences);
++
++void splitEntries(const std::string_view entry_string, std::vector<std::string> &entries);
+diff --git a/tests/XRootD/scitokens-module.cfg b/tests/XRootD/scitokens-module.cfg
+index 014e61f32..a950562c4 100644
+--- a/tests/XRootD/scitokens-module.cfg
++++ b/tests/XRootD/scitokens-module.cfg
+@@ -1,5 +1,7 @@
+ [Global]
+ audience = https://localhost:7095
++append_wlcg_audiences = true
++wlcg_audience_hostnames = redirector.example.com
+ 
+ [Issuer test]
+ issuer = https://localhost:7095/issuer/one
+diff --git a/tests/XRootD/scitokens.sh b/tests/XRootD/scitokens.sh
+index 621889dd6..487f1b89c 100755
+--- a/tests/XRootD/scitokens.sh
++++ b/tests/XRootD/scitokens.sh
+@@ -28,6 +28,24 @@ function setup_scitokens() {
+ 	fi
+ 	chmod 0600 "$OUTPUTDIR/token"
+ 
++	# Create a read-only token with the redirector audience
++	if ! xrdscitokens-create-token issuer_pub_1.pem issuer_key_1.pem test_1 \
++		"https://localhost:7095/issuer/one" storage.read:/ \
++		https://redirector.example.com:7095 > "$OUTPUTDIR/token-redir"; then
++		echo "Failed to create token"
++		exit 1
++	fi
++	chmod 0600 "$OUTPUTDIR/token-redir"
++
++	# Create a read-only token with an invalid audience
++	if ! xrdscitokens-create-token issuer_pub_1.pem issuer_key_1.pem test_1 \
++		"https://localhost:7095/issuer/one" storage.read:/ \
++		invalid.example.com > "$OUTPUTDIR/token-invalid"; then
++		echo "Failed to create token"
++		exit 1
++	fi
++	chmod 0600 "$OUTPUTDIR/token-invalid"
++
+ 	# Create a create-only token
+ 	if ! xrdscitokens-create-token issuer_pub_1.pem issuer_key_1.pem test_1 \
+ 		"https://localhost:7095/issuer/one" storage.create:/subdir > "$OUTPUTDIR/token_create"; then
+@@ -127,6 +145,10 @@ function test_scitokens() {
+ 	execute_curl "$HOST/protected/hello_world.txt" 403 ""
+ 	execute_curl "$HOST/protected/hello_world.txt" 200 "Hello, World" scitokens/token
+ 
++	# Check audience validity
++	execute_curl "$HOST/protected/hello_world.txt" 200 "Hello, World" scitokens/token-redir
++	execute_curl "$HOST/protected/hello_world.txt" 403 "" scitokens/token-invalid
++
+ 	# Downloading $HOST/protected/hello_world.txt with create-only token (expected 403)
+ 	execute_curl "$HOST/protected/hello_world.txt" 403 "" scitokens/token_create
+ 
+diff --git a/tests/scitokens/XrdSciTokens.cc b/tests/scitokens/XrdSciTokens.cc
+index 9f85263c4..00cd73200 100644
+--- a/tests/scitokens/XrdSciTokens.cc
++++ b/tests/scitokens/XrdSciTokens.cc
+@@ -1,8 +1,159 @@
+ 
+ #include "XrdSciTokens/XrdSciTokensAccess.hh"
+ 
++#include "XrdOuc/XrdOucEnv.hh"
++#include "XrdSys/XrdSysError.hh"
++#include "XrdSys/XrdSysLogger.hh"
++
+ #include <gtest/gtest.h>
+ 
++#include <algorithm>
++
++TEST(XrdSciTokens, appendWLCGAudiences) {
++    XrdSysLogger log;
++    XrdSysError eDest(&log, "XrdSciTokens");
++    std::vector<std::string> audiences;
++    std::vector<std::string> hostnames = {"host1", "host2"};
++    XrdOucEnv env;
++
++    // Mock the environment variables
++    char xrdHost[] = "XRDHOST=localhost";
++    putenv(xrdHost);
++    char xrdPort[] = "XRDPORT=1094";
++    putenv(xrdPort);
++    env.PutPtr("xrdEnv*", &env);
++    env.PutPtr("XrdTlsContext*", &env);
++
++    ASSERT_TRUE(appendWLCGAudiences(hostnames, &env, eDest, audiences));
++
++    EXPECT_EQ(audiences.size(), 13);
++    ASSERT_TRUE(std::find(audiences.begin(), audiences.end(), "root://localhost") != audiences.end());
++    ASSERT_TRUE(std::find(audiences.begin(), audiences.end(), "roots://localhost") != audiences.end());
++    ASSERT_TRUE(std::find(audiences.begin(), audiences.end(), "https://localhost:1094") != audiences.end());
++    ASSERT_TRUE(std::find(audiences.begin(), audiences.end(), "https://host1:1094") != audiences.end());
++    ASSERT_TRUE(std::find(audiences.begin(), audiences.end(), "root://host1") != audiences.end());
++    ASSERT_TRUE(std::find(audiences.begin(), audiences.end(), "roots://host1") != audiences.end());
++    ASSERT_TRUE(std::find(audiences.begin(), audiences.end(), "https://host2:1094") != audiences.end());
++    ASSERT_TRUE(std::find(audiences.begin(), audiences.end(), "root://host2") != audiences.end());
++    ASSERT_TRUE(std::find(audiences.begin(), audiences.end(), "roots://host2") != audiences.end());
++    ASSERT_TRUE(std::find(audiences.begin(), audiences.end(), "localhost") != audiences.end());
++    ASSERT_TRUE(std::find(audiences.begin(), audiences.end(), "host1") != audiences.end());
++    ASSERT_TRUE(std::find(audiences.begin(), audiences.end(), "host2") != audiences.end());
++    ASSERT_TRUE(std::find(audiences.begin(), audiences.end(), "https://wlcg.cern.ch/jwt/v1/any") != audiences.end());
++}
++
++TEST(XrdSciTokens, appendWLCGAudiences_noHostnames) {
++    XrdSysLogger log;
++    XrdSysError eDest(&log, "XrdSciTokens");
++    std::vector<std::string> audiences = {"https://wlcg.cern.ch/jwt/v1/any"};
++    std::vector<std::string> hostnames;
++    XrdOucEnv env;
++
++    // Mock the environment variables
++    char xrdHost[] = "XRDHOST=localhost";
++    putenv(xrdHost);
++    char xrdPort[] = "XRDPORT=443";
++    putenv(xrdPort);
++    env.PutPtr("xrdEnv*", &env);
++    env.PutPtr("XrdTlsContext*", &env);
++
++    ASSERT_TRUE(appendWLCGAudiences(hostnames, &env, eDest, audiences));
++
++    EXPECT_EQ(audiences.size(), 5);
++    ASSERT_TRUE(std::find(audiences.begin(), audiences.end(), "root://localhost:443") != audiences.end());
++    ASSERT_TRUE(std::find(audiences.begin(), audiences.end(), "roots://localhost:443") != audiences.end());
++    ASSERT_TRUE(std::find(audiences.begin(), audiences.end(), "https://localhost") != audiences.end());
++    ASSERT_TRUE(std::find(audiences.begin(), audiences.end(), "localhost") != audiences.end());
++    ASSERT_TRUE(std::find(audiences.begin(), audiences.end(), "https://wlcg.cern.ch/jwt/v1/any") != audiences.end());
++}
++
++TEST(XrdSciTokens, appendWLCGAudiences_noTLS) {
++    XrdSysLogger log;
++    XrdSysError eDest(&log, "XrdSciTokens");
++    std::vector<std::string> audiences = {"https://wlcg.cern.ch/jwt/v1/any"};
++    std::vector<std::string> hostnames;
++    XrdOucEnv env;
++
++    // Mock the environment variables
++    char xrdHost[] = "XRDHOST=example.com";
++    putenv(xrdHost);
++    char xrdPort[] = "XRDPORT=8443";
++    putenv(xrdPort);
++
++    ASSERT_TRUE(appendWLCGAudiences(hostnames, &env, eDest, audiences));
++
++    EXPECT_EQ(audiences.size(), 3);
++    ASSERT_TRUE(std::find(audiences.begin(), audiences.end(), "root://example.com:8443") != audiences.end());
++    ASSERT_TRUE(std::find(audiences.begin(), audiences.end(), "example.com") != audiences.end());
++    ASSERT_TRUE(std::find(audiences.begin(), audiences.end(), "https://wlcg.cern.ch/jwt/v1/any") != audiences.end());
++}
++
++TEST(XrdSciTokens, splitEntries) {
++    std::string_view entry_string = "entry1,entry2,entry3";
++    std::vector<std::string> entries;
++
++    splitEntries(entry_string, entries);
++
++    ASSERT_EQ(entries.size(), 3);
++    ASSERT_EQ(entries[0], "entry1");
++    ASSERT_EQ(entries[1], "entry2");
++    ASSERT_EQ(entries[2], "entry3");
++}
++
++TEST(XrdSciTokens, splitEntries_EmptyString) {
++    std::string_view entry_string = "";
++    std::vector<std::string> entries;
++
++    splitEntries(entry_string, entries);
++
++    ASSERT_EQ(entries.size(), 0);
++}
++
++TEST(XrdSciTokens, splitEntries_SingleEntry) {
++    std::string_view entry_string = "single_entry";
++    std::vector<std::string> entries;
++
++    splitEntries(entry_string, entries);
++
++    ASSERT_EQ(entries.size(), 1);
++    ASSERT_EQ(entries[0], "single_entry");
++}
++
++TEST(XrdSciTokens, splitEntries_MultipleCommas) {
++    std::string_view entry_string = "entry1,,entry2,entry3,,";
++    std::vector<std::string> entries;
++
++    splitEntries(entry_string, entries);
++
++    ASSERT_EQ(entries.size(), 3);
++    ASSERT_EQ(entries[0], "entry1");
++    ASSERT_EQ(entries[1], "entry2");
++    ASSERT_EQ(entries[2], "entry3");
++}
++
++TEST(XrdSciTokens, splitEntries_CommasSpaces) {
++    std::string_view entry_string = " entry1, entry2 entry3 ,";
++    std::vector<std::string> entries;
++
++    splitEntries(entry_string, entries);
++
++    ASSERT_EQ(entries.size(), 3);
++    ASSERT_EQ(entries[0], "entry1");
++    ASSERT_EQ(entries[1], "entry2");
++    ASSERT_EQ(entries[2], "entry3");
++}
++
++TEST(XrdSciTokens, splitEntries_DuplicateEntries) {
++    std::string_view entry_string = " entry1\tentry1 entry2";
++    std::vector<std::string> entries;
++
++    splitEntries(entry_string, entries);
++
++    ASSERT_EQ(entries.size(), 2);
++    ASSERT_EQ(entries[0], "entry1");
++    ASSERT_EQ(entries[1], "entry2");
++}
++
+ TEST(XrdSciTokens, MapRule) {
+   MapRule rule("subject", "user", "/prefix", "group", "result");
+   ASSERT_EQ("", rule.match("not subject", "not user", "/foo", {"not group"}));
+@@ -70,4 +221,4 @@ TEST(XrdSciTokens, AuthorizesRequiredIssuers) {
+   required_issuers.emplace_back(std::make_unique<SubpathMatch>(rules), "https://example-other.com");
+   ASSERT_EQ(false, AuthorizesRequiredIssuers(AOP_Read, "/prefix/foo", required_issuers, {access_rule_entry}));
+   ASSERT_EQ(true, AuthorizesRequiredIssuers(AOP_Read, "/prefix/foo", required_issuers, {access_rule_entry, access_rule_entry_other}));
+-}
+\ No newline at end of file
++}
+diff --git a/tests/scitokens/XrdScitokensCreateToken.cc b/tests/scitokens/XrdScitokensCreateToken.cc
+index aa52701fb..c38998f0e 100644
+--- a/tests/scitokens/XrdScitokensCreateToken.cc
++++ b/tests/scitokens/XrdScitokensCreateToken.cc
+@@ -82,8 +82,8 @@ bool readShortFile(const std::string &fileName, std::string &contents) {
+ }
+ 
+ int main(int argc, char *argv[]) {
+-    if (argc < 6 || argc > 7) {
+-        std::cerr << "Usage: " << argv[0] << " issuer.pem issuer.key kid iss prefix [lifetime]" << std::endl;
++    if (argc < 6 || argc > 8) {
++        std::cerr << "Usage: " << argv[0] << " issuer.pem issuer.key kid iss prefix [lifetime] [aud]" << std::endl;
+         return 1;
+     }
+ 
+@@ -131,19 +131,27 @@ int main(int argc, char *argv[]) {
+ 
+     // Parse lifetime if provided, otherwise use default
+     int lifetime = 60;
+-    if (argc == 7) {
++    if (argc >= 7) {
+         try {
+             lifetime = std::stoi(argv[6]);
+             if (lifetime <= 0) {
+                 throw std::invalid_argument("Lifetime must be positive");
+             }
+         } catch (const std::exception &e) {
+             std::cerr << "Invalid lifetime value: " << argv[6] << std::endl;
+             return 10;
+         }
+     }
+ 
+     scitoken_set_lifetime(token.get(), lifetime);
++
++    // Add an optional audience to the token
++    if ((argc == 8) && (rv = scitoken_set_claim_string(token.get(), "aud", argv[6], &err_msg))) {
++        std::cerr << err_msg << std::endl;
++        return 10;
++    }
++
++    scitoken_set_lifetime(token.get(), 60);
+     scitoken_set_serialize_profile(token.get(), SciTokenProfile::WLCG_1_0);
+ 
+     char *token_value;
+-- 
+2.43.5
+

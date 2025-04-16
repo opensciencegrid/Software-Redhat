@@ -1,7 +1,7 @@
-From c86715122785898408f76e5a73798e67f712077a Mon Sep 17 00:00:00 2001
+From bc7f43a1014ea3d53ed0cb46e0f092edec341548 Mon Sep 17 00:00:00 2001
 From: Brian Bockelman <bbockelman@morgridge.org>
 Date: Sat, 29 Mar 2025 09:29:24 -0500
-Subject: [PATCH 7/7] [XrdHttp] Fix HTTP protocol errors on failure
+Subject: [PATCH 5/7] [XrdHttp] Fix HTTP protocol errors on failure
 
 ---
  src/XrdHttp/XrdHttpReq.cc         | 98 +++++++++++++++++++++----------
@@ -320,7 +320,7 @@ index 99fa05516..72dd805fe 100644
    long long length;  // Total size from client for PUT; total length of response TO client for GET.
    int depth;
 diff --git a/tests/CMakeLists.txt b/tests/CMakeLists.txt
-index 8db25f72b..fceef1391 100644
+index ee25d26de..0efeca6e6 100644
 --- a/tests/CMakeLists.txt
 +++ b/tests/CMakeLists.txt
 @@ -28,6 +28,7 @@ if(NOT ENABLE_SERVER_TESTS)
@@ -344,7 +344,7 @@ index 80ae82ce1..08a0f2d6b 100644
  
  xrd.maxfd strict 1k
 diff --git a/tests/XRootD/http.sh b/tests/XRootD/http.sh
-index 540f93822..8d52bb1ef 100755
+index 370d628c0..289d8e0ef 100755
 --- a/tests/XRootD/http.sh
 +++ b/tests/XRootD/http.sh
 @@ -38,6 +38,8 @@ function test_http() {
