@@ -111,6 +111,7 @@ Patch5: 0005-XrdHttp-Fix-HTTP-protocol-errors-on-failure~4fb2221.patch
 Patch6: 0006-XrdPosix-Map-operation-timeouts-to-ETIME~9480232.patch
 # PelicanPlatform/xrootd #20 (xrootd/xrootd #2417):
 #Patch7: 0007-XrdSciTokens-Automatically-add-WLCG-audiences-upon-r~92c168c.patch
+Patch8: 0008-Include-additional-XrdPfc-headers.patch
 
 %if %{use_cmake3}
 BuildRequires:	cmake3
@@ -1172,6 +1173,7 @@ fi
 %changelog
 * Thu Apr 17 2025 Mátyás Selmeci <mselmeci@wisc.edu> - 5.8.1-1.2
 - Comment out 0007-XrdSciTokens-Automatically-add-WLCG-audiences-upon-r~92c168c.patch
+- Add 0008-Include-additional-XrdPfc-headers.patch
 
 * Wed Apr 16 2025 Mátyás Selmeci <mselmeci@wisc.edu> - 5.8.1-1.1
 - Update to 5.8.1 (SOFTWARE-6114)
