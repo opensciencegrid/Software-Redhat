@@ -81,7 +81,7 @@
 Name:		xrootd
 Epoch:		1
 Version:	5.8.1
-Release:	1.1%{?dist}%{?_with_clang:.clang}%{?_with_asan:.asan}
+Release:	1.2%{?dist}%{?_with_clang:.clang}%{?_with_asan:.asan}
 Summary:	Extended ROOT File Server
 Group:		System Environment/Daemons
 License:	LGPL-3.0-or-later AND BSD-2-Clause AND BSD-3-Clause AND curl AND MIT AND Zlib
@@ -110,7 +110,7 @@ Patch5: 0005-XrdHttp-Fix-HTTP-protocol-errors-on-failure~4fb2221.patch
 # PelicanPlatform/xrootd #21 (xrootd/xrootd #2482):
 Patch6: 0006-XrdPosix-Map-operation-timeouts-to-ETIME~9480232.patch
 # PelicanPlatform/xrootd #20 (xrootd/xrootd #2417):
-Patch7: 0007-XrdSciTokens-Automatically-add-WLCG-audiences-upon-r~92c168c.patch
+#Patch7: 0007-XrdSciTokens-Automatically-add-WLCG-audiences-upon-r~92c168c.patch
 
 %if %{use_cmake3}
 BuildRequires:	cmake3
@@ -1170,6 +1170,9 @@ fi
 # Changelog
 #-------------------------------------------------------------------------------
 %changelog
+* Thu Apr 17 2025 Mátyás Selmeci <mselmeci@wisc.edu> - 5.8.1-1.2
+- Comment out 0007-XrdSciTokens-Automatically-add-WLCG-audiences-upon-r~92c168c.patch
+
 * Wed Apr 16 2025 Mátyás Selmeci <mselmeci@wisc.edu> - 5.8.1-1.1
 - Update to 5.8.1 (SOFTWARE-6114)
     - Patches added:
