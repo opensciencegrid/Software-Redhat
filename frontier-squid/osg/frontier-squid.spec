@@ -8,9 +8,9 @@
 
 Summary: The Frontier distribution of the Squid proxy caching server
 Name: frontier-squid%{?squidsuffix}
-Version: 5.9
-%define release4source 3
-%define releasenum 3%{?dist}
+Version: 5.10
+%define release4source 1
+%define releasenum 2%{?dist}
 Release: %{?release4source}.%{?releasenum}
 Epoch: 11
 License: GPL
@@ -515,6 +515,8 @@ find %{cachedirsquid} %{logdirsquid} %{rundirsquid} %{etcdirsquid} \
 sed -i "s,\([^ ]* *[^ ]* *[^ ]* *\)[^ ]* *[^ ]*,\1${FRONTIER_USER} ${FRONTIER_GROUP}," %{tmpfilesconfdir}/%{name}.conf
 
 # this supports SELinux
+semanage fcontext -a -t initrc_exec_t %{libexecdirsquid}/frontier-squid
+/sbin/restorecon %{libexecdirsquid}/frontier-squid
 /sbin/restorecon %{cachedirsquid}
 /sbin/restorecon %{logdirsquid}  
 
@@ -555,9 +557,28 @@ fi
 
 %changelog
 
+* Fri Apr 18 2025 Carl Vuosalo <carl.vuosalo@cern.ch> 5.10-1.2
+ - Merge version 5.10-1.1 into 5.9-3.3.
+
 * Tue Mar 11 2025 Matt Westphall <westphall@wisc.edu> 5.9-3.3
  - Re-add ARM build
  - Exclude shoal-agent frrom ARM builds
+
+* Fri Feb 14 2025 Carl Vuosalo <carl.vuosalo@cern.ch> 5.10-1.1
+ - Update to squid-5.10, with release notes at
+    https://github.com/squid-cache/squid/commits/v5.
+    The security patches included in frontier-squid-5.9-2 have been incorporated
+    into the baseline Squid code in this release.
+    It also contains fixes for minor bugs and these security issues:
+    https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2024-25617
+    https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2024-23638
+    https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2024-37894
+    https://megamansec.github.io/Squid-Security-Audit/esi-underflow.html
+    https://megamansec.github.io/Squid-Security-Audit/ftp-fatal.html
+    https://megamansec.github.io/Squid-Security-Audit/ipv6-assert.html
+    https://megamansec.github.io/Squid-Security-Audit/stream-assert.html
+ - For SELinux, provide proper labeling for /usr/libexec/squid/frontier-squid
+    script to prevent log rotation failures.
 
 * Fri Dec 13 2024 Carl Vuosalo <carl.vuosalo@cern.ch> 5.9-3.2
  - Fix building of RPM to properly choose Python36 or Python39.
