@@ -9,7 +9,7 @@ Release: 1%{?dist}
 Summary: PAM module for OAuth 2.0 Device flow
 License: Apache-2.0
 URL:     https://github.com/stfc/pam_oauth2_device/
-Source0: %{name}-%{_version}.tar.gz
+Source0: pam_oauth2_device-v%{_version}.tar.gz
 
 
 # List of build-time dependencies:
@@ -32,7 +32,7 @@ identity provider using OAuth 2.0 Device Flow.
 
 
 %prep
-%setup -q -n pam_oauth2_device-%{_version}
+%setup -q -n pam_oauth2_device-v%{_version}
 
 
 %build
