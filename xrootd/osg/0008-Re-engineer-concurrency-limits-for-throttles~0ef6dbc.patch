@@ -1,4 +1,4 @@
-From 069922fc15cd2a511d0e0f9649872e3c056dd5f8 Mon Sep 17 00:00:00 2001
+From f94c6c9da6a747f8b04921ee747e99ea201f3109 Mon Sep 17 00:00:00 2001
 From: Brian Bockelman <bbockelman@morgridge.org>
 Date: Tue, 29 Apr 2025 13:03:49 -0500
 Subject: [PATCH] Re-engineer concurrency limits for throttles
@@ -27,9 +27,9 @@ a decay time of 10s.
  src/XrdThrottle/XrdThrottle.hh                |   3 +
  src/XrdThrottle/XrdThrottleFile.cc            |   8 +-
  .../XrdThrottleFileSystemConfig.cc            |  29 +-
- src/XrdThrottle/XrdThrottleManager.cc         | 312 ++++++++++++++----
- src/XrdThrottle/XrdThrottleManager.hh         | 228 ++++++++++---
- 5 files changed, 461 insertions(+), 119 deletions(-)
+ src/XrdThrottle/XrdThrottleManager.cc         | 313 ++++++++++++++----
+ src/XrdThrottle/XrdThrottleManager.hh         | 238 +++++++++----
+ 5 files changed, 469 insertions(+), 122 deletions(-)
 
 diff --git a/src/XrdThrottle/XrdThrottle.hh b/src/XrdThrottle/XrdThrottle.hh
 index f00363374..e5cb3acd9 100644
@@ -119,14 +119,15 @@ index 29be98037..7cdca577b 100644
  /******************************************************************************/
  /*                            x t h r o t t l e                               */
 diff --git a/src/XrdThrottle/XrdThrottleManager.cc b/src/XrdThrottle/XrdThrottleManager.cc
-index d1daec7cc..a025aca6a 100644
+index d1daec7cc..2c0884e3c 100644
 --- a/src/XrdThrottle/XrdThrottleManager.cc
 +++ b/src/XrdThrottle/XrdThrottleManager.cc
-@@ -10,59 +10,69 @@
+@@ -10,59 +10,70 @@
  #define XRD_TRACE m_trace->
  #include "XrdThrottle/XrdThrottleTrace.hh"
  
 +#include <algorithm>
++#include <array>
 +#include <cmath>
 +#include <random>
  #include <sstream>
@@ -207,7 +208,7 @@ index d1daec7cc..a025aca6a 100644
     int rc;
     pthread_t tid;
     if ((rc = XrdSysThread::Run(&tid, XrdThrottleManager::RecomputeBootstrap, static_cast<void *>(this), 0, "Buffer Manager throttle")))
-@@ -289,14 +299,155 @@ XrdThrottleManager::Apply(int reqsize, int reqops, int uid)
+@@ -289,14 +300,155 @@ XrdThrottleManager::Apply(int reqsize, int reqops, int uid)
           if (reqsize) TRACE(BANDWIDTH, "Sleeping to wait for throttle fairshare.");
           if (reqops) TRACE(IOPS, "Sleeping to wait for throttle fairshare.");
           m_compute_var.Wait();
@@ -357,7 +358,7 @@ index d1daec7cc..a025aca6a 100644
 +    // the threads will just go back to sleep.
 +    if (users_with_waiters) {
 +        auto io_active = m_io_active.load(std::memory_order_acquire);
-+        for (size_t idx = io_active; idx < m_concurrency_limit; idx++) {
++        for (size_t idx = io_active; idx < static_cast<size_t>(m_concurrency_limit); idx++) {
 +            NotifyOne();
 +        }
 +    }
@@ -366,7 +367,7 @@ index d1daec7cc..a025aca6a 100644
  void *
  XrdThrottleManager::RecomputeBootstrap(void *instance)
  {
-@@ -353,6 +504,7 @@ XrdThrottleManager::Recompute()
+@@ -353,6 +505,7 @@ XrdThrottleManager::Recompute()
  
        TRACE(DEBUG, "Recomputing fairshares for throttle.");
        RecomputeInternal();
@@ -374,7 +375,7 @@ index d1daec7cc..a025aca6a 100644
        TRACE(DEBUG, "Finished recomputing fairshares for throttle; sleeping for " << m_interval_length_seconds << " seconds.");
        XrdSysTimer::Wait(static_cast<int>(1000*m_interval_length_seconds));
     }
-@@ -421,40 +573,31 @@ XrdThrottleManager::RecomputeInternal()
+@@ -421,40 +574,31 @@ XrdThrottleManager::RecomputeInternal()
        m_primary_ops_shares[i] = ops_shares;
     }
  
@@ -427,7 +428,7 @@ index d1daec7cc..a025aca6a 100644
          auto suc = (len < 128) ? m_gstream->Insert(buf, len + 1) : false;
          if (!suc)
          {
-@@ -482,42 +625,70 @@ XrdThrottleManager::GetUid(const char *username)
+@@ -482,42 +626,70 @@ XrdThrottleManager::GetUid(const char *username)
     return hval;
  }
  
@@ -513,14 +514,14 @@ index d1daec7cc..a025aca6a 100644
 +   m_io_active_time += event_duration.count();
 +   auto old_active = m_io_active.fetch_sub(1, std::memory_order_acq_rel);
 +   m_waiter_info[uid].m_io_time += event_duration.count();
-+   if (old_active == m_concurrency_limit)
++   if (old_active == static_cast<unsigned>(m_concurrency_limit))
 +   {
 +      NotifyOne();
 +   }
  }
  
  /*
-@@ -534,7 +705,7 @@ XrdThrottleManager::CheckLoadShed(const std::string &opaque)
+@@ -534,7 +706,7 @@ XrdThrottleManager::CheckLoadShed(const std::string &opaque)
     {
        return false;
     }
@@ -529,7 +530,7 @@ index d1daec7cc..a025aca6a 100644
     {
        return false;
     }
-@@ -581,3 +752,20 @@ XrdThrottleManager::PerformLoadShed(const std::string &opaque, std::string &host
+@@ -581,3 +753,20 @@ XrdThrottleManager::PerformLoadShed(const std::string &opaque, std::string &host
     host += opaque;
     port = m_loadshed_port;
  }
@@ -542,7 +543,7 @@ index d1daec7cc..a025aca6a 100644
 +        std::unique_lock<std::mutex> lock(m_mutex);
 +        m_waiting++;
 +        m_cv.wait_until(lock, timeout,
-+                        [&] { return m_manager->m_io_active.load(std::memory_order_acquire) < m_manager->m_concurrency_limit || std::chrono::steady_clock::now() >= timeout; });
++                        [&] { return m_manager->m_io_active.load(std::memory_order_acquire) < static_cast<unsigned>(m_manager->m_concurrency_limit) || std::chrono::steady_clock::now() >= timeout; });
 +        m_waiting--;
 +    }
 +    if (std::chrono::steady_clock::now() > timeout) {
@@ -551,18 +552,30 @@ index d1daec7cc..a025aca6a 100644
 +    return true;
 +}
 diff --git a/src/XrdThrottle/XrdThrottleManager.hh b/src/XrdThrottle/XrdThrottleManager.hh
-index 8d43a4123..85871a5ae 100644
+index 8d43a4123..a97588217 100644
 --- a/src/XrdThrottle/XrdThrottleManager.hh
 +++ b/src/XrdThrottle/XrdThrottleManager.hh
-@@ -35,6 +35,7 @@
+@@ -28,13 +28,16 @@
+ #define unlikely(x)     x
+ #endif
+ 
+-#include <string>
+-#include <vector>
++#include <array>
+ #include <ctime>
++#include <condition_variable>
++#include <memory>
+ #include <mutex>
++#include <string>
  #include <unordered_map>
- #include <memory>
+-#include <memory>
++#include <vector>
  
 +#include "XrdSys/XrdSysRAtomic.hh"
  #include "XrdSys/XrdSysPthread.hh"
  
  class XrdSysError;
-@@ -69,87 +70,187 @@ void        SetMaxOpen(unsigned long max_open) {m_max_open = max_open;}
+@@ -69,87 +72,187 @@ void        SetMaxOpen(unsigned long max_open) {m_max_open = max_open;}
  
  void        SetMaxConns(unsigned long max_conns) {m_max_conns = max_conns;}
  
@@ -763,7 +776,7 @@ index 8d43a4123..85871a5ae 100644
  // Monitoring handle, if configured
  XrdXrootdGStream* m_gstream{nullptr};
  
-@@ -164,62 +265,79 @@ friend class XrdThrottleManager;
+@@ -164,62 +267,81 @@ friend class XrdThrottleManager;
  
  public:
  
@@ -806,7 +819,9 @@ index 8d43a4123..85871a5ae 100644
  
 -XrdThrottleTimer(XrdThrottleManager & manager) :
 -   m_manager(manager)
-+XrdThrottleTimer() {}
++XrdThrottleTimer() :
++   m_start_time(std::chrono::steady_clock::time_point::min())
++{}
 +
 +XrdThrottleTimer(XrdThrottleManager *manager, int uid) :
 +   m_owner(uid),
