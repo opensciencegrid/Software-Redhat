@@ -81,7 +81,7 @@
 Name:		xrootd
 Epoch:		1
 Version:	5.8.1
-Release:	1.4%{?dist}%{?_with_clang:.clang}%{?_with_asan:.asan}
+Release:	1.5%{?dist}%{?_with_clang:.clang}%{?_with_asan:.asan}
 Summary:	Extended ROOT File Server
 Group:		System Environment/Daemons
 License:	LGPL-3.0-or-later AND BSD-2-Clause AND BSD-3-Clause AND curl AND MIT AND Zlib
@@ -111,7 +111,9 @@ Patch5: 0005-XrdHttp-Fix-HTTP-protocol-errors-on-failure~4fb2221.patch
 Patch6: 0006-XrdPosix-Map-operation-timeouts-to-ETIME~9480232.patch
 # PelicanPlatform/xrootd #20 (xrootd/xrootd #2417):
 #Patch7: 0007-XrdSciTokens-Automatically-add-WLCG-audiences-upon-r~92c168c.patch
+# PelicanPlatform/xrootd #23
 Patch8: 0008-Re-engineer-concurrency-limits-for-throttles~0ef6dbc.patch
+Patch9: 0009-CMake-changes-for-XrdThrottle-overhaul~fe965e8.patch
 
 %if %{use_cmake3}
 BuildRequires:	cmake3
@@ -1171,6 +1173,9 @@ fi
 # Changelog
 #-------------------------------------------------------------------------------
 %changelog
+* Wed Apr 30 2025 Mátyás Selmeci <mselmeci@wisc.edu> - 5.8.1-1.5
+- Add 0009-CMake-changes-for-XrdThrottle-overhaul~fe965e8.patch
+
 * Tue Apr 29 2025 Mátyás Selmeci <mselmeci@wisc.edu> - 5.8.1-1.4
 - Add 0008-Re-engineer-concurrency-limits-for-throttles~0ef6dbc.patch
 
