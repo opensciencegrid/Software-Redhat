@@ -109,11 +109,11 @@ Patch4: 0004-XrdHttp-Undo-HTTP-PUT-response-code-change~956b9fa.patch
 Patch5: 0005-XrdHttp-Fix-HTTP-protocol-errors-on-failure~4fb2221.patch
 # PelicanPlatform/xrootd #21 (xrootd/xrootd #2482):
 Patch6: 0006-XrdPosix-Map-operation-timeouts-to-ETIME~9480232.patch
-# PelicanPlatform/xrootd #20 (xrootd/xrootd #2417):
-#Patch7: 0007-XrdSciTokens-Automatically-add-WLCG-audiences-upon-r~92c168c.patch
-# PelicanPlatform/xrootd #23
-Patch8: 0008-Re-engineer-concurrency-limits-for-throttles~0ef6dbc.patch
-Patch9: 0009-CMake-changes-for-XrdThrottle-overhaul~fe965e8.patch
+# Next 4: PelicanPlatform/xrootd #23
+Patch7: 0007-Re-engineer-concurrency-limits-for-throttles~0ef6dbc.patch
+Patch8: 0008-Tweak-throttle-manager-after-large-scale-testing~273c58e.patch
+Patch9: 0009-Modify-XrdThrottle-to-be-an-OSS-plugin~21a32ce.patch
+Patch10: 0010-CMake-changes-for-XrdThrottle-overhaul~fe965e8.patch
 
 %if %{use_cmake3}
 BuildRequires:	cmake3
@@ -1174,7 +1174,14 @@ fi
 #-------------------------------------------------------------------------------
 %changelog
 * Wed Apr 30 2025 Mátyás Selmeci <mselmeci@wisc.edu> - 5.8.1-1.5
-- Add 0009-CMake-changes-for-XrdThrottle-overhaul~fe965e8.patch
+- Patches added:
+    - 0008-Tweak-throttle-manager-after-large-scale-testing~273c58e.patch
+    - 0009-Modify-XrdThrottle-to-be-an-OSS-plugin~21a32ce.patch
+    - 0010-CMake-changes-for-XrdThrottle-overhaul~fe965e8.patch
+- Patches dropped:
+    - 0007-XrdSciTokens-Automatically-add-WLCG-audiences-upon-r~92c168c.patch
+- Patches kept:
+    - 0008-Re-engineer-concurrency-limits-for-throttles~0ef6dbc.patch -> 0007-Re-engineer-concurrency-limits-for-throttles~0ef6dbc.patch
 
 * Tue Apr 29 2025 Mátyás Selmeci <mselmeci@wisc.edu> - 5.8.1-1.4
 - Add 0008-Re-engineer-concurrency-limits-for-throttles~0ef6dbc.patch

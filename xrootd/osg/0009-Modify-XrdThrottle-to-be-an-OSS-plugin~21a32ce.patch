@@ -1,0 +1,1194 @@
+From ee02590aaf2db763f34082151a903f41dcacc952 Mon Sep 17 00:00:00 2001
+From: Brian Bockelman <bbockelman@morgridge.org>
+Date: Wed, 30 Apr 2025 08:32:40 -0500
+Subject: [PATCH 09/10] Modify XrdThrottle to be an OSS plugin
+
+XrdThrottle was originally designed at the OFS layer because we wanted
+to perform loadshedding - redirect a file-open request to another server.
+
+However, the loadshed was rarely used in production and we've hit a
+snag: since the authorization checks haven't run, the information about
+the user hasn't been extracted from the token.  This means, for token-based
+authorization, we map everyone to the session user (typically "nobody").
+
+This change allows the throttle to run as either an OFS or OSS.  When in OSS
+mode, we have access to the results of the token authorization and the token subject
+information is available for fairshare purposes; redirects are disabled.
+
+If both are loaded, instead of throwing an error, to be nice to existing configuration
+files, we throw a warning instead.  The OSS mode can be enabled with the following
+line in the configuration file:
+
+```
+ofs.osslib ++ libXrdThrottle.so
+```
+
+Given the advantages of leaning on the existing OFS, we may consider removing
+the OFS layer in the future.
+---
+ src/XrdThrottle/XrdOssThrottleFile.cc         | 242 +++++++++++++
+ src/XrdThrottle/XrdThrottle.hh                |  18 -
+ src/XrdThrottle/XrdThrottleConfig.cc          | 327 ++++++++++++++++++
+ src/XrdThrottle/XrdThrottleConfig.hh          | 101 ++++++
+ .../XrdThrottleFileSystemConfig.cc            | 320 +----------------
+ src/XrdThrottle/XrdThrottleManager.cc         |  29 ++
+ src/XrdThrottle/XrdThrottleManager.hh         |   6 +
+ 7 files changed, 721 insertions(+), 322 deletions(-)
+ create mode 100644 src/XrdThrottle/XrdOssThrottleFile.cc
+ create mode 100644 src/XrdThrottle/XrdThrottleConfig.cc
+ create mode 100644 src/XrdThrottle/XrdThrottleConfig.hh
+
+diff --git a/src/XrdThrottle/XrdOssThrottleFile.cc b/src/XrdThrottle/XrdOssThrottleFile.cc
+new file mode 100644
+index 000000000..63b32c83a
+--- /dev/null
++++ b/src/XrdThrottle/XrdOssThrottleFile.cc
+@@ -0,0 +1,242 @@
++/***************************************************************
++ *
++ * Copyright (C) 2025, Pelican Project, Morgridge Institute for Research
++ *
++ * Licensed under the Apache License, Version 2.0 (the "License"); you
++ * may not use this file except in compliance with the License.  You may
++ * obtain a copy of the License at
++ *
++ *    http://www.apache.org/licenses/LICENSE-2.0
++ *
++ * Unless required by applicable law or agreed to in writing, software
++ * distributed under the License is distributed on an "AS IS" BASIS,
++ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
++ * See the License for the specific language governing permissions and
++ * limitations under the License.
++ *
++ ***************************************************************/
++
++#include "XrdOuc/XrdOucEnv.hh"
++#include <XrdOuc/XrdOucGatherConf.hh>
++#include "XrdOss/XrdOss.hh"
++#include "XrdOss/XrdOssWrapper.hh"
++#include "XrdSfs/XrdSfsAio.hh"
++#include "XrdSys/XrdSysLogger.hh"
++#include "XrdThrottle/XrdThrottleConfig.hh"
++#include "XrdThrottle/XrdThrottleManager.hh"
++#include "XrdThrottle/XrdThrottleTrace.hh"
++#include "XrdVersion.hh"
++
++namespace {
++
++class File final : public XrdOssWrapDF {
++public:
++    File(std::unique_ptr<XrdOssDF> wrapDF, XrdThrottleManager &throttle, XrdSysError *lP, XrdOucTrace *tP)
++        : XrdOssWrapDF(*wrapDF), m_log(lP), m_throttle(throttle), m_trace(tP), m_wrapped(std::move(wrapDF)) {}
++
++virtual ~File() {}
++
++virtual int Open(const char *path, int Oflag, mode_t Mode,
++    XrdOucEnv &env) override {
++
++    std::tie(m_user, m_uid) = m_throttle.GetUserInfo(env.secEnv());
++
++    std::string open_error_message;
++    if (!m_throttle.OpenFile(m_user, open_error_message)) {
++        TRACE(DEBUG, open_error_message);
++        return -EMFILE;
++    }
++
++    auto rval = wrapDF.Open(path, Oflag, Mode, env);
++
++    if (rval < 0) {
++        m_throttle.CloseFile(m_user);
++    }
++
++    return rval;
++}
++
++virtual int Close(long long *retsz) override {
++   m_throttle.CloseFile(m_user);
++   return wrapDF.Close(retsz);
++}
++
++virtual int getFD() override {return -1;}
++
++virtual off_t getMmap(void **addr) override {*addr = 0; return 0;}
++
++virtual ssize_t pgRead (void* buffer, off_t offset, size_t rdlen,
++    uint32_t* csvec, uint64_t opts) override {
++
++    return DoThrottle(rdlen, 1,
++        static_cast<ssize_t (XrdOssDF::*)(void*, off_t, size_t, uint32_t*, uint64_t)>(&XrdOssDF::pgRead),
++        buffer, offset, rdlen, csvec, opts);
++}
++
++virtual int pgRead(XrdSfsAio *aioparm, uint64_t opts) override
++{  // We disable all AIO-based reads.
++   aioparm->Result = pgRead((char *)aioparm->sfsAio.aio_buf,
++                                    aioparm->sfsAio.aio_offset,          
++                                    aioparm->sfsAio.aio_nbytes,
++                                    aioparm->cksVec, opts);
++   aioparm->doneRead();
++   return 0;
++}
++
++virtual ssize_t pgWrite(void* buffer, off_t offset, size_t wrlen,
++    uint32_t* csvec, uint64_t opts) override {
++
++    return DoThrottle(wrlen, 1,
++        static_cast<ssize_t (XrdOssDF::*)(void*, off_t, size_t, uint32_t*, uint64_t)>(&XrdOssDF::pgWrite),
++        buffer, offset, wrlen, csvec, opts);
++}
++
++virtual int pgWrite(XrdSfsAio *aioparm, uint64_t opts) override
++{  // We disable all AIO-based writes.
++   aioparm->Result = this->pgWrite((char *)aioparm->sfsAio.aio_buf,
++                                           aioparm->sfsAio.aio_offset, 
++                                           aioparm->sfsAio.aio_nbytes,
++                                           aioparm->cksVec, opts);
++   aioparm->doneWrite();
++   return 0;
++}
++
++virtual ssize_t Read(off_t offset, size_t size) override {
++    return DoThrottle(size, 1,
++        static_cast<ssize_t (XrdOssDF::*)(off_t, size_t)>(&XrdOssDF::Read),
++        offset, size);
++}
++virtual ssize_t Read(void* buffer, off_t offset, size_t size) override {
++    return DoThrottle(size, 1,
++        static_cast<ssize_t (XrdOssDF::*)(void*, off_t, size_t)>(&XrdOssDF::Read),
++        buffer, offset, size);
++}
++
++virtual int Read(XrdSfsAio *aiop) override {
++    aiop->Result = this->Read((char *)aiop->sfsAio.aio_buf,
++                                   aiop->sfsAio.aio_offset,
++                                   aiop->sfsAio.aio_nbytes);
++    aiop->doneRead();
++    return 0;
++}
++
++virtual ssize_t ReadV(XrdOucIOVec *readV, int rdvcnt) override {
++    off_t sum = 0;
++    for (int i = 0; i < rdvcnt; ++i) {
++        sum += readV[i].size;
++    }
++    return DoThrottle(sum, rdvcnt, &XrdOssDF::ReadV, readV, rdvcnt);
++}
++
++
++virtual ssize_t Write(const void* buffer, off_t offset, size_t size) override {
++    return DoThrottle(size, 1,
++        static_cast<ssize_t (XrdOssDF::*)(const void*, off_t, size_t)>(&XrdOssDF::Write),
++        buffer, offset, size);
++}
++
++virtual int Write(XrdSfsAio *aiop) override {
++    aiop->Result = this->Write((char *)aiop->sfsAio.aio_buf,
++                                    aiop->sfsAio.aio_offset,
++                                    aiop->sfsAio.aio_nbytes);
++    aiop->doneWrite();
++    return 0;
++}
++
++private:
++
++    template <class Fn, class... Args>
++    int DoThrottle(size_t rdlen, size_t ops, Fn &&fn, Args &&... args) {
++        m_throttle.Apply(rdlen, ops, m_uid);
++        bool ok = true;
++        XrdThrottleTimer timer = m_throttle.StartIOTimer(m_uid, ok);
++        if (!ok) {
++            TRACE(DEBUG, "Throttling in progress");
++            return -EMFILE;
++        }
++        return std::invoke(fn, wrapDF, std::forward<Args>(args)...);
++    }
++
++    std::unique_ptr<XrdOssDF> m_wrapped;
++    XrdSysError *m_log{nullptr};
++    XrdThrottleManager &m_throttle;
++    XrdOucTrace *m_trace{nullptr};
++    std::string m_user;
++    uint16_t m_uid;
++
++    static constexpr char TraceID[] = "XrdThrottleFile";
++};
++
++class FileSystem final : public XrdOssWrapper {
++public:
++    FileSystem(XrdOss *oss, XrdSysLogger *log, XrdOucEnv *envP)
++        : XrdOssWrapper(*oss),
++          m_env(envP),
++          m_oss(oss),
++          m_log(new XrdSysError(log)),
++          m_trace(new XrdOucTrace(m_log.get())),
++          m_throttle(m_log.get(), m_trace.get())
++    {
++
++        m_throttle.Init();
++        if (envP)
++        {
++            auto gstream = reinterpret_cast<XrdXrootdGStream*>(envP->GetPtr("Throttle.gStream*"));
++            m_log->Say("Config", "Throttle g-stream has", gstream ? "" : " NOT", " been configured via xrootd.mongstream directive");
++            m_throttle.SetMonitor(gstream);
++        }
++    }
++
++    int Configure(const std::string &config_filename) {
++        XrdThrottle::Configuration config(*m_log, m_env);
++        if (config.Configure(config_filename)) {
++            m_log->Emsg("Config", "Unable to load configuration file", config_filename.c_str());
++            return 1;
++        }
++        m_throttle.FromConfig(config);
++        return 0;
++    }
++
++    virtual ~FileSystem() {}
++
++    virtual XrdOssDF *newFile(const char *user = 0) override {
++        std::unique_ptr<XrdOssDF> wrapped(wrapPI.newFile(user));
++        return new File(std::move(wrapped), m_throttle, m_log.get(), m_trace.get());
++    }
++
++private:
++    XrdOucEnv *m_env{nullptr};
++    std::unique_ptr<XrdOss> m_oss;
++    std::unique_ptr<XrdSysError> m_log{nullptr};
++    std::unique_ptr<XrdOucTrace> m_trace{nullptr};
++    XrdThrottleManager m_throttle;
++};
++
++} // namespace
++
++extern "C" {
++
++XrdOss *XrdOssAddStorageSystem2(XrdOss *curr_oss, XrdSysLogger *logger,
++                                const char *config_fn, const char *parms,
++                                XrdOucEnv *envP) {
++    std::unique_ptr<FileSystem> fs(new FileSystem(curr_oss, logger, envP));
++    if (fs->Configure(config_fn)) {
++        XrdSysError(logger, "XrdThrottle").Say("Config", "Unable to load configuration file", config_fn);
++        return nullptr;
++    }
++    // Note the throttle is set up as an OSS.
++    // This will prevent the throttle from being layered on top of the OFS; to keep backward
++    // compatibility with old configurations, we do not cause the server to fail.
++    //
++    // Originally, XrdThrottle was used as an OFS because the loadshed code required the ability
++    // to redirect the client to a different server.  This is rarely (never?) used in practice.
++    // By putting the throttle in the OSS, we benefit from the fact the OFS has first run the
++    // authorization code and has made a user name available for fairshare of the throttle.
++    envP->PutInt("XrdOssThrottle", 1);
++    return fs.release();
++}
++
++XrdVERSIONINFO(XrdOssAddStorageSystem2, throttle);
++    
++} // extern "C"
++
+diff --git a/src/XrdThrottle/XrdThrottle.hh b/src/XrdThrottle/XrdThrottle.hh
+index e5cb3acd9..d734e8f33 100644
+--- a/src/XrdThrottle/XrdThrottle.hh
++++ b/src/XrdThrottle/XrdThrottle.hh
+@@ -271,24 +271,6 @@ friend XrdSfsFileSystem * XrdSfsGetFileSystem_Internal(XrdSfsFileSystem *, XrdSy
+    virtual
+   ~FileSystem();
+ 
+-   int
+-   xthrottle(XrdOucStream &Config);
+-
+-   int
+-   xloadshed(XrdOucStream &Config);
+-
+-   int
+-   xtrace(XrdOucStream &Config);
+-
+-   int
+-   xmaxopen(XrdOucStream &Config);
+-
+-   int
+-   xmaxconn(XrdOucStream &Config);
+-
+-   int
+-   xmaxwait(XrdOucStream &Config);
+-
+    static FileSystem  *m_instance;
+    XrdSysError         m_eroute;
+    XrdOucTrace         m_trace;
+diff --git a/src/XrdThrottle/XrdThrottleConfig.cc b/src/XrdThrottle/XrdThrottleConfig.cc
+new file mode 100644
+index 000000000..ab32f026d
+--- /dev/null
++++ b/src/XrdThrottle/XrdThrottleConfig.cc
+@@ -0,0 +1,327 @@
++
++#include "XrdOuc/XrdOuca2x.hh"
++#include "XrdOuc/XrdOucEnv.hh"
++#include "XrdOuc/XrdOucStream.hh"
++#include "XrdSys/XrdSysError.hh"
++#include "XrdThrottle/XrdThrottleConfig.hh"
++#include "XrdThrottle/XrdThrottleTrace.hh"
++
++#include <cstring>
++#include <string>
++#include <fcntl.h>
++
++using namespace XrdThrottle;
++
++#define TS_Xeq(key, func) NoGo = (strcmp(key, var) == 0) ? func(Config) : 0
++int
++Configuration::Configure(const std::string &config_file)
++{
++    XrdOucEnv myEnv;
++    XrdOucStream Config(&m_log, getenv("XRDINSTANCE"), &myEnv, "(Throttle Config)> ");
++    int cfgFD;
++    if (config_file.empty()) {
++        m_log.Say("No filename specified.");
++        return 1;
++    }
++    if ((cfgFD = open(config_file.c_str(), O_RDONLY)) < 0) {
++        m_log.Emsg("Config", errno, "Unable to open configuration file", config_file.c_str());
++        return 1;
++    }
++    Config.Attach(cfgFD);
++    static const char *cvec[] = { "*** throttle (ofs) plugin config:", 0 };
++    Config.Capture(cvec);
++
++    char *var, *val;
++    int NoGo = 0;
++    while( (var = Config.GetMyFirstWord()) )
++    {
++        if (!strcmp("throttle.fslib", var)) {
++            val = Config.GetWord();
++            if (!val || !val[0]) {m_log.Emsg("Config", "fslib not specified."); continue;}
++            m_fslib = val;
++        }
++        TS_Xeq("throttle.max_open_files", xmaxopen);
++        TS_Xeq("throttle.max_active_connections", xmaxconn);
++        TS_Xeq("throttle.throttle", xthrottle);
++        TS_Xeq("throttle.loadshed", xloadshed);
++        TS_Xeq("throttle.max_wait_time", xmaxwait);
++        TS_Xeq("throttle.trace", xtrace);
++        if (NoGo)
++        {
++            m_log.Emsg("Config", "Throttle configuration failed.");
++            return 1;
++        }
++    }
++    return 0;
++}
++
++/******************************************************************************/
++/*                            x m a x o p e n                                 */
++/******************************************************************************/
++
++/* Function: xmaxopen
++
++   Purpose:  Parse the directive: throttle.max_open_files <limit>
++
++             <limit>   maximum number of open file handles for a unique entity.
++
++  Output: 0 upon success or !0 upon failure.
++*/
++int
++Configuration::xmaxopen(XrdOucStream &Config)
++{
++    auto val = Config.GetWord();
++    if (!val || val[0] == '\0')
++       {m_log.Emsg("Config", "Max open files not specified!  Example usage: throttle.max_open_files 16000");}
++    long long max_open = -1;
++    if (XrdOuca2x::a2sz(m_log, "max open files value", val, &max_open, 1)) return 1;
++
++    m_max_open = max_open;
++    return 0;
++}
++
++
++/******************************************************************************/
++/*                            x m a x c o n n                                 */
++/******************************************************************************/
++
++/* Function: xmaxconn
++
++   Purpose:  Parse the directive: throttle.max_active_connections <limit>
++
++             <limit>   maximum number of connections with at least one open file for a given entity
++
++  Output: 0 upon success or !0 upon failure.
++*/
++int
++Configuration::xmaxconn(XrdOucStream &Config)
++{
++    auto val = Config.GetWord();
++    if (!val || val[0] == '\0')
++       {m_log.Emsg("Config", "Max active connections not specified!  Example usage: throttle.max_active_connections 4000");}
++    long long max_conn = -1;
++    if (XrdOuca2x::a2sz(m_log, "max active connections value", val, &max_conn, 1)) return 1;
++
++    m_max_conn = max_conn;
++    return 0;
++}
++
++/******************************************************************************/
++/*                            x m a x w a i t                                 */
++/******************************************************************************/
++
++/* Function: xmaxwait
++
++   Purpose:  Parse the directive: throttle.max_wait_time <limit>
++
++             <limit>   maximum wait time, in seconds, before an operation should fail
++
++   If the directive is not provided, the default is 30 seconds.
++
++  Output: 0 upon success or !0 upon failure.
++*/
++int
++Configuration::xmaxwait(XrdOucStream &Config)
++{
++    auto val = Config.GetWord();
++    if (!val || val[0] == '\0')
++       {m_log.Emsg("Config", "Max waiting time not specified (must be in seconds)!  Example usage: throttle.max_wait_time 20");}
++    long long max_wait = -1;
++    if (XrdOuca2x::a2sz(m_log, "max waiting time value", val, &max_wait, 1)) return 1;
++
++    return 0;
++}
++
++/******************************************************************************/
++/*                            x t h r o t t l e                               */
++/******************************************************************************/
++
++/* Function: xthrottle
++
++   Purpose:  To parse the directive: throttle [data <drate>] [iops <irate>] [concurrency <climit>] [interval <rint>]
++
++             <drate>    maximum bytes per second through the server.
++             <irate>    maximum IOPS per second through the server.
++             <climit>   maximum number of concurrent IO connections.
++             <rint>     minimum interval in milliseconds between throttle re-computing.
++
++   Output: 0 upon success or !0 upon failure.
++*/
++int
++Configuration::xthrottle(XrdOucStream &Config)
++{
++    long long drate = -1, irate = -1, rint = 1000, climit = -1;
++    char *val;
++
++    while ((val = Config.GetWord()))
++    {
++       if (strcmp("data", val) == 0)
++       {
++          if (!(val = Config.GetWord()))
++             {m_log.Emsg("Config", "data throttle limit not specified."); return 1;}
++          if (XrdOuca2x::a2sz(m_log,"data throttle value",val,&drate,1)) return 1;
++       }
++       else if (strcmp("iops", val) == 0)
++       {
++          if (!(val = Config.GetWord()))
++             {m_log.Emsg("Config", "IOPS throttle limit not specified."); return 1;}
++          if (XrdOuca2x::a2sz(m_log,"IOPS throttle value",val,&irate,1)) return 1;
++       }
++       else if (strcmp("rint", val) == 0)
++       {
++          if (!(val = Config.GetWord()))
++             {m_log.Emsg("Config", "recompute interval not specified (in ms)."); return 1;}
++          if (XrdOuca2x::a2sp(m_log,"recompute interval value (in ms)",val,&rint,10)) return 1;
++       }
++       else if (strcmp("concurrency", val) == 0)
++       {
++          if (!(val = Config.GetWord()))
++             {m_log.Emsg("Config", "Concurrency limit not specified."); return 1;}
++          if (XrdOuca2x::a2sz(m_log,"Concurrency limit value",val,&climit,1)) return 1;
++       }
++       else
++       {
++          m_log.Emsg("Config", "Warning - unknown throttle option specified", val, ".");
++       }
++    }
++
++    m_throttle_data_rate = drate;
++    m_throttle_iops_rate = irate;
++    m_throttle_concurrency_limit = climit;
++    m_throttle_recompute_interval_ms = rint;
++
++    return 0;
++}
++
++/******************************************************************************/
++/*                            x l o a d s h e d                               */
++/******************************************************************************/
++
++/* Function: xloadshed
++
++   Purpose:  To parse the directive: loadshed host <hostname> [port <port>] [frequency <freq>]
++
++             <hostname> hostname of server to shed load to.  Required
++             <port>     port of server to shed load to.  Defaults to 1094
++             <freq>     A value from 1 to 100 specifying how often to shed load
++                        (1 = 1% chance; 100 = 100% chance; defaults to 10).
++
++   Output: 0 upon success or !0 upon failure.
++*/
++int Configuration::xloadshed(XrdOucStream &Config)
++{
++    long long port = 0, freq = 0;
++    char *val;
++    std::string hostname;
++
++    while ((val = Config.GetWord()))
++    {
++       if (strcmp("host", val) == 0)
++       {
++          if (!(val = Config.GetWord()))
++             {m_log.Emsg("Config", "loadshed hostname not specified."); return 1;}
++          hostname = val;
++       }
++       else if (strcmp("port", val) == 0)
++       {
++          if (!(val = Config.GetWord()))
++             {m_log.Emsg("Config", "Port number not specified."); return 1;}
++          if (XrdOuca2x::a2sz(m_log,"Port number",val,&port,1, 65536)) return 1;
++       }
++       else if (strcmp("frequency", val) == 0)
++       {
++           if (!(val = Config.GetWord()))
++              {m_log.Emsg("Config", "Loadshed frequency not specified."); return 1;}
++           if (XrdOuca2x::a2sz(m_log,"Loadshed frequency",val,&freq,1,100)) return 1;
++       }
++       else
++       {
++           m_log.Emsg("Config", "Warning - unknown loadshed option specified", val, ".");
++       }
++    }
++
++    if (hostname.empty())
++    {
++        m_log.Emsg("Config", "must specify hostname for loadshed parameter.");
++        return 1;
++    }
++
++    m_loadshed_freq = freq;
++    m_loadshed_hostname = hostname;
++    m_loadshed_port = port;
++
++    return 0;
++}
++
++/******************************************************************************/
++/*                                x t r a c e                                 */
++/******************************************************************************/
++
++/* Function: xtrace
++
++   Purpose:  To parse the directive: trace <events>
++
++             <events> the blank separated list of events to trace. Trace
++                      directives are cummalative.
++
++   Output: 0 upon success or 1 upon failure.
++*/
++
++int Configuration::xtrace(XrdOucStream &Config)
++{
++   char *val;
++   static const struct traceopts {const char *opname; int opval;} tropts[] =
++   {
++      {"all",       TRACE_ALL},
++      {"off",       TRACE_NONE},
++      {"none",      TRACE_NONE},
++      {"debug",     TRACE_DEBUG},
++      {"iops",      TRACE_IOPS},
++      {"bandwidth", TRACE_BANDWIDTH},
++      {"ioload",    TRACE_IOLOAD},
++      {"files",     TRACE_FILES},
++      {"connections",TRACE_CONNS},
++   };
++   int i, neg, trval = 0, numopts = sizeof(tropts)/sizeof(struct traceopts);
++
++   if (!(val = Config.GetWord()))
++   {
++      m_log.Emsg("Config", "trace option not specified");
++      return 1;
++   }
++   while (val)
++   {
++      if (!strcmp(val, "off"))
++      {
++         trval = 0;
++      }
++      else
++      {
++         if ((neg = (val[0] == '-' && val[1])))
++         {
++            val++;
++         }
++         for (i = 0; i < numopts; i++)
++         {
++            if (!strcmp(val, tropts[i].opname))
++            {
++               if (neg)
++               {
++                  if (tropts[i].opval) trval &= ~tropts[i].opval;
++                  else trval = TRACE_ALL;
++               }
++               else if (tropts[i].opval) trval |= tropts[i].opval;
++               else trval = TRACE_NONE;
++               break;
++            }
++         }
++         if (i >= numopts)
++         {
++            m_log.Say("Config warning: ignoring invalid trace option '", val, "'.");
++         }
++      }
++      val = Config.GetWord();
++   }
++   m_trace_levels = trval;
++   return 0;
++}
+diff --git a/src/XrdThrottle/XrdThrottleConfig.hh b/src/XrdThrottle/XrdThrottleConfig.hh
+new file mode 100644
+index 000000000..c3361233c
+--- /dev/null
++++ b/src/XrdThrottle/XrdThrottleConfig.hh
+@@ -0,0 +1,101 @@
++
++#ifndef XrdThrottle_Config_hh
++#define XrdThrottle_Config_hh
++
++#include <string>
++
++class XrdOucEnv;
++class XrdOucStream;
++class XrdSysError;
++
++namespace XrdThrottle {
++
++class Configuration {
++public:
++    Configuration(XrdSysError & log, XrdOucEnv *env)
++    : m_log(log), m_env(env)
++    {}
++
++    // Generate the XrdThrottle configuration from the given file name.
++    //
++    // Returns 0 on success, or a non-zero error code on failure.
++    int Configure(const std::string &config_file);
++
++    // Get the configuration for the fslib to use.
++    // The default is "libXrdOfs.so".
++    const std::string &GetFileSystemLibrary() const { return m_fslib; }
++
++    // Get the configuration for the loadshed hostname.
++    // If not set, the default is empty.
++    const std::string &GetLoadshedHost() const { return m_loadshed_hostname; }
++
++    // Get the configuration for the loadshed port.
++    // Valid values are 1 to 65535.
++    // If not set, the default is 0.
++    long long GetLoadshedPort() const { return m_loadshed_port; }
++
++    // Get the configuration for the loadshed frequency.
++    // Valid values are 1 to 100.
++    // If not set, the default is 0.
++    long long GetLoadshedFreq() const { return m_loadshed_freq; }
++
++    // Get the configuration for th maximum number of open files.
++    // If -1, no limit is set.
++    long long GetMaxOpen() const { return m_max_open; }
++
++    // Get the configuration for the maximum number of active connections.
++    // If -1, no limit is set.
++    long long GetMaxConn() const { return m_max_conn; }
++
++    // Get the configuration for the maximum wait time before a request is
++    // failed with EMFILE.
++    // If not set, the default is 30 seconds.
++    long long GetMaxWait() const { return m_max_wait; }
++
++    // Get the configuration for the throttle concurrency limit.
++    // If -1, no limit is set.
++    long long GetThrottleConcurrency() const { return m_throttle_concurrency_limit; }
++
++    // Get the configuration for the maximum number of bytes per second.
++    // If -1, no limit is set.
++    long long GetThrottleDataRate() const { return m_throttle_data_rate; }
++
++    // Get the configuration for the maximum number of IOPS per second.
++    // If -1, no limit is set.
++    long long GetThrottleIOPSRate() const { return m_throttle_iops_rate; }
++
++    // Get the configuration for the recompute interval, in milliseconds.
++    // If not set, the default is 1000 ms.
++    long long GetThrottleRecomputeIntervalMS() const { return m_throttle_recompute_interval_ms; }
++
++    // Get the configuration for the trace levels.
++    // If not set, the default is 0.
++    int GetTraceLevels() const { return m_trace_levels; }
++
++private:
++    int xloadshed(XrdOucStream &Config);
++    int xmaxopen(XrdOucStream &Config);
++    int xmaxconn(XrdOucStream &Config);
++    int xmaxwait(XrdOucStream &Config);
++    int xthrottle(XrdOucStream &Config);
++    int xtrace(XrdOucStream &Config);
++
++    XrdOucEnv *m_env{nullptr};
++    std::string m_fslib{"libXrdOfs.so"};
++    XrdSysError &m_log;
++    std::string m_loadshed_hostname;
++    long long m_loadshed_freq{0};
++    long long m_loadshed_port{0};
++    long long m_max_conn{-1};
++    long long m_max_open{-1};
++    long long m_max_wait{30};
++    long long m_throttle_concurrency_limit{-1};
++    long long m_throttle_data_rate{-1};
++    long long m_throttle_iops_rate{-1};
++    long long m_throttle_recompute_interval_ms{1000};
++    int m_trace_levels{0};
++};
++
++} // namespace XrdThrottle
++
++#endif // XrdThrottle_Config_hh
+diff --git a/src/XrdThrottle/XrdThrottleFileSystemConfig.cc b/src/XrdThrottle/XrdThrottleFileSystemConfig.cc
+index 7cdca577b..8a321ab3f 100644
+--- a/src/XrdThrottle/XrdThrottleFileSystemConfig.cc
++++ b/src/XrdThrottle/XrdThrottleFileSystemConfig.cc
+@@ -2,11 +2,13 @@
+ #include <fcntl.h>
+ 
+ #include "XrdSys/XrdSysPlugin.hh"
++#include "XrdSys/XrdSysLogger.hh"
+ #include "XrdOuc/XrdOuca2x.hh"
+ #include "XrdOuc/XrdOucEnv.hh"
+ #include "XrdOuc/XrdOucStream.hh"
+ 
+ #include "XrdThrottle/XrdThrottle.hh"
++#include "XrdThrottle/XrdThrottleConfig.hh"
+ #include "XrdThrottle/XrdThrottleTrace.hh"
+ 
+ using namespace XrdThrottle;
+@@ -59,6 +61,13 @@ XrdSfsGetFileSystem_Internal(XrdSfsFileSystem *native_fs,
+                             XrdOucEnv        *envP)
+ {
+    FileSystem* fs = NULL;
++   if (envP && envP->GetInt("XrdOssThrottle") == 1) {
++      XrdSysError eDest(lp, "XrdOssThrottle");
++      eDest.Emsg("Config", "XrdOssThrottle is loaded; not stacking XrdThrottle on OFS.  "
++         "This is a warning for backward compatability; this configuration may generate an "
++         "error in the future.");
++      return native_fs;
++   }
+    FileSystem::Initialize(fs, native_fs, lp, configfn, envP);
+    return fs;
+ }
+@@ -130,53 +139,22 @@ FileSystem::Initialize(FileSystem      *&fs,
+ int
+ FileSystem::Configure(XrdSysError & log, XrdSfsFileSystem *native_fs, XrdOucEnv *envP)
+ {
+-   XrdOucEnv myEnv;
+-   XrdOucStream Config(&m_eroute, getenv("XRDINSTANCE"), &myEnv, "(Throttle Config)> ");
+-   int cfgFD;
+-   if (m_config_file.length() == 0)
++   XrdThrottle::Configuration Config(log, envP);
++   if (Config.Configure(m_config_file))
+    {
+-      log.Say("No filename specified.");
++      log.Emsg("Config", "Unable to load configuration file", m_config_file.c_str());
+       return 1;
+    }
+-   if ((cfgFD = open(m_config_file.c_str(), O_RDONLY)) < 0)
+-   {
+-      log.Emsg("Config", errno, "Unable to open configuration file", m_config_file.c_str());
+-      return 1;
+-   }
+-   Config.Attach(cfgFD);
+-   static const char *cvec[] = { "*** throttle (ofs) plugin config:", 0 };
+-   Config.Capture(cvec);
+ 
+-   std::string fslib = OFS_NAME;
+-
+-   char *var, *val;
+-   int NoGo = 0;
+-   while( (var = Config.GetMyFirstWord()) )
+-   {
+-      if (strcmp("throttle.fslib", var) == 0)
+-      {
+-         val = Config.GetWord();
+-         if (!val || !val[0]) {log.Emsg("Config", "fslib not specified."); continue;}
+-         fslib = val;
+-      }
+-      TS_Xeq("throttle.max_open_files", xmaxopen);
+-      TS_Xeq("throttle.max_active_connections", xmaxconn);
+-      TS_Xeq("throttle.throttle", xthrottle);
+-      TS_Xeq("throttle.loadshed", xloadshed);
+-      TS_Xeq("throttle.max_wait_time", xmaxwait);
+-      TS_Xeq("throttle.trace", xtrace);
+-      if (NoGo)
+-      {
+-         log.Emsg("Config", "Throttle configuration failed.");
+-      }
+-   }
++   m_throttle.FromConfig(Config);
++   m_trace.What = Config.GetTraceLevels();
+ 
+    // Load the filesystem object.
+-   m_sfs_ptr = native_fs ? native_fs : LoadFS(fslib, m_eroute, m_config_file);
++   m_sfs_ptr = native_fs ? native_fs : LoadFS(Config.GetFileSystemLibrary(), m_eroute, m_config_file);
+    if (!m_sfs_ptr) return 1;
+ 
+    // Overwrite the environment variable saying that throttling is the fslib.
+-   XrdOucEnv::Export("XRDOFSLIB", fslib.c_str());
++   XrdOucEnv::Export("XRDOFSLIB", Config.GetFileSystemLibrary().c_str());
+ 
+    if (envP)
+    {
+@@ -191,269 +169,3 @@ FileSystem::Configure(XrdSysError & log, XrdSfsFileSystem *native_fs, XrdOucEnv
+    FeatureSet = m_sfs_ptr->Features();
+    return 0;
+ }
+-
+-/******************************************************************************/
+-/*                            x m a x o p e n                                 */
+-/******************************************************************************/
+-
+-/* Function: xmaxopen
+-
+-   Purpose:  Parse the directive: throttle.max_open_files <limit>
+-
+-             <limit>   maximum number of open file handles for a unique entity.
+-
+-  Output: 0 upon success or !0 upon failure.
+-*/
+-int
+-FileSystem::xmaxopen(XrdOucStream &Config)
+-{
+-    auto val = Config.GetWord();
+-    if (!val || val[0] == '\0')
+-       {m_eroute.Emsg("Config", "Max open files not specified!  Example usage: throttle.max_open_files 16000");}
+-    long long max_open = -1;
+-    if (XrdOuca2x::a2sz(m_eroute, "max open files value", val, &max_open, 1)) return 1;
+-
+-    m_throttle.SetMaxOpen(max_open);
+-    return 0;
+-}
+-
+-
+-/******************************************************************************/
+-/*                            x m a x c o n n                                 */
+-/******************************************************************************/
+-
+-/* Function: xmaxconn
+-
+-   Purpose:  Parse the directive: throttle.max_active_connections <limit>
+-
+-             <limit>   maximum number of connections with at least one open file for a given entity
+-
+-  Output: 0 upon success or !0 upon failure.
+-*/
+-int
+-FileSystem::xmaxconn(XrdOucStream &Config)
+-{
+-    auto val = Config.GetWord();
+-    if (!val || val[0] == '\0')
+-       {m_eroute.Emsg("Config", "Max active connections not specified!  Example usage: throttle.max_active_connections 4000");}
+-    long long max_conn = -1;
+-    if (XrdOuca2x::a2sz(m_eroute, "max active connections value", val, &max_conn, 1)) return 1;
+-
+-    m_throttle.SetMaxConns(max_conn);
+-    return 0;
+-}
+-
+-/******************************************************************************/
+-/*                            x m a x w a i t                                 */
+-/******************************************************************************/
+-
+-/* Function: xmaxwait
+-
+-   Purpose:  Parse the directive: throttle.max_wait_time <limit>
+-
+-             <limit>   maximum wait time, in seconds, before an operation should fail
+-
+-   If the directive is not provided, the default is 30 seconds.
+-
+-  Output: 0 upon success or !0 upon failure.
+-*/
+-int
+-FileSystem::xmaxwait(XrdOucStream &Config)
+-{
+-    auto val = Config.GetWord();
+-    if (!val || val[0] == '\0')
+-       {m_eroute.Emsg("Config", "Max waiting time not specified (must be in seconds)!  Example usage: throttle.max_wait_time 20");}
+-    long long max_wait = -1;
+-    if (XrdOuca2x::a2sz(m_eroute, "max waiting time value", val, &max_wait, 1)) return 1;
+-
+-    m_throttle.SetMaxWait(max_wait);
+-    return 0;
+-}
+-
+-/******************************************************************************/
+-/*                            x t h r o t t l e                               */
+-/******************************************************************************/
+-
+-/* Function: xthrottle
+-
+-   Purpose:  To parse the directive: throttle [data <drate>] [iops <irate>] [concurrency <climit>] [interval <rint>]
+-
+-             <drate>    maximum bytes per second through the server.
+-             <irate>    maximum IOPS per second through the server.
+-             <climit>   maximum number of concurrent IO connections.
+-             <rint>     minimum interval in milliseconds between throttle re-computing.
+-
+-   Output: 0 upon success or !0 upon failure.
+-*/
+-int
+-FileSystem::xthrottle(XrdOucStream &Config)
+-{
+-    long long drate = -1, irate = -1, rint = 1000, climit = -1;
+-    char *val;
+-
+-    while ((val = Config.GetWord()))
+-    {
+-       if (strcmp("data", val) == 0)
+-       {
+-          if (!(val = Config.GetWord()))
+-             {m_eroute.Emsg("Config", "data throttle limit not specified."); return 1;}
+-          if (XrdOuca2x::a2sz(m_eroute,"data throttle value",val,&drate,1)) return 1;
+-       }
+-       else if (strcmp("iops", val) == 0)
+-       {
+-          if (!(val = Config.GetWord()))
+-             {m_eroute.Emsg("Config", "IOPS throttle limit not specified."); return 1;}
+-          if (XrdOuca2x::a2sz(m_eroute,"IOPS throttle value",val,&irate,1)) return 1;
+-       }
+-       else if (strcmp("rint", val) == 0)
+-       {
+-          if (!(val = Config.GetWord()))
+-             {m_eroute.Emsg("Config", "recompute interval not specified."); return 1;}
+-          if (XrdOuca2x::a2sp(m_eroute,"recompute interval value",val,&rint,10)) return 1;
+-       }
+-       else if (strcmp("concurrency", val) == 0)
+-       {
+-          if (!(val = Config.GetWord()))
+-             {m_eroute.Emsg("Config", "Concurrency limit not specified."); return 1;}
+-          if (XrdOuca2x::a2sz(m_eroute,"Concurrency limit value",val,&climit,1)) return 1;
+-       }
+-       else
+-       {
+-          m_eroute.Emsg("Config", "Warning - unknown throttle option specified", val, ".");
+-       }
+-    }
+-
+-    m_throttle.SetThrottles(drate, irate, climit, static_cast<float>(rint)/1000.0);
+-    return 0;
+-}
+-
+-/******************************************************************************/
+-/*                            x l o a d s h e d                               */
+-/******************************************************************************/
+-
+-/* Function: xloadshed
+-
+-   Purpose:  To parse the directive: loadshed host <hostname> [port <port>] [frequency <freq>]
+-
+-             <hostname> hostname of server to shed load to.  Required
+-             <port>     port of server to shed load to.  Defaults to 1094
+-             <freq>     A value from 1 to 100 specifying how often to shed load
+-                        (1 = 1% chance; 100 = 100% chance; defaults to 10).
+-
+-   Output: 0 upon success or !0 upon failure.
+-*/
+-int FileSystem::xloadshed(XrdOucStream &Config)
+-{
+-    long long port = 0, freq = 0;
+-    char *val;
+-    std::string hostname;
+-
+-    while ((val = Config.GetWord()))
+-    {
+-       if (strcmp("host", val) == 0)
+-       {
+-          if (!(val = Config.GetWord()))
+-             {m_eroute.Emsg("Config", "loadshed hostname not specified."); return 1;}
+-          hostname = val;
+-       }
+-       else if (strcmp("port", val) == 0)
+-       {
+-          if (!(val = Config.GetWord()))
+-             {m_eroute.Emsg("Config", "Port number not specified."); return 1;}
+-          if (XrdOuca2x::a2sz(m_eroute,"Port number",val,&port,1, 65536)) return 1;
+-       }
+-       else if (strcmp("frequency", val) == 0)
+-       {
+-           if (!(val = Config.GetWord()))
+-              {m_eroute.Emsg("Config", "Loadshed frequency not specified."); return 1;}
+-           if (XrdOuca2x::a2sz(m_eroute,"Loadshed frequency",val,&freq,1,100)) return 1;
+-       }
+-       else
+-       {
+-           m_eroute.Emsg("Config", "Warning - unknown loadshed option specified", val, ".");
+-       }
+-    }
+-
+-    if (hostname.empty())
+-    {
+-        m_eroute.Emsg("Config", "must specify hostname for loadshed parameter.");
+-        return 1;
+-    }
+-
+-    m_throttle.SetLoadShed(hostname, port, freq);
+-    return 0;
+-}
+-
+-/******************************************************************************/
+-/*                                x t r a c e                                 */
+-/******************************************************************************/
+-
+-/* Function: xtrace
+-
+-   Purpose:  To parse the directive: trace <events>
+-
+-             <events> the blank separated list of events to trace. Trace
+-                      directives are cummalative.
+-
+-   Output: 0 upon success or 1 upon failure.
+-*/
+-
+-int FileSystem::xtrace(XrdOucStream &Config)
+-{
+-   char *val;
+-   static const struct traceopts {const char *opname; int opval;} tropts[] =
+-   {
+-      {"all",       TRACE_ALL},
+-      {"off",       TRACE_NONE},
+-      {"none",      TRACE_NONE},
+-      {"debug",     TRACE_DEBUG},
+-      {"iops",      TRACE_IOPS},
+-      {"bandwidth", TRACE_BANDWIDTH},
+-      {"ioload",    TRACE_IOLOAD},
+-      {"files",     TRACE_FILES},
+-      {"connections",TRACE_CONNS},
+-   };
+-   int i, neg, trval = 0, numopts = sizeof(tropts)/sizeof(struct traceopts);
+-
+-   if (!(val = Config.GetWord()))
+-   {
+-      m_eroute.Emsg("Config", "trace option not specified");
+-      return 1;
+-   }
+-   while (val)
+-   {
+-      if (!strcmp(val, "off"))
+-      {
+-         trval = 0;
+-      }
+-      else
+-      {
+-         if ((neg = (val[0] == '-' && val[1])))
+-         {
+-            val++;
+-         }
+-         for (i = 0; i < numopts; i++)
+-         {
+-            if (!strcmp(val, tropts[i].opname))
+-            {
+-               if (neg)
+-               {
+-                  if (tropts[i].opval) trval &= ~tropts[i].opval;
+-                  else trval = TRACE_ALL;
+-               }
+-               else if (tropts[i].opval) trval |= tropts[i].opval;
+-               else trval = TRACE_NONE;
+-               break;
+-            }
+-         }
+-         if (i >= numopts)
+-         {
+-            m_eroute.Say("Config warning: ignoring invalid trace option '", val, "'.");
+-         }
+-      }
+-      val = Config.GetWord();
+-   }
+-   m_trace.What = trval;
+-   return 0;
+-}
+-
+diff --git a/src/XrdThrottle/XrdThrottleManager.cc b/src/XrdThrottle/XrdThrottleManager.cc
+index 401992d2c..c3b458f83 100644
+--- a/src/XrdThrottle/XrdThrottleManager.cc
++++ b/src/XrdThrottle/XrdThrottleManager.cc
+@@ -7,6 +7,7 @@
+ #include "XrdSys/XrdSysAtomics.hh"
+ #include "XrdSys/XrdSysTimer.hh"
+ #include "XrdSys/XrdSysPthread.hh"
++#include "XrdThrottle/XrdThrottleConfig.hh"
+ #include "XrdXrootd/XrdXrootdGStream.hh"
+ 
+ #define XRD_TRACE m_trace->
+@@ -54,6 +55,34 @@ XrdThrottleManager::XrdThrottleManager(XrdSysError *lP, XrdOucTrace *tP) :
+ {
+ }
+ 
++void
++XrdThrottleManager::FromConfig(XrdThrottle::Configuration &config)
++{
++
++    auto max_open = config.GetMaxOpen();
++    if (max_open != -1) SetMaxOpen(max_open);
++    auto max_conn = config.GetMaxConn();
++    if (max_conn != -1) SetMaxConns(max_conn);
++    auto max_wait = config.GetMaxWait();
++    if (max_wait != -1) SetMaxWait(max_wait);
++
++    SetThrottles(config.GetThrottleDataRate(),
++       config.GetThrottleIOPSRate(),
++       config.GetThrottleConcurrency(),
++       static_cast<float>(config.GetThrottleRecomputeIntervalMS())/1000.0);
++
++    m_trace->What = config.GetTraceLevels();
++
++    auto loadshed_host = config.GetLoadshedHost();
++    auto loadshed_port = config.GetLoadshedPort();
++    auto loadshed_freq = config.GetLoadshedFreq();
++    if (!loadshed_host.empty() && loadshed_port > 0 && loadshed_freq > 0)
++    {
++       // Loadshed specified, so set it.
++       SetLoadShed(loadshed_host, loadshed_port, loadshed_freq);
++    }
++}
++
+ void
+ XrdThrottleManager::Init()
+ {
+diff --git a/src/XrdThrottle/XrdThrottleManager.hh b/src/XrdThrottle/XrdThrottleManager.hh
+index d0f8a5db6..d1f46aa42 100644
+--- a/src/XrdThrottle/XrdThrottleManager.hh
++++ b/src/XrdThrottle/XrdThrottleManager.hh
+@@ -46,6 +46,10 @@ class XrdOucTrace;
+ class XrdThrottleTimer;
+ class XrdXrootdGStream;
+ 
++namespace XrdThrottle {
++   class Configuration;
++}
++
+ class XrdThrottleManager
+ {
+ 
+@@ -60,6 +64,8 @@ bool        CloseFile(const std::string &entity);
+ 
+ void        Apply(int reqsize, int reqops, int uid);
+ 
++void        FromConfig(XrdThrottle::Configuration &config);
++
+ bool        IsThrottling() {return (m_ops_per_second > 0) || (m_bytes_per_second > 0);}
+ 
+ // Returns the user name and UID for the given client.
+-- 
+2.43.5
+

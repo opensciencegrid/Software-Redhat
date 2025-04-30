@@ -1,7 +1,7 @@
 From 957821d0913ae61d6b312d8f4c5fd2d6ba23dd21 Mon Sep 17 00:00:00 2001
 From: Brian Bockelman <bbockelman@morgridge.org>
 Date: Sat, 12 Apr 2025 22:11:56 +0200
-Subject: [PATCH 6/7] [XrdPosix] Map operation timeouts to ETIME
+Subject: [PATCH 06/10] [XrdPosix] Map operation timeouts to ETIME
 
 Elsewhere, we use ETIME to indicate a server timeout (particularly,
 XRootD uses it for "504 Gateway Timeout").  Many users have found

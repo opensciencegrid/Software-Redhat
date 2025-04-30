@@ -1,7 +1,7 @@
 From bc7f43a1014ea3d53ed0cb46e0f092edec341548 Mon Sep 17 00:00:00 2001
 From: Brian Bockelman <bbockelman@morgridge.org>
 Date: Sat, 29 Mar 2025 09:29:24 -0500
-Subject: [PATCH 5/7] [XrdHttp] Fix HTTP protocol errors on failure
+Subject: [PATCH 05/10] [XrdHttp] Fix HTTP protocol errors on failure
 
 ---
  src/XrdHttp/XrdHttpReq.cc         | 98 +++++++++++++++++++++----------

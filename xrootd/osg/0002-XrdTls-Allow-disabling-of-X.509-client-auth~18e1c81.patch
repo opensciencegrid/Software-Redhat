@@ -1,7 +1,7 @@
-From 1156d407eb117468efd0652e47d5f96848868db6 Mon Sep 17 00:00:00 2001
+From b24f1153957ca091dbb1578f98c0c3ba7a369a41 Mon Sep 17 00:00:00 2001
 From: Brian Bockelman <bbockelman@morgridge.org>
 Date: Fri, 17 May 2024 15:47:40 +0200
-Subject: [PATCH 3/8] [XrdTls] Allow disabling of X.509 client auth
+Subject: [PATCH 02/10] [XrdTls] Allow disabling of X.509 client auth
 
 The X.509 client auth request is fairly disruptive for communities
 that are browser-based (since this is an extremely uncommon flow
@@ -18,10 +18,10 @@ to turn off X.509 client auth when not needed / desired.
  4 files changed, 66 insertions(+), 1 deletion(-)
 
 diff --git a/src/XrdHttp/XrdHttpProtocol.cc b/src/XrdHttp/XrdHttpProtocol.cc
-index ba8af7435..429678230 100644
+index 0bafcee96..ce600b7b0 100644
 --- a/src/XrdHttp/XrdHttpProtocol.cc
 +++ b/src/XrdHttp/XrdHttpProtocol.cc
-@@ -135,6 +135,7 @@ static const int hsmOn   =  1; // Dual purpose but use a meaningful varname
+@@ -139,6 +139,7 @@ static const int hsmOn   =  1; // Dual purpose but use a meaningful varname
  
  int  httpsmode = hsmAuto;
  int  tlsCache  = XrdTlsContext::scOff;
@@ -29,7 +29,7 @@ index ba8af7435..429678230 100644
  bool httpsspec = false;
  bool xrdctxVer = false;
  }
-@@ -506,6 +507,10 @@ int XrdHttpProtocol::Process(XrdLink *lp) // We ignore the argument here
+@@ -510,6 +511,10 @@ int XrdHttpProtocol::Process(XrdLink *lp) // We ignore the argument here
        if (!ssl) {
            sbio = CreateBIO(Link);
            BIO_set_nbio(sbio, 1);
@@ -40,7 +40,7 @@ index ba8af7435..429678230 100644
            ssl = (SSL*)xrdctx->Session();
          }
  
-@@ -553,7 +558,7 @@ int XrdHttpProtocol::Process(XrdLink *lp) // We ignore the argument here
+@@ -557,7 +562,7 @@ int XrdHttpProtocol::Process(XrdLink *lp) // We ignore the argument here
        strcpy(SecEntity.prot, "https");
  
        // Get the voms string and auth information
@@ -49,7 +49,7 @@ index ba8af7435..429678230 100644
            SSL_free(ssl);
            ssl = 0;
            return -1;
-@@ -1077,6 +1082,7 @@ int XrdHttpProtocol::Config(const char *ConfigFN, XrdOucEnv *myEnv) {
+@@ -1082,6 +1087,7 @@ int XrdHttpProtocol::Config(const char *ConfigFN, XrdOucEnv *myEnv) {
        else if TS_Xeq("httpsmode", xhttpsmode);
        else if TS_Xeq("tlsreuse", xtlsreuse);
        else if TS_Xeq("auth", xauth);
@@ -57,7 +57,7 @@ index ba8af7435..429678230 100644
        else {
          eDest.Say("Config warning: ignoring unknown directive '", var, "'.");
          Config.Echo();
-@@ -2845,6 +2851,24 @@ int XrdHttpProtocol::xtlsreuse(XrdOucStream & Config) {
+@@ -2949,6 +2955,24 @@ int XrdHttpProtocol::xtlsreuse(XrdOucStream & Config) {
     return 1;
  }
  
@@ -83,10 +83,10 @@ index ba8af7435..429678230 100644
    char *val = Config.GetWord();
    if(val) {
 diff --git a/src/XrdHttp/XrdHttpProtocol.hh b/src/XrdHttp/XrdHttpProtocol.hh
-index ece9f9cb8..0975c1541 100644
+index dcd86e016..3d01b099f 100644
 --- a/src/XrdHttp/XrdHttpProtocol.hh
 +++ b/src/XrdHttp/XrdHttpProtocol.hh
-@@ -223,6 +223,7 @@ class XrdHttpProtocol : public XrdProtocol {
+@@ -225,6 +225,7 @@ class XrdHttpProtocol : public XrdProtocol {
    static int xhttpsmode(XrdOucStream &Config);
    static int xtlsreuse(XrdOucStream &Config);
    static int xauth(XrdOucStream &Config);
@@ -95,10 +95,10 @@ index ece9f9cb8..0975c1541 100644
    static bool isRequiredXtractor; // If true treat secxtractor errors as fatal
    static XrdHttpSecXtractor *secxtractor;
 diff --git a/src/XrdTls/XrdTlsContext.cc b/src/XrdTls/XrdTlsContext.cc
-index adf569cb1..7bc39d935 100644
+index 04f82e07f..4ff4489af 100644
 --- a/src/XrdTls/XrdTlsContext.cc
 +++ b/src/XrdTls/XrdTlsContext.cc
-@@ -70,6 +70,7 @@ struct XrdTlsContextImpl
+@@ -74,6 +74,7 @@ struct XrdTlsContextImpl
      time_t                        lastCertModTime = 0;
      int                           sessionCacheOpts = -1;
      std::string                   sessionCacheId;
@@ -106,7 +106,7 @@ index adf569cb1..7bc39d935 100644
  };
    
  /******************************************************************************/
-@@ -591,6 +592,8 @@ XrdTlsContext::XrdTlsContext(const char *cert,  const char *key,
+@@ -595,6 +596,8 @@ XrdTlsContext::XrdTlsContext(const char *cert,  const char *key,
           SSL_CTX **ctxLoc;
          } ctx_tracker(&pImpl->ctx);
  
@@ -115,7 +115,7 @@ index adf569cb1..7bc39d935 100644
     static const uint64_t sslOpts = SSL_OP_ALL
                              | SSL_OP_NO_SSLv2
                              | SSL_OP_NO_SSLv3
-@@ -1136,3 +1139,19 @@ bool XrdTlsContext::newHostCertificateDetected() {
+@@ -1140,3 +1143,19 @@ bool XrdTlsContext::newHostCertificateDetected() {
      }
      return false;
  }

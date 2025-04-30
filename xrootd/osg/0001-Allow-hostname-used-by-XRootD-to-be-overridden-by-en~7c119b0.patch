@@ -1,7 +1,7 @@
-From afd296682544d690bb8de69011b11c0207d14a38 Mon Sep 17 00:00:00 2001
+From 688a249aaf116aa7abaaea4b9d23f972c413f2c8 Mon Sep 17 00:00:00 2001
 From: Brian Bockelman <bbockelman@morgridge.org>
 Date: Wed, 15 Jan 2025 08:01:58 -0600
-Subject: [PATCH 1/7] Allow hostname used by XRootD to be overridden by env
+Subject: [PATCH 01/10] Allow hostname used by XRootD to be overridden by env
  var.
 
 This affects how the host advertises itself to other servers in a cluster
@@ -232,7 +232,7 @@ index 3a2a69af3..2bb168961 100644
  // Print herald
  //
 diff --git a/src/XrdCms/XrdCmsNode.cc b/src/XrdCms/XrdCmsNode.cc
-index b453523b8..dce904b92 100644
+index 062b37f7d..c952b4e13 100644
 --- a/src/XrdCms/XrdCmsNode.cc
 +++ b/src/XrdCms/XrdCmsNode.cc
 @@ -166,6 +166,8 @@ void XrdCmsNode::setName(XrdLink *lnkp, const char *theIF, int port)
