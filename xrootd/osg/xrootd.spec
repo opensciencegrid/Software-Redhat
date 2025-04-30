@@ -112,7 +112,7 @@ Patch6: 0006-XrdPosix-Map-operation-timeouts-to-ETIME~9480232.patch
 # Next 4: PelicanPlatform/xrootd #23
 Patch7: 0007-Re-engineer-concurrency-limits-for-throttles~0ef6dbc.patch
 Patch8: 0008-Tweak-throttle-manager-after-large-scale-testing~273c58e.patch
-Patch9: 0009-Modify-XrdThrottle-to-be-an-OSS-plugin~21a32ce.patch
+Patch9: 0009-Modify-XrdThrottle-to-be-an-OSS-plugin~580a3f1.patch
 Patch10: 0010-CMake-changes-for-XrdThrottle-overhaul~fe965e8.patch
 
 %if %{use_cmake3}
@@ -1176,7 +1176,7 @@ fi
 * Wed Apr 30 2025 Mátyás Selmeci <mselmeci@wisc.edu> - 5.8.1-1.5
 - Patches added:
     - 0008-Tweak-throttle-manager-after-large-scale-testing~273c58e.patch
-    - 0009-Modify-XrdThrottle-to-be-an-OSS-plugin~21a32ce.patch
+    - 0009-Modify-XrdThrottle-to-be-an-OSS-plugin~580a3f1.patch
     - 0010-CMake-changes-for-XrdThrottle-overhaul~fe965e8.patch
 - Patches dropped:
     - 0007-XrdSciTokens-Automatically-add-WLCG-audiences-upon-r~92c168c.patch

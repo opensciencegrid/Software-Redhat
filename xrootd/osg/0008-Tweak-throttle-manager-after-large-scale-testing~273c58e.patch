@@ -1,4 +1,4 @@
-From 3b2c6366bbbdf6d32de96398544e7ab45bf78746 Mon Sep 17 00:00:00 2001
+From 6fc9939bc8bb3b01a91ba5edb0c215764736172a Mon Sep 17 00:00:00 2001
 From: Brian Bockelman <bbockelman@morgridge.org>
 Date: Wed, 30 Apr 2025 08:30:20 -0500
 Subject: [PATCH 08/10] Tweak throttle manager after large-scale testing

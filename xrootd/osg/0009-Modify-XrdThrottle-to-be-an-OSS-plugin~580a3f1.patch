@@ -1,4 +1,4 @@
-From ee02590aaf2db763f34082151a903f41dcacc952 Mon Sep 17 00:00:00 2001
+From 1615079e73e751701efae6345e3e22fb76bde635 Mon Sep 17 00:00:00 2001
 From: Brian Bockelman <bbockelman@morgridge.org>
 Date: Wed, 30 Apr 2025 08:32:40 -0500
 Subject: [PATCH 09/10] Modify XrdThrottle to be an OSS plugin
@@ -26,24 +26,24 @@ ofs.osslib ++ libXrdThrottle.so
 Given the advantages of leaning on the existing OFS, we may consider removing
 the OFS layer in the future.
 ---
- src/XrdThrottle/XrdOssThrottleFile.cc         | 242 +++++++++++++
+ src/XrdThrottle/XrdOssThrottleFile.cc         | 244 +++++++++++++
  src/XrdThrottle/XrdThrottle.hh                |  18 -
  src/XrdThrottle/XrdThrottleConfig.cc          | 327 ++++++++++++++++++
  src/XrdThrottle/XrdThrottleConfig.hh          | 101 ++++++
  .../XrdThrottleFileSystemConfig.cc            | 320 +----------------
  src/XrdThrottle/XrdThrottleManager.cc         |  29 ++
  src/XrdThrottle/XrdThrottleManager.hh         |   6 +
- 7 files changed, 721 insertions(+), 322 deletions(-)
+ 7 files changed, 723 insertions(+), 322 deletions(-)
  create mode 100644 src/XrdThrottle/XrdOssThrottleFile.cc
  create mode 100644 src/XrdThrottle/XrdThrottleConfig.cc
  create mode 100644 src/XrdThrottle/XrdThrottleConfig.hh
 
 diff --git a/src/XrdThrottle/XrdOssThrottleFile.cc b/src/XrdThrottle/XrdOssThrottleFile.cc
 new file mode 100644
-index 000000000..63b32c83a
+index 000000000..05941e648
 --- /dev/null
 +++ b/src/XrdThrottle/XrdOssThrottleFile.cc
-@@ -0,0 +1,242 @@
+@@ -0,0 +1,244 @@
 +/***************************************************************
 + *
 + * Copyright (C) 2025, Pelican Project, Morgridge Institute for Research
@@ -72,6 +72,8 @@ index 000000000..63b32c83a
 +#include "XrdThrottle/XrdThrottleManager.hh"
 +#include "XrdThrottle/XrdThrottleTrace.hh"
 +#include "XrdVersion.hh"
++
++#include <functional>
 +
 +namespace {
 +
@@ -203,10 +205,10 @@ index 000000000..63b32c83a
 +        return std::invoke(fn, wrapDF, std::forward<Args>(args)...);
 +    }
 +
-+    std::unique_ptr<XrdOssDF> m_wrapped;
 +    XrdSysError *m_log{nullptr};
 +    XrdThrottleManager &m_throttle;
 +    XrdOucTrace *m_trace{nullptr};
++    std::unique_ptr<XrdOssDF> m_wrapped;
 +    std::string m_user;
 +    uint16_t m_uid;
 +
@@ -650,7 +652,7 @@ index 000000000..ab32f026d
 +}
 diff --git a/src/XrdThrottle/XrdThrottleConfig.hh b/src/XrdThrottle/XrdThrottleConfig.hh
 new file mode 100644
-index 000000000..c3361233c
+index 000000000..ae38022c8
 --- /dev/null
 +++ b/src/XrdThrottle/XrdThrottleConfig.hh
 @@ -0,0 +1,101 @@
@@ -669,7 +671,7 @@ index 000000000..c3361233c
 +class Configuration {
 +public:
 +    Configuration(XrdSysError & log, XrdOucEnv *env)
-+    : m_log(log), m_env(env)
++    : m_env(env), m_log(log)
 +    {}
 +
 +    // Generate the XrdThrottle configuration from the given file name.
