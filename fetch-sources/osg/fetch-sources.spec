@@ -7,7 +7,7 @@
 # development tag from overriding a newer fetch-sources in the dist-$el-build
 # tag.
 
-%define osg_build_version 1.15.1
+%define osg_build_version 1.99.5
 
 Summary:   Fetch sources from upstream (internal use)
 Name:      fetch-sources
@@ -61,6 +61,11 @@ find $RPM_BUILD_ROOT -type f -exec sed -ri '1s,^#!/usr/bin/(env )?python$,#!%{__
 /usr/share/fetch-sources
 
 %changelog
+* Tue May 06 2025 Mátyás Selmeci <mselmeci@wisc.edu> - 1.99.5-1
+- Build against osg-build 1.99.5
+- Download upstream sources from new server https://sw-upstream.svc.osg-htc.org (SOFTWARE-6106)
+- Add support for submodules in git sources
+
 * Tue Apr 21 2020 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.15.1-1
 - Build using the osg-build tarball to avoid the bootstrapping issue of already
   needing an OSG dependency in the build repository before you are able to do
