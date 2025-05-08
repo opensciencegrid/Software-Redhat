@@ -6,8 +6,13 @@
 # Disable shebang mangling (see GHI#436)
 %undefine __brp_mangle_shebangs
 
-# python3 == python3.9
+%if 0%{?rhel} == 8
+# In EL8: python39 is python3.9 (python3 is 3.6)
 %global python3_pkgversion 3
+%else
+# In EL9: python3 == python3.9
+%global python3_pkgversion 3
+%endif
 
 # Versions use semantic versioning (M.m.p)
 # Release Candidates NVR format
@@ -18,8 +23,8 @@
 %define auto_version %(FULLVER=$(git describe --tag | sed 's/-/_/g');  GVER=$(sed 's/.*_\\\([[:digit:]].*\\\)_/dev\\\1+/g' <<< ${FULLVER}); VER=${FULLVER//_*}; echo ${VER%.*}.$((${VER##*.}+1)).${GVER})
 %define auto_release 1
 
-%define version 2.0.5
-%define release 1
+%define version 2.0.6
+%define release 0.1.rc1
 
 %define decisionengine_home %{_sharedstatedir}/decisionengine
 #%define systemddir %{_prefix}/lib/systemd/system
@@ -79,9 +84,9 @@ Requires: postgresql
 Requires: postgresql-server
 Requires: postgresql-devel
 Requires: httpd
-Requires: python3-cryptography
-Requires: python3-pip
-Requires: python3-jsonnet
+Requires: python%{python3_pkgversion}-cryptography
+Requires: python%{python3_pkgversion}-pip
+Requires: python%{python3_pkgversion}-jsonnet
 Requires: gettext
 # iptables-nft added to avoid podman pulling iptables-legacy (incompatible w/ EL9 kernels)
 Requires: iptables-nft
@@ -92,6 +97,7 @@ Requires: git
 #Requires: make
 #Requires: gcc-c++
 #Requires: python3-devel
+Requires(post): /usr/sbin/useradd
 %description deps
 This subpackage includes all the RPM dependency for the HEPCloud Decision Engine Framework.
 
@@ -103,6 +109,7 @@ Requires: decisionengine-deps = %{version}-%{release}
 Requires: glideinwms-vofrontend-libs
 Requires: glideinwms-vofrontend-glidein
 Requires: glideinwms-vofrontend-core
+Requires(post): /usr/sbin/usermod
 %description modules-deps
 This subpackage includes all the RPM dependency for the HEPCloud Decision Engine Modules.
 
@@ -153,6 +160,8 @@ rm -rf $RPM_BUILD_ROOT
 
 # Create some directories, install config files, systemd and the binary wrapper
 install -d $RPM_BUILD_ROOT%{decisionengine_home}
+install -d $RPM_BUILD_ROOT%{decisionengine_home}/passwords.d
+install -d $RPM_BUILD_ROOT%{decisionengine_home}/tokens.d
 install -d $RPM_BUILD_ROOT%{_sysconfdir}/decisionengine
 install -d $RPM_BUILD_ROOT%{_sysconfdir}/decisionengine/config.d
 install -d $RPM_BUILD_ROOT%{_localstatedir}/log/decisionengine
@@ -183,6 +192,10 @@ getent passwd decisionengine >/dev/null || \
 # If the decisionengine user already exists make sure it is part of decisionengine group
 usermod --append --groups decisionengine decisionengine >/dev/null
 
+%pre modules-deps
+# make sure decisionengine is part of glidein group
+# glidein defined in glideinwms-vofrontend-glidein requirement
+usermod --append --groups glidein decisionengine >/dev/null
 
 %post deps
 # make sure our home area makes sense since we have a dynamic id
@@ -207,6 +220,8 @@ systemctl daemon-reload || true
 %files deps
 %defattr(-,decisionengine,decisionengine,-)
 %dir %{decisionengine_home}
+%dir %attr(700, decisionengine, decisionengine) %{decisionengine_home}/passwords.d
+%dir %attr(700, decisionengine, decisionengine) %{decisionengine_home}/tokens.d
 %dir %{_sysconfdir}/decisionengine
 %dir %{_sysconfdir}/decisionengine/config.d
 %config(noreplace) %{_sysconfdir}/decisionengine/decision_engine.jsonnet
@@ -230,5 +245,8 @@ systemctl daemon-reload || true
 %files onenode
 
 %changelog
+* Thu May 8 2025 Marco Mambelli <marcom@fnal.gov> - 2.0.6
+- Decision Engine 2.0.6-rc1
+
 * Wed Mar 12 2025 Marco Mambelli <marcom@fnal.gov> - 2.0.5
 - Decision Engine 2.0.5
