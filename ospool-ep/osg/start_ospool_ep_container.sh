@@ -58,12 +58,6 @@ if is_true "$BIND_MOUNT_CVMFS"; then
   add_docker_arg -v "/cvmfs:/cvmfs:shared"
 fi
 
-# if [ -n "$CVMFSEXEC_REPOS" ]; then
-#  # Need to run in privileged mode
-#  add_docker_arg "--privileged"
-# fi
-
-
 # Mount /etc/OpenCl/vendors if providing NVIDIA GPU resources,
 # and use the cuda_11_8_0-release flavor of the ospool-ep img
 if is_true "$PROVIDE_NVIDIA_GPU"; then
@@ -85,11 +79,11 @@ fi
 
 # TODO passing the whole source env file into docker pollutes the environment to some extent
 docker run --user $USER --name ospool-ep-container \
-    --privileged \
+    --security-opt seccomp=unconfined        \
+    --security-opt systempaths=unconfined    \
+    --security-opt no-new-privileges         \
+    --device /dev/fuse                       \
     --pull=always            \
-    --security-opt seccomp=unconfined \
-    --security-opt systempaths=unconfined \
-    --security-opt no-new-privileges \
     --ulimit nofile=2048:2048 \
     --env-file $ENV_FILE \
     "${DOCKER_ARGS[@]}" \
