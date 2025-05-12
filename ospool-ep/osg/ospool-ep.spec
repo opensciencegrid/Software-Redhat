@@ -41,7 +41,7 @@ mv %{SOURCE2} %{buildroot}/etc/osg/
 
 %changelog
 
-* Mon May 12 2026 Matt Westphall <westphall@wisc.edu> 24-4
+* Mon May 12 2025 Matt Westphall <westphall@wisc.edu> 24-4
 - Use unconfined seccomp rather than privileged (SOFTWARE-6128)
 
 * Tue Apr 01 2025 Matt Westphall <westphall@wisc.edu> 24-3
