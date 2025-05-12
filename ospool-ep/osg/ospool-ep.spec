@@ -2,7 +2,7 @@
 
 Name: ospool-ep
 Version: 23
-Release: 7%{?dist}
+Release: 8%{?dist}
 Summary: Systemd service for the OSPool Backfill Container
 
 License: Unknown
@@ -40,6 +40,8 @@ mv %{SOURCE2} %{buildroot}/etc/osg/
 %attr(0755,root,root) /usr/sbin/start_ospool_ep_container.sh
 
 %changelog
+* Mon May 12 2025 Matt Westphall <westphall@wisc.edu> 23-8
+- Use unconfined seccomp rather than privileged (SOFTWARE-6128)
 
 * Tue Apr 01 2025 Matt Westphall <westphall@wisc.edu> 23-7
 - Add retry logic to systemd service (SOFTWARE-6118)
