@@ -1,19 +1,18 @@
-From 21fda6a9d86ad1ac8f1dc213ff575d4af9d73c45 Mon Sep 17 00:00:00 2001
+From c4d10339a4b4e98c07cb6dd38acd129c97b3de38 Mon Sep 17 00:00:00 2001
 From: Brian Bockelman <bbockelman@morgridge.org>
 Date: Tue, 28 Jan 2025 09:57:02 -0600
-Subject: [PATCH 03/10] [XrdSciTokens] Handle multiple authorization token
- setups
+Subject: [PATCH 3/8] [XrdSciTokens] Handle multiple authorization token setups
 
 ---
+ src/XrdHttpTpc/XrdHttpTpcUtils.cc      |   5 +-
  src/XrdMacaroons/XrdMacaroonsAuthz.cc  |   4 +
  src/XrdOuc/XrdOucEnv.cc                |  60 ++-
  src/XrdOuc/XrdOucPrivateUtils.hh       |   4 +-
  src/XrdOuc/XrdOucUtils.cc              |   2 +-
- src/XrdSciTokens.cmake                 |  26 +-
+ src/XrdSciTokens/CMakeLists.txt        |  17 +-
  src/XrdSciTokens/README.md             |  11 +
  src/XrdSciTokens/XrdSciTokensAccess.cc | 645 ++++++++++++++-----------
  src/XrdSciTokens/XrdSciTokensAccess.hh | 214 ++++++++
- src/XrdTpc/XrdTpcUtils.cc              |   5 +-
  tests/XRootD/scitokens-module.cfg      |   8 +-
  tests/XRootD/scitokens.sh              |  21 +
  tests/XrdOucTests/CMakeLists.txt       |   2 +-
@@ -21,11 +20,32 @@ Subject: [PATCH 03/10] [XrdSciTokens] Handle multiple authorization token
  tests/XrdOucTests/XrdOucUtilsTests.cc  |   3 +
  tests/scitokens/CMakeLists.txt         |   9 +
  tests/scitokens/XrdSciTokens.cc        |  73 +++
- 16 files changed, 798 insertions(+), 317 deletions(-)
+ 16 files changed, 791 insertions(+), 315 deletions(-)
  create mode 100644 src/XrdSciTokens/XrdSciTokensAccess.hh
  create mode 100644 tests/XrdOucTests/XrdOucEnvTests.cc
  create mode 100644 tests/scitokens/XrdSciTokens.cc
 
+diff --git a/src/XrdHttpTpc/XrdHttpTpcUtils.cc b/src/XrdHttpTpc/XrdHttpTpcUtils.cc
+index 6f5f3f603..8a09100f0 100644
+--- a/src/XrdHttpTpc/XrdHttpTpcUtils.cc
++++ b/src/XrdHttpTpc/XrdHttpTpcUtils.cc
+@@ -43,6 +43,9 @@ std::string XrdHttpTpcUtils::prepareOpenURL(const std::string & reqResource, std
+           reqHeaders["Authorization"] = token.substr(6);
+           has_authz_header = true;
+         }
++      } else if (!strncmp(token.c_str(), "access_token=", 13) && !has_authz_header) {
++        reqHeaders["Authorization"] = token.substr(13);
++        has_authz_header = true;
+       } else {
+         opaque << "&" << token;
+       }
+@@ -60,4 +63,4 @@ std::string XrdHttpTpcUtils::prepareOpenURL(const std::string & reqResource, std
+   }
+ 
+   return reqResource + opaque.str();
+-}
+\ No newline at end of file
++}
 diff --git a/src/XrdMacaroons/XrdMacaroonsAuthz.cc b/src/XrdMacaroons/XrdMacaroonsAuthz.cc
 index df771b06c..aee058442 100644
 --- a/src/XrdMacaroons/XrdMacaroonsAuthz.cc
@@ -138,7 +158,7 @@ index e5e220000..d7d1b391b 100644
      if (subdir.size() < dir.size())
        return false;
 diff --git a/src/XrdOuc/XrdOucUtils.cc b/src/XrdOuc/XrdOucUtils.cc
-index 573c474c8..23df854ee 100644
+index 4ebaa999a..812726279 100644
 --- a/src/XrdOuc/XrdOucUtils.cc
 +++ b/src/XrdOuc/XrdOucUtils.cc
 @@ -1480,7 +1480,7 @@ std::string obfuscateAuth(const std::string& input)
@@ -150,65 +170,58 @@ index 573c474c8..23df854ee 100644
        "(Bearer([[:space:]]|%20)?(token([[:space:]]|%20)?)?)?";
  
      regex_t regex;
-diff --git a/src/XrdSciTokens.cmake b/src/XrdSciTokens.cmake
-index f2def352e..e6360b0ab 100644
---- a/src/XrdSciTokens.cmake
-+++ b/src/XrdSciTokens.cmake
-@@ -7,34 +7,48 @@ find_package( SciTokensCpp REQUIRED )
- set( LIB_XRD_SCITOKENS  XrdAccSciTokens-${PLUGIN_VERSION} )
+diff --git a/src/XrdSciTokens/CMakeLists.txt b/src/XrdSciTokens/CMakeLists.txt
+index df34f4289..003a6496d 100644
+--- a/src/XrdSciTokens/CMakeLists.txt
++++ b/src/XrdSciTokens/CMakeLists.txt
+@@ -18,34 +18,43 @@ endif()
  
- #-------------------------------------------------------------------------------
--# The XrdPfc library
-+# The XrdSciTokens object library
-+#
-+# This separate object library is created so unit tests can link directly to it
-+# (linking against a MODULE is forbidden)
- #-------------------------------------------------------------------------------
- add_library(
--   ${LIB_XRD_SCITOKENS}
--   MODULE
-+   XrdSciTokensObj
-+   OBJECT
-    XrdSciTokens/XrdSciTokensAccess.cc
-                                        XrdSciTokens/XrdSciTokensHelper.hh
-    XrdSciTokens/XrdSciTokensMon.cc     XrdSciTokens/XrdSciTokensMon.hh )
- target_link_libraries(
--   ${LIB_XRD_SCITOKENS}
-+   XrdSciTokensObj
-    PRIVATE
-    ${SCITOKENS_CPP_LIBRARIES}
-    XrdUtils
-    XrdServer
-    ${CMAKE_DL_LIBS}
-    ${CMAKE_THREAD_LIBS_INIT} )
+ set(XrdAccSciTokens XrdAccSciTokens-${PLUGIN_VERSION})
  
- target_include_directories(
--   ${LIB_XRD_SCITOKENS}
-+   XrdSciTokensObj
-    PRIVATE
-    ${SCITOKENS_CPP_INCLUDE_DIR}
-    XrdSciTokens/vendor/picojson
-    XrdSciTokens/vendor/inih )
+-add_library(${XrdAccSciTokens} MODULE
++add_library(XrdSciTokensObj
+   XrdSciTokensAccess.cc XrdSciTokensHelper.hh
+   XrdSciTokensMon.cc    XrdSciTokensMon.hh
+ )
+ 
+-target_link_libraries(${XrdAccSciTokens}
++target_link_libraries(XrdSciTokensObj
+   PRIVATE
+     XrdUtils
+     XrdServer
+     ${SCITOKENS_CPP_LIBRARIES}
+     ${CMAKE_THREAD_LIBS_INIT}
+     ${CMAKE_DL_LIBS}
+ )
+ 
+-target_include_directories(${XrdAccSciTokens}
++target_include_directories(XrdSciTokensObj
+   PRIVATE
+     vendor/inih
+     vendor/picojson
+     ${SCITOKENS_CPP_INCLUDE_DIR}
+ )
  
 +set_target_properties(XrdSciTokensObj PROPERTIES POSITION_INDEPENDENT_CODE ON)
- if (HAVE_SCITOKEN_CONFIG_SET_STR)
--   target_compile_definitions(${LIB_XRD_SCITOKENS} PRIVATE HAVE_SCITOKEN_CONFIG_SET_STR)
-+   target_compile_definitions(XrdSciTokensObj PRIVATE HAVE_SCITOKEN_CONFIG_SET_STR)
+ if(HAVE_SCITOKEN_CONFIG_SET_STR)
+-  target_compile_definitions(${XrdAccSciTokens}
++  target_compile_definitions(XrdSciTokensObj
+     PRIVATE
+       HAVE_SCITOKEN_CONFIG_SET_STR
+   )
  endif()
  
-+#-------------------------------------------------------------------------------
-+# The XrdSciTokens module
-+#-------------------------------------------------------------------------------
-+add_library(
-+   ${LIB_XRD_SCITOKENS}
-+   MODULE
-+   "$<TARGET_OBJECTS:XrdSciTokensObj>")
++add_library(${XrdAccSciTokens} MODULE
++  "$<TARGET_OBJECTS:XrdSciTokensObj>"
++)
++target_link_libraries(${XrdAccSciTokens}
++  PRIVATE
++    XrdSciTokensObj
++)
 +
-+target_link_libraries(${LIB_XRD_SCITOKENS} XrdSciTokensObj)
-+
- #-------------------------------------------------------------------------------
- # Install
- #-------------------------------------------------------------------------------
+ install(
+   TARGETS
+     ${XrdAccSciTokens}
 diff --git a/src/XrdSciTokens/README.md b/src/XrdSciTokens/README.md
 index 1edecf944..ab47f60e2 100644
 --- a/src/XrdSciTokens/README.md
@@ -1303,27 +1316,6 @@ index 000000000..fa330a7d5
 +    const std::vector<std::pair<std::unique_ptr<SubpathMatch>, std::string>> &required_issuers,
 +    const std::vector<std::shared_ptr<XrdAccRules>> &access_rules_list);
 +
-diff --git a/src/XrdTpc/XrdTpcUtils.cc b/src/XrdTpc/XrdTpcUtils.cc
-index e83425b56..db2a21970 100644
---- a/src/XrdTpc/XrdTpcUtils.cc
-+++ b/src/XrdTpc/XrdTpcUtils.cc
-@@ -43,6 +43,9 @@ std::string XrdTpcUtils::prepareOpenURL(const std::string & reqResource, std::ma
-           reqHeaders["Authorization"] = token.substr(6);
-           has_authz_header = true;
-         }
-+      } else if (!strncmp(token.c_str(), "access_token=", 13) && !has_authz_header) {
-+        reqHeaders["Authorization"] = token.substr(13);
-+        has_authz_header = true;
-       } else {
-         opaque << "&" << token;
-       }
-@@ -60,4 +63,4 @@ std::string XrdTpcUtils::prepareOpenURL(const std::string & reqResource, std::ma
-   }
- 
-   return reqResource + opaque.str();
--}
-\ No newline at end of file
-+}
 diff --git a/tests/XRootD/scitokens-module.cfg b/tests/XRootD/scitokens-module.cfg
 index 795b97289..014e61f32 100644
 --- a/tests/XRootD/scitokens-module.cfg
@@ -1385,7 +1377,7 @@ index a19384ccb..621889dd6 100755
 +	assert_eq "Hello, World" "$(cat hello_world.txt)"
  }
 diff --git a/tests/XrdOucTests/CMakeLists.txt b/tests/XrdOucTests/CMakeLists.txt
-index 3a7236752..4928f88ac 100644
+index b7f3e09e2..4a5a33ce3 100644
 --- a/tests/XrdOucTests/CMakeLists.txt
 +++ b/tests/XrdOucTests/CMakeLists.txt
 @@ -1,4 +1,4 @@
@@ -1393,7 +1385,7 @@ index 3a7236752..4928f88ac 100644
 +add_executable(xrdoucutils-unit-tests XrdOucUtilsTests.cc XrdOucEnvTests.cc)
  
  target_link_libraries(xrdoucutils-unit-tests XrdUtils GTest::GTest GTest::Main)
- target_include_directories(xrdoucutils-unit-tests PRIVATE ${CMAKE_SOURCE_DIR}/src)
+ 
 diff --git a/tests/XrdOucTests/XrdOucEnvTests.cc b/tests/XrdOucTests/XrdOucEnvTests.cc
 new file mode 100644
 index 000000000..ac8fe6da6
@@ -1429,10 +1421,10 @@ index 000000000..ac8fe6da6
 +    }	    
 +}
 diff --git a/tests/XrdOucTests/XrdOucUtilsTests.cc b/tests/XrdOucTests/XrdOucUtilsTests.cc
-index 3deafc95e..84961f9ad 100644
+index 5d0311156..bc614c5af 100644
 --- a/tests/XrdOucTests/XrdOucUtilsTests.cc
 +++ b/tests/XrdOucTests/XrdOucUtilsTests.cc
-@@ -92,13 +92,16 @@ static const std::string plain_urls[] = {
+@@ -99,13 +99,16 @@ static const std::string plain_urls[] = {
  
  static const std::string authz_strings[] = {
    "authz=REDACTED",

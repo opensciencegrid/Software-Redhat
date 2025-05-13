@@ -1,7 +1,7 @@
-From 1615079e73e751701efae6345e3e22fb76bde635 Mon Sep 17 00:00:00 2001
+From 22daada372030e41b03b3240a901af7e6d0e78ef Mon Sep 17 00:00:00 2001
 From: Brian Bockelman <bbockelman@morgridge.org>
 Date: Wed, 30 Apr 2025 08:32:40 -0500
-Subject: [PATCH 09/10] Modify XrdThrottle to be an OSS plugin
+Subject: [PATCH 7/8] Modify XrdThrottle to be an OSS plugin
 
 XrdThrottle was originally designed at the OFS layer because we wanted
 to perform loadshedding - redirect a file-open request to another server.
@@ -26,6 +26,7 @@ ofs.osslib ++ libXrdThrottle.so
 Given the advantages of leaning on the existing OFS, we may consider removing
 the OFS layer in the future.
 ---
+ src/XrdThrottle/CMakeLists.txt                |   6 +-
  src/XrdThrottle/XrdOssThrottleFile.cc         | 244 +++++++++++++
  src/XrdThrottle/XrdThrottle.hh                |  18 -
  src/XrdThrottle/XrdThrottleConfig.cc          | 327 ++++++++++++++++++
@@ -33,11 +34,31 @@ the OFS layer in the future.
  .../XrdThrottleFileSystemConfig.cc            | 320 +----------------
  src/XrdThrottle/XrdThrottleManager.cc         |  29 ++
  src/XrdThrottle/XrdThrottleManager.hh         |   6 +
- 7 files changed, 723 insertions(+), 322 deletions(-)
+ 8 files changed, 727 insertions(+), 324 deletions(-)
  create mode 100644 src/XrdThrottle/XrdOssThrottleFile.cc
  create mode 100644 src/XrdThrottle/XrdThrottleConfig.cc
  create mode 100644 src/XrdThrottle/XrdThrottleConfig.hh
 
+diff --git a/src/XrdThrottle/CMakeLists.txt b/src/XrdThrottle/CMakeLists.txt
+index ff7ca9cee..d64d78319 100644
+--- a/src/XrdThrottle/CMakeLists.txt
++++ b/src/XrdThrottle/CMakeLists.txt
+@@ -2,11 +2,13 @@ set(XrdThrottle XrdThrottle-${PLUGIN_VERSION})
+ 
+ add_library(${XrdThrottle} MODULE
+   ${PROJECT_SOURCE_DIR}/src/XrdOfs/XrdOfsFS.cc
+-  XrdThrottle.hh           XrdThrottleTrace.hh
++  XrdOssThrottleFile.cc
++  XrdThrottle.hh                 XrdThrottleTrace.hh
++  XrdThrottleConfig.cc           XrdThrottleConfig.hh
+   XrdThrottleFileSystem.cc
+   XrdThrottleFileSystemConfig.cc
+   XrdThrottleFile.cc
+-  XrdThrottleManager.cc    XrdThrottleManager.hh
++  XrdThrottleManager.cc          XrdThrottleManager.hh
+ )
+ 
+ target_link_libraries(${XrdThrottle} PRIVATE XrdServer XrdUtils)
 diff --git a/src/XrdThrottle/XrdOssThrottleFile.cc b/src/XrdThrottle/XrdOssThrottleFile.cc
 new file mode 100644
 index 000000000..05941e648
