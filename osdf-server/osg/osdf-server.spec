@@ -1,7 +1,7 @@
 Summary: Service files for Pelican-based OSDF daemons
 Name: osdf-server
-Version: 7.11.7
-Release: 2%{?dist}
+Version: 7.16.1
+Release: 1%{?dist}
 License: ASL 2.0
 Url: https://github.com/PelicanPlatform/pelican
 BuildArch: noarch
@@ -19,9 +19,12 @@ Source1: 20-cache.yaml
 %define subpackage(x) %{expand:
 %%package -n %1
 Summary: Service file and configuration for %1
-Requires: pelican >= %{version}
-Requires: /usr/bin/osdf
-%{-x:Requires: xrootd-server >= 1:5.7.0}
+# xrootd-requiring services (cache, origin) need the dynamically-linked
+# "pelican-server" binary whereas the others need the "osdf" binary.
+%{!-x:Requires: pelican >= %{version}}
+%{!-x:Requires: /usr/bin/osdf}
+%{-x:Requires: pelican-server >= %{version}}
+%{-x:Requires: xrootd-server >= 1:5.8.0}
 %{-x:Requires: xrootd-scitokens}
 %{-x:Requires: xrootd-voms}
 %{-x:Requires: xrootd-multiuser}
@@ -55,8 +58,11 @@ systemctl daemon-reload
 %%config(noreplace) /etc/pelican/config.d/20-cache.yaml
 %%endif
 
-%%triggerin -n %1 -- pelican
-[ \! -d /run/systemd/system ] || systemctl condrestart %1.service
+%{!-x:%%triggerin -n %1 -- pelican}
+%{!-x:[ \! -d /run/systemd/system ] || systemctl condrestart %1.service}
+
+%{-x:%%triggerin -n %1 -- pelican-server}
+%{-x:[ \! -d /run/systemd/system ] || systemctl condrestart %1.service}
 
 %{-x:%%triggerin -n %1 -- xrootd-server}
 %{-x:[ \! -d /run/systemd/system ] || systemctl condrestart %1.service}
@@ -104,6 +110,10 @@ install -m 0644 systemd/pelican.logrotate       $RPM_BUILD_ROOT/etc/logrotate.d/
 
 
 %changelog
+* Tue May 13 2025 Mátyás Selmeci <mselmeci@wisc.edu> - 7.16.1-1
+- Upgrade to Pelican 7.16.1 (SOFTWARE-6152)
+- Require "pelican-server" for the cache and origin (SOFTWARE-6152)
+
 * Tue Mar 25 2025 Mátyás Selmeci <mselmeci@wisc.edu> - 7.11.7-2
 - Do not attempt to restart systemd services if we were not booted with systemd
 
