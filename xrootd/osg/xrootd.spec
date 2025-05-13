@@ -80,8 +80,8 @@
 #-------------------------------------------------------------------------------
 Name:		xrootd
 Epoch:		1
-Version:	5.8.1
-Release:	1.3%{?dist}%{?_with_clang:.clang}%{?_with_asan:.asan}
+Version:	5.8.2
+Release:	1.1%{?dist}%{?_with_clang:.clang}%{?_with_asan:.asan}
 Summary:	Extended ROOT File Server
 Group:		System Environment/Daemons
 License:	LGPL-3.0-or-later AND BSD-2-Clause AND BSD-3-Clause AND curl AND MIT AND Zlib
@@ -102,15 +102,16 @@ Patch1: 0001-Allow-hostname-used-by-XRootD-to-be-overridden-by-en~7c119b0.patch
 # PelicanPlatform/xrootd #4 (xrootd/xrootd #2269):
 Patch2: 0002-XrdTls-Allow-disabling-of-X.509-client-auth~18e1c81.patch
 # PelicanPlatform/xrootd #6 (xrootd/xrootd #2397):
-Patch3: 0003-XrdSciTokens-Handle-multiple-authorization-token-set~ec1eb0c.patch
+Patch3: 0003-XrdSciTokens-Handle-multiple-authorization-token-set~b82ddc3.patch
 # PelicanPlatform/xrootd #14 (no upstream):
 Patch4: 0004-XrdHttp-Undo-HTTP-PUT-response-code-change~956b9fa.patch
 # PelicanPlatform/xrootd #18 (xrootd/xrootd #2443):
 Patch5: 0005-XrdHttp-Fix-HTTP-protocol-errors-on-failure~4fb2221.patch
-# PelicanPlatform/xrootd #21 (xrootd/xrootd #2482):
-Patch6: 0006-XrdPosix-Map-operation-timeouts-to-ETIME~9480232.patch
-# PelicanPlatform/xrootd #20 (xrootd/xrootd #2417):
-#Patch7: 0007-XrdSciTokens-Automatically-add-WLCG-audiences-upon-r~92c168c.patch
+# Next 2: PelicanPlatform/xrootd #23
+Patch6: 0006-Re-engineer-concurrency-limits-for-throttles~39fea57.patch
+Patch7: 0007-Modify-XrdThrottle-to-be-an-OSS-plugin~921fef5.patch
+# PelicanPlatform/xrootd #25
+Patch8: 0008-XRootD-s-xml-response-for-PROPFIND-will-now-include~aacf631.patch
 
 %if %{use_cmake3}
 BuildRequires:	cmake3
@@ -1170,6 +1171,36 @@ fi
 # Changelog
 #-------------------------------------------------------------------------------
 %changelog
+* Tue May 13 2025 Mátyás Selmeci <mselmeci@wisc.edu> - 5.8.2-1.1
+- Update to XRootD 5.8.2 (SOFTWARE-6151)
+    - Patches added:
+        0 0008-XRootD-s-xml-response-for-PROPFIND-will-now-include~aacf631.patch
+    - Patches kept:
+        - 0001-Allow-hostname-used-by-XRootD-to-be-overridden-by-en~7c119b0.patch
+        - 0002-XrdTls-Allow-disabling-of-X.509-client-auth~18e1c81.patch
+        - 0003-XrdSciTokens-Handle-multiple-authorization-token-set~ec1eb0c.patch -> 0003-XrdSciTokens-Handle-multiple-authorization-token-set~b82ddc3.patch
+        - 0004-XrdHttp-Undo-HTTP-PUT-response-code-change~956b9fa.patch
+        - 0005-XrdHttp-Fix-HTTP-protocol-errors-on-failure~4fb2221.patch
+        - 0007-Re-engineer-concurrency-limits-for-throttles~0ef6dbc.patch -> 0006-Re-engineer-concurrency-limits-for-throttles~39fea57.patch
+        - 0009-Modify-XrdThrottle-to-be-an-OSS-plugin~580a3f1.patch -> 0007-Modify-XrdThrottle-to-be-an-OSS-plugin~921fef5.patch
+    - Patches dropped:
+        - 0006-XrdPosix-Map-operation-timeouts-to-ETIME~9480232.patch
+        - 0008-Tweak-throttle-manager-after-large-scale-testing~273c58e.patch
+        - 0010-CMake-changes-for-XrdThrottle-overhaul~fe965e8.patch
+
+* Wed Apr 30 2025 Mátyás Selmeci <mselmeci@wisc.edu> - 5.8.1-1.5
+- Patches added:
+    - 0008-Tweak-throttle-manager-after-large-scale-testing~273c58e.patch
+    - 0009-Modify-XrdThrottle-to-be-an-OSS-plugin~580a3f1.patch
+    - 0010-CMake-changes-for-XrdThrottle-overhaul~fe965e8.patch
+- Patches dropped:
+    - 0007-XrdSciTokens-Automatically-add-WLCG-audiences-upon-r~92c168c.patch
+- Patches kept:
+    - 0008-Re-engineer-concurrency-limits-for-throttles~0ef6dbc.patch -> 0007-Re-engineer-concurrency-limits-for-throttles~0ef6dbc.patch
+
+* Tue Apr 29 2025 Mátyás Selmeci <mselmeci@wisc.edu> - 5.8.1-1.4
+- Add 0008-Re-engineer-concurrency-limits-for-throttles~0ef6dbc.patch
+
 * Fri Apr 18 2025 Mátyás Selmeci <mselmeci@wisc.edu> - 5.8.1-1.3
 - Drop 0008-Include-additional-XrdPfc-headers.patch
 
