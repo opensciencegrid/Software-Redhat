@@ -1,4 +1,4 @@
-From b24f1153957ca091dbb1578f98c0c3ba7a369a41 Mon Sep 17 00:00:00 2001
+From 790cdad9b7e04bdb805c5d59823383d4e43819d7 Mon Sep 17 00:00:00 2001
 From: Brian Bockelman <bbockelman@morgridge.org>
 Date: Fri, 17 May 2024 15:47:40 +0200
 Subject: [PATCH 02/10] [XrdTls] Allow disabling of X.509 client auth
@@ -18,7 +18,7 @@ to turn off X.509 client auth when not needed / desired.
  4 files changed, 66 insertions(+), 1 deletion(-)
 
 diff --git a/src/XrdHttp/XrdHttpProtocol.cc b/src/XrdHttp/XrdHttpProtocol.cc
-index 0bafcee96..ce600b7b0 100644
+index 8fd6b933d..5758cd72e 100644
 --- a/src/XrdHttp/XrdHttpProtocol.cc
 +++ b/src/XrdHttp/XrdHttpProtocol.cc
 @@ -139,6 +139,7 @@ static const int hsmOn   =  1; // Dual purpose but use a meaningful varname
@@ -57,7 +57,7 @@ index 0bafcee96..ce600b7b0 100644
        else {
          eDest.Say("Config warning: ignoring unknown directive '", var, "'.");
          Config.Echo();
-@@ -2949,6 +2955,24 @@ int XrdHttpProtocol::xtlsreuse(XrdOucStream & Config) {
+@@ -2954,6 +2960,24 @@ int XrdHttpProtocol::xtlsreuse(XrdOucStream & Config) {
     return 1;
  }
  
@@ -136,7 +136,7 @@ index 04f82e07f..4ff4489af 100644
 +    return true;
 +}
 diff --git a/src/XrdTls/XrdTlsContext.hh b/src/XrdTls/XrdTlsContext.hh
-index e6b61b7b8..bf94fdd37 100644
+index fab30cb99..b8ece8174 100644
 --- a/src/XrdTls/XrdTlsContext.hh
 +++ b/src/XrdTls/XrdTlsContext.hh
 @@ -173,6 +173,27 @@ void            SetDefaultCiphers(const char *ciphers);

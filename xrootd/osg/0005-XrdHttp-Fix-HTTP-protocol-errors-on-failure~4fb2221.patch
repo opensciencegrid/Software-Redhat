@@ -1,4 +1,4 @@
-From bc7f43a1014ea3d53ed0cb46e0f092edec341548 Mon Sep 17 00:00:00 2001
+From 08163b5531d56e6a333ef02ed7e80fd6df482d3e Mon Sep 17 00:00:00 2001
 From: Brian Bockelman <bbockelman@morgridge.org>
 Date: Sat, 29 Mar 2025 09:29:24 -0500
 Subject: [PATCH 05/10] [XrdHttp] Fix HTTP protocol errors on failure
@@ -17,7 +17,7 @@ Subject: [PATCH 05/10] [XrdHttp] Fix HTTP protocol errors on failure
  create mode 100644 tests/XrdOssTests/xrdoss_tests.cc
 
 diff --git a/src/XrdHttp/XrdHttpReq.cc b/src/XrdHttp/XrdHttpReq.cc
-index 6e94eb72d..0b7811b38 100644
+index e1201d3f2..d07bebcc0 100644
 --- a/src/XrdHttp/XrdHttpReq.cc
 +++ b/src/XrdHttp/XrdHttpReq.cc
 @@ -524,15 +524,18 @@ bool XrdHttpReq::Error(XrdXrootd::Bridge::Context &info, //!< the result context
@@ -41,7 +41,7 @@ index 6e94eb72d..0b7811b38 100644
  };
  
  bool XrdHttpReq::Redir(XrdXrootd::Bridge::Context &info, //!< the result context
-@@ -1188,8 +1191,7 @@ int XrdHttpReq::ProcessHTTPReq() {
+@@ -1133,8 +1136,7 @@ int XrdHttpReq::ProcessHTTPReq() {
  
              if (!prot->Bridge->Run((char *) &xrdreq, 0, 0)) {
                mapXrdErrorToHttpStatus();
@@ -51,7 +51,7 @@ index 6e94eb72d..0b7811b38 100644
              }
              return 0;
            } else {
-@@ -1230,8 +1232,7 @@ int XrdHttpReq::ProcessHTTPReq() {
+@@ -1175,8 +1177,7 @@ int XrdHttpReq::ProcessHTTPReq() {
              if (!prot->Bridge->Run((char *) &xrdreq, (char *) res.c_str(), l)) {
                mapXrdErrorToHttpStatus();
                prot->SendSimpleResp(httpStatusCode, NULL, NULL, httpStatusText.c_str(), httpStatusText.length(), false);
@@ -61,7 +61,7 @@ index 6e94eb72d..0b7811b38 100644
              }
  
              // We don't want to be invoked again after this request is finished
-@@ -1256,7 +1257,7 @@ int XrdHttpReq::ProcessHTTPReq() {
+@@ -1201,7 +1202,7 @@ int XrdHttpReq::ProcessHTTPReq() {
            // Close() if we have finished, otherwise read the next chunk
  
            // --------- CLOSE
@@ -70,7 +70,7 @@ index 6e94eb72d..0b7811b38 100644
            {
  
              memset(&xrdreq, 0, sizeof (ClientRequest));
-@@ -1326,24 +1327,21 @@ int XrdHttpReq::ProcessHTTPReq() {
+@@ -1271,24 +1272,21 @@ int XrdHttpReq::ProcessHTTPReq() {
                httpStatusText = "Range Not Satisfiable";
                std::stringstream ss;
                ss << "Requested range " << l << "@" << offs << " is past the end of file (" << filesize << ")";
@@ -98,7 +98,7 @@ index 6e94eb72d..0b7811b38 100644
              }
  
            }
-@@ -1480,8 +1478,7 @@ int XrdHttpReq::ProcessHTTPReq() {
+@@ -1425,8 +1423,7 @@ int XrdHttpReq::ProcessHTTPReq() {
              TRACEI(REQ, "XrdHTTP PUT: Writing chunk of size " << bytes_to_write << " starting with '" << *(prot->myBuffStart) << "'" << " with " << chunk_bytes_remaining << " bytes remaining in the chunk");
              if (!prot->Bridge->Run((char *) &xrdreq, prot->myBuffStart, bytes_to_write)) {
                mapXrdErrorToHttpStatus();
@@ -108,7 +108,7 @@ index 6e94eb72d..0b7811b38 100644
              }
              // If there are more bytes in the buffer, then immediately call us after the
              // write is finished; otherwise, wait for data.
-@@ -1504,8 +1501,7 @@ int XrdHttpReq::ProcessHTTPReq() {
+@@ -1449,8 +1446,7 @@ int XrdHttpReq::ProcessHTTPReq() {
            TRACEI(REQ, "Writing " << bytes_to_read);
            if (!prot->Bridge->Run((char *) &xrdreq, prot->myBuffStart, bytes_to_read)) {
              mapXrdErrorToHttpStatus();
@@ -118,7 +118,7 @@ index 6e94eb72d..0b7811b38 100644
            }
  
            if (writtenbytes + prot->BuffUsed() >= length)
-@@ -1528,8 +1524,7 @@ int XrdHttpReq::ProcessHTTPReq() {
+@@ -1473,8 +1469,7 @@ int XrdHttpReq::ProcessHTTPReq() {
  
            if (!prot->Bridge->Run((char *) &xrdreq, 0, 0)) {
              mapXrdErrorToHttpStatus();
@@ -128,7 +128,7 @@ index 6e94eb72d..0b7811b38 100644
            }
  
            // We have finished
-@@ -2051,6 +2046,7 @@ XrdHttpReq::ReturnGetHeaders() {
+@@ -1996,6 +1991,7 @@ XrdHttpReq::ReturnGetHeaders() {
      // Full file.
      TRACEI(REQ, "Sending full file: " << filesize);
      if (m_transfer_encoding_chunked && m_trailer_headers) {
@@ -136,7 +136,7 @@ index 6e94eb72d..0b7811b38 100644
        prot->StartChunkedResp(200, NULL, responseHeader.empty() ? NULL : responseHeader.c_str(), -1, keepalive);
      } else {
        prot->SendSimpleResp(200, NULL, responseHeader.empty() ? NULL : responseHeader.c_str(), NULL, filesize, keepalive);
-@@ -2068,18 +2064,19 @@ XrdHttpReq::ReturnGetHeaders() {
+@@ -2013,18 +2009,19 @@ XrdHttpReq::ReturnGetHeaders() {
      char buf[64];
      const off_t cnt = uranges[0].end - uranges[0].start + 1;
  
@@ -162,7 +162,7 @@ index 6e94eb72d..0b7811b38 100644
      }
      return 0;
    }
-@@ -2109,13 +2106,24 @@ XrdHttpReq::ReturnGetHeaders() {
+@@ -2054,13 +2051,24 @@ XrdHttpReq::ReturnGetHeaders() {
    }
  
    if (m_transfer_encoding_chunked && m_trailer_headers) {
@@ -187,7 +187,7 @@ index 6e94eb72d..0b7811b38 100644
  // This is invoked by the callbacks, after something has happened in the bridge
  
  int XrdHttpReq::PostProcessHTTPReq(bool final_) {
-@@ -2284,6 +2292,13 @@ int XrdHttpReq::PostProcessHTTPReq(bool final_) {
+@@ -2229,6 +2237,13 @@ int XrdHttpReq::PostProcessHTTPReq(bool final_) {
            // If we are postprocessing a close, potentially send out informational trailers
            if ((ntohs(xrdreq.header.requestid) == kXR_close) || readClosing)
            {
@@ -201,7 +201,7 @@ index 6e94eb72d..0b7811b38 100644
              const XrdHttpReadRangeHandler::Error &rrerror = readRangeHandler.getError();
              if (rrerror) {
                httpStatusCode = rrerror.httpRetCode;
-@@ -2313,7 +2328,11 @@ int XrdHttpReq::PostProcessHTTPReq(bool final_) {
+@@ -2258,7 +2273,11 @@ int XrdHttpReq::PostProcessHTTPReq(bool final_) {
            // On error, we can only send out a message if trailers are enabled and the
            // status response in trailer behavior is requested.
            if (xrdresp == kXR_error) {
@@ -214,7 +214,7 @@ index 6e94eb72d..0b7811b38 100644
              return -1;
            }
  
-@@ -2744,33 +2763,47 @@ int XrdHttpReq::PostProcessHTTPReq(bool final_) {
+@@ -2689,33 +2708,47 @@ int XrdHttpReq::PostProcessHTTPReq(bool final_) {
    return 0;
  }
  
@@ -268,7 +268,7 @@ index 6e94eb72d..0b7811b38 100644
    }
  }
  
-@@ -2786,6 +2819,7 @@ void XrdHttpReq::reset() {
+@@ -2731,6 +2764,7 @@ void XrdHttpReq::reset() {
    //if (xmlbody) xmlFreeDoc(xmlbody);
    readRangeHandler.reset();
    readClosing = false;
@@ -320,7 +320,7 @@ index 99fa05516..72dd805fe 100644
    long long length;  // Total size from client for PUT; total length of response TO client for GET.
    int depth;
 diff --git a/tests/CMakeLists.txt b/tests/CMakeLists.txt
-index ee25d26de..0efeca6e6 100644
+index 013762eba..dca6af54d 100644
 --- a/tests/CMakeLists.txt
 +++ b/tests/CMakeLists.txt
 @@ -28,6 +28,7 @@ if(NOT ENABLE_SERVER_TESTS)
@@ -377,7 +377,7 @@ index 370d628c0..289d8e0ef 100755
 +  assert_eq "0" "$(grep -c "Connection died" "${TMPDIR}/stderr.txt")" "Connection reuse did not work.  Server log: $(cat "${XROOTD_SERVER_LOGFILE}") Client log: $(sed -e 's/blah//g' < "${TMPDIR}/stderr.txt") Issue:"
  }
 diff --git a/tests/XRootD/test.sh b/tests/XRootD/test.sh
-index 67de3dd19..8520e82d5 100755
+index 836008973..30842e950 100755
 --- a/tests/XRootD/test.sh
 +++ b/tests/XRootD/test.sh
 @@ -15,6 +15,12 @@ function assert_eq() {
