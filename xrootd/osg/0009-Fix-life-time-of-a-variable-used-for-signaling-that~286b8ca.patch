@@ -1,9 +1,9 @@
-From e67771715023f9d316fe21278d1c481cb1e21b55 Mon Sep 17 00:00:00 2001
+From b8d82ac20284241c54723899989b73264fa324b1 Mon Sep 17 00:00:00 2001
 From: Matevz Tadel <mtadel@ucsd.edu>
 Date: Wed, 14 May 2025 11:07:09 -0700
-Subject: [PATCH] Fix life-time of a variable used for signaling that directory
- has already been scanned during the initial namspace scan (thanks to bbockelm
- for tracing it down).
+Subject: [PATCH 09/10] Fix life-time of a variable used for signaling that
+ directory has already been scanned during the initial namspace scan (thanks
+ to bbockelm for tracing it down).
 
 ---
  src/XrdPfc/XrdPfcResourceMonitor.cc | 37 +++++++++++++++--------------

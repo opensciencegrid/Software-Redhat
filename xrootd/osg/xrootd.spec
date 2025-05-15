@@ -81,7 +81,7 @@
 Name:		xrootd
 Epoch:		1
 Version:	5.8.2
-Release:	1.2%{?dist}%{?_with_clang:.clang}%{?_with_asan:.asan}
+Release:	1.3%{?dist}%{?_with_clang:.clang}%{?_with_asan:.asan}
 Summary:	Extended ROOT File Server
 Group:		System Environment/Daemons
 License:	LGPL-3.0-or-later AND BSD-2-Clause AND BSD-3-Clause AND curl AND MIT AND Zlib
@@ -114,6 +114,8 @@ Patch7: 0007-Modify-XrdThrottle-to-be-an-OSS-plugin~921fef5.patch
 Patch8: 0008-XRootD-s-xml-response-for-PROPFIND-will-now-include~aacf631.patch
 # PelicanPlatform/xrootd #26 (xrootd/xrootd #2505)
 Patch9: 0009-Fix-life-time-of-a-variable-used-for-signaling-that~286b8ca.patch
+# PelicanPlatform/xrootd #27 (xrootd/xrootd #2506)
+Patch10: 0010-Correct-concurrency-and-state-tracking-around-Redriv~86d48f1.patch
 
 %if %{use_cmake3}
 BuildRequires:	cmake3
@@ -1173,13 +1175,16 @@ fi
 # Changelog
 #-------------------------------------------------------------------------------
 %changelog
+* Thu May 15 2025 Mátyás Selmeci <mselmeci@wisc.edu> - 5.8.2-1.3
+- Add 0010-Correct-concurrency-and-state-tracking-around-Redriv~86d48f1.patch
+
 * Wed May 14 2025 Mátyás Selmeci <mselmeci@wisc.edu> - 5.8.2-1.2
 - Add 0009-Fix-life-time-of-a-variable-used-for-signaling-that~286b8ca.patch
 
 * Tue May 13 2025 Mátyás Selmeci <mselmeci@wisc.edu> - 5.8.2-1.1
 - Update to XRootD 5.8.2 (SOFTWARE-6151)
     - Patches added:
-        0 0008-XRootD-s-xml-response-for-PROPFIND-will-now-include~aacf631.patch
+        - 0008-XRootD-s-xml-response-for-PROPFIND-will-now-include~aacf631.patch
     - Patches kept:
         - 0001-Allow-hostname-used-by-XRootD-to-be-overridden-by-en~7c119b0.patch
         - 0002-XrdTls-Allow-disabling-of-X.509-client-auth~18e1c81.patch

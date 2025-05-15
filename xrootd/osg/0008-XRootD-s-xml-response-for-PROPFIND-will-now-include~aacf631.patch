@@ -1,7 +1,7 @@
 From f3ee9a1b1409fb001006d2ef3d0eee9b8ee77a0e Mon Sep 17 00:00:00 2001
 From: Emma Turetsky <turetske@gmail.com>
 Date: Thu, 8 May 2025 10:51:11 -0500
-Subject: [PATCH 8/8] XRootD's xml response for PROPFIND will now include the
+Subject: [PATCH 08/10] XRootD's xml response for PROPFIND will now include the
  resourcetype tag for non-collections (#24)
 
 ---

@@ -1,4 +1,4 @@
-From 688a249aaf116aa7abaaea4b9d23f972c413f2c8 Mon Sep 17 00:00:00 2001
+From cc69af744256d1583b4b63a7abb41576d105cf18 Mon Sep 17 00:00:00 2001
 From: Brian Bockelman <bbockelman@morgridge.org>
 Date: Wed, 15 Jan 2025 08:01:58 -0600
 Subject: [PATCH 01/10] Allow hostname used by XRootD to be overridden by env
@@ -21,7 +21,7 @@ especially in Kubernetes-based environments).
  10 files changed, 117 insertions(+), 78 deletions(-)
 
 diff --git a/src/Xrd/XrdConfig.cc b/src/Xrd/XrdConfig.cc
-index 68cb35a10..b8cabb225 100644
+index ae76a5061..ba05d2389 100644
 --- a/src/Xrd/XrdConfig.cc
 +++ b/src/Xrd/XrdConfig.cc
 @@ -587,24 +587,33 @@ int XrdConfig::Configure(int argc, char **argv)
@@ -166,7 +166,7 @@ index 9f5294195..677b64da3 100644
         envData = (kXR_char *)hnBuff;
        }
 diff --git a/src/XrdCms/XrdCmsCluster.cc b/src/XrdCms/XrdCmsCluster.cc
-index 1daf93967..d799b5b36 100644
+index 7db85777f..057641a4c 100644
 --- a/src/XrdCms/XrdCmsCluster.cc
 +++ b/src/XrdCms/XrdCmsCluster.cc
 @@ -557,8 +557,7 @@ XrdCmsSelected *XrdCmsCluster::List(SMask_t mask, CmsLSOpts opts, bool &oksel)
@@ -232,7 +232,7 @@ index 3a2a69af3..2bb168961 100644
  // Print herald
  //
 diff --git a/src/XrdCms/XrdCmsNode.cc b/src/XrdCms/XrdCmsNode.cc
-index 062b37f7d..c952b4e13 100644
+index 2f9eb0500..e007de321 100644
 --- a/src/XrdCms/XrdCmsNode.cc
 +++ b/src/XrdCms/XrdCmsNode.cc
 @@ -166,6 +166,8 @@ void XrdCmsNode::setName(XrdLink *lnkp, const char *theIF, int port)
@@ -245,7 +245,7 @@ index 062b37f7d..c952b4e13 100644
  //
     myName = strdup(hname);
 diff --git a/src/XrdCms/XrdCmsProtocol.cc b/src/XrdCms/XrdCmsProtocol.cc
-index c4abde0ac..6580a5c5d 100644
+index 90f94f42a..a24fb489f 100644
 --- a/src/XrdCms/XrdCmsProtocol.cc
 +++ b/src/XrdCms/XrdCmsProtocol.cc
 @@ -564,30 +564,6 @@ int XrdCmsProtocol::Stats(char *buff, int blen, int do_sync)

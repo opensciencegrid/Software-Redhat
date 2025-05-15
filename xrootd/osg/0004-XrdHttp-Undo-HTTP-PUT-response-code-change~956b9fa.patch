@@ -1,4 +1,4 @@
-From bee81ef9ff4dc47c1207fad54a2c671e6f3daed7 Mon Sep 17 00:00:00 2001
+From e796e61a5e1936a76c4dd6059b685ff345e1dc5f Mon Sep 17 00:00:00 2001
 From: Matyas Selmeci <mselmeci@wisc.edu>
 Date: Thu, 30 Jan 2025 15:41:24 -0600
 Subject: [PATCH 04/10] [XrdHttp] Undo HTTP PUT response code change
@@ -9,10 +9,10 @@ From https://github.com/xrootd/xrootd/issues/2382 ; Pelican clients before 7.12.
  1 file changed, 2 insertions(+), 1 deletion(-)
 
 diff --git a/src/XrdHttp/XrdHttpReq.cc b/src/XrdHttp/XrdHttpReq.cc
-index 010c90d7f..6e94eb72d 100644
+index ca3a1dd14..e1201d3f2 100644
 --- a/src/XrdHttp/XrdHttpReq.cc
 +++ b/src/XrdHttp/XrdHttpReq.cc
-@@ -2391,7 +2391,8 @@ int XrdHttpReq::PostProcessHTTPReq(bool final_) {
+@@ -2336,7 +2336,8 @@ int XrdHttpReq::PostProcessHTTPReq(bool final_) {
  
          if (ntohs(xrdreq.header.requestid) == kXR_close) {
            if (xrdresp == kXR_ok) {
