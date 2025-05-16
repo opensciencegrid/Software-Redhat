@@ -1,97 +1,47 @@
 # OSG additions
-%if 0%{?osg:1}%{!?osg:0}
-    %if 0%{?rhel} < 9 && 0%{!?_without_compat:1}
-        %global _with_compat 1
-    %endif
-    %global _with_scitokens 1
-    %global _with_xrdclhttp 1
-%endif
+# "bcond_without" enables something by default, "bcond_with" disables it by default
 
-# Set _with_debug to build with debug messages and asserts.  The build will have a .dbg in the Release field.
-# Note! The debug build puts sensitive stuff in the logs -- do not give .dbg builds to external users or promote them to testing.
-# (also keep both % when this is commented out -- rpm still interprets macros in comments)
-#%%global _with_debug 1
-
-# This is the directory the tarball extracts to. This may be "xrootd" or "xrootd-%%{version}" depending on where the tarball was downloaded from.
-# GitHub releases use "xrootd-%%{version}"
-%global build_dir xrootd-%{version}
-
-#-------------------------------------------------------------------------------
-# Helper macros
-#-------------------------------------------------------------------------------
-%if %{?rhel:1}%{!?rhel:0}
-    # starting with rhel 7 we have systemd and macaroons,
-        %define use_systemd 1
-        %define have_macaroons 1
-
-        %if %{rhel} == 7
-			# we build both python2 and python3 bindings for EPEL7
-                        %define _with_python2 1
-                        %define _with_python3 1
-        %else
-			# we only build both python3 bindings for EPEL>7
-			%define _with_python2 0
-			%define _with_python3 1
-        %endif
+%if 0%{?osg:1}%{!?osg:0} && 0%{?rhel} < 9
+    %bcond_without compat
 %else
-    # do we have macaroons ?
-    %if %{?fedora}%{!?fedora:0} >= 28
-        %define have_macaroons 1
-    %else
-        %define have_macaroons 0
-    %endif
-    # do we have systemd ?
-    %if %{?fedora}%{!?fedora:0} >= 19
-        %define use_systemd 1
-    %else
-        %define use_systemd 0
-    %endif
-    # we only build python3 bindings for fedora
-    %define _with_python2 0
-    %define _with_python3 1
+    %bcond_with compat
 %endif
 
-
-
-%if %{?_with_ceph11:1}%{!?_with_ceph11:0}
-    %define _with_ceph 1
-%endif
-
-%if %{?rhel:1}%{!?rhel:0}
-    %if %{rhel} > 7
-        %define use_cmake3 0
-    %else
-        %define use_cmake3 1
-    %endif
-%else
-    %define use_cmake3 0
-%endif
 
 %global compat_version 4.12.6
 
-# Remove default rpm python bytecompiling scripts
-%global __os_install_post \
-    %(echo '%{__os_install_post}' | \
-      sed -e 's!/usr/lib[^[:space:]]*/brp-python-bytecompile[[:space:]].*$!!g \
-              s!/usr/lib[^[:space:]]*/brp-python-hardlink[[:space:]].*$!!g')
 
-#-------------------------------------------------------------------------------
-# Package definitions
-#-------------------------------------------------------------------------------
+%bcond_with    asan
+%bcond_with    ceph
+%bcond_with    clang
+%bcond_with    docs
+%bcond_with    git
+
+%if 0%{?osg:1}%{!?osg:0}
+%bcond_with tests
+%else
+%bcond_without tests
+%endif
+%bcond_without xrdec
+
 Name:		xrootd
 Epoch:		1
-Version:	5.8.2
-Release:	1.3%{?dist}%{?_with_clang:.clang}%{?_with_asan:.asan}
+Release:	1.4%{?dist}%{?with_clang:.clang}%{?with_asan:.asan}
 Summary:	Extended ROOT File Server
 Group:		System Environment/Daemons
 License:	LGPL-3.0-or-later AND BSD-2-Clause AND BSD-3-Clause AND curl AND MIT AND Zlib
-URL:		https://xrootd.slac.stanford.edu
+URL:		https://xrootd.org
 
-
-# git clone http://xrootd.org/repo/xrootd.git xrootd
-# cd xrootd
-# git-archive master | gzip -9 > ~/rpmbuild/SOURCES/xrootd.tgz
-Source0:   xrootd-%{version}.tar.gz
+%if !%{with git}
+Version:	5.8.2
+Source0:	https://xrootd.web.cern.ch/download/v%{version}/%{name}-%{version}.tar.gz
+%else
+%define git_version %(tar xzf %{_sourcedir}/%{name}.tar.gz -O xrootd/VERSION)
+%define src_version %(sed -e "s/%%(describe)/v5.8-rc%(date +%%Y%%m%%d)/" <<< "%git_version")
+%define rpm_version %(sed -e 's/v//; s/-rc/~rc/; s/-g/+git/; s/-/.post/; s/-/./' <<< "%src_version")
+Version:	%rpm_version
+Source0:	%{name}.tar.gz
+%endif
 
 # always include the tarball in the SRPM even if we don't build it because the
 # SRPM build may have a different build environment than the RPM build
@@ -117,115 +67,75 @@ Patch9: 0009-Fix-life-time-of-a-variable-used-for-signaling-that~286b8ca.patch
 # PelicanPlatform/xrootd #27 (xrootd/xrootd #2506)
 Patch10: 0010-Correct-concurrency-and-state-tracking-around-Redriv~86d48f1.patch
 
-%if %{use_cmake3}
-BuildRequires:	cmake3
-%else
+%undefine __cmake_in_source_build
+
 BuildRequires:	cmake
-%endif
-BuildRequires:	krb5-devel
-BuildRequires:	readline-devel
-BuildRequires:	fuse-devel
-BuildRequires:	libxml2-devel
-BuildRequires:	krb5-devel
-BuildRequires:	zlib-devel
-BuildRequires:	ncurses-devel
-BuildRequires:	libcurl-devel
-BuildRequires:	libuuid-devel
-BuildRequires:	voms-devel >= 2.0.6
-BuildRequires:	git
+BuildRequires:	gcc-c++
+BuildRequires:	gdb
+BuildRequires:	which
+BuildRequires:	make
 BuildRequires:	pkgconfig
-%if %{have_macaroons}
-BuildRequires:	libmacaroons-devel
-%endif
-BuildRequires:	json-c-devel
-
-%if %{_with_python2}
-BuildRequires:	python2-pip
-BuildRequires:	python2-devel
-BuildRequires:	python2-setuptools
-%endif
-%if %{_with_python3}
-BuildRequires:	python%{python3_pkgversion}-devel
-BuildRequires:	python%{python3_pkgversion}-setuptools
-%endif
-
+BuildRequires:	fuse-devel
+BuildRequires:	krb5-devel
+BuildRequires:	libcurl-devel
+BuildRequires:	tinyxml-devel
+BuildRequires:	libxml2-devel
+BuildRequires:	ncurses-devel
 BuildRequires:	openssl-devel
-
+BuildRequires:	perl-generators
+BuildRequires:	readline-devel
+BuildRequires:	zlib-devel
 BuildRequires:	selinux-policy-devel
-
-%if %{?_with_tests:1}%{!?_with_tests:0}
-BuildRequires:	cppunit-devel
-BuildRequires:	gtest-devel
-%endif
-
-%if %{?_with_ceph:1}%{!?_with_ceph:0}
-    %if %{?_with_ceph11:1}%{!?_with_ceph11:0}
-BuildRequires:	librados-devel >= 11.0
-BuildRequires:	libradosstriper-devel >= 11.0
-    %else
-BuildRequires:	ceph-devel >= 0.87
-    %endif
-%endif
-
-%if %{?_with_xrdclhttp:1}%{!?_with_xrdclhttp:0}
+BuildRequires:	systemd-rpm-macros
+BuildRequires:	systemd-devel
+BuildRequires:	python3-devel
+BuildRequires:	python3-pip
+BuildRequires:	python3-setuptools
+BuildRequires:	python3-wheel
+BuildRequires:	json-c-devel
+BuildRequires:	libmacaroons-devel
+BuildRequires:	libuuid-devel
+BuildRequires:	voms-devel
+BuildRequires:	scitokens-cpp-devel
 BuildRequires:	davix-devel
+BuildRequires:  libxcrypt-devel
+
+%if %{with asan}
+BuildRequires:	libasan
 %endif
 
-%if 0%{!?_without_doc:1}
-BuildRequires:	doxygen
-BuildRequires:	graphviz
-%if %{?rhel}%{!?rhel:0} == 5
-BuildRequires:	graphviz-gd
-%endif
+%if %{with ceph}
+BuildRequires:	librados-devel
+BuildRequires:	libradosstriper-devel
 %endif
 
-%if %{?_with_clang:1}%{!?_with_clang:0}
+%if %{with clang}
 BuildRequires:	clang
 %endif
 
-%if %{?_with_asan:1}%{!?_with_asan:0}
-BuildRequires:	libasan
-%if %{?rhel}%{!?rhel:0} == 7
-BuildRequires:	devtoolset-7-libasan-devel
-%endif
-Requires: libasan
+%if %{with docs}
+BuildRequires:	doxygen
+BuildRequires:	graphviz
+BuildRequires:	python3-sphinx
 %endif
 
-%if %{?_with_scitokens:1}%{!?_with_scitokens:0}
-BuildRequires:	scitokens-cpp-devel
+%if %{with tests}
+BuildRequires:	attr
+BuildRequires:	coreutils
+BuildRequires:	curl
+BuildRequires:	davix
+BuildRequires:	gtest-devel
+BuildRequires:	openssl
+BuildRequires:	procps-ng
 %endif
 
-%if %{?_with_isal:1}%{!?_with_isal:0}
-BuildRequires:	autoconf
-BuildRequires:	automake
-BuildRequires:	libtool
-BuildRequires:	yasm
+%if %{with xrdec}
+BuildRequires:	isa-l-devel
 %endif
 
+Requires:	%{name}-client%{?_isa} = %{epoch}:%{version}-%{release}
 Requires:	%{name}-server%{?_isa} = %{epoch}:%{version}-%{release}
 Requires:	%{name}-selinux = %{epoch}:%{version}-%{release}
-
-%if %{use_systemd}
-BuildRequires:	systemd
-BuildRequires:	systemd-devel
-Requires(pre):		systemd
-Requires(post):		systemd
-Requires(preun):	systemd
-Requires(postun):	systemd
-%else
-Requires(pre):		shadow-utils
-Requires(pre):		chkconfig
-Requires(post):		chkconfig
-Requires(preun):	chkconfig
-Requires(preun):	initscripts
-Requires(postun):	initscripts
-%endif
-
-%if %{?rhel}%{!?rhel:0} == 7
-BuildRequires:	devtoolset-7
-%else
-BuildRequires:	gcc-c++
-%endif
 
 %description
 The Extended root file server consists of a file server called xrootd
@@ -240,9 +150,33 @@ originally developed to cluster and load balance Objectivity/DB AMS
 database servers. It provides enhanced capability along with lower
 latency and increased throughput.
 
-#-------------------------------------------------------------------------------
-# libs
-#-------------------------------------------------------------------------------
+%package server
+Summary:	XRootD server daemons
+Group:		System Environment/Daemons
+Requires:	%{name}-libs%{?_isa} = %{epoch}:%{version}-%{release}
+Requires:	%{name}-client%{?_isa} = %{epoch}:%{version}-%{release}
+Requires:	%{name}-server-libs%{?_isa} = %{epoch}:%{version}-%{release}
+Requires:	expect
+Requires:	logrotate
+Requires(pre): shadow-utils
+%{?systemd_requires}
+
+%description server
+This package contains the XRootD servers without the SELinux support.
+Unless you are installing on a system without SELinux also install the
+xrootd-selinux package.
+
+%package selinux
+Summary:	SELinux policy modules for the XRootD servers
+Group:		System Environment/Base
+BuildArch:	noarch
+Requires:	selinux-policy
+Requires(post):		policycoreutils
+Requires(postun):	policycoreutils
+
+%description selinux
+This package contains SELinux policy modules for the xrootd-server package.
+
 %package libs
 Summary:	Libraries used by XRootD servers and clients
 Group:		System Environment/Libraries
@@ -256,7 +190,10 @@ This package contains libraries used by the XRootD servers and clients.
 %package devel
 Summary:	Development files for XRootD
 Group:		Development/Libraries
+Provides:	%{name}-libs-devel = %{epoch}:%{version}-%{release}
+Provides:	%{name}-libs-devel%{?_isa} = %{epoch}:%{version}-%{release}
 Requires:	%{name}-libs%{?_isa} = %{epoch}:%{version}-%{release}
+Obsoletes:	%{name}-libs-devel < %{epoch}:%{version}-%{release}
 
 %description devel
 This package contains header files and development libraries for XRootD
@@ -279,8 +216,11 @@ This package contains libraries used by XRootD clients.
 %package client-devel
 Summary:	Development files for XRootD clients
 Group:		Development/Libraries
+Provides:	%{name}-cl-devel = %{epoch}:%{version}-%{release}
+Provides:	%{name}-cl-devel%{?_isa} = %{epoch}:%{version}-%{release}
 Requires:	%{name}-devel%{?_isa} = %{epoch}:%{version}-%{release}
 Requires:	%{name}-client-libs%{?_isa} = %{epoch}:%{version}-%{release}
+Obsoletes:	%{name}-cl-devel < %{epoch}:%{version}-%{release}
 
 %description client-devel
 This package contains header files and development libraries for XRootD
@@ -294,8 +234,6 @@ Summary:	Libraries used by XRootD servers
 Group:		System Environment/Libraries
 Requires:	%{name}-libs%{?_isa} = %{epoch}:%{version}-%{release}
 Requires:	%{name}-client-libs%{?_isa} = %{epoch}:%{version}-%{release}
-Obsoletes:  xrootd-macaroons
-Obsoletes:  xrootd-tpc
 
 %description server-libs
 This package contains libraries used by XRootD servers.
@@ -323,6 +261,7 @@ Group:		Development/Libraries
 Requires:	%{name}-devel%{?_isa} = %{epoch}:%{version}-%{release}
 Requires:	%{name}-client-devel%{?_isa} = %{epoch}:%{version}-%{release}
 Requires:	%{name}-server-devel%{?_isa} = %{epoch}:%{version}-%{release}
+Requires:	%{name}-client-libs%{?_isa} = %{epoch}:%{version}-%{release}
 
 %description private-devel
 This package contains some private XRootD headers. Backward and forward
@@ -334,26 +273,16 @@ compatibility between versions is not guaranteed for these headers.
 %package client
 Summary:	XRootD command line client tools
 Group:		Applications/Internet
+Provides:	%{name}-cl = %{epoch}:%{version}-%{release}
+Provides:	%{name}-cl%{?_isa} = %{epoch}:%{version}-%{release}
 Requires:	%{name}-libs%{?_isa} = %{epoch}:%{version}-%{release}
 Requires:	%{name}-client-libs%{?_isa} = %{epoch}:%{version}-%{release}
+Obsoletes:	%{name}-cl < %{epoch}:%{version}-%{release}
 
 %description client
 This package contains the command line tools used to communicate with
 XRootD servers.
 
-#-------------------------------------------------------------------------------
-# server
-#-------------------------------------------------------------------------------
-%package server
-Summary:   Extended ROOT file server
-Group:     System Environment/Daemons
-Requires:  %{name}-libs        = %{epoch}:%{version}-%{release}
-Requires:  %{name}-client-libs = %{epoch}:%{version}-%{release}
-Requires:  %{name}-server-libs = %{epoch}:%{version}-%{release}
-Requires:  expect
-
-%description server
-XRootD server binaries
 
 #-------------------------------------------------------------------------------
 # fuse
@@ -369,148 +298,85 @@ Requires:	fuse
 This package contains the FUSE (file system in user space) XRootD mount
 tool.
 
-#-------------------------------------------------------------------------------
-# Python bindings
-#-------------------------------------------------------------------------------
+%package voms
+Summary:	VOMS attribute extractor plugin for XRootD
+Group:		System Environment/Libraries
+Provides:	vomsxrd = %{epoch}:%{version}-%{release}
+Provides:	%{name}-voms-plugin = %{epoch}:%{version}-%{release}
+Provides:	xrdhttpvoms = %{epoch}:%{version}-%{release}
+Requires:	%{name}-libs%{?_isa} = %{epoch}:%{version}-%{release}
+Obsoletes:	%{name}-voms-plugin < 1:0.6.0-3
+Obsoletes:	xrdhttpvoms < 0.2.5-9
+Obsoletes:	vomsxrd < 1:0.6.0-4
 
-%if %{_with_python2}
-#-------------------------------------------------------------------------------
-# python2
-#-------------------------------------------------------------------------------
-%package -n python2-%{name}
-Summary:       Python 2 bindings for XRootD
-Group:         Development/Libraries
-Provides:      python-%{name}
-Provides:      %{name}-python = %{epoch}:%{version}-%{release}
-Obsoletes:     %{name}-python < 1:4.8.0-1
-Requires:      %{name}-client-libs%{?_isa} = %{epoch}:%{version}-%{release}
+%description voms
+The VOMS attribute extractor plugin for XRootD.
 
-%description -n python2-xrootd
-Python 2 bindings for XRootD
+%package scitokens
+Summary:	SciTokens authorization support for XRootD
+Group:		System Environment/Libraries
+License:	Apache-2.0 AND BSD-2-Clause AND BSD-3-Clause
+Requires:	%{name}-server%{?_isa} = %{epoch}:%{version}-%{release}
+Requires:	%{name}-libs%{?_isa} = %{epoch}:%{version}-%{release}
+
+%description scitokens
+This ACC (authorization) plugin for the XRootD framework utilizes the
+SciTokens library to validate and extract authorization claims from a
+SciToken passed during a transfer. Configured appropriately, this
+allows the XRootD server admin to delegate authorization decisions for
+a subset of the namespace to an external issuer.
+
+%package -n xrdcl-http
+Summary:	HTTP client plugin for XRootD
+Group:		System Environment/Libraries
+Requires:	%{name}-libs%{?_isa} = %{epoch}:%{version}-%{release}
+Requires:	%{name}-client-libs%{?_isa} = %{epoch}:%{version}-%{release}
+
+%description -n xrdcl-http
+xrdcl-http is an XRootD client plugin which allows XRootD to interact
+with HTTP repositories.
+
+%if %{with ceph}
+%package ceph
+Summary:	XRootD plugin for interfacing with the Ceph storage platform
+Group:		System Environment/Libraries
+Requires:	%{name}-libs%{?_isa} = %{epoch}:%{version}-%{release}
+
+%description ceph
+The xrootd-ceph is an OSS layer plugin for the XRootD server for
+interfacing with the Ceph storage platform.
 %endif
 
-%if %{_with_python3}
-#-------------------------------------------------------------------------------
-# python3
-#-------------------------------------------------------------------------------
 %package -n python%{python3_pkgversion}-%{name}
-Summary:       Python 3 bindings for XRootD
-Group:         Development/Libraries
-%{?python_provide:%python_provide python%{python3_pkgversion}-%{name}}
-Requires:      %{name}-client-libs%{?_isa} = %{epoch}:%{version}-%{release}
+Summary:	Python 3 bindings for XRootD
+Group:		System Environment/Libraries
+%py_provides	python%{python3_pkgversion}-%{name}
+Requires:	%{name}-libs%{?_isa} = %{epoch}:%{version}-%{release}
+Requires:	%{name}-client-libs%{?_isa} = %{epoch}:%{version}-%{release}
 
 %description -n python%{python3_pkgversion}-%{name}
-Python 3 bindings for XRootD
-%endif
+This package contains Python 3 bindings for XRootD.
 
-%if 0%{!?_without_doc:1}
-#-------------------------------------------------------------------------------
-# doc
-#-------------------------------------------------------------------------------
 %package doc
-Summary:	Developer documentation for the xrootd libraries
+Summary:	Developer documentation for the XRootD libraries
 Group:		Documentation
-%if %{?fedora}%{!?fedora:0} >= 10 || %{?rhel}%{!?rhel:0} >= 6
-# Not noarch: generated documentation different between noarch packages built on different arches
-#BuildArch:	noarch
-%endif
+BuildArch:	noarch
 
 %description doc
-This package contains the API documentation of the xrootd libraries.
-
-%endif
-#-------------------------------------------------------------------------------
-# selinux
-#-------------------------------------------------------------------------------
-%package selinux
-Summary:	 SELinux policy extensions for xrootd.
-Group:		 System Environment/Base
-%if %{?fedora}%{!?fedora:0} >= 10 || %{?rhel}%{!?rhel:0} >= 6
-BuildArch: noarch
-%endif
-Requires(post):   policycoreutils
-Requires(postun): policycoreutils
-Requires:         selinux-policy
-
-%description selinux
-SELinux policy extensions for running xrootd while in enforcing mode.
+This package contains the API documentation of the XRootD libraries.
 
 #-------------------------------------------------------------------------------
-# ceph
+# compat
 #-------------------------------------------------------------------------------
-%if %{?_with_ceph:1}%{!?_with_ceph:0}
-%package ceph
-Summary: Ceph back-end plug-in for XRootD
-Group:   Development/Tools
-Requires: %{name}-server = %{epoch}:%{version}-%{release}
-%description ceph
-Ceph back-end plug-in for XRootD.
-%endif
-
-#-------------------------------------------------------------------------------
-# xrdcl-http
-#-------------------------------------------------------------------------------
-%if %{?_with_xrdclhttp:1}%{!?_with_xrdclhttp:0}
-%package -n xrdcl-http
-Summary:  HTTP client plug-in for XRootD client
-Group:    System Environment/Libraries
-Requires: %{name}-client = %{epoch}:%{version}-%{release}
-%description -n xrdcl-http
-xrdcl-http is an XRootD client plugin which allows XRootD to interact 
-with HTTP repositories.
-%endif
-
-#-------------------------------------------------------------------------------
-# xrootd-voms
-#-------------------------------------------------------------------------------
-%package   voms
-Summary:   VOMS attribute extractor plug-in for XRootD
-Group:     System Environment/Libraries
-Provides:  vomsxrd = %{epoch}:%{version}-%{release}
-Obsoletes: vomsxrd < 1:4.12.4-1
-Requires:  %{name}-libs = %{epoch}:%{version}-%{release}
-Obsoletes: xrootd-voms-plugin
-%description voms
-The VOMS attribute extractor plug-in for XRootD.
-
-#-------------------------------------------------------------------------------
-# xrootd-scitokens
-#-------------------------------------------------------------------------------
-%if %{?_with_scitokens:1}%{!?_with_scitokens:0}
-%package scitokens
-Summary: SciTokens authentication plugin for XRootD
-Group:   Development/Tools
-Requires: %{name}-server = %{epoch}:%{version}-%{release}
-%description scitokens
-SciToken athorization plug-in for XRootD.
-%endif
-
-#-------------------------------------------------------------------------------
-# tests
-#-------------------------------------------------------------------------------
-%if %{?_with_tests:1}%{!?_with_tests:0}
-%package tests
-Summary: CPPUnit tests
-Group:   Development/Tools
-Requires: %{name}-client = %{epoch}:%{version}-%{release}
-%description tests
-This package contains a set of CPPUnit tests for xrootd.
-%endif
-
-%if 0%{?_with_compat}
-#-------------------------------------------------------------------------------
-# client-compat
-#-------------------------------------------------------------------------------
+%if %{with compat}
 %package client-compat
 Summary:	XRootD 4 compatibility client libraries
 Group:		System Environment/Libraries
 
+
 %description client-compat
 This package contains compatibility libraries for XRootD 4 clients.
 
-#-------------------------------------------------------------------------------
-# server-compat
-#-------------------------------------------------------------------------------
 %package server-compat
 Summary:	XRootD 4 compatibility server binaries
 Group:		System Environment/Daemons
@@ -519,84 +385,68 @@ Requires:	%{name}-libs%{?_isa} = %{epoch}:%{version}-%{release}
 %description server-compat
 This package contains compatibility binaries for XRootD 4 servers.
 %endif
+#-------------------------------------------------------------------------------
+# end compat
+#-------------------------------------------------------------------------------
 
 #-------------------------------------------------------------------------------
 # Build instructions
 #-------------------------------------------------------------------------------
 %prep
-%if 0%{?_with_compat}
+%if %{with compat}
 %setup -c -n xrootd-compat -a 1 -T
 %endif
 
-%setup -c -n %{build_dir}
-cd %{build_dir}
-%autopatch -p1
-cd ..
+%if %{with git}
+%autosetup -n %{name}
+%else
+%autosetup -p1
+%endif
 
 %build
 
-%if %{?rhel}%{!?rhel:0} == 7
-. /opt/rh/devtoolset-7/enable
-%endif
-
-cd %{build_dir}
-
-%if %{?_with_clang:1}%{!?_with_clang:0}
+%if %{with clang}
 export CC=clang
 export CXX=clang++
 %endif
 
-mkdir build
-pushd build
+%cmake \
+    -DFORCE_ENABLED:BOOL=TRUE \
+    -DENABLE_ASAN:BOOL=%{with asan} \
+    -DENABLE_CEPH:BOOL=%{with ceph} \
+    -DENABLE_FUSE:BOOL=TRUE \
+    -DENABLE_KRB5:BOOL=TRUE \
+    -DENABLE_MACAROONS:BOOL=TRUE \
+    -DENABLE_READLINE:BOOL=TRUE \
+    -DENABLE_SCITOKENS:BOOL=TRUE \
+    -DENABLE_TESTS:BOOL=%{with tests} \
+    -DENABLE_VOMS:BOOL=TRUE \
+    -DENABLE_XRDCL:BOOL=TRUE \
+    -DENABLE_XRDCLHTTP:BOOL=TRUE \
+    -DENABLE_XRDEC:BOOL=%{with xrdec} \
+    -DENABLE_XRDCLHTTP:BOOL=TRUE \
+    -DXRDCL_ONLY:BOOL=FALSE \
+    -DXRDCL_LIB_ONLY:BOOL=FALSE \
+    -DENABLE_PYTHON:BOOL=TRUE \
+    -DINSTALL_PYTHON_BINDINGS:BOOL=FALSE \
+    -DXRD_PYTHON_REQ_VERSION=%{python3_version}
 
-%if %{use_cmake3}
-cmake3 \
-%else
-cmake  \
-%endif
-      -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=%{?_with_debug:Debug}%{!?_with_debug:RelWithDebInfo} \
-      -DFORCE_WERROR=TRUE \
-%if %{?_with_tests:1}%{!?_with_tests:0}
-      -DENABLE_TESTS=TRUE \
-%else
-      -DENABLE_TESTS=FALSE \
-%endif
-%if %{?_with_asan:1}%{!?_with_asan:0}
-      -DENABLE_ASAN=TRUE \
-%endif
-%if %{?_with_ceph:1}%{!?_with_ceph:0}
-      -DXRDCEPH_SUBMODULE=TRUE \
-%endif
-%if %{?_with_xrdclhttp:1}%{!?_with_xrdclhttp:0}
-      -DENABLE_XRDCLHTTP=TRUE \
-%endif
-%if %{?_with_isal:1}%{!?_with_isal:0}
-      -DENABLE_XRDEC=TRUE \
-%endif
-      -DXRootD_VERSION_STRING=v%{version} \
-      -DINSTALL_PYTHON_BINDINGS=FALSE \
-      ../
+%cmake3_build
 
-make -i VERBOSE=1 %{?_smp_mflags}
-popd
+make -C packaging/common -f /usr/share/selinux/devel/Makefile
 
-pushd packaging/common
-make -f /usr/share/selinux/devel/Makefile
-popd
-
-%if 0%{!?_without_doc:1}
+%if %{with docs}
 doxygen Doxyfile
 %endif
 
-%if 0%{?_with_compat}
+#-------------------------------------------------------------------------------
+# compat
+#-------------------------------------------------------------------------------
+%if %{with compat}
 pushd $RPM_BUILD_DIR/xrootd-compat/xrootd*
 mkdir build
 pushd build
-%if %{use_cmake3}
-cmake3 \
-%else
 cmake  \
-%endif
       -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=RelWithDebInfo \
       -DFORCE_WERROR=TRUE \
 %if %{?_with_tests:1}%{!?_with_tests:0}
@@ -604,272 +454,200 @@ cmake  \
 %else
       -DENABLE_TESTS=FALSE \
 %endif
-%if %{?_with_ceph:1}%{!?_with_ceph:0}
+%if %{with ceph}
       -DXRDCEPH_SUBMODULE=TRUE \
 %endif
-%if %{?_with_xrdclhttp:1}%{!?_with_xrdclhttp:0}
       -DENABLE_XRDEC=TRUE \
-%endif
       ../
 
 make -i VERBOSE=1 %{?_smp_mflags}
 popd
 popd
 %endif
+#-------------------------------------------------------------------------------
+# end compat
+#-------------------------------------------------------------------------------
 
-%undefine _hardened_build
 
-pushd build/bindings/python
-# build python2 bindings
-%if %{_with_python2}
-%py2_build
-%endif
-# build python3 bindings
-%if %{_with_python3}
-%py3_build
-%endif
-popd
-
+%if %{with tests}
 %check
-cd %{build_dir}
-%if %{use_cmake3}
-ctest3 --output-on-failure
-%else
-ctest --output-on-failure
+%ctest3
 %endif
 
-#-------------------------------------------------------------------------------
-# Installation
-#-------------------------------------------------------------------------------
 %install
-rm -rf $RPM_BUILD_ROOT
 
 #-------------------------------------------------------------------------------
-# Install compat
+# compat
 #-------------------------------------------------------------------------------
-%if 0%{?_with_compat}
+%if %{with compat}
 pushd $RPM_BUILD_DIR/xrootd-compat/xrootd*/build
-make install DESTDIR=$RPM_BUILD_ROOT
-rm -rf $RPM_BUILD_ROOT%{_includedir}
-rm -rf $RPM_BUILD_ROOT%{_datadir}
-rm -f $RPM_BUILD_ROOT%{_bindir}/{cconfig,cns_ssi,frm_admin,frm_xfragent,mpxstats}
-rm -f $RPM_BUILD_ROOT%{_bindir}/{wait41,xprep,xrd,xrdadler32,xrdcrc32c,XrdCnsd,xrdcopy}
-rm -f $RPM_BUILD_ROOT%{_bindir}/{xrdcks,xrdcp,xrdcp-old,xrdfs,xrdgsiproxy,xrdpwdadmin}
-rm -f $RPM_BUILD_ROOT%{_bindir}/{xrdqstats,xrdsssadmin,xrdstagetool,xrootdfs}
-rm -f $RPM_BUILD_ROOT%{_libdir}/libXrdAppUtils.so
-rm -f $RPM_BUILD_ROOT%{_libdir}/{libXrdClient.so,libXrdCl.so,libXrdCryptoLite.so}
-rm -f $RPM_BUILD_ROOT%{_libdir}/{libXrdCrypto.so,libXrdFfs.so,libXrdMain.so}
-rm -f $RPM_BUILD_ROOT%{_libdir}/{libXrdOfs.so,libXrdPosixPreload.so,libXrdPosix.so}
-rm -f $RPM_BUILD_ROOT%{_libdir}/{libXrdServer.so,libXrdUtils.so}
+make install DESTDIR=%{buildroot}
+rm -rf %{buildroot}%{_includedir}
+rm -rf %{buildroot}%{_datadir}
+rm -f %{buildroot}%{_bindir}/{cconfig,cns_ssi,frm_admin,frm_xfragent,mpxstats}
+rm -f %{buildroot}%{_bindir}/{wait41,xprep,xrd,xrdadler32,xrdcrc32c,XrdCnsd,xrdcopy}
+rm -f %{buildroot}%{_bindir}/{xrdcks,xrdcp,xrdcp-old,xrdfs,xrdgsiproxy,xrdpwdadmin}
+rm -f %{buildroot}%{_bindir}/{xrdqstats,xrdsssadmin,xrdstagetool,xrootdfs}
+rm -f %{buildroot}%{_libdir}/libXrdAppUtils.so
+rm -f %{buildroot}%{_libdir}/{libXrdClient.so,libXrdCl.so,libXrdCryptoLite.so}
+rm -f %{buildroot}%{_libdir}/{libXrdCrypto.so,libXrdFfs.so,libXrdMain.so}
+rm -f %{buildroot}%{_libdir}/{libXrdOfs.so,libXrdPosixPreload.so,libXrdPosix.so}
+rm -f %{buildroot}%{_libdir}/{libXrdServer.so,libXrdUtils.so}
 
 for i in cmsd frm_purged frm_xfrd xrootd; do
-  mv $RPM_BUILD_ROOT%{_bindir}/$i $RPM_BUILD_ROOT%{_bindir}/${i}-4
+  mv %{buildroot}%{_bindir}/$i %{buildroot}%{_bindir}/${i}-4
 done
 
-rm -f $RPM_BUILD_ROOT%{python2_sitearch}/xrootd-v%{compat_version}*.egg-info
+rm -f %{buildroot}%{python2_sitearch}/xrootd-v%{compat_version}*.egg-info
 popd
 %endif
-
 #-------------------------------------------------------------------------------
-# Install 5.x.y
+# end compat
 #-------------------------------------------------------------------------------
-pushd %{build_dir}
-pushd  build
-make install DESTDIR=$RPM_BUILD_ROOT
-popd
 
-# configuration stuff
-rm -rf $RPM_BUILD_ROOT%{_sysconfdir}/xrootd/*
+%cmake3_install
 
-# ceph posix unversioned so
-rm -f $RPM_BUILD_ROOT%{_libdir}/libXrdCephPosix.so
-
-# config paths
-mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/config.d/
-
-# var paths
-mkdir -p $RPM_BUILD_ROOT%{_var}/log/xrootd
-mkdir -p $RPM_BUILD_ROOT%{_var}/run/xrootd
-mkdir -p $RPM_BUILD_ROOT%{_var}/spool/xrootd
-
-# init stuff
-mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/xrootd
-
-%if %{use_systemd}
-
-mkdir -p $RPM_BUILD_ROOT%{_unitdir}
-install -m 644 packaging/common/xrootd@.service $RPM_BUILD_ROOT%{_unitdir}
-install -m 644 packaging/common/xrdhttp@.socket   $RPM_BUILD_ROOT%{_unitdir}
-install -m 644 packaging/common/xrootd@.socket    $RPM_BUILD_ROOT%{_unitdir}
-install -m 644 packaging/common/cmsd@.service $RPM_BUILD_ROOT%{_unitdir}
-install -m 644 packaging/common/frm_xfrd@.service $RPM_BUILD_ROOT%{_unitdir}
-install -m 644 packaging/common/frm_purged@.service $RPM_BUILD_ROOT%{_unitdir}
-
-# tmpfiles.d
-mkdir -p $RPM_BUILD_ROOT%{_tmpfilesdir}
-install -m 0644 packaging/rhel/xrootd.tmpfiles $RPM_BUILD_ROOT%{_tmpfilesdir}/%{name}.conf
-
-%else
-
-mkdir -p $RPM_BUILD_ROOT%{_initrddir}
-mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/sysconfig
-install -m 644 packaging/rhel/xrootd.sysconfig $RPM_BUILD_ROOT%{_sysconfdir}/sysconfig/xrootd
-
-install -m 755 packaging/rhel/cmsd.init $RPM_BUILD_ROOT%{_initrddir}/cmsd
-install -m 755 packaging/rhel/frm_purged.init $RPM_BUILD_ROOT%{_initrddir}/frm_purged
-install -m 755 packaging/rhel/frm_xfrd.init $RPM_BUILD_ROOT%{_initrddir}/frm_xfrd
-install -m 755 packaging/rhel/xrootd.init $RPM_BUILD_ROOT%{_initrddir}/xrootd
-install -m 755 packaging/rhel/xrootd.functions $RPM_BUILD_ROOT%{_initrddir}/xrootd.functions
-
+# Remove test binaries and libraries
+%if %{with tests}
+	rm -f %{buildroot}%{_bindir}/test-runner
+	rm -f %{buildroot}%{_bindir}/xrdshmap
+	rm -f %{buildroot}%{_libdir}/libXrd*Tests*
+	rm -f %{buildroot}%{_libdir}/libXrdClTestMonitor*.so
 %endif
 
-# logrotate
-mkdir $RPM_BUILD_ROOT%{_sysconfdir}/logrotate.d
-install -p -m 644 packaging/common/xrootd.logrotate $RPM_BUILD_ROOT%{_sysconfdir}/logrotate.d/xrootd
-
-install -m 644 packaging/common/xrootd-clustered.cfg $RPM_BUILD_ROOT%{_sysconfdir}/xrootd/xrootd-clustered.cfg
-install -m 644 packaging/common/xrootd-standalone.cfg $RPM_BUILD_ROOT%{_sysconfdir}/xrootd/xrootd-standalone.cfg
-install -m 644 packaging/common/xrootd-filecache-clustered.cfg $RPM_BUILD_ROOT%{_sysconfdir}/xrootd/xrootd-filecache-clustered.cfg
-install -m 644 packaging/common/xrootd-filecache-standalone.cfg $RPM_BUILD_ROOT%{_sysconfdir}/xrootd/xrootd-filecache-standalone.cfg
-%if %{use_systemd}
-install -m 644 packaging/common/xrootd-http.cfg $RPM_BUILD_ROOT%{_sysconfdir}/xrootd/xrootd-http.cfg
+%if %{with ceph}
+	rm -f %{buildroot}%{_libdir}/libXrdCephPosix.so
 %endif
 
-# client plug-in config
-mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/xrootd/client.plugins.d
-install -m 644 packaging/common/client-plugin.conf.example $RPM_BUILD_ROOT%{_sysconfdir}/xrootd/client.plugins.d/client-plugin.conf.example
-install -m 644 packaging/common/recorder.conf              $RPM_BUILD_ROOT%{_sysconfdir}/xrootd/client.plugins.d/recorder.conf
+rm -f %{buildroot}%{python3_sitearch}/xrootd-*.*-info/direct_url.json
+rm -f %{buildroot}%{python3_sitearch}/xrootd-*.*-info/RECORD
+[ -r %{buildroot}%{python3_sitearch}/xrootd-*.*-info/INSTALLER ] && \
+	sed s/pip/rpm/ -i %{buildroot}%{python3_sitearch}/xrootd-*.*-info/INSTALLER
 
-%if %{?_with_xrdclhttp:1}%{!?_with_xrdclhttp:0}
-install -m 644 packaging/common/http.client.conf.example $RPM_BUILD_ROOT%{_sysconfdir}/xrootd/client.plugins.d/xrdcl-http-plugin.conf
+%{__python3} -m pip install \
+	--no-deps --ignore-installed --disable-pip-version-check --verbose \
+	--prefix %{buildroot}%{_prefix} %{_vpath_builddir}/bindings/python
+
+%if %{with docs}
+LD_LIBRARY_PATH=%{buildroot}%{_libdir} \
+PYTHONPATH=%{buildroot}%{python3_sitearch} \
+PYTHONDONTWRITEBYTECODE=1 \
+make -C bindings/python/docs html SPHINXBUILD=sphinx-build-3
 %endif
 
-# client config
-install -m 644 packaging/common/client.conf $RPM_BUILD_ROOT%{_sysconfdir}/xrootd/client.conf
+# Service unit files
+mkdir -p %{buildroot}%{_unitdir}
+install -m 644 packaging/common/xrootd@.service %{buildroot}%{_unitdir}
+install -m 644 packaging/common/xrootd@.socket %{buildroot}%{_unitdir}
+install -m 644 packaging/common/xrdhttp@.socket %{buildroot}%{_unitdir}
+install -m 644 packaging/common/cmsd@.service %{buildroot}%{_unitdir}
+install -m 644 packaging/common/frm_xfrd@.service %{buildroot}%{_unitdir}
+install -m 644 packaging/common/frm_purged@.service %{buildroot}%{_unitdir}
+mkdir -p %{buildroot}%{_tmpfilesdir}
+install -m 644 packaging/rhel/xrootd.tmpfiles %{buildroot}%{_tmpfilesdir}/%{name}.conf
 
-%if 0%{!?_without_doc:1}
-# documentation
-mkdir -p %{buildroot}%{_docdir}/%{name}-%{version}
-cp -pr doxydoc/html %{buildroot}%{_docdir}/%{name}-%{version}
-%endif
+# Server config
+mkdir -p %{buildroot}%{_sysconfdir}/%{name}
+install -m 644 -p packaging/common/%{name}-clustered.cfg \
+	%{buildroot}%{_sysconfdir}/%{name}/%{name}-clustered.cfg
+install -m 644 -p packaging/common/%{name}-standalone.cfg \
+	%{buildroot}%{_sysconfdir}/%{name}/%{name}-standalone.cfg
+install -m 644 -p packaging/common/%{name}-filecache-clustered.cfg \
+	%{buildroot}%{_sysconfdir}/%{name}/%{name}-filecache-clustered.cfg
+install -m 644 -p packaging/common/%{name}-filecache-standalone.cfg \
+	%{buildroot}%{_sysconfdir}/%{name}/%{name}-filecache-standalone.cfg
+sed 's!/usr/lib64/!!' packaging/common/%{name}-http.cfg > \
+	%{buildroot}%{_sysconfdir}/%{name}/%{name}-http.cfg
 
-# selinux
+# Client config
+mkdir -p %{buildroot}%{_sysconfdir}/%{name}/client.plugins.d
+install -m 644 -p packaging/common/client.conf \
+	%{buildroot}%{_sysconfdir}/%{name}/client.conf
+sed 's!/usr/lib/!!' packaging/common/client-plugin.conf.example > \
+	%{buildroot}%{_sysconfdir}/%{name}/client.plugins.d/client-plugin.conf.example
+sed -e 's!/usr/lib64/!!' -e 's!-5!!' packaging/common/recorder.conf > \
+	%{buildroot}%{_sysconfdir}/%{name}/client.plugins.d/recorder.conf
+sed 's!/usr/lib64/!!' packaging/common/http.client.conf.example > \
+	%{buildroot}%{_sysconfdir}/%{name}/client.plugins.d/xrdcl-http-plugin.conf
+
+chmod 644 %{buildroot}%{_datadir}/%{name}/utils/XrdCmsNotify.pm
+
+sed 's!/usr/bin/env perl!/usr/bin/perl!' -i \
+	%{buildroot}%{_datadir}/%{name}/utils/netchk \
+	%{buildroot}%{_datadir}/%{name}/utils/XrdCmsNotify.pm \
+	%{buildroot}%{_datadir}/%{name}/utils/XrdOlbMonPerf
+
+sed 's!/usr/bin/env bash!/bin/bash!' -i %{buildroot}%{_bindir}/xrootd-config
+
+mkdir -p %{buildroot}%{_sysconfdir}/%{name}/config.d
+
+mkdir -p %{buildroot}%{_localstatedir}/log/%{name}
+mkdir -p %{buildroot}%{_localstatedir}/spool/%{name}
+
+mkdir -p %{buildroot}%{_sysconfdir}/logrotate.d
+install -m 644 -p packaging/common/%{name}.logrotate \
+	%{buildroot}%{_sysconfdir}/logrotate.d/%{name}
+
 mkdir -p %{buildroot}%{_datadir}/selinux/packages/%{name}
-install -m 644 -p packaging/common/xrootd.pp \
-    %{buildroot}%{_datadir}/selinux/packages/%{name}/%{name}.pp
+install -m 644 -p packaging/common/%{name}.pp \
+	%{buildroot}%{_datadir}/selinux/packages/%{name}
 
-pushd build/bindings/python
-# install python2 bindings
-%if %{_with_python2}
-%py2_install
+%if %{with docs}
+	mkdir -p %{buildroot}%{_pkgdocdir}
+	cp -pr doxydoc/html %{buildroot}%{_pkgdocdir}
+
+	cp -pr bindings/python/docs/build/html %{buildroot}%{_pkgdocdir}/python
+	rm %{buildroot}%{_pkgdocdir}/python/.buildinfo
 %endif
-# install python3 bindings
-%if %{_with_python3}
-%py3_install
-%endif
-popd
 
-%clean
-rm -rf $RPM_BUILD_ROOT
+%ldconfig_scriptlets libs
 
-#-------------------------------------------------------------------------------
-# RPM scripts
-#-------------------------------------------------------------------------------
-%post   libs -p /sbin/ldconfig
-%postun libs -p /sbin/ldconfig
+%ldconfig_scriptlets client-libs
 
-%post   client-libs -p /sbin/ldconfig
-%postun client-libs -p /sbin/ldconfig
-
-%post   server-libs -p /sbin/ldconfig
-%postun server-libs -p /sbin/ldconfig
+%ldconfig_scriptlets server-libs
 
 %pre server
-
-getent group xrootd >/dev/null || groupadd -r xrootd
-getent passwd xrootd >/dev/null || \
-       useradd -r -g xrootd -c "XRootD runtime user" \
-       -s /sbin/nologin -d %{_localstatedir}/spool/xrootd xrootd
-exit 0
-
-%if %{use_systemd}
+getent group %{name} >/dev/null || groupadd -r %{name}
+getent passwd %{name} >/dev/null || useradd -r -g %{name} -s /sbin/nologin \
+	-d %{_localstatedir}/spool/%{name} -c "System user for XRootD" %{name}
 
 %post server
+%tmpfiles_create %{_tmpfilesdir}/%{name}.conf
+
 if [ $1 -eq 1 ] ; then
-    /usr/bin/systemctl daemon-reload >/dev/null 2>&1 || :
+	systemctl daemon-reload >/dev/null 2>&1 || :
 fi
 
 %preun server
 if [ $1 -eq 0 ] ; then
-    for DAEMON in xrootd cmsd frm_purged frm_xfrd; do
-        for INSTANCE in `/usr/bin/systemctl | grep $DAEMON@ | awk '{print $1;}'`; do
-            /usr/bin/systemctl --no-reload disable $INSTANCE > /dev/null 2>&1 || :
-            /usr/bin/systemctl stop $INSTANCE > /dev/null 2>&1 || :
-        done
-    done
+	for DAEMON in xrootd cmsd frm_purged frm_xfrd; do
+		for INSTANCE in `systemctl | grep $DAEMON@ | awk '{print $1;}'`; do
+			systemctl --no-reload disable $INSTANCE > /dev/null 2>&1 || :
+			systemctl stop $INSTANCE > /dev/null 2>&1 || :
+		done
+	done
 fi
 
 %postun server
 if [ $1 -ge 1 ] ; then
-    /usr/bin/systemctl daemon-reload >/dev/null 2>&1 || :
-    for DAEMON in xrootd cmsd frm_purged frm_xfrd; do
-        for INSTANCE in `/usr/bin/systemctl | grep $DAEMON@ | awk '{print $1;}'`; do
-            /usr/bin/systemctl try-restart $INSTANCE >/dev/null 2>&1 || :
-        done
-    done
+	systemctl daemon-reload >/dev/null 2>&1 || :
+	for DAEMON in xrootd cmsd frm_purged frm_xfrd; do
+		for INSTANCE in `systemctl | grep $DAEMON@ | awk '{print $1;}'`; do
+			systemctl try-restart $INSTANCE >/dev/null 2>&1 || :
+		done
+	done
 fi
 
-%else
-
-%post server
-if [ $1 -eq 1 ]; then
-    /sbin/chkconfig --add xrootd
-    /sbin/chkconfig --add cmsd
-    /sbin/chkconfig --add frm_purged
-    /sbin/chkconfig --add frm_xfrd
-fi
-
-%preun server
-if [ $1 -eq 0 ]; then
-    /sbin/service xrootd stop >/dev/null 2>&1 || :
-    /sbin/service cmsd stop >/dev/null 2>&1 || :
-    /sbin/service frm_purged stop >/dev/null 2>&1 || :
-    /sbin/service frm_xfrd stop >/dev/null 2>&1 || :
-    /sbin/chkconfig --del xrootd
-    /sbin/chkconfig --del cmsd
-    /sbin/chkconfig --del frm_purged
-    /sbin/chkconfig --del frm_xfrd
-fi
-
-%postun server
-if [ $1 -ge 1 ]; then
-    /sbin/service xrootd condrestart >/dev/null 2>&1 || :
-    /sbin/service cmsd condrestart >/dev/null 2>&1 || :
-    /sbin/service frm_purged condrestart >/dev/null 2>&1 || :
-    /sbin/service frm_xfrd condrestart >/dev/null 2>&1 || :
-fi
-
-%endif
-
-#-------------------------------------------------------------------------------
-# Add a new user and group if necessary
-#-------------------------------------------------------------------------------
-%pre fuse
-getent group xrootd >/dev/null || groupadd -r xrootd
-getent passwd xrootd >/dev/null || \
-       useradd -r -g xrootd -c "XRootD runtime user" \
-       -s /sbin/nologin -d %{_localstatedir}/spool/xrootd xrootd
-exit 0
 
 #-------------------------------------------------------------------------------
 # Selinux
 #-------------------------------------------------------------------------------
 %post selinux
-/usr/sbin/semodule -i %{_datadir}/selinux/packages/%{name}/%{name}.pp >/dev/null 2>&1 || :
+semodule -i %{_datadir}/selinux/packages/%{name}/%{name}.pp >/dev/null 2>&1 || :
 
 %postun selinux
 if [ $1 -eq 0 ] ; then
-    /usr/sbin/semodule -r %{name} >/dev/null 2>&1 || :
+	semodule -r %{name} >/dev/null 2>&1 || :
 fi
 
 #-------------------------------------------------------------------------------
@@ -887,49 +665,52 @@ fi
 %{_bindir}/frm_xfrd
 %{_bindir}/mpxstats
 %{_bindir}/wait41
+%{_bindir}/xrdacctest
+%{_bindir}/xrdpfc_print
 %{_bindir}/xrdpwdadmin
 %{_bindir}/xrdsssadmin
 %{_bindir}/xrootd
-%{_bindir}/xrdpfc_print
-%{_bindir}/xrdacctest
 %{_mandir}/man8/cmsd.8*
 %{_mandir}/man8/frm_admin.8*
 %{_mandir}/man8/frm_purged.8*
 %{_mandir}/man8/frm_xfragent.8*
 %{_mandir}/man8/frm_xfrd.8*
 %{_mandir}/man8/mpxstats.8*
+%{_mandir}/man8/xrdpfc_print.8*
 %{_mandir}/man8/xrdpwdadmin.8*
 %{_mandir}/man8/xrdsssadmin.8*
 %{_mandir}/man8/xrootd.8*
-%{_mandir}/man8/xrdpfc_print.8*
-%{_datadir}/xrootd/utils
-%attr(-,xrootd,xrootd) %config(noreplace) %{_sysconfdir}/xrootd/xrootd-clustered.cfg
-%attr(-,xrootd,xrootd) %config(noreplace) %{_sysconfdir}/xrootd/xrootd-standalone.cfg
-%attr(-,xrootd,xrootd) %config(noreplace) %{_sysconfdir}/xrootd/xrootd-filecache-clustered.cfg
-%attr(-,xrootd,xrootd) %config(noreplace) %{_sysconfdir}/xrootd/xrootd-filecache-standalone.cfg
-%if %{use_systemd}
-%attr(-,xrootd,xrootd) %config(noreplace) %{_sysconfdir}/xrootd/xrootd-http.cfg
-%endif
-%attr(-,xrootd,xrootd) %dir %{_var}/log/xrootd
-%attr(-,xrootd,xrootd) %dir %{_var}/run/xrootd
-%attr(-,xrootd,xrootd) %dir %{_var}/spool/xrootd
-%attr(-,xrootd,xrootd) %dir %{_sysconfdir}/%{name}/config.d
-%config(noreplace) %{_sysconfdir}/logrotate.d/xrootd
-
-%if %{use_systemd}
+%dir %{_datadir}/%{name}
+%{_datadir}/%{name}/utils
 %{_unitdir}/*
 %{_tmpfilesdir}/%{name}.conf
-%else
-%config(noreplace) %{_sysconfdir}/sysconfig/xrootd
-%{_initrddir}/*
-%endif
+%config(noreplace) %{_sysconfdir}/logrotate.d/%{name}
+%dir %{_sysconfdir}/%{name}/config.d
+%attr(-,xrootd,xrootd) %config(noreplace) %{_sysconfdir}/%{name}/*.cfg
+%attr(-,xrootd,xrootd) %{_localstatedir}/log/%{name}
+%attr(-,xrootd,xrootd) %{_localstatedir}/spool/%{name}
+%ghost %attr(-,xrootd,xrootd) %{_rundir}/%{name}
+
+%files selinux
+%{_datadir}/selinux/packages/%{name}/%{name}.pp
 
 %files libs
+%if %{with compat}
 %{_libdir}/libXrdAppUtils.so.2*
-%{_libdir}/libXrdClProxyPlugin-5.so
 %{_libdir}/libXrdCks*-5.so
 %{_libdir}/libXrdCrypto.so.2*
 %{_libdir}/libXrdCryptoLite.so.2*
+%{_libdir}/libXrdUtils.so.3*
+%{_libdir}/libXrdXml.so.3*
+%else
+%{_libdir}/libXrdAppUtils.so.*
+%{_libdir}/libXrdCrypto.so.*
+%{_libdir}/libXrdCryptoLite.so.*
+%{_libdir}/libXrdUtils.so.*
+%{_libdir}/libXrdXml.so.*
+%endif
+# Plugins
+%{_libdir}/libXrdCksCalczcrc32-5.so
 %{_libdir}/libXrdCryptossl-5.so
 %{_libdir}/libXrdSec-5.so
 %{_libdir}/libXrdSecProt-5.so
@@ -941,100 +722,119 @@ fi
 %{_libdir}/libXrdSecsss-5.so
 %{_libdir}/libXrdSecunix-5.so
 %{_libdir}/libXrdSecztn-5.so
-%{_libdir}/libXrdUtils.so.3*
-%{_libdir}/libXrdXml.so.3*
+%license COPYING* LICENSE
 
 %files devel
-%dir %{_includedir}/xrootd
 %{_bindir}/xrootd-config
-%{_includedir}/xrootd/XProtocol
-%{_includedir}/xrootd/Xrd
-%{_includedir}/xrootd/XrdCks
-%{_includedir}/xrootd/XrdNet
-%{_includedir}/xrootd/XrdOuc
-%{_includedir}/xrootd/XrdSec
-%{_includedir}/xrootd/XrdSys
-%{_includedir}/xrootd/XrdVersion.hh
+%dir %{_includedir}/%{name}
+%{_includedir}/%{name}/XProtocol
+%{_includedir}/%{name}/Xrd
+%{_includedir}/%{name}/XrdCks
+%{_includedir}/%{name}/XrdNet
+%{_includedir}/%{name}/XrdOuc
+%{_includedir}/%{name}/XrdSec
+%{_includedir}/%{name}/XrdSys
+%{_includedir}/%{name}/XrdXml
+%{_includedir}/%{name}/XrdVersion.hh
 %{_libdir}/libXrdAppUtils.so
 %{_libdir}/libXrdCrypto.so
 %{_libdir}/libXrdCryptoLite.so
 %{_libdir}/libXrdUtils.so
 %{_libdir}/libXrdXml.so
-%{_includedir}/xrootd/XrdXml/XrdXmlReader.hh
 %{_libdir}/cmake/XRootD
-# %{_datadir}/xrootd/cmake
+%dir %{_datadir}/%{name}
 
 %files client-libs
-%defattr(-,root,root,-)
+%if %{with compat}
 %{_libdir}/libXrdCl.so.3*
 %{_libdir}/libXrdFfs.so.3*
 %{_libdir}/libXrdPosix.so.3*
 %{_libdir}/libXrdPosixPreload.so.2*
-%{_libdir}/libXrdSsiLib.so.2*
-%{_libdir}/libXrdSsiShMap.so.2*
-%{_libdir}/libXrdClRecorder-5.so
-%if %{?_with_isal:1}%{!?_with_isal:0}
+%if %{with xrdec}
 %{_libdir}/libXrdEc.so.1*
 %endif
-%{_sysconfdir}/xrootd/client.plugins.d/client-plugin.conf.example
-%{_sysconfdir}/xrootd/client.plugins.d/recorder.conf
-%config(noreplace) %{_sysconfdir}/xrootd/client.conf
+%else
+%{_libdir}/libXrdCl.so.*
+%if %{with xrdec}
+%{_libdir}/libXrdEc.so.*
+%endif
+%{_libdir}/libXrdFfs.so.*
+%{_libdir}/libXrdPosix.so.*
+%{_libdir}/libXrdPosixPreload.so.*
+%endif
 # This lib may be used for LD_PRELOAD so the .so link needs to be included
 %{_libdir}/libXrdPosixPreload.so
+%if %{with compat}
+%{_libdir}/libXrdSsiLib.so.2*
+%{_libdir}/libXrdSsiShMap.so.2*
+%else
+%{_libdir}/libXrdSsiLib.so.*
+%{_libdir}/libXrdSsiShMap.so.*
+%endif
+# Plugins
+%{_libdir}/libXrdClProxyPlugin-5.so
+%{_libdir}/libXrdClRecorder-5.so
+%dir %{_sysconfdir}/%{name}
+%config(noreplace) %{_sysconfdir}/%{name}/client.conf
+%dir %{_sysconfdir}/%{name}/client.plugins.d
+%config(noreplace) %{_sysconfdir}/%{name}/client.plugins.d/client-plugin.conf.example
+%config(noreplace) %{_sysconfdir}/%{name}/client.plugins.d/recorder.conf
 
 %files client-devel
-%{_bindir}/xrdgsitest
-%{_includedir}/xrootd/XrdCl
-%{_includedir}/xrootd/XrdPosix
+%{_includedir}/%{name}/XrdCl
+%{_includedir}/%{name}/XrdPosix
 %{_libdir}/libXrdCl.so
+%if %{with xrdec}
+%{_libdir}/libXrdEc.so
+%endif
 %{_libdir}/libXrdFfs.so
 %{_libdir}/libXrdPosix.so
-%{_mandir}/man1/xrdgsitest.1*
 
 %files server-libs
-%{_libdir}/libXrdBwm-5.so
-%{_libdir}/libXrdPss-5.so
-%{_libdir}/libXrdXrootd-5.so
-%{_libdir}/libXrdPfc-5.so
-%{_libdir}/libXrdPfcPurgeQuota-5.so
-%{_libdir}/libXrdFileCache-5.so
+%if %{with compat}
+%{_libdir}/libXrdHttpUtils.so.2*
+%{_libdir}/libXrdServer.so.3*
+%else
+%{_libdir}/libXrdHttpUtils.so.*
+%{_libdir}/libXrdServer.so.*
+%endif
+# Plugins
 %{_libdir}/libXrdBlacklistDecision-5.so
+%{_libdir}/libXrdBwm-5.so
+%{_libdir}/libXrdCmsRedirectLocal-5.so
+%{_libdir}/libXrdFileCache-5.so
 %{_libdir}/libXrdHttp-5.so
 %{_libdir}/libXrdHttpTPC-5.so
-%{_libdir}/libXrdHttpUtils.so.2*
-%if %{have_macaroons}
 %{_libdir}/libXrdMacaroons-5.so
-%endif
 %{_libdir}/libXrdN2No2p-5.so
+%{_libdir}/libXrdOfsPrepGPI-5.so
 %{_libdir}/libXrdOssCsi-5.so
 %{_libdir}/libXrdOssSIgpfsT-5.so
 %{_libdir}/libXrdOssStats-5.so
-%{_libdir}/libXrdServer.so.3*
+%{_libdir}/libXrdPfc-5.so
+%{_libdir}/libXrdPfcPurgeQuota-5.so
+%{_libdir}/libXrdPss-5.so
 %{_libdir}/libXrdSsi-5.so
 %{_libdir}/libXrdSsiLog-5.so
 %{_libdir}/libXrdThrottle-5.so
-%{_libdir}/libXrdCmsRedirectLocal-5.so
-%{_libdir}/libXrdOfsPrepGPI-5.so
+%{_libdir}/libXrdXrootd-5.so
 
 %files server-devel
-%{_includedir}/xrootd/XrdAcc
-%{_includedir}/xrootd/XrdCms
-%{_includedir}/xrootd/XrdPfc
-%{_includedir}/xrootd/XrdOss
-%{_includedir}/xrootd/XrdOfs
-%{_includedir}/xrootd/XrdSfs
-%{_includedir}/xrootd/XrdXrootd
-%{_includedir}/xrootd/XrdHttp
-%{_libdir}/libXrdServer.so
+%{_includedir}/%{name}/XrdAcc
+%{_includedir}/%{name}/XrdCms
+%{_includedir}/%{name}/XrdHttp
+%{_includedir}/%{name}/XrdOfs
+%{_includedir}/%{name}/XrdOss
+%{_includedir}/%{name}/XrdPfc
+%{_includedir}/%{name}/XrdSfs
+%{_includedir}/%{name}/XrdXrootd
 %{_libdir}/libXrdHttpUtils.so
+%{_libdir}/libXrdServer.so
 
 %files private-devel
-%{_includedir}/xrootd/private
+%{_includedir}/%{name}/private
 %{_libdir}/libXrdSsiLib.so
 %{_libdir}/libXrdSsiShMap.so
-%if %{?_with_isal:1}%{!?_with_isal:0}
-%{_libdir}/libXrdEc.so
-%endif
 
 %files client
 %{_bindir}/xrdadler32
@@ -1044,6 +844,7 @@ fi
 %{_bindir}/xrdcrc32c
 %{_bindir}/xrdfs
 %{_bindir}/xrdgsiproxy
+%{_bindir}/xrdgsitest
 %{_bindir}/xrdmapc
 %{_bindir}/xrdpinls
 %{_bindir}/xrdreplay
@@ -1052,74 +853,46 @@ fi
 %{_mandir}/man1/xrdcp.1*
 %{_mandir}/man1/xrdfs.1*
 %{_mandir}/man1/xrdgsiproxy.1*
+%{_mandir}/man1/xrdgsitest.1*
 %{_mandir}/man1/xrdmapc.1*
 
 %files fuse
 %{_bindir}/xrootdfs
 %{_mandir}/man1/xrootdfs.1*
-%dir %{_sysconfdir}/xrootd
-
-%if %{_with_python2}
-%files -n python2-%{name}
-%defattr(-,root,root,-)
-%{python2_sitearch}/*
-%endif
-
-%if %{_with_python3}
-%files -n python%{python3_pkgversion}-%{name}
-%defattr(-,root,root,-)
-%{python3_sitearch}/*
-%endif
 
 %files voms
 %{_libdir}/libXrdVoms-5.so
-%{_libdir}/libXrdSecgsiVOMS-5.so
 %{_libdir}/libXrdHttpVOMS-5.so
-%doc %{_mandir}/man1/libXrdVoms.1.gz
-%doc %{_mandir}/man1/libXrdSecgsiVOMS.1.gz
+%{_libdir}/libXrdSecgsiVOMS-5.so
+%doc %{_mandir}/man1/libXrdVoms.1*
+%doc %{_mandir}/man1/libXrdSecgsiVOMS.1*
 
-%if 0%{!?_without_doc:1}
-%files doc
-%doc %{_docdir}/%{name}-%{version}
-%endif
+%files scitokens
+%{_libdir}/libXrdAccSciTokens-5.so
+%doc src/XrdSciTokens/README.md
 
-%if %{?_with_ceph:1}%{!?_with_ceph:0}
+%files -n xrdcl-http
+%{_libdir}/libXrdClHttp-5.so
+%config(noreplace) %{_sysconfdir}/%{name}/client.plugins.d/xrdcl-http-plugin.conf
+
+%if %{with ceph}
 %files ceph
 %{_libdir}/libXrdCeph-5.so
 %{_libdir}/libXrdCephXattr-5.so
-%{_libdir}/libXrdCephPosix.so*
+%{_libdir}/libXrdCephPosix.so.*
 %endif
 
-%if %{?_with_xrdclhttp:1}%{!?_with_xrdclhttp:0}
-%files -n xrdcl-http
-%{_libdir}/libXrdClHttp-5.so
-%{_sysconfdir}/xrootd/client.plugins.d/xrdcl-http-plugin.conf
+%files -n python%{python3_pkgversion}-%{name}
+%{python3_sitearch}/xrootd-*.*-info
+%{python3_sitearch}/pyxrootd
+%{python3_sitearch}/XRootD
+
+%if %{with docs}
+%files doc
+%doc %{_pkgdocdir}
 %endif
 
-%if %{?_with_scitokens:1}%{!?_with_scitokens:0}
-%files scitokens
-%{_libdir}/libXrdAccSciTokens-5.so
-%endif
-
-%if %{?_with_tests:1}%{!?_with_tests:0}
-%files tests
-%{_bindir}/test-runner
-%{_bindir}/xrdshmap
-%{_libdir}/libXrdClTests.so
-%{_libdir}/libXrdClTestsHelper.so
-%{_libdir}/libXrdClTestMonitor*.so
-%if %{?_with_isal:1}%{!?_with_isal:0}
-%{_libdir}/libXrdEcTests.so
-%endif
-%if %{?_with_ceph:1}%{!?_with_ceph:0}
-%{_libdir}/libXrdCephTests*.so
-%endif
-%endif
-
-%files selinux
-%{_datadir}/selinux/packages/%{name}/%{name}.pp
-
-%if 0%{?_with_compat}
+%if %{with compat}
 %files client-compat
 # from xrootd-libs:
 %{_libdir}/libXrdAppUtils.so.1*
@@ -1156,9 +929,7 @@ fi
 %{_libdir}/libXrdHttp-4.so
 %{_libdir}/libXrdHttpTPC-4.so
 %{_libdir}/libXrdHttpUtils.so.1*
-%if %{have_macaroons}
 %{_libdir}/libXrdMacaroons-4.so
-%endif
 %{_libdir}/libXrdN2No2p-4.so
 %{_libdir}/libXrdOssSIgpfsT-4.so
 %{_libdir}/libXrdServer.so.2*
@@ -1169,12 +940,15 @@ fi
 %{_libdir}/libXrdVoms-4.so
 
 %endif
-# end _with_compat
+# end %%{with compat}
 
 #-------------------------------------------------------------------------------
 # Changelog
 #-------------------------------------------------------------------------------
 %changelog
+* Thu May 15 2025 Mátyás Selmeci <mselmeci@wisc.edu> - 5.8.2-1.4
+- Merged spec file modernization from upstream (SOFTWARE-6073)
+
 * Thu May 15 2025 Mátyás Selmeci <mselmeci@wisc.edu> - 5.8.2-1.3
 - Add 0010-Correct-concurrency-and-state-tracking-around-Redriv~86d48f1.patch
 
@@ -1197,6 +971,9 @@ fi
         - 0006-XrdPosix-Map-operation-timeouts-to-ETIME~9480232.patch
         - 0008-Tweak-throttle-manager-after-large-scale-testing~273c58e.patch
         - 0010-CMake-changes-for-XrdThrottle-overhaul~fe965e8.patch
+
+* Thu May 08 2025 Guilherme Amadio <amadio@cern.ch> - 1:5.8.2-1
+- XRootD 5.8.2
 
 * Wed Apr 30 2025 Mátyás Selmeci <mselmeci@wisc.edu> - 5.8.1-1.5
 - Patches added:
@@ -1229,6 +1006,9 @@ fi
         - 0005-Since-the-XrdPss-did-not-implement-the-auto-stat-pro~4c5e0ae.patch
         - 0006-XrdPss-Fix-proxy-when-using-tokens-and-crc32c~328ae18.patch
 
+* Mon Apr 14 2025 Guilherme Amadio <amadio@cern.ch> - 1:5.8.1-1
+- XRootD 5.8.1
+
 * Mon Mar 31 2025 Mátyás Selmeci <mselmeci@wisc.edu> - 5.8.0-1.1
 - Update to 5.8.0 (SOFTWARE-6114)
     - Patches added:
@@ -1250,6 +1030,9 @@ fi
         - 0010-Fix-gstream-configuration-processing~bece0de.patch
         - 0011-Xrd-Fix-MacOS-poller~9704d2a.patch
         - 0012-Temporary-workaround-for-segfault-noted-in-upstream~3b485c0.patch
+
+* Fri Mar 21 2025 Guilherme Amadio <amadio@cern.ch> - 1:5.8.0-1
+- XRootD 5.8.0
 
 * Thu Mar 13 2025 Mátyás Selmeci <mselmeci@wisc.edu> - 5.7.3-1.5
 - Add:
@@ -1290,6 +1073,9 @@ fi
     - 0007-XrdHttp-Add-http.staticheader~2175ae2.patch
         -> 0006-XrdHttp-Add-http.staticheader.patch~5c6ee05.patch
 
+* Tue Jan 28 2025 Guilherme Amadio <amadio@cern.ch> - 1:5.7.3-1
+- XRootD 5.7.3
+
 * Fri Jan 17 2025 Mátyás Selmeci <mselmeci@wisc.edu> - 5.7.2-1.4.purge
 - Add purge plugin patch 0009-Second-rebase-of-alja-purge-main-rb1-onto-master-5.7.patch
     (PelicanPlatform/xrootd #9)
@@ -1321,6 +1107,9 @@ fi
   - Drop 2357-fix-errSocketTimeout-loop.patch
   - Drop 2363-reset-runstatus-in-redrive-thread.patch
 
+* Wed Nov 27 2024 Guilherme Amadio <amadio@cern.ch> - 1:5.7.2-1
+- XRootD 5.7.2
+
 * Wed Oct 16 2024 Matt Westphall <westphall@wisc.edu> - 5.7.1-1.4
 - Add 2363-reset-runstatus-in-redrive-thread.patch (SOFTWARE-6024)
 
@@ -1333,6 +1122,9 @@ fi
 
 * Fri Sep 06 2024 Mátyás Selmeci <matyas@cs.wisc.edu> - 5.7.1-1.1
 - Update to 5.7.1 and drop upstreamed patches (SOFTWARE-5975)
+
+* Mon Sep 02 2024 Guilherme Amadio <amadio@cern.ch> - 1:5.7.1-1
+- XRootD 5.7.1
 
 * Fri Aug 30 2024 Mátyás Selmeci <matyas@cs.wisc.edu> - 5.7.0-1.7.2
 - Apply updated bbockelm-4-defer-client-auth (SOFTWARE-5968)
@@ -1367,6 +1159,9 @@ fi
     - Drop 2262-fix-timing-on-throttle-plugin.patch (applied upstream)
     - Drop 2269-defer-or-disable-tls-client-auth-*.patch (applied upstream)
 
+* Thu Jun 27 2024 Guilherme Amadio <amadio@cern.ch> - 1:5.7.0-1
+- XRootD 5.7.0
+
 * Thu May 30 2024 Mátyás Selmeci <matyas@cs.wisc.edu> - 5.6.9-1.6
 - Split 2269-defer-or-disable-tls-client-auth.patch into 3 patches
   and re-do its conflict resolution (SOFTWARE-5876)
@@ -1385,8 +1180,14 @@ fi
 * Sun Mar 17 2024 Mátyás Selmeci <matyas@cs.wisc.edu> - 5.6.9-1.1
 - Update to 5.6.9 and merge OSG patches (SOFTWARE-5839)
 
+* Fri Mar 08 2024 Guilherme Amadio <amadio@cern.ch> - 1:5.6.9-1
+- XRootD 5.6.9
+
 * Fri Feb 23 2024 Matt Westphall <westphall@wisc.edu> - 5.6.8-1.1
 - Initial OSG release of upstream 5.6.8-1
+
+* Fri Feb 23 2024 Guilherme Amadio <amadio@cern.ch> - 1:5.6.8-1
+- XRootD 5.6.8
 
 * Mon Feb 12 2024 Mátyás Selmeci <matyas@cs.wisc.edu> - 5.6.7-1.2
 - Bump to rebuild
@@ -1394,15 +1195,26 @@ fi
 * Tue Feb 6 2024 Matt Westphall <westphall@wisc.edu> - 5.6.7-1.1
 - OSG release of upstream 5.6.7
 
-* Tue Feb 06 2024 Guilherme Amadio <amadio@cern.ch> - 5.6.7-1
+* Tue Feb 06 2024 Guilherme Amadio <amadio@cern.ch> - 1:5.6.7-1
 - XRootD 5.6.7
 
 * Fri Jan 26 2024 Mátyás Selmeci <matyas@cs.wisc.edu> - 5.6.6-1.1
 - Update to 5.6.6 (SOFTWARE-5799)
 - Add patch for pelican:// URL support (SOFTWARE-5800)
 
+* Thu Jan 25 2024 Guilherme Amadio <amadio@cern.ch> - 1:5.6.6-1
+- XRootD 5.6.6
+
+* Mon Jan 22 2024 Guilherme Amadio <amadio@cern.ch> - 1:5.6.5-1
+- XRootD 5.6.5
+
 * Mon Dec 11 2023 Matt Westphall <westphall@wisc.edu> - 5.6.4-1.1
 - Initial OSG release of upstream 5.6.4-1
+
+* Fri Dec 08 2023 Guilherme Amadio <amadio@cern.ch> - 1:5.6.4-1
+- Use isa-l library from the system
+- Extract version from tarball when building git snapshots
+- XRootD 5.6.4
 
 * Wed Nov 29 2023 Matt Westphall <westphall@wisc.edu> - 5.6.3-1.4
 - Add 2127-Switch-from-using-a-cert-file-to-a-cert-chain-file.patch (SOFTWARE-5763)
@@ -1416,15 +1228,31 @@ fi
 * Fri Oct 27 2023 Matt Westphall <westphall@wisc.edu> - 5.6.3-1.1
 - Initial OSG release of upstream 5.6.3-1 (SOFTWARE-5733)
 
+* Fri Oct 27 2023 Guilherme Amadio <amadio@cern.ch> - 1:5.6.3-2
+- XRootD 5.6.3
+
 * Thu Oct 26 2023 Matt Westphall <westphall@wisc.edu> - 5.6.2-2.5
 - Apply patches for supporting chunked PUT requests from devel (SOFTWARE-5733)
 
 * Tue Sep 19 2023 Matt Westphall <westphall@wisc.edu> - 5.6.2-2.2
 - Update to 5.6.2-2 from upstream
 
+* Mon Sep 18 2023 Guilherme Amadio <amadio@cern.ch> - 1:5.6.2-2
+- Add patch with fix for id parsing in XrdAccAuthFile (#2088)
+
+* Fri Sep 15 2023 Guilherme Amadio <amadio@cern.ch> - 1:5.6.2-1
+- Link XRootD 4 with openssl1.1 when using --with openssl11
+- XRootD 5.6.2
+
 * Mon Aug 14 2023 Matt Westphall <westphall@wisc.edu> - 5.6.1-1.2
 - Add patch for PR 2059: Add back parsing of Transfer-Encoding header (SOFTWARE-5623)
 - Add patch for PR 2064: Fix logic error in user mapping (SOFTWARE-5623)
+
+* Fri Aug 11 2023 Guilherme Amadio <amadio@cern.ch> - 1:5.6.1-1
+- Modernize spec file to add more optional features and select
+  default build options automatically for each supported OS.
+- Use latest official release tarball by default.
+- Enable snapshot builds from git.
 
 * Mon Jul 17 2023 Mátyás Selmeci <matyas@cs.wisc.edu> - 5.6.1-1.1
 - Update to 5.6.1-1 from upstream and merge OSG changes (SOFTWARE-5623)
