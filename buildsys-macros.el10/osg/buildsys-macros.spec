@@ -3,14 +3,14 @@
 # "osg-koji import" the resulting rpm and osg-koji tag-pkg the build into the
 # appropriate osg-*-development tag
 # This will require koji admin permissions.
-%define dver   9
+%define dver   10
 
 %define dist .el%{dver}
 
 Name:		buildsys-macros
 Summary:	Macros for the OSG Buildsystem
 Version:        %{dver}
-Release:	1%{dist}
+Release:	0%{dist}
 License:	GPL
 BuildArch:      noarch
 Requires:	rpmdevtools
@@ -35,6 +35,9 @@ printf %s%b "%" "el$DVER 1\n" >> $RPM_BUILD_ROOT/etc/rpm/macros.disttag
 /etc/rpm/macros.disttag
 
 %changelog
+* Fri Jun 06 2025 Mátyás Selmeci <mselmeci@wisc.edu> - 10-1.el10
+- Add el10 version
+
 * Tue Dec 06 2022 Carl Edquist <edquist@cs.wisc.edu> - 9-1.el9
 - el9 version (SOFTWARE-5392)
 
