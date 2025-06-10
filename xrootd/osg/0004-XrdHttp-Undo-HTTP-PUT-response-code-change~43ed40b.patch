@@ -1,7 +1,7 @@
-From e796e61a5e1936a76c4dd6059b685ff345e1dc5f Mon Sep 17 00:00:00 2001
+From b29db905cfc3bd6b9040e1e8133cf19e46265735 Mon Sep 17 00:00:00 2001
 From: Matyas Selmeci <mselmeci@wisc.edu>
 Date: Thu, 30 Jan 2025 15:41:24 -0600
-Subject: [PATCH 04/10] [XrdHttp] Undo HTTP PUT response code change
+Subject: [PATCH 4/9] [XrdHttp] Undo HTTP PUT response code change
 
 From https://github.com/xrootd/xrootd/issues/2382 ; Pelican clients before 7.12.2 cannot handle the change from 200->201.
 ---
@@ -9,19 +9,19 @@ From https://github.com/xrootd/xrootd/issues/2382 ; Pelican clients before 7.12.
  1 file changed, 2 insertions(+), 1 deletion(-)
 
 diff --git a/src/XrdHttp/XrdHttpReq.cc b/src/XrdHttp/XrdHttpReq.cc
-index ca3a1dd14..e1201d3f2 100644
+index dcaed7f98..ec47d763a 100644
 --- a/src/XrdHttp/XrdHttpReq.cc
 +++ b/src/XrdHttp/XrdHttpReq.cc
-@@ -2336,7 +2336,8 @@ int XrdHttpReq::PostProcessHTTPReq(bool final_) {
+@@ -2405,7 +2405,8 @@ int XrdHttpReq::PostProcessHTTPReq(bool final_) {
  
          if (ntohs(xrdreq.header.requestid) == kXR_close) {
            if (xrdresp == kXR_ok) {
--            prot->SendSimpleResp(201, NULL, NULL, (char *) ":-)", 0, keepalive);
+-            prot->SendSimpleResp(201, NULL, NULL, (char *)":-)", 0, keepalive);
 +            // The correct response code is 201 (Created) but Pelican clients before 7.12.2 do not treat 201 as success, only 200.
 +            prot->SendSimpleResp(200, NULL, NULL, (char *) ":-)", 0, keepalive);
              return keepalive ? 1 : -1;
            } else {
-             prot->SendSimpleResp(httpStatusCode, NULL, NULL,
+             sendWebdavErrorMessage(xrdresp, xrderrcode, XrdHttpReq::rtPUT,
 -- 
-2.43.5
+2.47.1
 

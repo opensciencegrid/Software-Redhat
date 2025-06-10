@@ -1,0 +1,33 @@
+From c7774a5df1c9ee8d801cd57630d61ea5699dc42b Mon Sep 17 00:00:00 2001
+From: Brian Bockelman <bbockelman@morgridge.org>
+Date: Sat, 7 Jun 2025 19:22:48 -0500
+Subject: [PATCH 8/9] Avoid reference beyond end of table
+
+Previously, when the last entry in the table was deleted, there
+was a check of the `N+1` entry.  This could potentially cause a
+segfault if the end of the table is the end of a page.
+
+A segfault was triggered when running under ASAN with a high
+concurrency of jobs requesting checksums.
+---
+ src/XrdOuc/XrdOucTable.hh | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/src/XrdOuc/XrdOucTable.hh b/src/XrdOuc/XrdOucTable.hh
+index 2805a259c..801270f80 100644
+--- a/src/XrdOuc/XrdOucTable.hh
++++ b/src/XrdOuc/XrdOucTable.hh
+@@ -137,7 +137,9 @@ T  *Remove(int Tnum)
+            Table[Tnum].Fnum = avlnum;
+            avlnum = Tnum;
+            if (Tnum == (curnum-1))
+-              while(curnum && Table[curnum].Item == 0) curnum--;
++              {if (curnum == maxnum) curnum--;
++               while(curnum && Table[curnum].Item == 0) curnum--;
++              }
+            return temp;
+           }
+ 
+-- 
+2.47.1
+
