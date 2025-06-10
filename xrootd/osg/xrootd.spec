@@ -80,17 +80,14 @@
 #-------------------------------------------------------------------------------
 Name:		xrootd
 Epoch:		1
-Version:	5.8.2
-Release:	1.5%{?dist}%{?_with_clang:.clang}%{?_with_asan:.asan}
+Version:	5.8.3
+Release:	1.1%{?dist}%{?_with_clang:.clang}%{?_with_asan:.asan}
 Summary:	Extended ROOT File Server
 Group:		System Environment/Daemons
 License:	LGPL-3.0-or-later AND BSD-2-Clause AND BSD-3-Clause AND curl AND MIT AND Zlib
 URL:		https://xrootd.slac.stanford.edu
 
 
-# git clone http://xrootd.org/repo/xrootd.git xrootd
-# cd xrootd
-# git-archive master | gzip -9 > ~/rpmbuild/SOURCES/xrootd.tgz
 Source0:   xrootd-%{version}.tar.gz
 
 # always include the tarball in the SRPM even if we don't build it because the
@@ -104,20 +101,16 @@ Patch2: 0002-XrdTls-Allow-disabling-of-X.509-client-auth~18e1c81.patch
 # PelicanPlatform/xrootd #6 (xrootd/xrootd #2397):
 Patch3: 0003-XrdSciTokens-Handle-multiple-authorization-token-set~b82ddc3.patch
 # PelicanPlatform/xrootd #14 (no upstream):
-Patch4: 0004-XrdHttp-Undo-HTTP-PUT-response-code-change~956b9fa.patch
-# PelicanPlatform/xrootd #18 (xrootd/xrootd #2443):
-Patch5: 0005-XrdHttp-Fix-HTTP-protocol-errors-on-failure~4fb2221.patch
+Patch4: 0004-XrdHttp-Undo-HTTP-PUT-response-code-change~43ed40b.patch
 # Next 2: PelicanPlatform/xrootd #23
 Patch6: 0006-Re-engineer-concurrency-limits-for-throttles~39fea57.patch
 Patch7: 0007-Modify-XrdThrottle-to-be-an-OSS-plugin~921fef5.patch
 # PelicanPlatform/xrootd #25
 Patch8: 0008-XRootD-s-xml-response-for-PROPFIND-will-now-include~aacf631.patch
-# PelicanPlatform/xrootd #26 (xrootd/xrootd #2505)
-Patch9: 0009-Fix-life-time-of-a-variable-used-for-signaling-that~286b8ca.patch
-# PelicanPlatform/xrootd #27 (xrootd/xrootd #2506)
-Patch10: 0010-Correct-concurrency-and-state-tracking-around-Redriv~86d48f1.patch
-# PelicanPlatform/xrootd #28 (xrootd/xrootd #2518)
-Patch11: 0011-Fix-race-conditions-around-use-of-ecMsg~803dc26.patch
+# PelicanPlatform/xrootd #30 (xrootd/xrootd #2535)
+Patch9: 0009-Avoid-reference-beyond-end-of-table~80b938c.patch
+# PelicanPlatform/xrootd #31 (xrootd/xrootd #2536)
+Patch10: 0010-XrdPfc-Ensure-a-reference-to-the-file-is-kept-when-s~aa225e2.patch
 
 %if %{use_cmake3}
 BuildRequires:	cmake3
@@ -1177,6 +1170,25 @@ fi
 # Changelog
 #-------------------------------------------------------------------------------
 %changelog
+* Tue Jun 10 2025 Mátyás Selmeci <mselmeci@wisc.edu> - 5.8.3-1.1
+- Update to XRootD 5.8.3 (SOFTWARE-6164)
+    - Patches added:
+        - 0009-Avoid-reference-beyond-end-of-table~80b938c.patch
+        - 0010-XrdPfc-Ensure-a-reference-to-the-file-is-kept-when-s~aa225e2.patch
+    - Patches kept:
+        - 0001-Allow-hostname-used-by-XRootD-to-be-overridden-by-en~7c119b0.patch
+        - 0002-XrdTls-Allow-disabling-of-X.509-client-auth~18e1c81.patch
+        - 0003-XrdSciTokens-Handle-multiple-authorization-token-set~b82ddc3.patch
+        - 0004-XrdHttp-Undo-HTTP-PUT-response-code-change~956b9fa.patch -> 0004-XrdHttp-Undo-HTTP-PUT-response-code-change~43ed40b.patch
+        - 0006-Re-engineer-concurrency-limits-for-throttles~39fea57.patch
+        - 0007-Modify-XrdThrottle-to-be-an-OSS-plugin~921fef5.patch
+        - 0008-XRootD-s-xml-response-for-PROPFIND-will-now-include~aacf631.patch
+    - Patches dropped:
+        - 0005-XrdHttp-Fix-HTTP-protocol-errors-on-failure~4fb2221.patch
+        - 0009-Fix-life-time-of-a-variable-used-for-signaling-that~286b8ca.patch
+        - 0010-Correct-concurrency-and-state-tracking-around-Redriv~86d48f1.patch
+        - 0011-Fix-race-conditions-around-use-of-ecMsg~803dc26.patch
+
 * Wed May 21 2025 Mátyás Selmeci <mselmeci@wisc.edu> - 5.8.2-1.5
 - Add 0011-Fix-race-conditions-around-use-of-ecMsg~803dc26.patch (SOFTWARE-6151)
 
