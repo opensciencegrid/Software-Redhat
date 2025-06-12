@@ -19,8 +19,8 @@
 # ------------------------------------------------------------------------------
 # For Release Candidate builds, check with Software team on release string
 # ------------------------------------------------------------------------------
-%global version 3.10.13
-%global release 1
+%global version 3.10.14
+%global release 0.1.rc1
 
 %global frontend_xml frontend.xml
 %global factory_xml glideinWMS.xml
@@ -1111,6 +1111,11 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Thu Jun 12 2025 Marco Mambelli <marcom@fnal.gov> - 3.10.14
+- Glideinwms v3.10.14
+- Release Notes: http://glideinwms.fnal.gov/doc.v3_10_14/history.html
+- Release candidates 3.10.14-01.rc1
+
 * Wed May 7 2025 Marco Mambelli <marcom@fnal.gov> - 3.10.13
 - Glideinwms v3.10.13
 - Release Notes: http://glideinwms.fnal.gov/doc.v3_10_13/history.html
