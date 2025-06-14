@@ -12,28 +12,13 @@
 Summary:   Fetch sources from upstream (internal use)
 Name:      fetch-sources
 Version:   %{osg_build_version}
-Release:   1%{?dist}
+Release:   2%{?dist}
 License:   Apache License, 2.0
 Source0:   osg-build-%{osg_build_version}.tar.gz
 Source1:   %{name}
 BuildArch: noarch
-%if 0%{?rhel} >= 8
 Requires: git-core
-%else
-Requires: git
-Requires: python-six
-%endif
 Requires: subversion
-
-%if 0%{?rhel} >= 8
-  %define __python /usr/libexec/platform-python
-%else
-  %if 0%{?fedora} >= 31
-    %define __python /usr/bin/python3
-  %else
-    %define __python /usr/bin/python2
-  %endif
-%endif
 
 %description
 Fetches sources from upstream directory
@@ -50,17 +35,17 @@ mkdir -p $RPM_BUILD_ROOT/%{_bindir}
 install -m 755 %{SOURCE1} $RPM_BUILD_ROOT/%{_bindir}/%{name}
 
 # Put the build version into the script
-osgbuild_version=$(%{__python} -c "import sys; sys.path.append('.'); from osgbuild import version; print(version.__version__)")
+osgbuild_version=$(%{python3} -c "import sys; sys.path.append('.'); from osgbuild import version; print(version.__version__)")
 sed -i -e "s|@OSGBUILDVERSION@|${osgbuild_version}|" $RPM_BUILD_ROOT/%{_bindir}/%{name}
-
-# fix shebang lines
-find $RPM_BUILD_ROOT -type f -exec sed -ri '1s,^#!/usr/bin/(env )?python$,#!%{__python},' '{}' +
 
 %files
 %{_bindir}/%{name}
 /usr/share/fetch-sources
 
 %changelog
+* Fri Jun 13 2025 Mátyás Selmeci <mselmeci@wisc.edu> - 1.99.5-2
+- Build for el10
+
 * Tue May 06 2025 Mátyás Selmeci <mselmeci@wisc.edu> - 1.99.5-1
 - Build against osg-build 1.99.5
 - Download upstream sources from new server https://sw-upstream.svc.osg-htc.org (SOFTWARE-6106)
