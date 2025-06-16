@@ -1,7 +1,7 @@
 Name:      buildsys-build
 Summary:   Minimal set of packages required to build in a chroot
 Version:   10
-Release:   1%{?dist}
+Release:   2%{?dist}
 License:   Apache 2.0
 Group:     Development
 URL:       https://osg-htc.org
@@ -14,7 +14,6 @@ Requires: bzip2
 Requires: coreutils
 Requires: cpio
 Requires: diffutils
-Requires: epel-rpm-macros
 Requires: findutils
 Requires: gawk
 Requires: gcc
@@ -47,7 +46,6 @@ BuildArch: noarch
 
 Requires: bash
 Requires: buildsys-macros = %{version}
-Requires: epel-rpm-macros
 Requires: fetch-sources
 Requires: git
 Requires: gnupg
@@ -73,6 +71,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sun Jun 15 2025 Mátyás Selmeci <mselmeci@wisc.edu> - 10-2
+- Drop epel-rpm-macros
+
 * Fri Jun 13 2025 Mátyás Selmeci <mselmeci@wisc.edu> - 10-1
 - Create EL10 version (SOFTWARE-6165)
 
