@@ -1,6 +1,6 @@
 Summary: Service files for Pelican-based OSDF daemons
 Name: osdf-server
-Version: 7.16.1
+Version: 7.16.6
 Release: 1%{?dist}
 License: ASL 2.0
 Url: https://github.com/PelicanPlatform/pelican
@@ -24,11 +24,13 @@ Summary: Service file and configuration for %1
 %{!-x:Requires: pelican >= %{version}}
 %{!-x:Requires: /usr/bin/osdf}
 %{-x:Requires: pelican-server >= %{version}}
-%{-x:Requires: xrootd-server >= 1:5.8.0}
 %{-x:Requires: xrootd-scitokens}
 %{-x:Requires: xrootd-voms}
 %{-x:Requires: xrootd-multiuser}
 %{-x:Requires: xrdcl-pelican}
+%%if 0%%{?rhel} >= 9
+%{-x:Requires: xrootd-s3-http >= 0.4.1}
+%%endif
 
 %%description -n %1
 Service file for %1
@@ -110,6 +112,15 @@ install -m 0644 systemd/pelican.logrotate       $RPM_BUILD_ROOT/etc/logrotate.d/
 
 
 %changelog
+* Wed Jun 18 2025 Mátyás Selmeci <mselmeci@wisc.edu> - 7.16.6-1
+- Upgrade to Pelican 7.16.6 (SOFTWARE-6152)
+- Require xrootd-s3-http where available
+- Drop explicit dependency on xrootd since it is already implied by pelican-server
+- Instruct user to specify Cache.StorageLocation in cache config
+
+* Fri Jun 06 2025 Mátyás Selmeci <mselmeci@wisc.edu> - 7.16.5-1
+- Upgrade to Pelican 7.16.5 (SOFTWARE-6152)
+
 * Tue May 13 2025 Mátyás Selmeci <mselmeci@wisc.edu> - 7.16.1-1
 - Upgrade to Pelican 7.16.1 (SOFTWARE-6152)
 - Require "pelican-server" for the cache and origin (SOFTWARE-6152)
