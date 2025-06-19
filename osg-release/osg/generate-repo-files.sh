@@ -13,10 +13,8 @@ TEMPLATEDIR=$(dirname "$0")
 [[ -e $1 ]] || usage
 REPOINFO=$1
 
-case $2 in
-  [5-9] ) EL=$2 ;;
-      * ) usage ;;
-esac
+[[ $2 =~ ^[0-9]+$ ]] || usage
+EL=$2
 
 mkrepofile () {
   [[ $TEMPLATE ]] || return
@@ -38,7 +36,7 @@ mkrepofile () {
     osg ) ENABLED=1 ;;
       * ) ENABLED=0 ;;
   esac
-  
+
   case $TITLE in
     "" ) TITLE="-" ;;
      * ) TITLE="- ${TITLE//_/ } -" ;;
