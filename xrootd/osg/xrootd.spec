@@ -39,7 +39,7 @@
 Name:		xrootd
 Epoch:		1
 Version:	5.8.3
-Release:	1.2%{?dist}%{?with_clang:.clang}%{?with_asan:.asan}
+Release:	1.3%{?dist}%{?with_clang:.clang}%{?with_asan:.asan}
 Summary:	Extended ROOT File Server
 Group:		System Environment/Daemons
 License:	LGPL-3.0-or-later AND BSD-2-Clause AND BSD-3-Clause AND curl AND MIT AND Zlib
@@ -69,6 +69,8 @@ Patch8: 0008-XRootD-s-xml-response-for-PROPFIND-will-now-include~aacf631.patch
 Patch9: 0009-Avoid-reference-beyond-end-of-table~80b938c.patch
 # PelicanPlatform/xrootd #31 (xrootd/xrootd #2536)
 Patch10: 0010-XrdPfc-Ensure-a-reference-to-the-file-is-kept-when-s~aa225e2.patch
+# PelicanPlatform/xrootd #32 (xrootd/xrootd #2472)
+Patch11: 0011-Enable-write-through-mode-for-cache~330eac1.patch
 
 BuildRequires:	cmake
 BuildRequires:	krb5-devel
@@ -958,6 +960,9 @@ fi
 # Changelog
 #-------------------------------------------------------------------------------
 %changelog
+* Tue Jun 24 2025 Mátyás Selmeci <mselmeci@wisc.edu> - 5.8.3-1.3
+- Add patch 0011-Enable-write-through-mode-for-cache~330eac1.patch (SOFTWARE-6179)
+
 * Tue Jun 10 2025 Mátyás Selmeci <mselmeci@wisc.edu> - 5.8.3-1.1
 - Update to XRootD 5.8.3 (SOFTWARE-6164)
     - Patches added:
