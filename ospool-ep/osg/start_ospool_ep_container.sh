@@ -64,6 +64,7 @@ if is_true "$PROVIDE_NVIDIA_GPU"; then
   add_docker_arg -v "/etc/OpenCL/vendors:/etc/OpenCL/vendors:ro"
   # Testing indicates that singularity PID namespaces conflict with GPU mount requirements
   add_docker_arg -e SINGULARITY_DISABLE_PID_NAMESPACES=True
+  add_docker_arg --runtime nvidia
   EP_IMG=cuda_11_8_0-release
 fi
 
