@@ -1,12 +1,12 @@
 Summary: OSG metapackage for OASIS and CVMFS
 Name: osg-oasis
 Version: 21
-Release: 1%{?dist}
+Release: 2%{?dist}
 License: ASL 2.0
 BuildArch: noarch
 # Note: cannot require an exact release number (after a dash) unless 
 #   including the dist as well, e.g. -2%{?dist}
-Requires: cvmfs = 2.13.0
+Requires: cvmfs = 2.13.1
 Requires: cvmfs-config-osg = 2.5
 Requires: scitokens-cpp >= 0.6.2
 Requires: cvmfs-x509-helper >= 2.4
@@ -26,6 +26,9 @@ exit 0
 %files
 
 %changelog
+* Thu Jun 26 2025 Carl Vuosalo <covuosalo@wisc.edu> 21-2
+- Update to cvmfs-2.13.1
+
 * Thu May 22 2025 Carl Vuosalo <covuosalo@wisc.edu> 21-1
 - Update to cvmfs-2.13.0
 
