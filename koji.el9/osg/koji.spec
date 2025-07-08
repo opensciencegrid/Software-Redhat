@@ -84,7 +84,7 @@
 %endif
 Name: koji
 Version: 1.35.3
-Release: %{release}.1%{?dist}
+Release: %{release}.2%{?dist}
 License: LGPL-2.1-only and GPL-2.0-or-later
 # the included arch lib from yum's rpmUtils is GPLv2+
 # rpmdiff lib (from rpmlint) is GPLv2+
@@ -95,6 +95,7 @@ Source: https://releases.pagure.org/koji/koji-%{version}.tar.bz2
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 # OSG patches
+Patch102: distrepos-support-x86_64_v2-arch.patch
 Patch103: kojid_scmbuild_check_spec_after_running_sourcecmd.patch
 Patch113: kojira-add-sleeptime-to-conf.patch
 BuildArch: noarch
@@ -655,6 +656,9 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Thu Jun 19 2025 Mátyás Selmeci <mselmeci@wisc.edu> - 1.35.3-1.2.osg
+- Add distrepos-support-x86_64_v2-arch.patch
+
 * Thu Jun 12 2025 Mátyás Selmeci <mselmeci@wisc.edu> - 1.35.3-1.1.osg
 - **** OSG CHANGELOG ****
     * Thu Jun 12 2025 Mátyás Selmeci <mselmeci@wisc.edu> - 1.35.3-1.1.osg
