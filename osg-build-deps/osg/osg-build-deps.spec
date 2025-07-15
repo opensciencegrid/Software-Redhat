@@ -1,10 +1,10 @@
 Name:           osg-build-deps
-Version:        5
+Version:        6
 Release:        1%{?dist}
 Summary:        Dependencies for build tools for the OSG
 
 License:        Apache 2.0
-URL:            https://github.com/opensciencegrid/osg-build
+URL:            https://github.com/osg-htc/osg-build
 
 BuildArch:      noarch
 
@@ -24,7 +24,8 @@ See %{url} for details.
 %package base
 Requires:       git-core
 Requires:       rpm-build
-Requires:       quilt
+# quilt is not (yet) available on EL10
+Recommends:     quilt
 Requires:       rpmlint
 Requires:       subversion
 Requires:       wget
@@ -52,9 +53,8 @@ Summary:        osg-build-deps for the mock plugin, allows builds with mock
 %package koji
 Requires:       %{name}-base = %{version}
 Requires:       openssl
-Requires:       koji >= 1.13.0
-Requires:       voms-clients-cpp
-Requires:       grid-certificates
+Requires:       koji >= 1.33.0
+Requires:       krb5-workstation
 Summary:        osg-build-deps for the Koji plugin and Koji-based tools
 
 %description koji
@@ -82,6 +82,10 @@ install -m 0755 %{SOURCE1} %{buildroot}/usr/sbin/install-osg-build.sh
 
 
 %changelog
+* Tue Jul 15 2025 Mátyás Selmeci <mselmeci@wisc.edu> - 6-1
+- Update requirements for kerberos-based auth
+- Turn quilt into a soft dependency because it is not yet available on EL10
+
 * Wed Jul 03 2024 Mátyás Selmeci <matyas@cs.wisc.edu> - 5-1
 - Switch default osg-build branch in install script to V2-branch
 - Remove el7 compat from spec file
