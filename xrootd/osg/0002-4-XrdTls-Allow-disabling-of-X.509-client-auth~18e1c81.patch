@@ -1,7 +1,7 @@
-From 790cdad9b7e04bdb805c5d59823383d4e43819d7 Mon Sep 17 00:00:00 2001
+From cf85c3df0f86e8df1087e5b73fcda126e5849a38 Mon Sep 17 00:00:00 2001
 From: Brian Bockelman <bbockelman@morgridge.org>
 Date: Fri, 17 May 2024 15:47:40 +0200
-Subject: [PATCH 02/10] [XrdTls] Allow disabling of X.509 client auth
+Subject: [PATCH 2/8] [#4] [XrdTls] Allow disabling of X.509 client auth
 
 The X.509 client auth request is fairly disruptive for communities
 that are browser-based (since this is an extremely uncommon flow
@@ -18,7 +18,7 @@ to turn off X.509 client auth when not needed / desired.
  4 files changed, 66 insertions(+), 1 deletion(-)
 
 diff --git a/src/XrdHttp/XrdHttpProtocol.cc b/src/XrdHttp/XrdHttpProtocol.cc
-index 8fd6b933d..5758cd72e 100644
+index d9ac45594..67f03ae8a 100644
 --- a/src/XrdHttp/XrdHttpProtocol.cc
 +++ b/src/XrdHttp/XrdHttpProtocol.cc
 @@ -139,6 +139,7 @@ static const int hsmOn   =  1; // Dual purpose but use a meaningful varname
@@ -57,7 +57,7 @@ index 8fd6b933d..5758cd72e 100644
        else {
          eDest.Say("Config warning: ignoring unknown directive '", var, "'.");
          Config.Echo();
-@@ -2954,6 +2960,24 @@ int XrdHttpProtocol::xtlsreuse(XrdOucStream & Config) {
+@@ -2965,6 +2971,24 @@ int XrdHttpProtocol::xtlsreuse(XrdOucStream & Config) {
     return 1;
  }
  
@@ -168,5 +168,5 @@ index fab30cb99..b8ece8174 100644
  //! Check if certificates are being verified.
  //!
 -- 
-2.43.5
+2.47.1
 

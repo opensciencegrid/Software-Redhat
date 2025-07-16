@@ -1,8 +1,8 @@
-From cc69af744256d1583b4b63a7abb41576d105cf18 Mon Sep 17 00:00:00 2001
+From ef8761d2416d8c830370899104d846c204c1ed9d Mon Sep 17 00:00:00 2001
 From: Brian Bockelman <bbockelman@morgridge.org>
 Date: Wed, 15 Jan 2025 08:01:58 -0600
-Subject: [PATCH 01/10] Allow hostname used by XRootD to be overridden by env
- var.
+Subject: [PATCH 1/8] [#1] Allow hostname used by XRootD to be overridden by
+ env var.
 
 This affects how the host advertises itself to other servers in a cluster
 and prevents the use of reverse DNS lookups (which are often meaningless,
@@ -232,7 +232,7 @@ index 3a2a69af3..2bb168961 100644
  // Print herald
  //
 diff --git a/src/XrdCms/XrdCmsNode.cc b/src/XrdCms/XrdCmsNode.cc
-index 2f9eb0500..e007de321 100644
+index a7498d06c..d8042ee7f 100644
 --- a/src/XrdCms/XrdCmsNode.cc
 +++ b/src/XrdCms/XrdCmsNode.cc
 @@ -166,6 +166,8 @@ void XrdCmsNode::setName(XrdLink *lnkp, const char *theIF, int port)
@@ -440,5 +440,5 @@ index b36956622..849b67e1d 100644
  XrdSysError   *eDest;
  static
 -- 
-2.43.5
+2.47.1
 

@@ -1,7 +1,7 @@
-From c4d10339a4b4e98c07cb6dd38acd129c97b3de38 Mon Sep 17 00:00:00 2001
+From 51112b6cd39371b9c70f98b5ce84eb02f2262edb Mon Sep 17 00:00:00 2001
 From: Brian Bockelman <bbockelman@morgridge.org>
 Date: Tue, 28 Jan 2025 09:57:02 -0600
-Subject: [PATCH 03/10] [XrdSciTokens] Handle multiple authorization token
+Subject: [PATCH 3/8] [#6] [XrdSciTokens] Handle multiple authorization token
  setups
 
 ---
@@ -63,7 +63,7 @@ index df771b06c..aee058442 100644
          authz += 9;
      }
 diff --git a/src/XrdOuc/XrdOucEnv.cc b/src/XrdOuc/XrdOucEnv.cc
-index b8b65d9bc..a27813077 100644
+index 704049a0d..72fd9df6b 100644
 --- a/src/XrdOuc/XrdOucEnv.cc
 +++ b/src/XrdOuc/XrdOucEnv.cc
 @@ -102,37 +102,55 @@ char *XrdOucEnv::Delimit(char *value)
@@ -159,7 +159,7 @@ index e5e220000..d7d1b391b 100644
      if (subdir.size() < dir.size())
        return false;
 diff --git a/src/XrdOuc/XrdOucUtils.cc b/src/XrdOuc/XrdOucUtils.cc
-index 4ebaa999a..812726279 100644
+index dd5e9a05e..704f580f9 100644
 --- a/src/XrdOuc/XrdOucUtils.cc
 +++ b/src/XrdOuc/XrdOucUtils.cc
 @@ -1480,7 +1480,7 @@ std::string obfuscateAuth(const std::string& input)
@@ -1334,7 +1334,7 @@ index 795b97289..014e61f32 100644
 +required_authorization = all
 +acceptable_authorization = none
 diff --git a/tests/XRootD/scitokens.sh b/tests/XRootD/scitokens.sh
-index a19384ccb..621889dd6 100755
+index e2b8bc5de..1572b69e6 100755
 --- a/tests/XRootD/scitokens.sh
 +++ b/tests/XRootD/scitokens.sh
 @@ -7,6 +7,8 @@ function setup_scitokens() {
@@ -1346,7 +1346,7 @@ index a19384ccb..621889dd6 100755
  
  	# Override the scitoken cache location; otherwise, contents of prior test runs may be cached
  	XDG_CACHE_HOME="${NAME}/cache"
-@@ -42,6 +44,13 @@ function setup_scitokens() {
+@@ -39,6 +41,13 @@ function setup_scitokens() {
  	fi
  	chmod 0600 "$OUTPUTDIR/token_modify"
  
@@ -1360,7 +1360,7 @@ index a19384ccb..621889dd6 100755
  	popd || exit 1
  }
  
-@@ -135,4 +144,16 @@ function test_scitokens() {
+@@ -132,4 +141,16 @@ function test_scitokens() {
  	# Re-uploading $HOST/protected/subdir_modify/hello_world.txt with modify token (expected 201)
  	execute_curl "$HOST/protected/subdir_modify/hello_world.txt" 201 'hello, world' scitokens/token_modify PUT
  	execute_curl "$HOST/protected/subdir_modify/hello_world.txt" 200 'hello, world' scitokens/token
@@ -1543,5 +1543,5 @@ index 000000000..9f85263c4
 +}
 \ No newline at end of file
 -- 
-2.43.5
+2.47.1
 
