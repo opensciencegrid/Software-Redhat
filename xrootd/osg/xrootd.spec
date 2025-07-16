@@ -10,12 +10,19 @@
 %bcond_with    asan
 %bcond_with    ceph
 %bcond_with    clang
+%if 0%{?osg:1}%{!?osg:0}
+%bcond_without docs
+%else
 %bcond_with    docs
+%endif
 %bcond_with    git
 
+%if 0%{?osg:1}%{!?osg:0}
 %bcond_with    tests
-%bcond_with    xrdec
-# ^^ turn on xrdec when it's safe (i.e. we have a build without it that passes the tests)
+%else
+%bcond_without tests
+%endif
+%bcond_without xrdec
 
 # This is the directory the tarball extracts to. This may be "xrootd" or "xrootd-%%{version}" depending on where the tarball was downloaded from.
 # GitHub releases use "xrootd-%%{version}"
@@ -37,7 +44,7 @@
 #-------------------------------------------------------------------------------
 Name:		xrootd
 Epoch:		1
-Release:	1.1%{?dist}%{?with_clang:.clang}%{?with_asan:.asan}
+Release:	1.2%{?dist}%{?with_clang:.clang}%{?with_asan:.asan}
 Summary:	Extended ROOT File Server
 Group:		System Environment/Daemons
 License:	LGPL-3.0-or-later AND BSD-2-Clause AND BSD-3-Clause AND curl AND MIT AND Zlib
@@ -402,18 +409,6 @@ Group:		Documentation
 This package contains the API documentation of the XRootD libraries.
 %endif
 
-#-------------------------------------------------------------------------------
-# tests
-#-------------------------------------------------------------------------------
-%if %{with tests}
-%package tests
-Summary: CPPUnit tests
-Group:   Development/Tools
-Requires: %{name}-client = %{epoch}:%{version}-%{release}
-%description tests
-This package contains a set of CPPUnit tests for xrootd.
-%endif
-
 %if %{with compat}
 #-------------------------------------------------------------------------------
 # client-compat
@@ -467,26 +462,16 @@ mkdir build
 pushd build
 
 cmake  \
-      -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=RelWithDebInfo \
-      -DFORCE_WERROR=TRUE \
-%if %{with tests}
-      -DENABLE_TESTS=TRUE \
-%else
-      -DENABLE_TESTS=FALSE \
-%endif
-%if %{with asan}
-      -DENABLE_ASAN=TRUE \
-%endif
-%if %{with ceph}
-      -DXRDCEPH_SUBMODULE=TRUE \
-%endif
-      -DENABLE_XRDCLHTTP=TRUE \
-%if %{with isal}
-      -DENABLE_XRDEC=TRUE \
-%endif
-      -DXRootD_VERSION_STRING=v%{version} \
-      -DINSTALL_PYTHON_BINDINGS=FALSE \
-      ../
+    -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=RelWithDebInfo \
+    -DFORCE_WERROR=TRUE \
+    -DENABLE_ASAN:BOOL=%{with asan} \
+    -DENABLE_CEPH:BOOL=%{with ceph} \
+    -DENABLE_TESTS:BOOL=%{with tests} \
+    -DENABLE_XRDCLHTTP:BOOL=TRUE \
+    -DENABLE_XRDEC:BOOL=%{with xrdec} \
+    -DXRootD_VERSION_STRING=v%{version} \
+    -DINSTALL_PYTHON_BINDINGS:BOOL=FALSE \
+    ../
 
 make -i VERBOSE=1 %{?_smp_mflags}
 popd
@@ -504,15 +489,9 @@ pushd build
 cmake  \
       -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=RelWithDebInfo \
       -DFORCE_WERROR=TRUE \
-%if %{with tests}
-      -DENABLE_TESTS=TRUE \
-%else
-      -DENABLE_TESTS=FALSE \
-%endif
-%if %{with ceph}
-      -DXRDCEPH_SUBMODULE=TRUE \
-%endif
-      -DENABLE_XRDEC=TRUE \
+      -DXRDCEPH_SUBMODULE:BOOL=%{with ceph} \
+      -DENABLE_TESTS:BOOL=%{with tests} \
+      -DENABLE_XRDEC:BOOL=TRUE \
       ../
 
 make -i VERBOSE=1 %{?_smp_mflags}
@@ -527,9 +506,11 @@ pushd build/bindings/python
 %py3_build
 popd
 
+%if %{with tests}
 %check
 cd %{build_dir}
 ctest --output-on-failure
+%endif
 
 #-------------------------------------------------------------------------------
 # Installation
@@ -584,6 +565,12 @@ popd
 
 
 
+%if %{with docs}
+LD_LIBRARY_PATH=%{buildroot}%{_libdir} \
+PYTHONPATH=%{buildroot}%{python3_sitearch} \
+PYTHONDONTWRITEBYTECODE=1 \
+make -C bindings/python/docs html SPHINXBUILD=sphinx-build-3
+%endif
 
 # Service unit files
 mkdir -p %{buildroot}%{_unitdir}
@@ -593,8 +580,6 @@ install -m 644 packaging/common/xrdhttp@.socket %{buildroot}%{_unitdir}
 install -m 644 packaging/common/cmsd@.service %{buildroot}%{_unitdir}
 install -m 644 packaging/common/frm_xfrd@.service %{buildroot}%{_unitdir}
 install -m 644 packaging/common/frm_purged@.service %{buildroot}%{_unitdir}
-
-# tmpfiles.d
 mkdir -p %{buildroot}%{_tmpfilesdir}
 install -m 644 packaging/rhel/xrootd.tmpfiles %{buildroot}%{_tmpfilesdir}/%{name}.conf
 
@@ -622,10 +607,11 @@ install -m 644 packaging/common/recorder.conf \
 install -m 644 packaging/common/http.client.conf.example \
 	%{buildroot}%{_sysconfdir}/%{name}/client.plugins.d/xrdcl-http-plugin.conf
 
+chmod 644 %{buildroot}%{_datadir}/%{name}/utils/XrdCmsNotify.pm
+
 mkdir -p %{buildroot}%{_sysconfdir}/%{name}/config.d
 
 mkdir -p %{buildroot}%{_localstatedir}/log/%{name}
-mkdir -p %{buildroot}%{_localstatedir}/run/%{name}
 mkdir -p %{buildroot}%{_localstatedir}/spool/%{name}
 
 mkdir -p %{buildroot}%{_sysconfdir}/logrotate.d
@@ -647,14 +633,11 @@ install -m 644 -p packaging/common/%{name}.pp \
 #-------------------------------------------------------------------------------
 # RPM scripts
 #-------------------------------------------------------------------------------
-%post   libs -p /sbin/ldconfig
-%postun libs -p /sbin/ldconfig
+%ldconfig_scriptlets libs
 
-%post   client-libs -p /sbin/ldconfig
-%postun client-libs -p /sbin/ldconfig
+%ldconfig_scriptlets client-libs
 
-%post   server-libs -p /sbin/ldconfig
-%postun server-libs -p /sbin/ldconfig
+%ldconfig_scriptlets server-libs
 
 %pre server
 getent group %{name} >/dev/null || groupadd -r %{name}
@@ -662,6 +645,8 @@ getent passwd %{name} >/dev/null || useradd -r -g %{name} -s /sbin/nologin \
 	-d %{_localstatedir}/spool/%{name} -c "System user for XRootD" %{name}
 
 %post server
+%tmpfiles_create %{_tmpfilesdir}/%{name}.conf
+
 if [ $1 -eq 1 ] ; then
 	systemctl daemon-reload >/dev/null 2>&1 || :
 fi
@@ -799,7 +784,7 @@ fi
 
 %files client-libs
 %{_libdir}/libXrdCl.so.3*
-%if %{with isal}
+%if %{with xrdec}
 %{_libdir}/libXrdEc.so.1*
 %endif
 %{_libdir}/libXrdFfs.so.3*
@@ -817,13 +802,14 @@ fi
 %config(noreplace) %{_sysconfdir}/%{name}/client.plugins.d/recorder.conf
 
 %files client-devel
-%{_bindir}/xrdgsitest
 %{_includedir}/%{name}/XrdCl
 %{_includedir}/%{name}/XrdPosix
 %{_libdir}/libXrdCl.so
+%if %{with xrdec}
+%{_libdir}/libXrdEc.so
+%endif
 %{_libdir}/libXrdFfs.so
 %{_libdir}/libXrdPosix.so
-%{_mandir}/man1/xrdgsitest.1*
 
 %files server-libs
 %{_libdir}/libXrdHttpUtils.so.2*
@@ -874,6 +860,7 @@ fi
 %{_bindir}/xrdcrc32c
 %{_bindir}/xrdfs
 %{_bindir}/xrdgsiproxy
+%{_bindir}/xrdgsitest
 %{_bindir}/xrdmapc
 %{_bindir}/xrdpinls
 %{_bindir}/xrdreplay
@@ -882,6 +869,7 @@ fi
 %{_mandir}/man1/xrdcp.1*
 %{_mandir}/man1/xrdfs.1*
 %{_mandir}/man1/xrdgsiproxy.1*
+%{_mandir}/man1/xrdgsitest.1*
 %{_mandir}/man1/xrdmapc.1*
 
 %files fuse
@@ -908,21 +896,6 @@ fi
 %{_libdir}/libXrdCeph-5.so
 %{_libdir}/libXrdCephXattr-5.so
 %{_libdir}/libXrdCephPosix.so*
-%endif
-
-%if %{with tests}
-%files tests
-%{_bindir}/test-runner
-%{_bindir}/xrdshmap
-%{_libdir}/libXrdClTests.so
-%{_libdir}/libXrdClTestsHelper.so
-%{_libdir}/libXrdClTestMonitor*.so
-%if %{with isal}
-%{_libdir}/libXrdEcTests.so
-%endif
-%if %{with ceph}
-%{_libdir}/libXrdCephTests*.so
-%endif
 %endif
 
 %files -n python%{python3_pkgversion}-%{name}
