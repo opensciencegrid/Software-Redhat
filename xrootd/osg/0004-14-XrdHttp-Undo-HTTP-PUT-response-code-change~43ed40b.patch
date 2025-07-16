@@ -1,7 +1,7 @@
-From b29db905cfc3bd6b9040e1e8133cf19e46265735 Mon Sep 17 00:00:00 2001
+From 8d82c9ef86ed5eec92f2a24983c142b8c273acfc Mon Sep 17 00:00:00 2001
 From: Matyas Selmeci <mselmeci@wisc.edu>
 Date: Thu, 30 Jan 2025 15:41:24 -0600
-Subject: [PATCH 4/9] [XrdHttp] Undo HTTP PUT response code change
+Subject: [PATCH 4/8] [#14] [XrdHttp] Undo HTTP PUT response code change
 
 From https://github.com/xrootd/xrootd/issues/2382 ; Pelican clients before 7.12.2 cannot handle the change from 200->201.
 ---

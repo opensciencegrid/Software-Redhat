@@ -38,8 +38,8 @@
 #-------------------------------------------------------------------------------
 Name:		xrootd
 Epoch:		1
-Version:	5.8.3
-Release:	1.3%{?dist}%{?with_clang:.clang}%{?with_asan:.asan}
+Version:	5.8.4
+Release:	1.1%{?dist}%{?with_clang:.clang}%{?with_asan:.asan}
 Summary:	Extended ROOT File Server
 Group:		System Environment/Daemons
 License:	LGPL-3.0-or-later AND BSD-2-Clause AND BSD-3-Clause AND curl AND MIT AND Zlib
@@ -53,24 +53,20 @@ Source0:   xrootd-%{version}.tar.gz
 Source1:   xrootd-%{compat_version}.tar.gz
 
 # PelicanPlatform/xrootd #1 (xrootd/xrootd #1868):
-Patch1: 0001-Allow-hostname-used-by-XRootD-to-be-overridden-by-en~7c119b0.patch
+Patch1: 0001-1-Allow-hostname-used-by-XRootD-to-be-overridden-by~7c119b0.patch
 # PelicanPlatform/xrootd #4 (xrootd/xrootd #2269):
-Patch2: 0002-XrdTls-Allow-disabling-of-X.509-client-auth~18e1c81.patch
+Patch2: 0002-4-XrdTls-Allow-disabling-of-X.509-client-auth~18e1c81.patch
 # PelicanPlatform/xrootd #6 (xrootd/xrootd #2397):
-Patch3: 0003-XrdSciTokens-Handle-multiple-authorization-token-set~b82ddc3.patch
+Patch3: 0003-6-XrdSciTokens-Handle-multiple-authorization-token-s~b82ddc3.patch
 # PelicanPlatform/xrootd #14 (no upstream):
-Patch4: 0004-XrdHttp-Undo-HTTP-PUT-response-code-change~43ed40b.patch
+Patch4: 0004-14-XrdHttp-Undo-HTTP-PUT-response-code-change~43ed40b.patch
 # Next 2: PelicanPlatform/xrootd #23
-Patch6: 0006-Re-engineer-concurrency-limits-for-throttles~39fea57.patch
-Patch7: 0007-Modify-XrdThrottle-to-be-an-OSS-plugin~921fef5.patch
+Patch5: 0005-23-Re-engineer-concurrency-limits-for-throttles~39fea57.patch
+Patch6: 0006-23-Modify-XrdThrottle-to-be-an-OSS-plugin~921fef5.patch
 # PelicanPlatform/xrootd #25
-Patch8: 0008-XRootD-s-xml-response-for-PROPFIND-will-now-include~aacf631.patch
-# PelicanPlatform/xrootd #30 (xrootd/xrootd #2535)
-Patch9: 0009-Avoid-reference-beyond-end-of-table~80b938c.patch
-# PelicanPlatform/xrootd #31 (xrootd/xrootd #2536)
-Patch10: 0010-XrdPfc-Ensure-a-reference-to-the-file-is-kept-when-s~aa225e2.patch
+Patch7: 0007-25-XRootD-s-xml-response-for-PROPFIND-will-now-inclu~aacf631.patch
 # PelicanPlatform/xrootd #32 (xrootd/xrootd #2472)
-Patch11: 0011-Enable-write-through-mode-for-cache~330eac1.patch
+Patch8: 0008-32-Enable-write-through-mode-for-cache~330eac1.patch
 
 BuildRequires:	cmake
 BuildRequires:	krb5-devel
@@ -960,6 +956,22 @@ fi
 # Changelog
 #-------------------------------------------------------------------------------
 %changelog
+* Tue Jul 15 2025 Mátyás Selmeci <mselmeci@wisc.edu> - 5.8.4-1.1
+- Update to XRootD 5.8.4 (SOFTWARE-6187)
+    - Patches added:
+    - Patches kept:
+        - 0001-Allow-hostname-used-by-XRootD-to-be-overridden-by-en~7c119b0.patch -> 0001-1-Allow-hostname-used-by-XRootD-to-be-overridden-by~7c119b0.patch
+        - 0002-XrdTls-Allow-disabling-of-X.509-client-auth~18e1c81.patch -> 0002-4-XrdTls-Allow-disabling-of-X.509-client-auth~18e1c81.patch
+        - 0003-XrdSciTokens-Handle-multiple-authorization-token-set~b82ddc3.patch -> 0003-6-XrdSciTokens-Handle-multiple-authorization-token-s~b82ddc3.patch
+        - 0004-XrdHttp-Undo-HTTP-PUT-response-code-change~43ed40b.patch -> 0004-14-XrdHttp-Undo-HTTP-PUT-response-code-change~43ed40b.patch
+        - 0006-Re-engineer-concurrency-limits-for-throttles~39fea57.patch -> 0005-23-Re-engineer-concurrency-limits-for-throttles~39fea57.patch
+        - 0007-Modify-XrdThrottle-to-be-an-OSS-plugin~921fef5.patch -> 0006-23-Modify-XrdThrottle-to-be-an-OSS-plugin~921fef5.patch
+        - 0008-XRootD-s-xml-response-for-PROPFIND-will-now-include~aacf631.patch -> 0007-25-XRootD-s-xml-response-for-PROPFIND-will-now-inclu~aacf631.patch
+        - 0011-Enable-write-through-mode-for-cache~330eac1.patch -> 0008-32-Enable-write-through-mode-for-cache~330eac1.patch
+    - Patches dropped:
+        - 0009-Avoid-reference-beyond-end-of-table~80b938c.patch
+        - 0010-XrdPfc-Ensure-a-reference-to-the-file-is-kept-when-s~aa225e2.patch
+
 * Tue Jun 24 2025 Mátyás Selmeci <mselmeci@wisc.edu> - 5.8.3-1.3
 - Add patch 0011-Enable-write-through-mode-for-cache~330eac1.patch (SOFTWARE-6179)
 

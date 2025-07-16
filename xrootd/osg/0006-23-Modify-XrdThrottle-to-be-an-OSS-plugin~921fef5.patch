@@ -1,7 +1,7 @@
-From 22daada372030e41b03b3240a901af7e6d0e78ef Mon Sep 17 00:00:00 2001
+From 20bad7ea8ed17ac85e662394aeb168b013fb1015 Mon Sep 17 00:00:00 2001
 From: Brian Bockelman <bbockelman@morgridge.org>
 Date: Wed, 30 Apr 2025 08:32:40 -0500
-Subject: [PATCH 07/10] Modify XrdThrottle to be an OSS plugin
+Subject: [PATCH 6/8] [#23] Modify XrdThrottle to be an OSS plugin
 
 XrdThrottle was originally designed at the OFS layer because we wanted
 to perform loadshedding - redirect a file-open request to another server.
@@ -1213,5 +1213,5 @@ index d0f8a5db6..d1f46aa42 100644
  
  // Returns the user name and UID for the given client.
 -- 
-2.43.5
+2.47.1
 
