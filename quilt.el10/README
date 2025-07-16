@@ -1,0 +1,4 @@
+This is a rebuild of quilt(1) for EL10.
+quilt is used for patch management and can be used with osg-build.
+As of 2025-07-16, there was no quilt RPM in EL10, but the EL9 SRPM compiled just fine.
+This package can be untagged once quilt is available in EL10 for real.
