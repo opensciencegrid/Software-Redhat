@@ -2,7 +2,7 @@
 
 Name: ospool-ep
 Version: 23
-Release: 8%{?dist}
+Release: 9%{?dist}
 Summary: Systemd service for the OSPool Backfill Container
 
 License: Unknown
@@ -40,6 +40,9 @@ mv %{SOURCE2} %{buildroot}/etc/osg/
 %attr(0755,root,root) /usr/sbin/start_ospool_ep_container.sh
 
 %changelog
+* Wed Jul 16 2025 Matt Westphall <westphall@wisc.edu> 23-9
+- Explicitly specify the NVidia container runtime when GPUs are enabled (SOFTWARE-6189)
+
 * Mon May 12 2025 Matt Westphall <westphall@wisc.edu> 23-8
 - Use unconfined seccomp rather than privileged (SOFTWARE-6128)
 
