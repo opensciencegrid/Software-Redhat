@@ -1,0 +1,29 @@
+From 3e65e483ab2765c9b4625f0326dedc1cefc27d0e Mon Sep 17 00:00:00 2001
+From: Matyas Selmeci <mselmeci@wisc.edu>
+Date: Wed, 16 Jul 2025 17:00:33 -0500
+Subject: [PATCH] Install wheels
+
+If PYTHON_WHEELDIR is set, use files from that directory to satisfy dependencies for Python builds.
+---
+ build.xml | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/build.xml b/build.xml
+index 1561587..9808fd5 100644
+--- a/build.xml
++++ b/build.xml
+@@ -308,7 +308,10 @@ pegasus.build.git.hash=${pegasus.build.git.hash}
+   </target>
+ 
+   <target name="compile-externals" depends="setup" description="Compile external dependencies">
+-    <exec executable="${dist.python}" dir="src" failonerror="true">
++    <exec executable="${dist.python}" dir="src" failonerror="true" if:set="env.PYTHON_WHEELDIR">
++      <arg line="-m pip install -t ../build/externals --no-deps -r requirements.txt --no-index -f ${env.PYTHON_WHEELDIR}"/>
++    </exec>
++    <exec executable="${dist.python}" dir="src" failonerror="true" unless:set="env.PYTHON_WHEELDIR">
+       <arg line="-m pip install -t ../build/externals --no-deps -r requirements.txt"/>
+     </exec>
+   </target>
+-- 
+2.47.1
+

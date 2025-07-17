@@ -1,1 +1,16 @@
-pegasus/5.1.1/Flask_Caching-1.10.1-py3-none-any.whl sha1sum=d118bdfe337bd426959640c8ec268c22588502b6  
+# These tarballs were created with the following method:
+#
+# 1. Extract the pegasus tarball
+# 2. From pegasus-5.1.1/src/requirements.txt, comment out the 's3transfer' and 'urllib3==2.0.7' lines
+# 3. Make an elX-wheels directory (substitute X as appropriate), cd into it
+# 4. pip3 wheel -r ../requirements.txt
+# 5. pip3 wheel 's3transfer==0.5.2'
+# 6. tar up the directory
+#
+# (Do this in a separate container for EL8, EL9, and EL10)
+# A future version of Pegasus will make #2 and #5 unnecessary
+#
+#pegasus/5.1.1/el10-wheels-x86_64_v2.tar.gz sha1sum=30c37b3c5ea7491b3c4455c6787ae20104714cd7
+# ^^ Uncomment the el10 tarball when we start making EL10 builds
+pegasus/5.1.1/el8-wheels-x86_64.tar.gz sha1sum=67a8c1b9b877542cc574bb93bcd6f9fcb1123c85
+pegasus/5.1.1/el9-wheels-x86_64.tar.gz sha1sum=4110126a879035184d3669ade2908c72d2978b28

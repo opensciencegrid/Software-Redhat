@@ -10,14 +10,18 @@ Packager:       Pegasus Development Team <pegasus-support@isi.edu>
 Source:         pegasus-%{version}.tar.gz
 
 # OSG additions for building in an offline environment (Koji)
-Source1:        Flask_Caching-1.10.1-py3-none-any.whl
+Patch1:         comment-out-s3transfer-and-urllib3-2.0.7-lines.patch
+Patch2:         Install-wheels.patch
+Source8:        el8-wheels-x86_64.tar.gz
+Source9:        el9-wheels-x86_64.tar.gz
+#Source10:       el10-wheels-x86_64_v2.tar.gz  # Later
 BuildRequires:  python3-wheel
 # End OSG additions
 
 BuildRequires:  gcc, gcc-c++, javapackages-tools, make, openssl-devel, ant, python3-devel, python3-pip, python3-setuptools
 Requires:       which, python3, condor >= 10.0, graphviz, %{?systemd_requires}
 
-# XXX Remove once I get the x86-64 build to work
+# XXX Remove once I get aarch64 wheels
 ExclusiveArch: x86_64
 
 %global debug_package %{nil}
@@ -25,16 +29,28 @@ ExclusiveArch: x86_64
 %if 0%{?rhel} == 8
 BuildRequires:  java-17-openjdk-devel, python3-setuptools_scm
 Requires:       java-17-openjdk-headless, python3-cryptography, python3-PyYAML, python3-GitPython, python3-dataclasses
+# OSG
+%define wheelsource %{SOURCE8}
+%define wheeldir el8-wheels
+# End OSG
 %endif
 
 %if 0%{?rhel} == 9
 BuildRequires:  ant-apache-regexp, java-21-openjdk-devel
 Requires:       java-21-openjdk-headless, python3-cryptography, python3-PyYAML, python3-GitPython
+# OSG
+%define wheelsource %{SOURCE9}
+%define wheeldir el9-wheels
+# End OSG
 %endif
 
 %if 0%{?rhel} == 10
 BuildRequires:  ant-apache-regexp, java-21-openjdk-devel
 Requires:       java-21-openjdk-headless, python3-cryptography, python3-PyYAML, python3-GitPython
+# OSG
+%define wheelsource %{SOURCE10}
+%define wheeldir el10-wheels
+# End OSG
 %endif
 
 %define sourcedir %{name}-%{version}
@@ -64,8 +80,9 @@ execute the steps in appropriate order.
 
 %build
 %if 0%{?osg}
-export PEGASUS_PYTHON=%{python3}
-%{python3} -mpip install %{SOURCE1}
+tar -xf %{wheelsource}
+export PYTHON_WHEELDIR=$(cd %{wheeldir} && pwd -P)
+# Must delete pyproject.toml or pip will try to download 'setuptools<69' (even though it's already installed)
 rm packages/*/pyproject.toml
 %endif
 
@@ -125,7 +142,7 @@ systemctl disable pegasus-service.service
 systemctl daemon-reload
 
 %changelog
-* Wed Jun 11 2025 Mátyás Selmeci <mselmeci@wisc.edu> - 5.1.1-1.1
+* Wed Jul 16 2025 Mátyás Selmeci <mselmeci@wisc.edu> - 5.1.1-1.1
 - Update to 5.1.1 (SOFTWARE-6163)
 
 * Thu May 29 2025 Pegasus Development Team <pegasus-support@isi.edu> 5.1.1
