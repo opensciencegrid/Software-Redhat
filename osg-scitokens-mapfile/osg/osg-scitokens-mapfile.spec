@@ -54,6 +54,9 @@ mv osg-scitokens-mapfile.conf %{buildroot}/usr/share/condor-ce/mapfiles.d/
 
 
 %changelog
+* Thu Jul 24 2025 Matt Westphall <westphall@wisc.edu> 15-1
+- Update to data-15 tag (SOFTWARE-6190)
+
 * Fri Jan 17 2025 Matt Westphall <westphall@wisc.edu> 14-1
 - Update to data-14 tag (SOFTWARE-6058)
 
