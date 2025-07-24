@@ -1,6 +1,6 @@
 Summary: Scitokens mapfile for OSG
 Name: osg-scitokens-mapfile
-Version: 14
+Version: 15
 Release: 2%{?dist}
 License: ASL 2.0
 Source0: https://github.com/opensciencegrid/topology/archive/data-%{version}.tar.gz
@@ -54,6 +54,9 @@ mv osg-scitokens-mapfile.conf %{buildroot}/usr/share/condor-ce/mapfiles.d/
 
 
 %changelog
+* Thu Jul 24 2025 Matt Westphall <westphall@wisc.edu> 15-1
+- Update to data-15 tag (SOFTWARE-6190)
+
 * Fri Jan 17 2025 Matt Westphall <westphall@wisc.edu> 14-1
 - Update to data-14 tag (SOFTWARE-6058)
 
