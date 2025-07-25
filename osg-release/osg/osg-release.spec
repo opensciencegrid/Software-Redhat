@@ -2,7 +2,7 @@
 
 Name:           osg-release
 Version:        %{series}
-Release:        3%{?dist}
+Release:        4%{?dist}
 Summary:        OSG Software for Enterprise Linux repository configuration
 
 License:        GPL
@@ -63,7 +63,7 @@ install -m 644 *.repo $RPM_BUILD_ROOT%{_sysconfdir}/yum.repos.d
 
 
 %changelog
-* Fri Jul 25 2025 Mátyás Selmeci <mselmeci@wisc.edu> - 24-3
+* Fri Jul 25 2025 Mátyás Selmeci <mselmeci@wisc.edu> - 24-4
 - Bump to rebuild
 
 * Mon Sep 30 2024 Mátyás Selmeci <matyas@cs.wisc.edu> - 24-2
