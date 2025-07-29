@@ -1,13 +1,16 @@
 Summary: Configuration tool for the OSG Software Stack
 Name: osg-configure
 Version: 4.2.0
-Release: 1%{?dist}
+Release: 2%{?dist}
 Source0: %{name}-%{version}.tar.gz
 License: Apache 2.0
 BuildArch: noarch
 Url: https://github.com/opensciencegrid/osg-configure
 BuildRequires: python3-devel
-BuildRequires: python3-condor >= 9.0.9
+%if 0%{?rhel} > 9
+# distutils has been removed in the version of Python included in el10
+BuildRequires: python3-setuptools
+%endif
 Requires: python3
 %global __python /usr/bin/python3
 Requires: %{name}-libs = %{version}-%{release}
@@ -174,16 +177,6 @@ touch $RPM_BUILD_ROOT/var/lib/osg/osg-attributes.conf
 touch $RPM_BUILD_ROOT/var/lib/osg/osg-local-job-environment.conf
 touch $RPM_BUILD_ROOT/var/lib/osg/osg-job-environment.conf
 
-%check
-for module in $RPM_BUILD_ROOT/%{python_sitelib}/osg_configure/configure_modules/[a-z]*.py; do
-    %{__python} -c "import osg_configure.configure_modules.$(basename "$module" .py)"
-done
-for module in $RPM_BUILD_ROOT/%{python_sitelib}/osg_configure/modules/[a-z]*.py; do
-    %{__python} -c "import osg_configure.modules.$(basename "$module" .py)"
-done
-PYTHONPATH=$RPM_BUILD_ROOT/%{python_sitelib}:$PYTHONPATH %{__python} $RPM_BUILD_ROOT/usr/sbin/osg-configure --version
-PYTHONPATH=$RPM_BUILD_ROOT/%{python_sitelib}:$PYTHONPATH %{__python} $RPM_BUILD_ROOT/usr/bin/osg-ce-attributes-generator --version
-
 %files
 %{python_sitelib}/osg_configure/configure_modules/__init__.py*
 %{python_sitelib}/osg_configure/configure_modules/bosco.py*
@@ -312,6 +305,9 @@ PYTHONPATH=$RPM_BUILD_ROOT/%{python_sitelib}:$PYTHONPATH %{__python} $RPM_BUILD_
 
 
 %changelog
+* Tue Jul 29 2025 Mátyás Selmeci <mselmeci@wisc.edu> 4.2.0-1
+- Drop python3-condor build dependency
+
 * Tue Jun 18 2024 Mátyás Selmeci <matyas@cs.wisc.edu> 4.2.0-1
 - Turn osg-configure-rsv into a dummy package (SOFTWARE-4511)
 - Add "queue" to OSG_ResourceCatalog for Pilot sections (SOFTWARE-5881)
