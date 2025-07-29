@@ -1,6 +1,6 @@
 Summary: Service files for Pelican-based OSDF daemons
 Name: osdf-server
-Version: 7.17.1
+Version: 7.17.2
 Release: 1%{?dist}
 License: ASL 2.0
 Url: https://github.com/PelicanPlatform/pelican
@@ -52,7 +52,7 @@ systemctl daemon-reload
 %%config(noreplace) /etc/pelican/config.d/15-osdf.yaml
 %%config(noreplace) /etc/pelican/config.d/50-webui.yaml
 %{-x:%%attr(-,xrootd,xrootd) /var/spool/osdf}
-%%dir %%attr(0700,root,root) /var/log/pelican
+%%dir %%attr(0755,root,root) /var/log/pelican
 %%config(noreplace) /etc/logrotate.d/pelican
 
 # kind of a hack
@@ -112,6 +112,10 @@ install -m 0644 systemd/pelican.logrotate       $RPM_BUILD_ROOT/etc/logrotate.d/
 
 
 %changelog
+* Tue Jul 29 2025 Mátyás Selmeci <mselmeci@wisc.edu> - 7.17.2-1
+- Upgrade to Pelican 7.12.1
+- Fix log directory permissions
+
 * Tue Jul 01 2025 Mátyás Selmeci <mselmeci@wisc.edu> - 7.17.1-1
 - Upgrade to Pelican 7.17.1
 
