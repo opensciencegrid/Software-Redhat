@@ -1,0 +1,26 @@
+From 01b059d6b60e068ea8e6149b58a593dadb52b055 Mon Sep 17 00:00:00 2001
+From: Matyas Selmeci <mselmeci@wisc.edu>
+Date: Thu, 19 Jun 2025 17:05:21 -0500
+Subject: [PATCH] distrepos: support "x86_64_v2" arch
+
+---
+ builder/kojid | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/builder/kojid b/builder/kojid
+index 672391b1..6f838c60 100755
+--- a/builder/kojid
++++ b/builder/kojid
+@@ -6210,7 +6210,8 @@ class createDistRepoTask(BaseTaskHandler):
+ 
+     archmap = {'s390x': 's390', 'ppc64': 'ppc', 'x86_64': 'i686'}
+     compat = {"i386": ("athlon", "i686", "i586", "i486", "i386", "noarch"),
+-              "x86_64": ("amd64", "ia32e", "x86_64", "noarch"),
++              "x86_64": ("amd64", "ia32e", "x86_64", "x86_64_v2", "noarch"),
++              "x86_64_v2": ("amd64", "ia32e", "x86_64", "x86_64_v2", "noarch"),
+               "ia64": ("ia64", "noarch"),
+               "ppc": ("ppc", "noarch"),
+               "ppc64": ("ppc64p7", "ppc64pseries", "ppc64iseries", "ppc64", "noarch"),
+-- 
+2.46.0
+
