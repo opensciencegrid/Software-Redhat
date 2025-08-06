@@ -1,5 +1,5 @@
 %bcond_without python3
-%bcond_without python2
+%bcond_with    python2
 %global _python_bytecompile_extra 0
 
 # We can build varying amounts of Koji for python2 and python3 based on
