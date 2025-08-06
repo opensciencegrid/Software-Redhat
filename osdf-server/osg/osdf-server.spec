@@ -1,6 +1,6 @@
 Summary: Service files for Pelican-based OSDF daemons
 Name: osdf-server
-Version: 7.17.2
+Version: 7.18.0
 Release: 1%{?dist}
 License: ASL 2.0
 Url: https://github.com/PelicanPlatform/pelican
@@ -19,11 +19,7 @@ Source1: 20-cache.yaml
 %define subpackage(x) %{expand:
 %%package -n %1
 Summary: Service file and configuration for %1
-# xrootd-requiring services (cache, origin) need the dynamically-linked
-# "pelican-server" binary whereas the others need the "osdf" binary.
-%{!-x:Requires: pelican >= %{version}}
-%{!-x:Requires: /usr/bin/osdf}
-%{-x:Requires: pelican-server >= %{version}}
+Requires: pelican-server >= %{version}
 %{-x:Requires: xrootd-scitokens}
 %{-x:Requires: xrootd-voms}
 %{-x:Requires: xrootd-multiuser}
@@ -36,14 +32,20 @@ Summary: Service file and configuration for %1
 Service file for %1
 
 %%preun -n %1
-%%systemd_preun %1.service
+if [ -d /run/systemd/system ]; then
+    %%systemd_preun %1.service
+fi
 
 %%postun -n %1
-systemctl daemon-reload
+if [ -d /run/systemd/system ]; then
+    systemctl daemon-reload
+fi
 
 %%post -n %1
-%%systemd_post %1.service
-systemctl daemon-reload
+if [ -d /run/systemd/system ]; then
+    %%systemd_post %1.service
+    systemctl daemon-reload
+fi
 
 %%files -n %1
 /usr/lib/systemd/system/%{1}*.service
@@ -60,11 +62,8 @@ systemctl daemon-reload
 %%config(noreplace) /etc/pelican/config.d/20-cache.yaml
 %%endif
 
-%{!-x:%%triggerin -n %1 -- pelican}
-%{!-x:[ \! -d /run/systemd/system ] || systemctl condrestart %1.service}
-
-%{-x:%%triggerin -n %1 -- pelican-server}
-%{-x:[ \! -d /run/systemd/system ] || systemctl condrestart %1.service}
+%%triggerin -n %1 -- pelican-server
+[ \! -d /run/systemd/system ] || systemctl condrestart %1.service
 
 %{-x:%%triggerin -n %1 -- xrootd-server}
 %{-x:[ \! -d /run/systemd/system ] || systemctl condrestart %1.service}
@@ -112,8 +111,13 @@ install -m 0644 systemd/pelican.logrotate       $RPM_BUILD_ROOT/etc/logrotate.d/
 
 
 %changelog
+* Fri Aug 06 2025 Mátyás Selmeci <mselmeci@wisc.edu> - 7.18.0-1
+- Upgrade to Pelican 7.18.0
+- Require pelican-server for all services
+- Don't run systemctl commands if we were not booted with systemd
+
 * Tue Jul 29 2025 Mátyás Selmeci <mselmeci@wisc.edu> - 7.17.2-1
-- Upgrade to Pelican 7.12.1
+- Upgrade to Pelican 7.17.2
 - Fix log directory permissions
 
 * Tue Jul 01 2025 Mátyás Selmeci <mselmeci@wisc.edu> - 7.17.1-1
