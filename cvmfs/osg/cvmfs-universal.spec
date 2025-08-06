@@ -78,7 +78,10 @@ Source0: https://ecsft.cern.ch/dist/cvmfs/%{name}-%{version}/%{name}-%{version}.
 Source1: cvmfs.te
 Source2: cvmfs.fc
 %endif
-Patch0: garbagecollection.patch
+Source3: https://github.com/google/googletest/releases/download/v1.17.0/googletest-1.17.0.tar.gz
+Patch0: local-googletest.patch
+Patch1: garbagecollection.patch
+Patch2: garbagecollection2.patch
 Group: Applications/System
 License: BSD
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -318,7 +321,11 @@ mkdir SELinux
 cp %{SOURCE1} %{SOURCE2} SELinux
 %endif
 
-%patch0 -p1
+cp %{SOURCE3} .
+
+%patch0
+%patch1 -p1
+%patch2 -p1
 
 %build
 
