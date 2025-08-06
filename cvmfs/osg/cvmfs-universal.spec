@@ -318,7 +318,7 @@ mkdir SELinux
 cp %{SOURCE1} %{SOURCE2} SELinux
 %endif
 
-%patch0
+%patch0 -p1
 
 %build
 
