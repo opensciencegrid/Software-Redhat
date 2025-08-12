@@ -1,7 +1,7 @@
 
 Name: xrdcl-pelican
-Version: 1.4.0
-Release: 2%{?dist}
+Version: 1.4.1
+Release: 1%{?dist}
 Summary: A Pelican-specific backend for the XRootD client
 
 Group: System Environment/Daemons
@@ -11,8 +11,6 @@ URL: https://github.com/pelicanplatform/xrdcl-pelican
 # git archive v%%{version} --prefix=xrdcl-pelican-%%{version}/ | gzip -7 > ~/rpmbuild/SOURCES/xrdcl-pelican-%%{version}.tar.gz
 Source0: %{name}-%{version}.tar.gz
 Source1: tinyxml2-10.0.0.tar.gz
-
-Patch0: xrdclcurl-deadlock.patch
 
 %define xrootd_current_major 5
 %define xrootd_current_minor 6
@@ -62,7 +60,7 @@ Requires: xrootd-client <  1:%{xrootd_next_major}.0.0-1
 %{summary}
 
 %prep
-%autosetup -p1
+%setup -q
 
 %build
 %if 0%{?rhel} == 7
@@ -97,9 +95,6 @@ rm -rf $RPM_BUILD_ROOT
 %{_sysconfdir}/xrootd/client.plugins.d/s3-plugin.conf
 
 %changelog
-* Wed Aug 06 2025 Mátyás Selmeci <mselmeci@wisc.edu> 1.4.0-2
-- Fix deadlock in XrdClCurl
-
 * Sat Jul 19 2025 Brian Bockelman <bbockelman@morgridge.org> 1.4.0-1
 - Add experimental support for s3://-style URLs.
 - Delay initialization of thread pools until the first file is opened.
