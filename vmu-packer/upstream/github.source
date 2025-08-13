@@ -1,1 +1,1 @@
-type=github repo=opensciencegrid/vmu-packer tag=v1.15.0 hash=68aeb8fcd392ce554a9b361d100f53a5ccce0724
+type=github repo=opensciencegrid/vmu-packer tag=v1.15.1 hash=ff8571470e66145203c5d228409bf495bdf85697
