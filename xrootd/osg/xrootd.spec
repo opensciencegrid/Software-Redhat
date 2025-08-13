@@ -44,7 +44,7 @@
 #-------------------------------------------------------------------------------
 Name:		xrootd
 Epoch:		1
-Release:	1.2%{?dist}%{?with_clang:.clang}%{?with_asan:.asan}
+Release:	1.3%{?dist}%{?with_clang:.clang}%{?with_asan:.asan}
 Summary:	Extended ROOT File Server
 Group:		System Environment/Daemons
 License:	LGPL-3.0-or-later AND BSD-2-Clause AND BSD-3-Clause AND curl AND MIT AND Zlib
@@ -81,6 +81,12 @@ Patch6: 0006-23-Modify-XrdThrottle-to-be-an-OSS-plugin~921fef5.patch
 Patch7: 0007-25-XRootD-s-xml-response-for-PROPFIND-will-now-inclu~aacf631.patch
 # PelicanPlatform/xrootd #32 (xrootd/xrootd #2472)
 Patch8: 0008-32-Enable-write-through-mode-for-cache~330eac1.patch
+# PelicanPlatform/xrootd #34 (no upstream)
+Patch9: 0009-34-Add-S3-as-a-permitted-proxy-protocol~b36d9b7.patch
+# PelicanPlatform/xrootd #36 (no upstream)
+Patch10: 0010-36-Do-a-clean-TLS-shutdown-for-HTTPS~cdc53fe.patch
+# PelicanPlatform/xrootd #35 (xrootd/xrootd #2532)
+Patch11: 0011-35-Make-HTTP-s-maximum-open-delay-configurable~3496b32.patch
 
 BuildRequires:	cmake
 BuildRequires:	gcc-c++
@@ -960,6 +966,15 @@ fi
 # Changelog
 #-------------------------------------------------------------------------------
 %changelog
+* Wed Aug 13 2025 Mátyás Selmeci <mselmeci@wisc.edu> - 5.8.4-1.3
+- Add patches (SOFTWARE-6202):
+    - 0009-34-Add-S3-as-a-permitted-proxy-protocol~b36d9b7.patch
+    - 0010-36-Do-a-clean-TLS-shutdown-for-HTTPS~cdc53fe.patch
+    - 0011-35-Make-HTTP-s-maximum-open-delay-configurable~3496b32.patch
+
+* Wed Jul 16 2025 Mátyás Selmeci <mselmeci@wisc.edu> - 5.8.4-1.2
+- Merge some upstream specfile changes (SOFTWARE-6073)
+
 * Tue Jul 15 2025 Mátyás Selmeci <mselmeci@wisc.edu> - 5.8.4-1.1
 - Update to XRootD 5.8.4 (SOFTWARE-6187)
     - Patches added:
