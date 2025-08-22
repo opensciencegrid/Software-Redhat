@@ -1,7 +1,7 @@
 Summary: Configuration tool for the OSG Software Stack
 Name: osg-configure
-Version: 4.2.0
-Release: 2%{?dist}
+Version: 4.3.0
+Release: 1%{?dist}
 Source0: %{name}-%{version}.tar.gz
 License: Apache 2.0
 BuildArch: noarch
@@ -9,6 +9,7 @@ Url: https://github.com/opensciencegrid/osg-configure
 BuildRequires: python3-devel
 %if 0%{?rhel} > 9
 # distutils has been removed in the version of Python included in el10
+# so use setuptools instead
 BuildRequires: python3-setuptools
 %endif
 Requires: python3
@@ -305,7 +306,10 @@ touch $RPM_BUILD_ROOT/var/lib/osg/osg-job-environment.conf
 
 
 %changelog
-* Tue Jul 29 2025 Mátyás Selmeci <mselmeci@wisc.edu> 4.2.0-1
+* Fri Aug 22 2025 Mátyás Selmeci <mselmeci@wisc.edu> 4.3.0-1
+- Add "estimated_cpucount" to Pilot sections (SOFTWARE-6197)
+
+* Tue Jul 29 2025 Mátyás Selmeci <mselmeci@wisc.edu> 4.2.0-2
 - Drop python3-condor build dependency
 
 * Tue Jun 18 2024 Mátyás Selmeci <matyas@cs.wisc.edu> 4.2.0-1
