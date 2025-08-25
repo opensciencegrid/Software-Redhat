@@ -2,7 +2,7 @@
 
 Name: ospool-ep
 Version: %{osgver}
-Release: 5%{?dist}
+Release: 6%{?dist}
 Summary: Systemd service for the OSPool Backfill Container
 
 License: Unknown
@@ -40,6 +40,9 @@ mv %{SOURCE2} %{buildroot}/etc/osg/
 %attr(0755,root,root) /usr/sbin/start_ospool_ep_container.sh
 
 %changelog
+
+* Mon Aug 25 2025 Matt Westphall <westphall@wisc.edu> 24-6
+- Set a PID limit on the EP container (SOFTWARE-6142)
 
 * Tue Jun 24 2025 Matt Westphall <westphall@wisc.edu> 24-5
 - Explicitly specify the NVidia container runtime when GPUs are enabled
