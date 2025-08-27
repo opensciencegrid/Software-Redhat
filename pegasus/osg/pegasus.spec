@@ -12,26 +12,32 @@ Source:         pegasus-%{version}.tar.gz
 # OSG additions for building in an offline environment (Koji)
 Patch1:         comment-out-s3transfer-and-urllib3-2.0.7-lines.patch
 Patch2:         Install-wheels.patch
-Source8:        el8-wheels-x86_64.tar.gz
-Source9:        el9-wheels-x86_64.tar.gz
-#Source10:       el10-wheels-x86_64_v2.tar.gz  # Later
+Source8:        el8-wheels-x86_64.tar
+Source9:        el9-wheels-x86_64.tar
+Source10:       el10-wheels-x86_64_v2.tar
+Source11:       el8-wheels-aarch64.tar
+Source12:       el9-wheels-aarch64.tar
+Source13:       el10-wheels-aarch64.tar
 BuildRequires:  python3-wheel
 # End OSG additions
 
 BuildRequires:  gcc, gcc-c++, javapackages-tools, make, openssl-devel, ant, python3-devel, python3-pip, python3-setuptools
 Requires:       which, python3, condor >= 10.0, graphviz, %{?systemd_requires}
 
-# XXX Remove once I get aarch64 wheels
-ExclusiveArch: x86_64
 
 %global debug_package %{nil}
 
 %if 0%{?rhel} == 8
-BuildRequires:  java-17-openjdk-devel, python3-setuptools_scm
-Requires:       java-17-openjdk-headless, python3-cryptography, python3-PyYAML, python3-GitPython, python3-dataclasses
+BuildRequires:  python3-setuptools_scm, java-1.8.0-openjdk-devel
+Requires:       java-1.8.0-openjdk-headless, python3-cryptography, python3-PyYAML, python3-GitPython, python3-dataclasses
 # OSG
+%ifarch aarch64
+%define wheelsource %{SOURCE11}
+%define wheeldir el8-wheels-aarch64
+%else
 %define wheelsource %{SOURCE8}
-%define wheeldir el8-wheels
+%define wheeldir el8-wheels-x86_64
+%endif
 # End OSG
 %endif
 
@@ -39,8 +45,13 @@ Requires:       java-17-openjdk-headless, python3-cryptography, python3-PyYAML, 
 BuildRequires:  ant-apache-regexp, java-21-openjdk-devel
 Requires:       java-21-openjdk-headless, python3-cryptography, python3-PyYAML, python3-GitPython
 # OSG
+%ifarch aarch64
+%define wheelsource %{SOURCE12}
+%define wheeldir el9-wheels-aarch64
+%else
 %define wheelsource %{SOURCE9}
-%define wheeldir el9-wheels
+%define wheeldir el9-wheels-x86_64
+%endif
 # End OSG
 %endif
 
@@ -48,8 +59,13 @@ Requires:       java-21-openjdk-headless, python3-cryptography, python3-PyYAML, 
 BuildRequires:  ant-apache-regexp, java-21-openjdk-devel
 Requires:       java-21-openjdk-headless, python3-cryptography, python3-PyYAML, python3-GitPython
 # OSG
+%ifarch aarch64
+%define wheelsource %{SOURCE13}
+%define wheeldir el10-wheels-aarch64
+%else
 %define wheelsource %{SOURCE10}
-%define wheeldir el10-wheels
+%define wheeldir el10-wheels-x86_64_v2
+%endif
 # End OSG
 %endif
 
