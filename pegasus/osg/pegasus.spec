@@ -14,10 +14,10 @@ Patch1:         comment-out-s3transfer-and-urllib3-2.0.7-lines.patch
 Patch2:         Install-wheels.patch
 Source8:        el8-wheels-x86_64.tar
 Source9:        el9-wheels-x86_64.tar
-Source10:       el10-wheels-x86_64_v2.tar
+#Source10:       el10-wheels-x86_64_v2.tar
 Source11:       el8-wheels-aarch64.tar
 Source12:       el9-wheels-aarch64.tar
-Source13:       el10-wheels-aarch64.tar
+#Source13:       el10-wheels-aarch64.tar
 BuildRequires:  python3-wheel
 # End OSG additions
 
