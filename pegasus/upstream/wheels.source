@@ -1,0 +1,18 @@
+# These tarballs were created with the following method:
+#
+# 1. Extract the pegasus tarball
+# 2. From pegasus-5.1.1/src/requirements.txt, comment out the 's3transfer' and 'urllib3==2.0.7' lines
+# 3. Make an elX-wheels-ARCH directory (substitute X and ARCH as appropriate), cd into it
+# 4. pip3 wheel -r ../requirements.txt
+# 5. pip3 wheel 's3transfer==0.5.2'
+# 6. tar up the directory
+#
+# (Do this in a separate container for EL8, EL9, and EL10)
+# A future version of Pegasus will make #2 and #5 unnecessary
+#
+pegasus/5.1.1/el10-wheels-aarch64.tar sha1sum=11ddf8f724510d2166b06a8b11d806e4f83f1eba
+pegasus/5.1.1/el10-wheels-x86_64_v2.tar sha1sum=2d2bf684a065fb8c7434a4acc6899c7497df6cc5
+pegasus/5.1.1/el8-wheels-aarch64.tar sha1sum=02c6d7214929c9a2275bf5f710dfe106b19b6d49
+pegasus/5.1.1/el8-wheels-x86_64.tar sha1sum=9313baa2e3cdde497352f2f5a8472407ef1060b6
+pegasus/5.1.1/el9-wheels-aarch64.tar sha1sum=d420e603c0da4fa9c348a69619f15d4c2ee40b57
+pegasus/5.1.1/el9-wheels-x86_64.tar sha1sum=2920507a70e088644c540e827c53685256bc41fd
