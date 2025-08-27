@@ -160,6 +160,7 @@ systemctl daemon-reload
 %changelog
 * Wed Jul 16 2025 Mátyás Selmeci <mselmeci@wisc.edu> - 5.1.1-1.1
 - Update to 5.1.1 (SOFTWARE-6163)
+- Unset exclusiveArch
 
 * Thu May 29 2025 Pegasus Development Team <pegasus-support@isi.edu> 5.1.1
 - 5.1.1 automatic build
