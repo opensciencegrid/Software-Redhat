@@ -1,6 +1,6 @@
 Name:           pegasus
 Version:        5.1.1
-Release:        1.1%{?dist}
+Release:        1.2%{?dist}
 Summary:        Workflow management system for HTCondor, grids, and clouds
 Group:          Applications/System
 License:        ASL 2.0
@@ -12,12 +12,23 @@ Source:         pegasus-%{version}.tar.gz
 # OSG additions for building in an offline environment (Koji)
 Patch1:         comment-out-s3transfer-and-urllib3-2.0.7-lines.patch
 Patch2:         Install-wheels.patch
+# We can conditionalize the source on the distro but not the arch (because
+# all arches share the same SRPM)
+%if 0%{?rhel} == 8
 Source8:        el8-wheels-x86_64.tar
-Source9:        el9-wheels-x86_64.tar
-Source10:       el10-wheels-x86_64_v2.tar
 Source11:       el8-wheels-aarch64.tar
+# EL8 does not support "elif"
+%else
+%if 0%{?rhel} == 9
+Source9:        el9-wheels-x86_64.tar
 Source12:       el9-wheels-aarch64.tar
+%else
+%if 0%{?rhel} == 10
+Source10:       el10-wheels-x86_64_v2.tar
 Source13:       el10-wheels-aarch64.tar
+%endif
+%endif
+%endif
 BuildRequires:  python3-wheel
 # End OSG additions
 
@@ -158,6 +169,9 @@ systemctl disable pegasus-service.service
 systemctl daemon-reload
 
 %changelog
+* Wed Aug 27 2025 Mátyás Selmeci <mselmeci@wisc.edu> - 5.1.1-1.2
+- Do not include wheels for other distros in the SRPM
+
 * Wed Jul 16 2025 Mátyás Selmeci <mselmeci@wisc.edu> - 5.1.1-1.1
 - Update to 5.1.1 (SOFTWARE-6163)
 - Unset exclusiveArch
