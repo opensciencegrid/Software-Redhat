@@ -86,6 +86,7 @@ docker run --user $USER --name ospool-ep-container \
     --device /dev/fuse                       \
     --pull=always            \
     --ulimit nofile=2048:2048 \
+    --pids-limit=16384 \
     --env-file $ENV_FILE \
     "${DOCKER_ARGS[@]}" \
     hub.opensciencegrid.org/osg-htc/ospool-ep:%{OSGVER}-$EP_IMG
