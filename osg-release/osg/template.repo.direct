@@ -1,0 +1,25 @@
+[{YUMREPO}]
+name=OSG Software for Enterprise Linux {EL} {TITLE} $basearch
+baseurl=https://repo.osg-htc.org/osg/{SERIES}/el{EL}/{REPO}/$basearch
+#mirrorlist=https://repo.osg-htc.org/mirror/osg/{SERIES}/el{EL}/{REPO}/$basearch
+priority=98
+enabled={ENABLED}
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/{GPGKEY}
+
+[{YUMREPO}-source]
+name=OSG Software for Enterprise Linux {EL} {TITLE} $basearch - Source
+baseurl=https://repo.osg-htc.org/osg/{SERIES}/el{EL}/{REPO}/source/SRPMS
+priority=98
+enabled=0
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/{GPGKEY}
+
+[{YUMREPO}-debuginfo]
+name=OSG Software for Enterprise Linux {EL} {TITLE} $basearch - Debug
+baseurl=https://repo.osg-htc.org/osg/{SERIES}/el{EL}/{REPO}/$basearch/debug
+priority=98
+enabled=0
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/{GPGKEY}
+

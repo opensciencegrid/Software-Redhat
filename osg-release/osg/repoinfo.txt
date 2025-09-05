@@ -1,0 +1,20 @@
+#YUMREPO                  SERIES        REPO         TEMPLATE  TITLE
+
+osg                       24-main       release      standard
+osg-development           24-main       development  standard  Development
+osg-testing               24-main       testing      standard  Testing
+osg-contrib               24-contrib    contrib      contrib   Contributed
+osg-empty                 24-empty      empty        basic     Empty_Packages
+osg-minefield             24-main       development  kojira    Development_from_Build_System
+osg-prerelease            24-main       prerelease   kojira    Prerelease_Repository_for_Internal_Use
+
+osg-internal-development      24-internal   development  direct    Internal_Development
+osg-internal                  24-internal   release      direct    Internal
+osg-internal-minefield        24-internal   development  kojira    Internal_Development_from_Build_System
+
+osg-upcoming              24-upcoming   release      standard  Upcoming
+osg-upcoming-development  24-upcoming   development  standard  Upcoming_Development
+osg-upcoming-testing      24-upcoming   testing      standard  Upcoming_Testing
+osg-upcoming-minefield    24-upcoming   development  kojira    Upcoming_Development_from_Build_System
+osg-upcoming-prerelease   24-upcoming   prerelease   kojira    Upcoming_Prerelease_Repository_for_Internal_Use
+
