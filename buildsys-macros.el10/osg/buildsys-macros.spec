@@ -12,7 +12,7 @@
 Name:		buildsys-macros
 Summary:	Macros for the OSG Buildsystem
 Version:        %{dver}
-Release:	17%{dist}
+Release:	19%{dist}
 License:	GPL
 BuildArch:      noarch
 Requires:	rpmdevtools
@@ -43,7 +43,7 @@ printf %s%b "%" "_smp_ncpus_max 12\n" >> $RPM_BUILD_ROOT/etc/rpm/macros.kojibuil
 /etc/rpm/macros.kojibuilder
 
 %changelog
-* Fri Sep 05 2025 Matt Westphall <westphall@wisc.edu> - 10-17.osg25.el10
+* Fri Sep 05 2025 Matt Westphall <westphall@wisc.edu> - 10-19.osg25.el10
 - osg 25 el10 version
 
 * Fri Jul 25 2025 Mátyás Selmeci <mselmeci@wisc.edu> - 10-16.osg24.el10
