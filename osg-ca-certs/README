@@ -1,0 +1,7 @@
+This package is the OSG CA certificate set.
+
+The packages satisfy the virtual dependency of "grid-certificates" and purposely
+conflict with igtf-ca-certs and osg-ca-manage.
+
+See https://github.com/opensciencegrid/osg-certificates/ for packaging instructions.
+
