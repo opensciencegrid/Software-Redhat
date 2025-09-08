@@ -1,7 +1,7 @@
 Name:      osg-wn-client
 Summary:   OSG Worker-Node Client
-Version:   24
-Release:   3%{?dist}
+Version:   25
+Release:   1%{?dist}
 License:   Apache 2.0
 URL:       http://www.opensciencegrid.org
 BuildArch: noarch
@@ -47,6 +47,9 @@ EOF
 %config(noreplace) %{_prefix}/etc/globus-user-env.sh
 
 %changelog
+* Mon Sep 8 2025 Matt Westphall <westphall@wisc.edu> - 25-1
+- Initial OSG 25 build
+
 * Thu Jan 9 2025 Matt Westphall <westphall@wisc.edu> - 24-3
 - Add suggests: osg-ca-certs to satisfy grid-certificates (SOFTWARE-6051)
 

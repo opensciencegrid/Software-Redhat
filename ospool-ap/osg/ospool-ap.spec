@@ -1,7 +1,7 @@
 %define source_name osg-flock
 Name:      ospool-ap
-Version:   1.10
-Release:   2%{?dist}
+Version:   25
+Release:   1%{?dist}
 Summary:   OSPool Access Point configurations
 
 License:   Apache 2.0
@@ -72,6 +72,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Mon Sep 8 2025 Matt Westphall <westphall@wisc.edu> - 25-1
+- Initial OSG 25 build
+
 * Mon Oct 21 2024 Matt Westphall <westphall@wisc.edu> - 1.10-2
 - Initial release as ospool-ap
 
