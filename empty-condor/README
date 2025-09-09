@@ -1,0 +1,9 @@
+We have several packages that depend on "condor" (the Condor job
+manager and Gratia's Condor probe are two notable examples), but many
+sites install Condor in non-standard ways, including from
+tarballs. They don't want to install our Condor RPM just to satisfy
+the dependncy. Therefore this RPM claims to provide Condor, while in
+fact providing nothing at all. 
+
+And, after all, what is a lie? 'Tis but
+The truth in masquerade.
