@@ -1,6 +1,6 @@
 Summary: Service files for Pelican-based OSDF daemons
 Name: osdf-server
-Version: 7.18.0
+Version: 7.19.1
 Release: 1%{?dist}
 License: ASL 2.0
 Url: https://github.com/PelicanPlatform/pelican
@@ -111,6 +111,10 @@ install -m 0644 systemd/pelican.logrotate       $RPM_BUILD_ROOT/etc/logrotate.d/
 
 
 %changelog
+* Mon Sep 08 2025 Mátyás Selmeci <mselmeci@wisc.edu> - 7.19.1-1
+- Upgrade to Pelican 7.19.1 (SOFTWARE-6213)
+- Fix /etc/pelican/10-federation.ini blanking out Federation.DiscoveryUrl
+
 * Fri Aug 06 2025 Mátyás Selmeci <mselmeci@wisc.edu> - 7.18.0-1
 - Upgrade to Pelican 7.18.0
 - Require pelican-server for all services
