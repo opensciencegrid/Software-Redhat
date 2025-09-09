@@ -1,0 +1,3 @@
+json-schema-validator is a library for validating JSON schema. It
+is used by the LotMan library, and can be downloaded from:
+https://github.com/pboettch/json-schema-validator
