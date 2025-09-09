@@ -1,24 +1,26 @@
 Summary: Configuration tool for the OSG Software Stack
 Name: osg-configure
 Version: 4.3.0
-Release: 1%{?dist}
+Release: 2%{?dist}
 Source0: %{name}-%{version}.tar.gz
 License: Apache 2.0
 BuildArch: noarch
 Url: https://github.com/opensciencegrid/osg-configure
 BuildRequires: python3-devel
+%global __python %{__python3}
 %if 0%{?rhel} > 9
 # distutils has been removed in the version of Python included in el10
 # so use setuptools instead
 BuildRequires: python3-setuptools
 %endif
-Requires: python3
-%global __python /usr/bin/python3
 Requires: %{name}-libs = %{version}-%{release}
 
 
 Obsoletes: %{name}-managedfork < 2.2.2-2
 Obsoletes: %{name}-network < 2.2.2-2
+Obsoletes: %{name}-rsv < 4.3.0-2
+Obsoletes: %{name}-gip < 4.3.0-2
+Obsoletes: %{name}-misc < 4.3.0-2
 
 
 %description
@@ -35,7 +37,6 @@ Generates CE attributes that will be uploaded to the central collector
 
 %package libs
 Summary: OSG Configure libraries
-Requires: python3
 %description libs
 This package containers the Python libraries used by osg-configure
 
@@ -45,24 +46,12 @@ Summary: OSG configuration file for site information
 This package includes the ini file for configuring site information using osg-configure
 and resource/resource_group information with osg-ce-attributes-generator.
 
-%package rsv
-Summary: Transitional package
-%description rsv
-This is an empty package to make upgrades easier. It may be removed.
-
 %package gratia
 Summary: OSG configuration file for gratia
 Requires: %name = %version-%release
 Requires: %name-siteinfo
 %description gratia
 This package includes the ini file for configuring gratia using osg-configure
-
-%package gip
-Summary: Transitional package for osg-configure 4
-Requires: %name-cluster
-%description gip
-This is an empty package to make upgrades to osg-configure 4 easier.
-It may be removed.
 
 %package cluster
 Summary: OSG configuration files for describing cluster
@@ -108,11 +97,6 @@ Requires: %name-siteinfo
 This package includes the ini files for configuring a basic CE using
 osg-configure.  One of the packages for the job manager configuration also
 needs to be installed for the CE configuration.
-
-%package misc
-Summary: OSG configuration file for misc software
-%description misc
-This is a dummy package to help upgrades
 
 %package squid
 Summary: OSG configuration file for squid
@@ -162,11 +146,11 @@ This package includes the ini file for configuring the job gateway
 %setup -q
 
 %build
-%{__python} setup.py build
+%{__python3} setup.py build
 
 %install
-find . -type f -exec sed -ri '1s,^#!\s*(/usr)?/bin/(env *)?python.*,#!%{__python},' '{}' +
-make install DESTDIR=$RPM_BUILD_ROOT PYTHON=%{__python}
+find . -type f -exec sed -ri '1s,^#!\s*(/usr)?/bin/(env *)?python.*,#!%{__python3},' '{}' +
+make install DESTDIR=$RPM_BUILD_ROOT PYTHON=%{__python3}
 
 mkdir -p $RPM_BUILD_ROOT/etc/condor-ce/config.d
 echo 'OSG_CONFIGURE_PRESENT=true' > $RPM_BUILD_ROOT/etc/condor-ce/config.d/50-osg-configure-present.conf  # SOFTWARE-2805
@@ -179,33 +163,19 @@ touch $RPM_BUILD_ROOT/var/lib/osg/osg-local-job-environment.conf
 touch $RPM_BUILD_ROOT/var/lib/osg/osg-job-environment.conf
 
 %files
-%{python_sitelib}/osg_configure/configure_modules/__init__.py*
-%{python_sitelib}/osg_configure/configure_modules/bosco.py*
-%{python_sitelib}/osg_configure/configure_modules/condor.py*
-%{python_sitelib}/osg_configure/configure_modules/gateway.py*
-%{python_sitelib}/osg_configure/configure_modules/gratia.py*
-%{python_sitelib}/osg_configure/configure_modules/localsettings.py*
-%{python_sitelib}/osg_configure/configure_modules/lsf.py*
-%{python_sitelib}/osg_configure/configure_modules/pbs.py*
-%{python_sitelib}/osg_configure/configure_modules/sge.py*
-%{python_sitelib}/osg_configure/configure_modules/siteinformation.py*
-%{python_sitelib}/osg_configure/configure_modules/slurm.py*
-%{python_sitelib}/osg_configure/configure_modules/squid.py*
-%{python_sitelib}/osg_configure/configure_modules/storage.py*
-
-%{python_sitelib}/osg_configure/configure_modules/__pycache__/__init__*
-%{python_sitelib}/osg_configure/configure_modules/__pycache__/bosco*
-%{python_sitelib}/osg_configure/configure_modules/__pycache__/condor*
-%{python_sitelib}/osg_configure/configure_modules/__pycache__/gateway*
-%{python_sitelib}/osg_configure/configure_modules/__pycache__/gratia*
-%{python_sitelib}/osg_configure/configure_modules/__pycache__/localsettings*
-%{python_sitelib}/osg_configure/configure_modules/__pycache__/lsf*
-%{python_sitelib}/osg_configure/configure_modules/__pycache__/pbs*
-%{python_sitelib}/osg_configure/configure_modules/__pycache__/sge*
-%{python_sitelib}/osg_configure/configure_modules/__pycache__/siteinformation*
-%{python_sitelib}/osg_configure/configure_modules/__pycache__/slurm*
-%{python_sitelib}/osg_configure/configure_modules/__pycache__/squid*
-%{python_sitelib}/osg_configure/configure_modules/__pycache__/storage*
+%pycached %{python3_sitelib}/osg_configure/configure_modules/__init__.py
+%pycached %{python3_sitelib}/osg_configure/configure_modules/bosco.py
+%pycached %{python3_sitelib}/osg_configure/configure_modules/condor.py
+%pycached %{python3_sitelib}/osg_configure/configure_modules/gateway.py
+%pycached %{python3_sitelib}/osg_configure/configure_modules/gratia.py
+%pycached %{python3_sitelib}/osg_configure/configure_modules/localsettings.py
+%pycached %{python3_sitelib}/osg_configure/configure_modules/lsf.py
+%pycached %{python3_sitelib}/osg_configure/configure_modules/pbs.py
+%pycached %{python3_sitelib}/osg_configure/configure_modules/sge.py
+%pycached %{python3_sitelib}/osg_configure/configure_modules/siteinformation.py
+%pycached %{python3_sitelib}/osg_configure/configure_modules/slurm.py
+%pycached %{python3_sitelib}/osg_configure/configure_modules/squid.py
+%pycached %{python3_sitelib}/osg_configure/configure_modules/storage.py
 
 /usr/sbin/osg-configure
 %dir %attr(-,root,root) /var/log/osg
@@ -217,33 +187,19 @@ touch $RPM_BUILD_ROOT/var/lib/osg/osg-job-environment.conf
 %ghost /etc/condor-ce/config.d/50-osg-configure.conf
 
 %files libs
-%{python_sitelib}/osg_configure-%{version}-*.egg-info
-%{python_sitelib}/osg_configure/__init__.py*
-%{python_sitelib}/osg_configure/modules/__init__.py*
-%{python_sitelib}/osg_configure/modules/baseconfiguration.py*
-%{python_sitelib}/osg_configure/modules/configfile.py*
-%{python_sitelib}/osg_configure/modules/exceptions.py*
-%{python_sitelib}/osg_configure/modules/jobmanagerconfiguration.py*
-%{python_sitelib}/osg_configure/modules/utilities.py*
-%{python_sitelib}/osg_configure/modules/validation.py*
-%{python_sitelib}/osg_configure/version.py*
-
-%{python_sitelib}/osg_configure/__pycache__/__init__*
-%{python_sitelib}/osg_configure/modules/__pycache__/__init__*
-%{python_sitelib}/osg_configure/modules/__pycache__/baseconfiguration*
-%{python_sitelib}/osg_configure/modules/__pycache__/configfile*
-%{python_sitelib}/osg_configure/modules/__pycache__/exceptions*
-%{python_sitelib}/osg_configure/modules/__pycache__/jobmanagerconfiguration*
-%{python_sitelib}/osg_configure/modules/__pycache__/utilities*
-%{python_sitelib}/osg_configure/modules/__pycache__/validation*
-%{python_sitelib}/osg_configure/__pycache__/version*
-
-%files rsv
+%{python3_sitelib}/osg_configure-%{version}-*.egg-info
+%pycached %{python3_sitelib}/osg_configure/__init__.py
+%pycached %{python3_sitelib}/osg_configure/modules/__init__.py
+%pycached %{python3_sitelib}/osg_configure/modules/baseconfiguration.py
+%pycached %{python3_sitelib}/osg_configure/modules/configfile.py
+%pycached %{python3_sitelib}/osg_configure/modules/exceptions.py
+%pycached %{python3_sitelib}/osg_configure/modules/jobmanagerconfiguration.py
+%pycached %{python3_sitelib}/osg_configure/modules/utilities.py
+%pycached %{python3_sitelib}/osg_configure/modules/validation.py
+%pycached %{python3_sitelib}/osg_configure/version.py
 
 %files gratia
 %config(noreplace) %{_sysconfdir}/osg/config.d/30-gratia.ini
-
-%files gip
 
 %files cluster
 %config(noreplace) %{_sysconfdir}/osg/config.d/31-cluster.ini
@@ -272,26 +228,19 @@ touch $RPM_BUILD_ROOT/var/lib/osg/osg-job-environment.conf
 %config(noreplace) %{_sysconfdir}/osg/config.d/10-storage.ini
 %config(noreplace) %{_sysconfdir}/osg/grid3-locations.txt
 
-%files misc
-
 %files squid
 %config(noreplace) %{_sysconfdir}/osg/config.d/01-squid.ini
 
 %files infoservices
 %config(noreplace) %{_sysconfdir}/osg/config.d/30-infoservices.ini
-%{python_sitelib}/osg_configure/configure_modules/infoservices.py*
-%{python_sitelib}/osg_configure/configure_modules/__pycache__/infoservices*
+%pycached %{python3_sitelib}/osg_configure/configure_modules/infoservices.py
 
 %files -n osg-ce-attributes-generator
 /usr/bin/osg-ce-attributes-generator
-%{python_sitelib}/osg_configure/modules/ce_attributes.py*
-%{python_sitelib}/osg_configure/modules/resourcecatalog.py*
-%{python_sitelib}/osg_configure/modules/reversevomap.py*
-%{python_sitelib}/osg_configure/modules/subcluster.py*
-%{python_sitelib}/osg_configure/modules/__pycache__/ce_attributes*
-%{python_sitelib}/osg_configure/modules/__pycache__/resourcecatalog*
-%{python_sitelib}/osg_configure/modules/__pycache__/reversevomap*
-%{python_sitelib}/osg_configure/modules/__pycache__/subcluster*
+%pycached %{python3_sitelib}/osg_configure/modules/ce_attributes.py
+%pycached %{python3_sitelib}/osg_configure/modules/resourcecatalog.py
+%pycached %{python3_sitelib}/osg_configure/modules/reversevomap.py
+%pycached %{python3_sitelib}/osg_configure/modules/subcluster.py
 
 %files tests
 /usr/share/osg-configure/*
@@ -306,6 +255,10 @@ touch $RPM_BUILD_ROOT/var/lib/osg/osg-job-environment.conf
 
 
 %changelog
+* Tue Sep 09 2025 Mátyás Selmeci <mselmeci@wisc.edu> 4.3.0-2
+- Modernize spec file
+- Drop transitional dummy packages
+
 * Fri Aug 22 2025 Mátyás Selmeci <mselmeci@wisc.edu> 4.3.0-1
 - Add "estimated_cpucount" to Pilot sections (SOFTWARE-6197)
 
