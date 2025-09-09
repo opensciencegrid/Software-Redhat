@@ -1,0 +1,1662 @@
+From 9526addaafbca245ca7f5b962f208f5a1772847e Mon Sep 17 00:00:00 2001
+From: Matyas Selmeci <mselmeci@wisc.edu>
+Date: Wed, 13 Aug 2025 13:27:10 -0500
+Subject: [PATCH 12/12] [37] Add TPC worker pool
+
+Squashed commit of the following:
+
+commit 5cd92a9b52f3bbe9afba0c036578d984aa9eee64
+Author: Rahul Chauhan <rahul.chauhan@cern.ch>
+Date:   Tue Aug 12 11:31:29 2025 +0200
+
+    Use vorg as part of the queue identifier as well as worker and request labels
+
+    Also fix nomenclature of identifier and labels:
+    A queue has a identifier (unique)
+    Workers and Requets have labels (not uniquet) that map to a queue
+
+    Signed-off-by: Rahul Chauhan <rahul.chauhan@cern.ch>
+
+commit 980a186dd22e1d65b99323070fa5ad2344204726
+Author: Rahul Chauhan <omrahulchauhan@gmail.com>
+Date:   Fri Aug 8 12:03:02 2025 +0200
+
+    Make max_transfers and max_pending requests configurable
+
+    Signed-off-by: Rahul Chauhan <rahul.chauhan@cern.ch>
+
+commit 555d0cb0ed8a61ad31e86a18e8b835cff4220978
+Author: Rahul Chauhan <rahul.chauhan@cern.ch>
+Date:   Wed Jul 2 19:06:42 2025 +0200
+
+    Update remote connection list from curl
+
+    Signed-off-by: Rahul Chauhan <rahul.chauhan@cern.ch>
+
+commit 4527336f710d44043a0e74704bc9d5f80850bafa
+Author: Rahul Chauhan <omrahulchauhan@gmail.com>
+Date:   Tue Jun 24 11:43:08 2025 +0200
+
+    Implement cancellation in TPC Pool
+
+    Signed-off-by: Rahul Chauhan <rahul.chauhan@cern.ch>
+
+commit 0dff3aa82ba5dfb9bb05baca107958cb1a0651a0
+Author: Rahul Chauhan <omrahulchauhan@gmail.com>
+Date:   Thu May 22 10:24:00 2025 +0200
+
+    Refactor PMarkManager and TPCRequestManager to add SciTag integration
+
+    Signed-off-by: Rahul Chauhan <rahul.chauhan@cern.ch>
+
+commit 51966f6c8308f19c8f28194fcf2f62c0729507bc
+Author: Rahul Chauhan <omrahulchauhan@gmail.com>
+Date:   Wed May 7 10:22:55 2025 +0200
+
+    Change ownership of curl socket callbacks
+
+    Signed-off-by: Rahul Chauhan <rahul.chauhan@cern.ch>
+
+commit 202977a0b5c2a8af3992462668a978b18e6eed66
+Author: Brian Bockelman <bbockelman@morgridge.org>
+Date:   Sun Apr 20 10:21:10 2025 +0200
+
+    Framework for worker pool for TPC requests
+
+    Co-authored-by: Rahul Chauhan <rahul.chauhan@cern.ch>
+    Signed-off-by: Rahul Chauhan <rahul.chauhan@cern.ch>
+
+commit 2d71d8dbd0f0a430bd82d89738956369689132f0
+Author: Rahul Chauhan <omrahulchauhan@gmail.com>
+Date:   Wed Jun 25 10:56:02 2025 +0200
+
+    Add multistream transfers to the test
+
+    Signed-off-by: Rahul Chauhan <rahul.chauhan@cern.ch>
+
+commit f3538717e641a40b44fc463a9d3bfee173d5c66d
+Author: Rahul Chauhan <omrahulchauhan@gmail.com>
+Date:   Tue Jun 24 11:42:35 2025 +0200
+
+    Add test for cancellations
+
+    Signed-off-by: Rahul Chauhan <rahul.chauhan@cern.ch>
+
+commit 4150bc9b64637446c7f6e6492f206257114a7e3a
+Author: Rahul Chauhan <omrahulchauhan@gmail.com>
+Date:   Thu May 15 10:23:32 2025 +0200
+
+    Add scitag flow configuration to test Add scitag flow query string in tests
+
+    Signed-off-by: Rahul Chauhan <rahul.chauhan@cern.ch>
+
+commit b0abd58592e5daee9f8f324f79dd8bdb96eadfec
+Author: Rahul Chauhan <omrahulchauhan@gmail.com>
+Date:   Tue May 6 17:37:37 2025 +0200
+
+    Updated perform_http_tpc to correctly detect transfer success or failure by checking the last line of the chunked reponse, since the HTTP 201 code is always returned regardless of actual status.
+
+    Signed-off-by: Rahul Chauhan <rahul.chauhan@cern.ch>
+---
+ src/XrdHttpTpc/CMakeLists.txt            |   1 +
+ src/XrdHttpTpc/XrdHttpTpcConfigure.cc    |  18 +
+ src/XrdHttpTpc/XrdHttpTpcMultistream.cc  |   3 -
+ src/XrdHttpTpc/XrdHttpTpcPMarkManager.cc |  12 +-
+ src/XrdHttpTpc/XrdHttpTpcPMarkManager.hh |  12 +-
+ src/XrdHttpTpc/XrdHttpTpcPool.cc         | 443 +++++++++++++++++++++++
+ src/XrdHttpTpc/XrdHttpTpcPool.hh         | 146 ++++++++
+ src/XrdHttpTpc/XrdHttpTpcState.hh        |   4 +-
+ src/XrdHttpTpc/XrdHttpTpcTPC.cc          | 287 ++++-----------
+ src/XrdHttpTpc/XrdHttpTpcTPC.hh          |   9 +-
+ src/XrdSys/XrdSysRAtomic.hh              |  22 ++
+ tests/TPCTests/CMakeLists.txt            |   1 +
+ tests/TPCTests/common.cfg                |   7 +
+ tests/TPCTests/test.sh                   |  77 ++--
+ tests/TPCTests/test_tpc_cancellations.sh |  81 +++++
+ 15 files changed, 859 insertions(+), 264 deletions(-)
+ create mode 100644 src/XrdHttpTpc/XrdHttpTpcPool.cc
+ create mode 100644 src/XrdHttpTpc/XrdHttpTpcPool.hh
+ create mode 100644 tests/TPCTests/test_tpc_cancellations.sh
+
+diff --git a/src/XrdHttpTpc/CMakeLists.txt b/src/XrdHttpTpc/CMakeLists.txt
+index 780840309..59c3b0f58 100644
+--- a/src/XrdHttpTpc/CMakeLists.txt
++++ b/src/XrdHttpTpc/CMakeLists.txt
+@@ -22,6 +22,7 @@ add_library(${XrdHttpTPC} MODULE
+   XrdHttpTpcConfigure.cc
+   XrdHttpTpcMultistream.cc
+   XrdHttpTpcPMarkManager.cc  XrdHttpTpcPMarkManager.hh
++  XrdHttpTpcPool.cc          XrdHttpTpcPool.hh
+   XrdHttpTpcState.cc         XrdHttpTpcState.hh
+   XrdHttpTpcStream.cc        XrdHttpTpcStream.hh
+   XrdHttpTpcTPC.cc           XrdHttpTpcTPC.hh
+diff --git a/src/XrdHttpTpc/XrdHttpTpcConfigure.cc b/src/XrdHttpTpc/XrdHttpTpcConfigure.cc
+index 05ef426d5..2acceac12 100644
+--- a/src/XrdHttpTpc/XrdHttpTpcConfigure.cc
++++ b/src/XrdHttpTpc/XrdHttpTpcConfigure.cc
+@@ -96,6 +96,24 @@ bool TPCHandler::Configure(const char *configfn, XrdOucEnv *myEnv)
+             } else {
+                 m_first_timeout = 2*m_timeout;
+             }
++        } else if (!strcmp("tpc.max_active_transfers_per_queue", val)) {
++            if (!(val = Config.GetWord())) {
++                Config.Close();
++                m_log.Emsg("Config", "tpc.max_active_transfers_per_queue value not specified.");
++                return false;
++            }
++            int max_workers;
++            if (XrdOuca2x::a2i(m_log, "tpc.max_active_transfers_per_queue", val, &max_workers, 1, 1000)) return false;
++            m_request_manager.SetMaxWorkers(static_cast<unsigned>(max_workers));
++        } else if (!strcmp("tpc.max_waiting_transfers_per_queue", val)) {
++            if (!(val = Config.GetWord())) {
++                Config.Close();
++                m_log.Emsg("Config", "tpc.max_waiting_transfers_per_queue value not specified.");
++                return false;
++            }
++            int max_pending_ops;
++            if (XrdOuca2x::a2i(m_log, "tpc.max_waiting_transfers_per_queue", val, &max_pending_ops, 1, 1000)) return false;
++            m_request_manager.SetMaxIdleRequests(static_cast<unsigned>(max_pending_ops));
+         }
+     }
+     Config.Close();
+diff --git a/src/XrdHttpTpc/XrdHttpTpcMultistream.cc b/src/XrdHttpTpc/XrdHttpTpcMultistream.cc
+index c3bd2cd1e..920052c76 100644
+--- a/src/XrdHttpTpc/XrdHttpTpcMultistream.cc
++++ b/src/XrdHttpTpc/XrdHttpTpcMultistream.cc
+@@ -273,7 +273,6 @@ int TPCHandler::RunCurlWithStreamsImpl(XrdHttpExtReq &req, State &state,
+     }
+ 
+     // Notify the packet marking manager that the transfer will start after this point
+-    rec.pmarkManager.startTransfer();
+ 
+     // Create the multi-handle and add in the current transfer to it.
+     MultiCurlHandler mch(handles, m_log);
+@@ -344,8 +343,6 @@ int TPCHandler::RunCurlWithStreamsImpl(XrdHttpExtReq &req, State &state,
+             break;
+         }
+ 
+-        rec.pmarkManager.beginPMarks();
+-
+ 
+         // Harvest any messages, looking for CURLMSG_DONE.
+         CURLMsg *msg;
+diff --git a/src/XrdHttpTpc/XrdHttpTpcPMarkManager.cc b/src/XrdHttpTpc/XrdHttpTpcPMarkManager.cc
+index ad273d331..4d5289814 100644
+--- a/src/XrdHttpTpc/XrdHttpTpcPMarkManager.cc
++++ b/src/XrdHttpTpc/XrdHttpTpcPMarkManager.cc
+@@ -32,7 +32,11 @@ PMarkManager::SocketInfo::SocketInfo(int fd, const struct sockaddr * sockP) {
+   client.addrInfo = static_cast<XrdNetAddrInfo*>(&netAddr);
+ }
+ 
+-PMarkManager::PMarkManager(XrdHttpExtReq & req, TPC::TpcType tpcType) : mPmark(req.pmark), mReq(req), mTransferWillStart(false), mTpcType(tpcType) {}
++PMarkManager::PMarkManager(XrdHttpExtReq &req, TPC::TpcType tpcType)
++    : mPmark(req.pmark), mSciTag(req.mSciTag), mResource(req.resource.c_str()), mTransferWillStart(false), mTpcType(tpcType) {}
++
++PMarkManager::PMarkManager(XrdNetPMark *pmark, int sciTag, const TPC::TpcType tpcType)
++    : mPmark(pmark), mSciTag(sciTag), mResource(NULL), mTransferWillStart(false), mTpcType(tpcType) {}
+ 
+ void PMarkManager::addFd(int fd, const struct sockaddr * sockP) {
+   if(isEnabled() && mTransferWillStart) {
+@@ -56,7 +60,7 @@ bool PMarkManager::connect(int fd, const struct sockaddr *sockP, size_t sockPLen
+ }
+ 
+ bool PMarkManager::isEnabled() const {
+-  return mPmark && (mReq.mSciTag >= 0);
++  return mPmark && (mSciTag >= 0);
+ }
+ 
+ void PMarkManager::startTransfer() {
+@@ -71,21 +75,21 @@ void PMarkManager::beginPMarks() {
+   if(mPmarkHandles.empty()) {
+     // Create the first pmark handle
+     std::stringstream ss;
+-    ss << "scitag.flow=" << mReq.mSciTag
++    ss << "scitag.flow=" << mSciTag
+     // One has to consider that this server is the client side of a normal HTTP PUT/GET. But unlike normal HTTP PUT and GET requests where clients
+     // do not emit a firefly, this server WILL emit a firefly.
+     //
+     // For PULL: it is expected that I send a GET request to the remote server
+     // however, it is myself who will emit the firefly, then I should consider that the GET is actually a PUT
+     // that I do on behalf of the remote server... Hence why if the tpc transfer type is Pull, the pmark.appname
+     // will be equal to http-put
+     //
+     // For PUSH: it is expected that I send a PUT request to the remote server.
+     // however, it is myself who will emit the firefly, then I should consider that the PUT is actually a GET
+     // that I do on behalf of the remote server... Hence why if the tpc transfer is Push, the pmark.appname will be equal to http-get.
+     << "&" << "pmark.appname=" << ((mTpcType == TPC::TpcType::Pull) ? "http-put" : "http-get");
+     SocketInfo & sockInfo = mSocketInfos.front();
+-    auto pmark = mPmark->Begin(sockInfo.client, mReq.resource.c_str(), ss.str().c_str(), "http-tpc");
++    auto pmark = mPmark->Begin(sockInfo.client, mResource, ss.str().c_str(), "http-tpc");
+     if(!pmark) {
+       return;
+     }
+diff --git a/src/XrdHttpTpc/XrdHttpTpcPMarkManager.hh b/src/XrdHttpTpc/XrdHttpTpcPMarkManager.hh
+index 45837c4ca..ff91cc6de 100644
+--- a/src/XrdHttpTpc/XrdHttpTpcPMarkManager.hh
++++ b/src/XrdHttpTpc/XrdHttpTpcPMarkManager.hh
+@@ -66,7 +66,9 @@ class PMarkManager {
+     XrdSecEntity client;
+   };
+ 
+-  PMarkManager(XrdHttpExtReq & req, const TPC::TpcType type);
++  PMarkManager(XrdHttpExtReq &req, const TPC::TpcType type);
++
++  PMarkManager(XrdNetPMark *pmark, int sciTag, const TPC::TpcType type);
+ 
+   /**
+    * Will connect the socket attached to the file descriptor within a certain timeout and add the file descriptor to the.
+@@ -128,9 +130,11 @@ class PMarkManager {
+   // The map of socket FD and packet marking handles
+   std::map<int,std::unique_ptr<XrdNetPMark::Handle>> mPmarkHandles;
+   // The instance of the packet marking functionality
+-  XrdNetPMark * mPmark;
+-  // The XrdHttpTPC request information
+-  XrdHttpExtReq & mReq;
++  XrdNetPMark *mPmark;
++  // SciTag provided by the user; extracted from the request
++  int mSciTag;
++  // Path to the resource
++  const char *mResource;
+   // Is true when startTransfer(...) has been called
+   bool mTransferWillStart;
+   // Is true if this transfer is a HTTP TPC PULL transfer, false otherwise
+diff --git a/src/XrdHttpTpc/XrdHttpTpcPool.cc b/src/XrdHttpTpc/XrdHttpTpcPool.cc
+new file mode 100644
+index 000000000..1efae6ec7
+--- /dev/null
++++ b/src/XrdHttpTpc/XrdHttpTpcPool.cc
+@@ -0,0 +1,443 @@
++#include "XrdHttpTpcPool.hh"
++
++#include <fcntl.h>
++
++#include <XrdOuc/XrdOucEnv.hh>
++#include <XrdSys/XrdSysError.hh>
++#include <XrdSys/XrdSysFD.hh>
++#include <algorithm>
++#include <sstream>
++#include <string>
++#include <thread>
++
++#include "XrdHttpTpcTPC.hh"
++
++using namespace TPC;
++
++decltype(TPCRequestManager::m_pool_map) TPCRequestManager::m_pool_map;
++decltype(TPCRequestManager::m_init_once) TPCRequestManager::m_init_once;
++decltype(TPCRequestManager::m_mutex) TPCRequestManager::m_mutex;
++decltype(TPCRequestManager::m_idle_timeout) TPCRequestManager::m_idle_timeout = std::chrono::minutes(1);
++unsigned TPCRequestManager::m_max_pending_ops = 20;  // default max_pending_transfers_per_queue
++unsigned TPCRequestManager::m_max_workers = 50;      // default mac_active_transfers_per_queue
++
++TPCRequestManager::TPCQueue::TPCWorker::TPCWorker(const std::string &label, int scitag, TPCQueue &queue)
++    : m_label(label),
++      m_queue(queue),
++      m_pmark_handle((XrdNetPMark *)queue.m_parent.m_xrdEnv.GetPtr("XrdNetPMark*")),
++      m_pmark_manager(m_pmark_handle, scitag, TPC::TpcType::Pull) {}
++
++void TPCRequestManager::TPCQueue::TPCWorker::RunStatic(TPCWorker *myself) { myself->Run(); }
++
++bool TPCRequestManager::TPCQueue::TPCWorker::RunCurl(CURLM *multi_handle, TPCRequestManager::TPCRequest &request) {
++    CURLMcode mres;
++    auto curl = request.GetHandle();
++
++    curl_easy_setopt(curl, CURLOPT_CLOSESOCKETFUNCTION, closesocket_callback);
++    curl_easy_setopt(curl, CURLOPT_CLOSESOCKETDATA, this);
++    curl_easy_setopt(curl, CURLOPT_OPENSOCKETFUNCTION, opensocket_callback);
++    curl_easy_setopt(curl, CURLOPT_OPENSOCKETDATA, this);
++    curl_easy_setopt(curl, CURLOPT_SOCKOPTFUNCTION, sockopt_callback);
++    curl_easy_setopt(curl, CURLOPT_SOCKOPTDATA, this);
++
++    mres = curl_multi_add_handle(multi_handle, curl);
++    if (mres) {
++        std::stringstream ss;
++        ss << "Failed to add transfer to libcurl multi-handle: HTTP library "
++              "failure="
++           << curl_multi_strerror(mres);
++        m_queue.m_parent.m_log.Log(LogMask::Error, "TPCWorker", ss.str().c_str());
++        request.SetDone(500, ss.str());
++        return false;
++    }
++    request.SetActive();
++
++    CURLcode res = static_cast<CURLcode>(-1);
++    int running_handles = 1;
++    const int update_interval{1};
++    time_t now = time(NULL);
++    time_t last_update = now - update_interval;  // Inorder to always fetch on first pass
++
++    auto fail_and_exit = [&](int code, const std::string &msg) -> bool {
++        curl_multi_remove_handle(multi_handle, curl);
++        m_queue.m_parent.m_log.Log(code >= 500 ? LogMask::Error : LogMask::Info, "TPCWorker", msg.c_str());
++        request.SetDone(code, msg);
++        return false;
++    };
++
++    do {
++        mres = curl_multi_perform(multi_handle, &running_handles);
++        if (mres != CURLM_OK) {
++            return fail_and_exit(500, "Internal curl multi-handle error: " + std::string(curl_multi_strerror(mres)));
++        }
++
++        now = time(NULL);
++        if (now - last_update >= update_interval) {
++            request.UpdateRemoteConnDesc();
++            last_update = now;
++        }
++
++        CURLMsg *msg;
++        do {
++            int msgq = 0;
++            msg = curl_multi_info_read(multi_handle, &msgq);
++            if (msg && (msg->msg == CURLMSG_DONE)) {
++                res = msg->data.result;
++                break;
++            }
++        } while (msg);
++
++        mres = curl_multi_wait(multi_handle, NULL, 0, 1000, nullptr);
++        if (mres != CURLM_OK) {
++            return fail_and_exit(500, "Error during curl_multi_wait: " + std::string(curl_multi_strerror(mres)));
++        }
++
++        if (!request.IsActive()) {
++            return fail_and_exit(499, "Transfer cancelled");
++        }
++
++    } while (running_handles);
++
++    request.UpdateRemoteConnDesc();
++
++    if (res == static_cast<CURLcode>(-1)) {
++        return fail_and_exit(500, "Internal state error in libcurl - no transfer results returned");
++    }
++
++    curl_multi_remove_handle(multi_handle, curl);
++    request.SetDone(res, "Transfer complete");
++
++    return true;
++}
++
++void TPCRequestManager::TPCQueue::TPCWorker::Run() {
++    m_queue.m_parent.m_log.Log(LogMask::Info, "TPCWorker", "Worker for", m_queue.m_identifier.c_str(), "starting");
++
++    // Create the multi-handle and add in the current transfer to it.
++    CURLM *multi_handle = curl_multi_init();
++    if (!multi_handle) {
++        m_queue.m_parent.m_log.Log(LogMask::Error, "TPCWorker",
++                                   "Unable to create"
++                                   " a libcurl multi-handle; fatal error for worker");
++        m_queue.Done(this);
++        return;
++    }
++
++    while (true) {
++        auto request = m_queue.TryConsume();
++        if (!request) {
++            request = m_queue.ConsumeUntil(m_idle_timeout, this);
++            if (!request) {
++                m_queue.m_parent.m_log.Log(LogMask::Info, "TPCWorker", "Worker for", m_queue.m_identifier.c_str(), "exiting");
++                break;
++            }
++        }
++        if (!RunCurl(multi_handle, *request)) {
++            m_queue.m_parent.m_log.Log(LogMask::Error, "TPCWorker",
++                                       "Worker's multi-handle"
++                                       " caused an internal error.  Worker immediately exiting");
++            break;
++        }
++    }
++    curl_multi_cleanup(multi_handle);
++    m_queue.Done(this);
++}
++
++/******************************************************************************/
++/*           s o c k o p t _ s e t c l o e x e c _ c a l l b a c k            */
++/******************************************************************************/
++
++/**
++ * The callback that will be called by libcurl when the socket has been created
++ * https://curl.se/libcurl/c/CURLOPT_SOCKOPTFUNCTION.html
++ *
++ * Note: that this callback has been replaced by the opensocket_callback as it
++ *       was needed for monitoring to report what IP protocol was being used.
++ *       It has been kept in case we will need this callback in the future.
++ */
++
++int TPCRequestManager::TPCQueue::TPCWorker::sockopt_callback(void *clientp, curl_socket_t curlfd, curlsocktype purpose) {
++    TPCWorker *tpcWorker = (TPCWorker *)clientp;
++
++    if (purpose == CURLSOCKTYPE_IPCXN && tpcWorker && tpcWorker->m_pmark_manager.isEnabled()) {
++        // We will not reach this callback if the corresponding socket could not
++        // have been connected the socket is already connected only if the
++        // packet marking is enabled
++        return CURL_SOCKOPT_ALREADY_CONNECTED;
++    }
++    return CURL_SOCKOPT_OK;
++}
++
++/******************************************************************************/
++/*                   o p e n s o c k e t _ c a l l b a c k                    */
++/******************************************************************************/
++/**
++ * The callback that will be called by libcurl when the socket is about to be
++ * opened so we can capture the protocol that will be used.
++ */
++
++int TPCRequestManager::TPCQueue::TPCWorker::opensocket_callback(void *clientp, curlsocktype purpose, struct curl_sockaddr *address) {
++    // Return a socket file descriptor (note the clo_exec flag will be set).
++    int fd = XrdSysFD_Socket(address->family, address->socktype, address->protocol);
++    // See what kind of address will be used to connect
++    if (fd < 0) {
++        return CURL_SOCKET_BAD;
++    }
++    TPCWorker *tpcWorker = (TPCWorker *)clientp;
++
++    if (purpose == CURLSOCKTYPE_IPCXN && clientp) {
++        XrdNetAddr thePeer(&(address->addr));
++        //   rec->isIPv6 =  (thePeer.isIPType(XrdNetAddrInfo::IPv6)
++        //                   && !thePeer.isMapped());
++        std::stringstream connectErrMsg;
++
++        if (!tpcWorker->m_pmark_manager.connect(fd, &(address->addr), address->addrlen, CONNECT_TIMEOUT, connectErrMsg)) {
++            tpcWorker->m_queue.m_parent.m_log.Emsg("TPCWorker:", "Unable to connect socket:", connectErrMsg.str().c_str());
++            return CURL_SOCKET_BAD;
++        }
++
++        tpcWorker->m_pmark_manager.startTransfer();
++        tpcWorker->m_pmark_manager.beginPMarks();
++    }
++    return fd;
++}
++
++/******************************************************************************/
++/*                   c l o s e s o c k e t _ c a l l b a c k */
++/******************************************************************************/
++/**
++ * The callback that will be called by libcurl when the socket is about to be
++ * closed so we can send the done packet marking information.
++ *
++ */
++
++int TPCRequestManager::TPCQueue::TPCWorker::closesocket_callback(void *clientp, curl_socket_t fd) {
++    TPCWorker *tpcWorker = (TPCWorker *)clientp;
++
++    tpcWorker->m_pmark_manager.endPmark(fd);
++    return close(fd);
++}
++
++void TPCRequestManager::TPCQueue::Done(TPCWorker *worker) {
++    std::unique_lock<std::mutex> lock(m_mutex);
++    auto it = std::remove_if(m_workers.begin(), m_workers.end(), [&](std::unique_ptr<TPCWorker> &other) { return other.get() == worker; });
++    m_workers.erase(it, m_workers.end());
++
++    if (m_workers.empty()) {
++        m_done = true;
++        lock.unlock();
++        m_parent.Done(m_identifier);
++    }
++}
++
++void TPCRequestManager::Done(const std::string &ident) {
++    m_log.Log(LogMask::Info, "TPCRequestManager", "Worker pool", ident.c_str(), "is idle and all workers have exited.");
++    std::unique_lock<std::shared_mutex> lock(m_mutex);
++
++    auto iter = m_pool_map.find(ident);
++    if (iter != m_pool_map.end()) {
++        m_pool_map.erase(iter);
++    }
++}
++
++// Produce a request for processing.  If the queue is full, the request will
++// be rejected and false will be returned.
++//
++// Implementation notes:
++// - If a worker is idle, it will be woken up to process the request.
++// - If no workers are idle, a new worker will be created to process the
++//   request.
++// - If the maximum number of workers is reached, the request will be queued
++//   until a worker is available.
++// - If the maximum number of pending operations is reached, the request will
++//   be rejected.
++// - If there are multiple idle workers, the oldest worker will be woken.  This
++//   causes the newest workers to be idle for as long as possible and
++//   potentially exit due to lack of work.  This is done to reduce the number of
++//   "mostly idle" workers in the thread pool.
++bool TPCRequestManager::TPCQueue::Produce(TPCRequest &handler) {
++    std::unique_lock<std::mutex> lk(m_mutex);
++    if (m_ops.size() == m_max_pending_ops) {
++        m_parent.m_log.Log(LogMask::Warning, "TPCQueue", "Queue is full; rejecting request");
++        return false;
++    }
++
++    m_ops.push_back(&handler);
++    for (auto &worker : m_workers) {
++        if (worker->IsIdle()) {
++            worker->m_cv.notify_one();
++            return true;
++        }
++    }
++
++    if (m_workers.size() < m_max_workers) {
++        auto worker = std::make_unique<TPCRequestManager::TPCQueue::TPCWorker>(handler.GetLabel(), handler.GetScitag(), *this);
++        std::thread t(TPCRequestManager::TPCQueue::TPCWorker::RunStatic, worker.get());
++        t.detach();
++        m_workers.push_back(std::move(worker));
++    }
++    lk.unlock();
++
++    return true;
++}
++
++TPCRequestManager::TPCRequest *TPCRequestManager::TPCQueue::TryConsume() {
++    std::unique_lock<std::mutex> lk(m_mutex);
++    if (m_ops.size() == 0) {
++        return nullptr;
++    }
++
++    auto result = m_ops.front();
++    m_ops.pop_front();
++
++    return result;
++}
++
++// Wait for a request to be available for processing, or until the duration
++// has elapsed.
++//
++// Returns the request that is available, or nullptr if the duration has
++// elapsed.
++TPCRequestManager::TPCRequest *TPCRequestManager::TPCQueue::ConsumeUntil(std::chrono::steady_clock::duration dur, TPCWorker *worker) {
++    std::unique_lock<std::mutex> lk(m_mutex);
++    worker->SetIdle(true);
++    worker->m_cv.wait_for(lk, dur, [&] { return m_ops.size() > 0; });
++    worker->SetIdle(false);
++    if (m_ops.size() == 0) {
++        return nullptr;
++    }
++
++    auto result = m_ops.front();
++    m_ops.pop_front();
++
++    return result;
++}
++
++void TPCRequestManager::TPCRequest::SetActive() { m_active.store(true, std::memory_order_relaxed); }
++
++void TPCRequestManager::TPCRequest::Cancel() { m_active.store(false, std::memory_order_relaxed); }
++
++CURL *TPCRequestManager::TPCRequest::GetHandle() const { return m_curl; }
++
++int TPCRequestManager::TPCRequest::GetScitag() const { return m_scitag; }
++
++bool TPCRequestManager::TPCRequest::IsActive() const { return m_active.load(std::memory_order_relaxed); }
++
++std::string TPCRequestManager::TPCRequest::GetLabel() const { return m_label; }
++
++std::string TPCRequestManager::TPCRequest::GenerateIdentifier(const std::string& label, const char *vorg, const int scitag) {
++    std::stringstream ss;
++    ss << label;  // always present
++
++    if (vorg && *vorg) {
++        ss << "_" << vorg;
++    }
++
++    if (scitag != -1) {
++        ss << "_" << scitag;
++    }
++    return ss.str();
++}
++
++// Logic from State::GetConnectionDescription
++void TPCRequestManager::TPCRequest::UpdateRemoteConnDesc() {
++#if LIBCURL_VERSION_NUM >= 0x071500
++    // Retrieve IP address and port from the curl handle
++    const char *curl_ip = nullptr;
++    CURLcode rc = curl_easy_getinfo(m_curl, CURLINFO_PRIMARY_IP, &curl_ip);
++    if (rc != CURLE_OK || !curl_ip) {
++        return;  // Failed to get IP, cannot update connection descriptor
++    }
++
++    long curl_port = 0;
++    rc = curl_easy_getinfo(m_curl, CURLINFO_PRIMARY_PORT, &curl_port);
++    if (rc != CURLE_OK || curl_port == 0) {
++        return;  // Failed to get port, cannot update connection descriptor
++    }
++
++    // Format the connection string according to HTTP-TPC spec
++    // IPv6 addresses must be enclosed in square brackets
++    std::stringstream ss;
++    if (strchr(curl_ip, ':') == nullptr) {
++        ss << "tcp:" << curl_ip << ":" << curl_port;
++    } else {
++        ss << "tcp:[" << curl_ip << "]:" << curl_port;
++    }
++
++    {
++        std::unique_lock<std::mutex> lock(m_conn_mutex);
++        m_conn_list = ss.str();
++    }
++#else
++    // For older libcurl versions, do nothing
++    return;
++#endif
++}
++
++std::string TPCRequestManager::TPCRequest::GetRemoteConnDesc() {
++    std::unique_lock<std::mutex> lock(m_conn_mutex);
++    return m_conn_list;
++}
++
++void TPCRequestManager::TPCRequest::SetDone(int status, const std::string &msg) {
++    std::unique_lock<std::mutex> lock(m_mutex);
++    m_status = status;
++    m_message = msg;
++    m_cv.notify_one();
++}
++
++int TPCRequestManager::TPCRequest::WaitFor(std::chrono::steady_clock::duration dur) {
++    std::unique_lock<std::mutex> lock(m_mutex);
++    m_cv.wait_for(lock, dur, [&] { return m_status >= 0; });
++
++    return m_status;
++}
++
++TPCRequestManager::TPCRequestManager(XrdOucEnv &xrdEnv, XrdSysError &eDest) : m_log(eDest), m_xrdEnv(xrdEnv) {}
++
++void TPCRequestManager::SetWorkerIdleTimeout(std::chrono::steady_clock::duration dur) { m_idle_timeout = dur; }
++
++// Send a request to a worker for processing.  If the worker is not available,
++// the request will be queued until a worker is available.  If the queue is
++// full, the request will be rejected and false will be returned.
++bool TPCRequestManager::Produce(TPCRequestManager::TPCRequest &handler) {
++    std::shared_ptr<TPCQueue> queue;
++    // Get the queue from our per-label map.  To avoid a race condition,
++    // if the queue we get has already been shut down, we release the lock
++    // and try again (with the expectation that the queue will eventually
++    // get the lock and remove itself from the map).
++    while (true) {
++        m_mutex.lock_shared();
++        std::lock_guard<std::shared_mutex> guard{m_mutex, std::adopt_lock};
++        auto iter = m_pool_map.find(handler.GetLabel());
++        if (iter != m_pool_map.end()) {
++            if (!iter->second->IsDone()) {
++                queue = iter->second;
++                break;
++            }
++        } else {
++            break;
++        }
++    }
++    if (!queue) {
++        auto created_queue = false;
++        std::string queue_name = "";
++        {
++            std::lock_guard<std::shared_mutex> guard(m_mutex);
++            auto iter = m_pool_map.find(handler.GetLabel());
++            if (iter == m_pool_map.end()) {
++                queue = std::make_shared<TPCQueue>(handler.GetLabel(), *this);
++                m_pool_map.insert(iter, {handler.GetLabel(), queue});
++                created_queue = true;
++                queue_name = handler.GetLabel();
++            } else {
++                queue = iter->second;
++            }
++        }
++        if (created_queue) {
++            m_log.Log(LogMask::Info, "RequestManager", "Created new TPC request queue for", queue_name.c_str());
++        }
++    }
++
++    return queue->Produce(handler);
++}
+diff --git a/src/XrdHttpTpc/XrdHttpTpcPool.hh b/src/XrdHttpTpc/XrdHttpTpcPool.hh
+new file mode 100644
+index 000000000..d4b0260dc
+--- /dev/null
++++ b/src/XrdHttpTpc/XrdHttpTpcPool.hh
+@@ -0,0 +1,146 @@
++#ifndef __XRDHTTPTPCPOOL_HH__
++#define __XRDHTTPTPCPOOL_HH__
++
++#include <curl/curl.h>
++
++#include <atomic>
++#include <condition_variable>
++#include <deque>
++#include <memory>
++#include <mutex>
++#include <shared_mutex>
++#include <sstream>
++#include <string>
++#include <thread>
++#include <unordered_map>
++#include <vector>
++
++#include "XrdHttpTpcPMarkManager.hh"
++
++// Forward dec'ls
++class XrdOucEnv;
++class XrdSysError;
++
++// A pool manager for TPC requests
++//
++// The manager maintains a set of worker pools, one for each distinct identifier
++// (typically, one per organization; this prevents the mixing of transfers from
++// different organizations on the same TCP socket).  Each TPC transfer submitted
++// must have an identifier; the transfer is then queued for the appropriate pool
++// and subsequently executed by one of the worker threads.
++//
++// Transfers are packed to as few workers as possible in an attempt to reduce
++// the number of TCP connections; however, if the transfer is not picked up
++// quickly, a new worker will be spawned.  Idle workers will auto-shutdown; if
++// not used, the pool will have no running threads.
++namespace TPC {
++
++class TPCRequestManager final {
++   public:
++    class TPCRequest {
++       public:
++        TPCRequest(const std::string &label, const int scitag, CURL *handle) : m_label(label), m_scitag(scitag), m_curl(handle) {}
++
++        int WaitFor(std::chrono::steady_clock::duration);
++        CURL *GetHandle() const;
++        std::string GetLabel() const;
++        int GetScitag() const;
++        std::string GetRemoteConnDesc();
++        void SetActive();
++        void SetDone(int status, const std::string &msg);
++        bool IsActive() const;
++        void Cancel();
++        void UpdateRemoteConnDesc();
++        static std::string GenerateIdentifier(const std::string& label, const char *vorg, const int scitag);
++
++       private:
++        std::atomic<bool> m_active{false};
++        int m_status{-1};
++        std::string m_conn_list;
++        std::mutex m_conn_mutex;
++        std::atomic<off_t> m_progress_offset{0};
++        // Label assigned to the request. Determines which queue it will be placed into.
++        // A queue with matching identifier is created if it does not already exists.
++        std::string m_label;
++        int m_scitag;
++        CURL *m_curl;
++        std::condition_variable m_cv;
++        std::mutex m_mutex;
++        std::string m_message;
++    };
++
++    TPCRequestManager(XrdOucEnv &xrdEnv, XrdSysError &eDest);
++
++    bool Produce(TPCRequest &handler);
++
++    void SetWorkerIdleTimeout(std::chrono::steady_clock::duration dur);
++    void SetMaxWorkers(unsigned max_workers) { m_max_workers = max_workers; }
++    void SetMaxIdleRequests(unsigned max_pending_ops) { m_max_pending_ops = max_pending_ops; }
++
++   private:
++    class TPCQueue {
++        class TPCWorker;
++
++       public:
++        TPCQueue(const std::string &identifier, TPCRequestManager &parent) : m_identifier(identifier), m_parent(parent) {}
++
++        bool Produce(TPCRequest &handler);
++        TPCRequest *TryConsume();
++        TPCRequest *ConsumeUntil(std::chrono::steady_clock::duration dur, TPCWorker *worker);
++        void Done(TPCWorker *);
++        bool IsDone() const { return m_done; }
++
++       private:
++        class TPCWorker final {
++           public:
++            TPCWorker(const std::string &label, int scitag, TPCQueue &queue);
++            TPCWorker(const TPCWorker &) = delete;
++
++            void Run();
++            static void RunStatic(TPCWorker *myself);
++
++            bool IsIdle() const { return m_idle; }
++            void SetIdle(bool idle) { m_idle = idle; }
++            std::condition_variable m_cv;
++
++            static int closesocket_callback(void *clientp, curl_socket_t fd);
++            static int opensocket_callback(void *clientp, curlsocktype purpose, struct curl_sockaddr *address);
++            static int sockopt_callback(void *clientp, curl_socket_t curlfd, curlsocktype purpose);
++            std::string getLabel() const { return m_label; }
++
++           private:
++            bool RunCurl(CURLM *multi_handle, TPCRequest &request);
++
++            bool m_idle{false};
++            // Label for this worker. Always set to the m_identifier of the queue it serves.
++            const std::string m_label;
++            TPCQueue &m_queue;
++            XrdNetPMark *m_pmark_handle;
++            XrdHttpTpc::PMarkManager m_pmark_manager;
++        };
++
++        static const long CONNECT_TIMEOUT = 60;
++        bool m_done{false};
++        // Unique identifier for this queue, in the format: "tpc_<vorg>_<scitag>".
++        const std::string m_identifier;
++        std::vector<std::unique_ptr<TPCWorker>> m_workers;
++        std::deque<TPCRequest *> m_ops;
++        std::mutex m_mutex;
++        TPCRequestManager &m_parent;
++    };
++
++    void Done(const std::string &ident);
++
++    static std::shared_mutex m_mutex;
++    XrdSysError &m_log;  // Log object for the request manager
++    static std::chrono::steady_clock::duration m_idle_timeout;
++    static std::unordered_map<std::string, std::shared_ptr<TPCQueue>> m_pool_map;
++    static unsigned m_max_pending_ops;
++    static unsigned m_max_workers;
++    static std::once_flag m_init_once;
++    XrdOucEnv &m_xrdEnv;
++};
++
++}  // namespace TPC
++
++#endif  // __XRDHTTPTPCPOOL_HH__
+diff --git a/src/XrdHttpTpc/XrdHttpTpcState.hh b/src/XrdHttpTpc/XrdHttpTpcState.hh
+index f65cae7e4..c82b4b440 100644
+--- a/src/XrdHttpTpc/XrdHttpTpcState.hh
++++ b/src/XrdHttpTpc/XrdHttpTpcState.hh
+@@ -9,6 +9,8 @@
+ #include <memory>
+ #include <vector>
+ 
++#include "XrdSys/XrdSysRAtomic.hh"
++
+ // Forward dec'ls
+ class XrdSfsFile;
+ class XrdHttpExtReq;
+@@ -162,7 +164,7 @@ class State {
+     bool m_push;  // whether we are transferring in "push-mode"
+     bool m_recv_status_line;  // whether we have received a status line in the response from the remote host.
+     bool m_recv_all_headers;  // true if we have seen the end of headers.
+-    off_t m_offset;  // number of bytes we have received.
++    XrdSys::RAtomic<off_t> m_offset;  // number of bytes we have received.
+     off_t m_start_offset;  // offset where we started in the file.
+     int m_status_code;  // status code from HTTP response.
+     int m_error_code; // error code from underlying stream operations.
+diff --git a/src/XrdHttpTpc/XrdHttpTpcTPC.cc b/src/XrdHttpTpc/XrdHttpTpcTPC.cc
+index 00ed6aca9..961a84e2c 100644
+--- a/src/XrdHttpTpc/XrdHttpTpcTPC.cc
++++ b/src/XrdHttpTpc/XrdHttpTpcTPC.cc
+@@ -22,7 +22,6 @@
+ #include <sstream>
+ #include <stdexcept>
+ #include <thread>
+-#include <iostream> // Delete later!!!
+ 
+ #include "XrdHttpTpcState.hh"
+ #include "XrdHttpTpcStream.hh"
+@@ -85,74 +84,6 @@ void CurlDeleter::operator()(CURL *curl)
+     if (curl) curl_easy_cleanup(curl);
+ }
+ 
+-/******************************************************************************/
+-/*           s o c k o p t _ s e t c l o e x e c _ c a l l b a c k            */
+-/******************************************************************************/
+-  
+-/**
+- * The callback that will be called by libcurl when the socket has been created
+- * https://curl.se/libcurl/c/CURLOPT_SOCKOPTFUNCTION.html
+- *
+- * Note: that this callback has been replaced by the opensocket_callback as it
+- *       was needed for monitoring to report what IP protocol was being used.
+- *       It has been kept in case we will need this callback in the future.
+- */
+-int TPCHandler::sockopt_callback(void *clientp, curl_socket_t curlfd, curlsocktype purpose) {
+-  TPCLogRecord * rec = (TPCLogRecord *)clientp;
+-  if (purpose == CURLSOCKTYPE_IPCXN && rec && rec->pmarkManager.isEnabled()) {
+-      // We will not reach this callback if the corresponding socket could not have been connected
+-      // the socket is already connected only if the packet marking is enabled
+-      return CURL_SOCKOPT_ALREADY_CONNECTED;
+-  }
+-  return CURL_SOCKOPT_OK;
+-}
+-
+-/******************************************************************************/
+-/*                   o p e n s o c k e t _ c a l l b a c k                    */
+-/******************************************************************************/
+-  
+-  
+-/**
+- * The callback that will be called by libcurl when the socket is about to be
+- * opened so we can capture the protocol that will be used.
+- */
+-int TPCHandler::opensocket_callback(void *clientp,
+-                                    curlsocktype purpose,
+-                                    struct curl_sockaddr *aInfo)
+-{
+-  //Return a socket file descriptor (note the clo_exec flag will be set).
+-  int fd = XrdSysFD_Socket(aInfo->family, aInfo->socktype, aInfo->protocol);
+-  // See what kind of address will be used to connect
+-  //
+-  if(fd < 0) {
+-    return CURL_SOCKET_BAD;
+-  }
+-  TPCLogRecord * rec = (TPCLogRecord *)clientp;
+-  if (purpose == CURLSOCKTYPE_IPCXN && clientp)
+-  {XrdNetAddr thePeer(&(aInfo->addr));
+-    rec->isIPv6 =  (thePeer.isIPType(XrdNetAddrInfo::IPv6)
+-                    && !thePeer.isMapped());
+-    std::stringstream connectErrMsg;
+-
+-    if(!rec->pmarkManager.connect(fd, &(aInfo->addr), aInfo->addrlen, CONNECT_TIMEOUT, connectErrMsg)) {
+-      rec->m_log->Emsg(rec->log_prefix.c_str(),"Unable to connect socket:", connectErrMsg.str().c_str());
+-      return CURL_SOCKET_BAD;
+-    }
+-  }
+-
+-  return fd;
+-}
+-
+-int TPCHandler::closesocket_callback(void *clientp, curl_socket_t fd) {
+-  TPCLogRecord * rec = (TPCLogRecord *)clientp;
+-
+-  // Destroy the PMark handle associated to the file descriptor before closing it.
+-  // Otherwise, we would lose the socket usage information if the socket is closed before
+-  // the PMark handle is closed.
+-  rec->pmarkManager.endPmark(fd);
+-
+-  return close(fd);
+-}
+ 
+ /******************************************************************************/
+ /*                            p r e p a r e U R L                             */
+@@ -291,7 +222,8 @@ TPCHandler::TPCHandler(XrdSysError *log, const char *config, XrdOucEnv *myEnv) :
+         m_timeout(60),
+         m_first_timeout(120),
+         m_log(log->logger(), "TPC_"),
+-        m_sfs(NULL)
++        m_sfs(NULL),
++        m_request_manager(*myEnv, *log)
+ {
+     if (!Configure(config, myEnv)) {
+         throw std::runtime_error("Failed to configure the HTTP third-party-copy handler.");
+@@ -474,11 +406,30 @@ int TPCHandler::GetContentLengthTPCPull(CURL *curl, XrdHttpExtReq &req, uint64_t
+     contentLength = state.GetContentLength();
+     return result;
+ }
+-  
++
+ /******************************************************************************/
+ /*            T P C H a n d l e r : : S e n d P e r f M a r k e r             */
+ /******************************************************************************/
+-  
++
++int TPCHandler::SendPerfMarker(XrdHttpExtReq &req, TPCLogRecord &rec, TPC::State &state, std::string desc) {
++    std::stringstream ss;
++    const std::string crlf = "\n";
++    ss << "Perf Marker" << crlf;
++    ss << "Timestamp: " << time(NULL) << crlf;
++    ss << "Stripe Index: 0" << crlf;
++    ss << "Stripe Bytes Transferred: " << state.BytesTransferred() << crlf;
++    ss << "Total Stripe Count: 1" << crlf;
++    if (!desc.empty()) ss << "RemoteConnections: " << desc << crlf;
++    ss << "End" << crlf;
++    rec.bytes_transferred = state.BytesTransferred();
++    logTransferEvent(LogMask::Debug, rec, "PERF_MARKER");
++    return req.ChunkResp(ss.str().c_str(), 0);
++}
++
++/******************************************************************************/
++/*            T P C H a n d l e r : : S e n d P e r f M a r k e r             */
++/******************************************************************************/
++
+ int TPCHandler::SendPerfMarker(XrdHttpExtReq &req, TPCLogRecord &rec, TPC::State &state) {
+     std::stringstream ss;
+     const std::string crlf = "\n";
+@@ -550,170 +501,69 @@ int TPCHandler::SendPerfMarker(XrdHttpExtReq &req, TPCLogRecord &rec, std::vecto
+ /******************************************************************************/
+ /*        T P C H a n d l e r : : R u n C u r l W i t h U p d a t e s         */
+ /******************************************************************************/
+-  
+-int TPCHandler::RunCurlWithUpdates(CURL *curl, XrdHttpExtReq &req, State &state,
+-    TPCLogRecord &rec)
+-{
+-    // Create the multi-handle and add in the current transfer to it.
+-    CURLM *multi_handle = curl_multi_init();
+-    if (!multi_handle) {
+-        rec.status = 500;
+-        logTransferEvent(LogMask::Error, rec, "CURL_INIT_FAIL",
+-            "Failed to initialize a libcurl multi-handle");
+-        std::stringstream ss;
+-        ss << "Failed to initialize internal server memory";
+-        return req.SendSimpleResp(rec.status, NULL, NULL, generateClientErr(ss, rec).c_str(), 0);
+-    }
+ 
+-    //curl_easy_setopt(curl, CURLOPT_BUFFERSIZE, 128*1024);
++int TPCHandler::RunCurlWithUpdates(CURL *curl, XrdHttpExtReq &req, State &state, TPCLogRecord &rec) {
++
++    std::string request_label = TPCRequestManager::TPCRequest::GenerateIdentifier("tpc", req.GetSecEntity().vorg, req.mSciTag);
++    TPCRequestManager::TPCRequest request(request_label, req.mSciTag, curl);
+ 
+-    CURLMcode mres;
+-    mres = curl_multi_add_handle(multi_handle, curl);
+-    if (mres) {
+-        rec.status = 500;
+-        std::stringstream ss;
+-        ss << "Failed to add transfer to libcurl multi-handle: HTTP library failure=" << curl_multi_strerror(mres);
+-        logTransferEvent(LogMask::Error, rec, "CURL_INIT_FAIL", ss.str());
+-        curl_multi_cleanup(multi_handle);
+-        return req.SendSimpleResp(rec.status, NULL, NULL, generateClientErr(ss, rec).c_str(), 0);
++    if (!m_request_manager.Produce(request)) {
++        int retval = req.StartChunkedResp(429, "Too Many Requests",
++                                          "Unable to accept HTTP-TPC requests "
++                                          "because server is too busy.  Try again later");
++        if (retval) {
++            logTransferEvent(LogMask::Error, rec, "RESPONSE_FAIL", "Failed to send the initial response to the TPC client");
++            return retval;
++        }
++        return -1;
+     }
+ 
+-    // Start response to client prior to the first call to curl_multi_perform
++    // curl_multi_perform is independently called in the worker thread
++    // we can however initiate a cancel here
+     int retval = req.StartChunkedResp(201, "Created", "Content-Type: text/plain");
+     if (retval) {
+-        curl_multi_cleanup(multi_handle);
++        request.Cancel();
+         logTransferEvent(LogMask::Error, rec, "RESPONSE_FAIL",
+             "Failed to send the initial response to the TPC client");
+-        return retval;
+     } else {
+         logTransferEvent(LogMask::Debug, rec, "RESPONSE_START",
+             "Initial transfer response sent to the TPC client");
+     }
+ 
+-    // Transfer loop: use curl to actually run the transfer, but periodically
+-    // interrupt things to send back performance updates to the client.
+-    int running_handles = 1;
+-    time_t last_marker = 0;
+     // Track how long it's been since the last time we recorded more bytes being transferred.
+     off_t last_advance_bytes = 0;
+     time_t last_advance_time = time(NULL);
+     time_t transfer_start = last_advance_time;
+     CURLcode res = static_cast<CURLcode>(-1);
+-    do {
+-        time_t now = time(NULL);
+-        time_t next_marker = last_marker + m_marker_period;
+-        if (now >= next_marker) {
+-            off_t bytes_xfer = state.BytesTransferred();
+-            if (bytes_xfer > last_advance_bytes) {
+-                last_advance_bytes = bytes_xfer;
+-                last_advance_time = now;
+-            }
+-            if (SendPerfMarker(req, rec, state)) {
+-                curl_multi_remove_handle(multi_handle, curl);
+-                curl_multi_cleanup(multi_handle);
+-                logTransferEvent(LogMask::Error, rec, "PERFMARKER_FAIL",
+-                    "Failed to send a perf marker to the TPC client");
+-                return -1;
+-            }
+-            int timeout = (transfer_start == last_advance_time) ? m_first_timeout : m_timeout;
+-            if (now > last_advance_time + timeout) {
+-                const char *log_prefix = rec.log_prefix.c_str();
+-                bool tpc_pull = strncmp("Pull", log_prefix, 4) == 0;
+ 
+-                state.SetErrorCode(10);
+-                std::stringstream ss;
+-                ss << "Transfer failed because no bytes have been "
+-                   << (tpc_pull ? "received from the source (pull mode) in "
+-                                : "transmitted to the destination (push mode) in ") << timeout << " seconds.";
+-                state.SetErrorMessage(ss.str());
+-                curl_multi_remove_handle(multi_handle, curl);
+-                curl_multi_cleanup(multi_handle);
+-                break;
+-            }
+-            last_marker = now;
+-        }
+-        // The transfer will start after this point, notify the packet marking manager
+-        rec.pmarkManager.startTransfer();
+-        mres = curl_multi_perform(multi_handle, &running_handles);
+-        if (mres == CURLM_CALL_MULTI_PERFORM) {
+-            // curl_multi_perform should be called again immediately.  On newer
+-            // versions of curl, this is no longer used.
+-            continue;
+-        } else if (mres != CURLM_OK) {
+-            break;
+-        } else if (running_handles == 0) {
+-            break;
+-        }
+-
+-        rec.pmarkManager.beginPMarks();
+-        //printf("There are %d running handles\n", running_handles);
+-
+-        // Harvest any messages, looking for CURLMSG_DONE.
+-        CURLMsg *msg;
+-        do {
+-            int msgq = 0;
+-            msg = curl_multi_info_read(multi_handle, &msgq);
+-            if (msg && (msg->msg == CURLMSG_DONE)) {
+-                CURL *easy_handle = msg->easy_handle;
+-                res = msg->data.result;
+-                curl_multi_remove_handle(multi_handle, easy_handle);
+-            }
+-        } while (msg);
++    // The transfer will start after this point, notify the packet marking
++    // manager
+ 
+-        int64_t max_sleep_time = next_marker - time(NULL);
+-        if (max_sleep_time <= 0) {
+-            continue;
++    while ((res = (CURLcode)request.WaitFor(std::chrono::seconds(m_marker_period))) < 0) {
++        auto now = time(NULL);
++        std::string conn_desc = request.GetRemoteConnDesc();
++        off_t bytes_xfer = state.BytesTransferred();
++        if (bytes_xfer > last_advance_bytes) {
++            last_advance_bytes = bytes_xfer;
++            last_advance_time = now;
+         }
+-        int fd_count;
+-        mres = curl_multi_wait(multi_handle, NULL, 0, max_sleep_time*1000, &fd_count);
+-        if (mres != CURLM_OK) {
+-            break;
++        if (SendPerfMarker(req, rec, state, conn_desc)) {
++            request.Cancel();
++            logTransferEvent(LogMask::Error, rec, "PERFMARKER_FAIL", "Failed to send a perf marker to the TPC client");
+         }
+-    } while (running_handles);
+-
+-    if (mres != CURLM_OK) {
+-        std::stringstream ss;
+-        ss << "Internal libcurl multi-handle error: HTTP library failure=" << curl_multi_strerror(mres);
+-        logTransferEvent(LogMask::Error, rec, "TRANSFER_CURL_ERROR", ss.str());
+-
+-        curl_multi_remove_handle(multi_handle, curl);
+-        curl_multi_cleanup(multi_handle);
+-
+-        if ((retval = req.ChunkResp(generateClientErr(ss, rec).c_str(), 0))) {
+-            logTransferEvent(LogMask::Error, rec, "RESPONSE_FAIL",
+-                "Failed to send error message to the TPC client");
+-            return retval;
+-        }
+-        return req.ChunkResp(NULL, 0);
+-    }
+-
+-    // Harvest any messages, looking for CURLMSG_DONE.
+-    CURLMsg *msg;
+-    do {
+-        int msgq = 0;
+-        msg = curl_multi_info_read(multi_handle, &msgq);
+-        if (msg && (msg->msg == CURLMSG_DONE)) {
+-            CURL *easy_handle = msg->easy_handle;
+-            res = msg->data.result;
+-            curl_multi_remove_handle(multi_handle, easy_handle);
+-        }
+-    } while (msg);
+-
+-    if (!state.GetErrorCode() && res == static_cast<CURLcode>(-1)) { // No transfers returned?!?
+-        curl_multi_remove_handle(multi_handle, curl);
+-        curl_multi_cleanup(multi_handle);
+-        std::stringstream ss;
+-        ss << "Internal state error in libcurl";
+-        logTransferEvent(LogMask::Error, rec, "TRANSFER_CURL_ERROR", ss.str());
+-
+-        if ((retval = req.ChunkResp(generateClientErr(ss, rec).c_str(), 0))) {
+-            logTransferEvent(LogMask::Error, rec, "RESPONSE_FAIL",
+-                "Failed to send error message to the TPC client");
+-            return retval;
++        int timeout = (transfer_start == last_advance_time) ? m_first_timeout : m_timeout;
++        if (now > last_advance_time + timeout) {
++            const char *log_prefix = rec.log_prefix.c_str();
++            bool tpc_pull = strncmp("Pull", log_prefix, 4) == 0;
++            request.Cancel();
++            state.SetErrorCode(10);
++            std::stringstream ss;
++            ss << "Transfer failed because no bytes have been "
++               << (tpc_pull ? "received from the source (pull mode) in " : "transmitted to the destination (push mode) in ") << timeout
++               << " seconds.";
++            state.SetErrorMessage(ss.str());
+         }
+-        return req.ChunkResp(NULL, 0);
+     }
+-    curl_multi_cleanup(multi_handle);
+ 
+     state.Flush();
+ 
+@@ -796,13 +646,6 @@ int TPCHandler::ProcessPushReq(const std::string & resource, XrdHttpExtReq &req)
+     }
+     curl_easy_setopt(curl, CURLOPT_NOSIGNAL, 1);
+     curl_easy_setopt(curl, CURLOPT_HTTP_VERSION, (long) CURL_HTTP_VERSION_1_1);
+-//  curl_easy_setopt(curl, CURLOPT_SOCKOPTFUNCTION, sockopt_setcloexec_callback);
+-
+-    curl_easy_setopt(curl, CURLOPT_OPENSOCKETFUNCTION, opensocket_callback);
+-    curl_easy_setopt(curl, CURLOPT_OPENSOCKETDATA, &rec);
+-    curl_easy_setopt(curl, CURLOPT_CLOSESOCKETFUNCTION, closesocket_callback);
+-    curl_easy_setopt(curl, CURLOPT_SOCKOPTFUNCTION, sockopt_callback);
+-    curl_easy_setopt(curl, CURLOPT_CLOSESOCKETDATA, &rec);
+     curl_easy_setopt(curl, CURLOPT_CONNECTTIMEOUT, CONNECT_TIMEOUT);
+     auto query_header = XrdOucTUtils::caseInsensitiveFind(req.headers,"xrd-http-fullresource");
+     std::string redirect_resource = req.resource;
+@@ -913,13 +756,7 @@ int TPCHandler::ProcessPullReq(const std::string &resource, XrdHttpExtReq &req)
+     }
+     curl_easy_setopt(curl, CURLOPT_NOSIGNAL, 1);
+     curl_easy_setopt(curl, CURLOPT_HTTP_VERSION, (long) CURL_HTTP_VERSION_1_1);
+-//  curl_easy_setopt(curl,CURLOPT_SOCKOPTFUNCTION,sockopt_setcloexec_callback);
+-    curl_easy_setopt(curl, CURLOPT_OPENSOCKETFUNCTION, opensocket_callback);
+-    curl_easy_setopt(curl, CURLOPT_OPENSOCKETDATA, &rec);
+-    curl_easy_setopt(curl, CURLOPT_SOCKOPTFUNCTION, sockopt_callback);
+     curl_easy_setopt(curl, CURLOPT_SOCKOPTDATA , &rec);
+-    curl_easy_setopt(curl, CURLOPT_CLOSESOCKETFUNCTION, closesocket_callback);
+-    curl_easy_setopt(curl, CURLOPT_CLOSESOCKETDATA, &rec);
+     curl_easy_setopt(curl, CURLOPT_CONNECTTIMEOUT, CONNECT_TIMEOUT);
+     std::unique_ptr<XrdSfsFile> fh(m_sfs->newFile(name, m_monid++));
+     if (!fh.get()) {
+diff --git a/src/XrdHttpTpc/XrdHttpTpcTPC.hh b/src/XrdHttpTpc/XrdHttpTpcTPC.hh
+index 0f23f7b38..1816ab703 100644
+--- a/src/XrdHttpTpc/XrdHttpTpcTPC.hh
++++ b/src/XrdHttpTpc/XrdHttpTpcTPC.hh
+@@ -11,6 +11,7 @@
+ 
+ #include "XrdTls/XrdTlsTempCA.hh"
+ #include "XrdHttpTpcPMarkManager.hh"
++#include "XrdHttpTpcPool.hh"
+ 
+ #include <curl/curl.h>
+ 
+@@ -55,12 +56,6 @@ class TPCHandler : public XrdHttpExtHandler {
+     static constexpr std::string_view OSS_TASK_OPAQUE = "oss.task=httptpc";
+ private:
+ 
+-    static int sockopt_callback(void * clientp, curl_socket_t curlfd, curlsocktype purpose);
+-    static int opensocket_callback(void *clientp,
+-                                   curlsocktype purpose,
+-                                   struct curl_sockaddr *address);
+-
+-    static int closesocket_callback(void *clientp, curl_socket_t fd);
+ 
+     struct TPCLogRecord {
+ 
+@@ -117,6 +112,7 @@ class TPCHandler : public XrdHttpExtHandler {
+     int SendPerfMarker(XrdHttpExtReq &req, TPCLogRecord &rec, TPC::State &state);
+     int SendPerfMarker(XrdHttpExtReq &req, TPCLogRecord &rec, std::vector<State*> &state,
+         off_t bytes_transferred);
++    int SendPerfMarker(XrdHttpExtReq &req, TPCLogRecord &rec, TPC::State &state, std::string desc);
+ 
+     // Perform the libcurl transfer, periodically sending back chunked updates.
+     int RunCurlWithUpdates(CURL *curl, XrdHttpExtReq &req, TPC::State &state,
+@@ -162,6 +158,7 @@ class TPCHandler : public XrdHttpExtHandler {
+     XrdSysError m_log;
+     XrdSfsFileSystem *m_sfs;
+     std::shared_ptr<XrdTlsTempCA> m_ca_file;
++    TPCRequestManager m_request_manager; // Manager of the request & worker pools for executing TPC transfers
+ 
+     // 16 blocks in flight at 16 MB each, meaning that there will be up to 256MB
+     // in flight; this is equal to the bandwidth delay product of a 200ms transcontinental
+diff --git a/src/XrdSys/XrdSysRAtomic.hh b/src/XrdSys/XrdSysRAtomic.hh
+index 958f0525e..504b6ef13 100644
+--- a/src/XrdSys/XrdSysRAtomic.hh
++++ b/src/XrdSys/XrdSysRAtomic.hh
+@@ -37,9 +37,31 @@ T   operator=(T v) volatile noexcept
+     operator T() noexcept
+       {return _m.load(std::memory_order_relaxed);}
+ 
++    operator T() const noexcept
++      {return _m.load(std::memory_order_relaxed);}
++
+     operator T() volatile noexcept
+       {return _m.load(std::memory_order_relaxed);}
+ 
++    operator T() const volatile noexcept
++      {return _m.load(std::memory_order_relaxed);}
++
++    // Assignment operators
++
++    RAtomic& operator=(const RAtomic& other) noexcept {
++        if (this != &other) {
++            _m.store(other._m.load(std::memory_order_relaxed), std::memory_order_relaxed);
++        }
++        return *this;
++    }
++
++    RAtomic& operator=(const RAtomic& other) volatile noexcept {
++        if (this != &other) {
++            _m.store(other._m.load(std::memory_order_relaxed), std::memory_order_relaxed);
++        }
++        return *this;
++    }
++
+ // Post-increment/decrement (i.e. x++)
+ //
+ T   operator++(int) noexcept
+diff --git a/tests/TPCTests/CMakeLists.txt b/tests/TPCTests/CMakeLists.txt
+index dcf1278a9..8e815a30d 100644
+--- a/tests/TPCTests/CMakeLists.txt
++++ b/tests/TPCTests/CMakeLists.txt
+@@ -11,6 +11,7 @@ if (BUILD_SCITOKENS AND HAVE_SCITOKEN_CONFIG_SET_STR)
+   list(APPEND XRDENV "X509_CERT_FILE=${CMAKE_BINARY_DIR}/tests/issuer/tlsca.pem")
+   list(APPEND XRDENV "BINARY_DIR=${CMAKE_BINARY_DIR}")
+   list(APPEND XRDENV "XDG_CACHE_HOME=${CMAKE_CURRENT_BINARY_DIR}/.cache")
++  list(APPEND XRDENV "CURRENT_SOURCE_DIR=${CMAKE_CURRENT_SOURCE_DIR}")
+ 
+   foreach(config srv1 srv2 common)
+     configure_file(${config}.cfg ${CMAKE_CURRENT_BINARY_DIR}/${config}.cfg @ONLY)
+diff --git a/tests/TPCTests/common.cfg b/tests/TPCTests/common.cfg
+index f7a563cc5..4e87d84ae 100644
+--- a/tests/TPCTests/common.cfg
++++ b/tests/TPCTests/common.cfg
+@@ -30,6 +30,13 @@ ofs.authlib libXrdAccSciTokens.so config=$src/scitokens.cfg
+ ofs.authorize true
+ acc.authdb $src/scitokens.authdb
+ 
++tpc.max_active_transfers_per_queue 60 
++tpc.max_waiting_transfers_per_queue 25 
++
++xrootd.pmark domain any
++xrootd.pmark ffdest localhost:10515
++xrootd.pmark use firefly scitag
++
+ all.trace    all
+ auth.trace   all
+ tpc.trace    all
+diff --git a/tests/TPCTests/test.sh b/tests/TPCTests/test.sh
+index e65e27077..95cf934a9 100755
+--- a/tests/TPCTests/test.sh
++++ b/tests/TPCTests/test.sh
+@@ -1,9 +1,5 @@
+ #!/usr/bin/env bash
+ 
+-set -Eexo pipefail
+-
+-# Skip on macOS due to missing 'declare -A' support
+-
+ # Check for required commands
+ : "${ADLER32:=$(command -v xrdadler32)}"
+ : "${CRC32C:=$(command -v xrdcrc32c)}"
+@@ -28,22 +24,22 @@ check_commands() {
+ }
+ 
+ function error() {
+-	echo "error: $*" >&2; exit 1;
++    echo "error: $*" >&2; exit 1;
+ }
+ 
+ # shellcheck disable=SC2317
+ function assert() {
+-	echo "$@"; "$@" || error "command \"$*\" failed";
++    echo "$@"; "$@" || error "command \"$*\" failed";
+ }
+ 
+ # $1 is expected_value $2 is received value $3 is the error message
+ function assert_eq() {
+   [[ "$1" == "$2" ]] || error "$3: expected $1 but received $2"
+ }
+ 
+ # shellcheck disable=SC2317
+ function assert_failure() {
+-	echo "$@"; "$@" && error "command \"$*\" did not fail";
++    echo "$@"; "$@" && error "command \"$*\" did not fail";
+ }
+ 
+ check_commands "${ADLER32}" "${CRC32C}" "${XRDCP}" "${XRDFS}" "${OPENSSL}" "${CURL}"
+@@ -65,24 +61,24 @@ declare -a hosts_abbrev=(
+ )
+ 
+ setup_scitokens() {
+-	if ! ${XRDSCITOKENS_CREATE_TOKEN} "${XRDSCITOKENS_ISSUER_DIR}"/issuer_pub_1.pem "${XRDSCITOKENS_ISSUER_DIR}"/issuer_key_1.pem test_1 \
+-		"https://localhost:7095/issuer/one" "storage.modify:/ storage.create:/ storage.read:/" 1800 > "${PWD}/generated_tokens/token"; then
+-		echo "Failed to create token"
+-		exit 1
+-	fi
+-	chmod 0600 "$PWD/generated_tokens/token"
++    if ! ${XRDSCITOKENS_CREATE_TOKEN} "${XRDSCITOKENS_ISSUER_DIR}"/issuer_pub_1.pem "${XRDSCITOKENS_ISSUER_DIR}"/issuer_key_1.pem test_1 \
++        "https://localhost:7095/issuer/one" "storage.modify:/ storage.create:/ storage.read:/" 1800 > "${PWD}/generated_tokens/token"; then
++        echo "Failed to create token"
++        exit 1
++    fi
++    chmod 0600 "$PWD/generated_tokens/token"
+ }
+ 
+ # Cleanup function
+ # shellcheck disable=SC2317
+ cleanup() {
+     ## Cleanup empty files
+     src_idx=0
+     dst_idx=1
+     src=${hosts_abbrev[${src_idx}]}
+     dst=${hosts_abbrev[${dst_idx}]}
+     rm "${LCLDATADIR}/${src}_empty.dat" || :
+-    rm "${LCLDATADIR}/${dst}_empty.ref" || :
++    rm "${LCLDATADIR}/${src}_empty.ref" || :
+     ${XRDFS} "${hosts[$src_idx]}" rm "${RMTDATADIR}/${src}_empty.ref" || :
+     for mode in "_http_pull" "_http_push" ""; do
+         rm "${LCLDATADIR}/${src}_to_${dst}_empty.dat${mode}" || :
+@@ -116,7 +112,6 @@ cleanup() {
+ trap "cleanup" ERR
+ 
+ 
+-
+ # Set up directories
+ RMTDATADIR="/srvdata/tpc"
+ LCLDATADIR="${PWD}/localdata/tpc"
+@@ -132,29 +127,48 @@ export BEARER_TOKEN
+ 
+ generate_file() {
+     local local_file=$1
+-    ${OPENSSL} rand -out "${local_file}" $((1024 * (RANDOM + 1)))
++    local min_size=$2
++    if [[ -z "${min_size}" ]]; then
++        min_size=0
++    fi
++    ${OPENSSL} rand -out "${local_file}" $(((1024 * (RANDOM + 1)) + min_size ))
+ }
+ 
+ generate_empty_file() {
+     local local_file=$1
+     touch "${local_file}"
+ }
+ 
+ upload_file() {
+     local local_file=$1
+     local remote_file=$2
+     local protocol=$3
++    local scitag_flow=$4
+     local http_code
+ 
+     if [[ -z "${protocol}" || "${protocol}" == "root" ]]; then
++        if [[ -n "${scitag_flow}" ]]; then
++            remote_file="${remote_file}?scitag.flow=${scitag_flow}"
++        fi
+         ${XRDCP} "${local_file}" "${remote_file}"
+     elif [[ "${protocol}" == "http" ]]; then
+-        http_code=$(exec 3>&1; ${CURL} -X PUT -L -s -v -o /dev/null -w "%{http_code}" \
++        remote_file="${remote_file/root:\/\//https:\/\/}"
++        if [[ -n "${scitag_flow}" ]]; then
++        http_code=$(exec 3>&1; ${CURL} -X PUT -L -s -o /dev/null -w "%{http_code}" \
+             -H "Authorization: Bearer ${BEARER_TOKEN}" \
+             -H "Transfer-Encoding: chunked" \
++            -H "Scitag: ${scitag_flow}" \
+             --cacert "${BINARY_DIR}/tests/issuer/tlsca.pem" \
+             --data-binary "@${local_file}" "${remote_file}" \
+             2>&1 1>&3 | cat >&2)
++        else
++        http_code=$(exec 3>&1; ${CURL} -X PUT -L -s -o /dev/null -w "%{http_code}" \
++            -H "Authorization: Bearer ${BEARER_TOKEN}" \
++            -H "Transfer-Encoding: chunked" \
++            --cacert "${BINARY_DIR}/tests/issuer/tlsca.pem" \
++            --data-binary "@${local_file}" "${remote_file}" \
++            2>&1 1>&3 | cat >&2)
++        fi
+ 
+         echo "$http_code"
+     else
+@@ -187,33 +201,52 @@ perform_http_tpc() {
+     local token_src=$4
+     local token_dst=$5
+     local file_suffix=$6
++    local scitag_flow=$7
+ 
+     if [[ -z "${file_suffix}" ]]; then
+         file_suffix=""
+     fi
+ 
++    if [[ -z "${scitag_flow}" ]]; then
++        scitag_flow=66
++    fi
++
+     local src_file_http="${hosts_http[$src_idx]}/${RMTDATADIR}/${src}${file_suffix}.ref"
+     local dst_file_http="${hosts_http[$dst_idx]}/${RMTDATADIR}/${src}_to_${dst}${file_suffix}.ref_http"
+     local http_code
++    local result_line
++    local body_file
++    body_file=$(mktemp)
+ 
+     if [[ "$mode" == "push" ]]; then
+         dst_file_http="${dst_file_http}_push"
+-        http_code=$(${CURL} -X COPY -L -s -o >(cat >&2) -w "%{http_code}" \
++        http_code=$(${CURL} -X COPY -L -s -o "$body_file" -w "%{http_code}" \
+             -H "Destination: ${dst_file_http}" \
+             -H "Authorization: Bearer ${token_dst}" \
+             -H "TransferHeaderAuthorization: Bearer ${token_src}" \
++            -H "Scitag: ${scitag_flow}" \
+             --cacert "${BINARY_DIR}/tests/issuer/tlsca.pem" \
+             "${src_file_http}")
+     elif [[ "$mode" == "pull" ]]; then
+         dst_file_http="${dst_file_http}_pull"
+-        http_code=$(${CURL} -X COPY -L -s -o >(cat >&2) -w "%{http_code}" \
++        http_code=$(${CURL} -X COPY -L -s -o "$body_file" -w "%{http_code}" \
+             -H "Source: ${src_file_http}" \
+             -H "Authorization: Bearer ${token_src}" \
+             -H "TransferHeaderAuthorization: Bearer ${token_dst}" \
++            -H "Scitag: ${scitag_flow}" \
+             --cacert "${BINARY_DIR}/tests/issuer/tlsca.pem" \
+             "${dst_file_http}")
+     else
+         echo "ERROR: Unsupported mode: $mode" >&2
++        rm -f "$body_file"
++        return 1
++    fi
++
++    result_line=$(tail -n1 "$body_file")
++    rm -f "$body_file"
++
++    if [[ "$result_line" != "success: Created" ]]; then
++        echo "Transfer failed: from src $src_file_http to $dst_file_http with mode $mode and http_code $http_code result line: $result_line" >&2
+         return 1
+     fi
+ 
+@@ -229,7 +262,7 @@ download_file() {
+     if [[ -z "${protocol}" || "${protocol}" == "root" ]]; then
+         ${XRDCP} "${src}" "${dest}"
+     elif [[ "${protocol}" == "http" ]]; then
+-        ${CURL} -X GET -L -s -v -o "${dest}" \
++        ${CURL} -X GET -L -s -o "${dest}" \
+             -H "Authorization: Bearer ${BEARER_TOKEN}" \
+             -H "Transfer-Encoding: chunked" \
+             --cacert "${BINARY_DIR}/tests/issuer/tlsca.pem" \
+@@ -270,13 +303,15 @@ verify_checksum() {
+     fi
+ }
+ 
++# shellcheck disable=SC1091
++source "${CURRENT_SOURCE_DIR}/test_tpc_cancellations.sh"
+ 
+ # Generate, upload, download, and verify checksums for each host
+ for host_idx in {0..1}; do
+     host=${hosts_abbrev[$host_idx]}
+     generate_file "${LCLDATADIR}/${host}.ref"
+ done
+- 
++
+ for host_idx in {0..1}; do
+     host=${hosts_abbrev[$host_idx]}
+     local_file="${LCLDATADIR}/${host}.ref"
+diff --git a/tests/TPCTests/test_tpc_cancellations.sh b/tests/TPCTests/test_tpc_cancellations.sh
+new file mode 100644
+index 000000000..f61b4728c
+--- /dev/null
++++ b/tests/TPCTests/test_tpc_cancellations.sh
+@@ -0,0 +1,81 @@
++#!/bin/bash
++set -x
++
++NUM_FILES=9
++NUM_STREAMS=3
++
++# Clean up any old files
++for i in $(seq 1 $NUM_FILES); do
++    rm -f "${LCLDATADIR}/largefile.ref.${i}" \
++          "${LCLDATADIR}/largefile.dat.${i}" \
++          "${PWD}/data/srv1/srvdata/tpc/largefile.ref.${i}" \
++          "${PWD}/data/srv2/srvdata/tpc/largefile.ref.${i}"
++done
++
++# Generate, upload, and test parallel COPY with random cancellation
++for i in $(seq 1 $NUM_FILES); do
++    local_large_file="${LCLDATADIR}/largefile.ref.${i}"
++    remote_large_file="https://localhost:10951/${RMTDATADIR}/largefile.ref.${i}"
++    downloaded_large_file="${LCLDATADIR}/largefile.dat.${i}"
++
++    generate_file "${local_large_file}" 200000000 &
++    wait
++    upload_file "${local_large_file}" "${remote_large_file}" http &
++    wait
++    download_file "${remote_large_file}" "${downloaded_large_file}" http &
++    wait
++
++done
++
++wait
++
++for i in $(seq 1 $NUM_FILES); do
++    scitag_flow=$((65 + (RANDOM % 4)))
++    local_large_file="${LCLDATADIR}/largefile.ref.${i}"
++    remote_large_file="https://localhost:10951/${RMTDATADIR}/largefile.ref.${i}"
++    downloaded_large_file="${LCLDATADIR}/largefile.dat.${i}"
++
++    remote_large_file_srvs=(
++        "https://localhost:10951/${RMTDATADIR}/largefile.ref1.${i}"
++        "https://localhost:10952/${RMTDATADIR}/largefile.ref2.${i}"
++    )
++
++    for remote_large_file_srv in "${remote_large_file_srvs[@]}"; do
++    # Randomly cancel some requests
++        if (( NUM_FILES/3 > ( RANDOM % NUM_FILES))); then
++            ${CURL} -X COPY -L -s -v \
++                -H "Destination: ${remote_large_file_srv}" \
++                -H "Authorization: Bearer ${BEARER_TOKEN}" \
++                -H "TransferHeaderAuthorization: Bearer ${BEARER_TOKEN}" \
++                -H "Scitag: ${scitag_flow}" \
++                --cacert "${BINARY_DIR}/tests/issuer/tlsca.pem" \
++                --max-time 1 \
++                "${remote_large_file}" &
++        elif (( NUM_FILES*2/3 > (RANDOM % NUM_FILES) )); then
++            # Multstream is only implemented in pull mode
++            # No max-time (normal) 
++            ${CURL} -X COPY -L -s -v \
++                -H "Source: ${remote_large_file}" \
++                -H "Authorization: Bearer ${BEARER_TOKEN}" \
++                -H "TransferHeaderAuthorization: Bearer ${BEARER_TOKEN}" \
++                -H "Scitag: ${scitag_flow}" \
++                -H "X-Number-Of-Streams: $NUM_STREAMS" \
++                --cacert "${BINARY_DIR}/tests/issuer/tlsca.pem" \
++                "${remote_large_file_srv}" &
++        else
++            # No max-time (normal)
++            ${CURL} -X COPY -L -s -v \
++                -H "Destination: ${remote_large_file_srv}" \
++                -H "Authorization: Bearer ${BEARER_TOKEN}" \
++                -H "TransferHeaderAuthorization: Bearer ${BEARER_TOKEN}" \
++                -H "Scitag: ${scitag_flow}" \
++                --cacert "${BINARY_DIR}/tests/issuer/tlsca.pem" \
++                "${remote_large_file}" &
++        fi
++    done
++done
++
++# Wait for all background curl jobs
++wait
++
++set +x
+-- 
+2.47.3
+

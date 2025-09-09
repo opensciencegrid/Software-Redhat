@@ -1,0 +1,27 @@
+From 8d82c9ef86ed5eec92f2a24983c142b8c273acfc Mon Sep 17 00:00:00 2001
+From: Matyas Selmeci <mselmeci@wisc.edu>
+Date: Thu, 30 Jan 2025 15:41:24 -0600
+Subject: [PATCH 4/8] [#14] [XrdHttp] Undo HTTP PUT response code change
+
+From https://github.com/xrootd/xrootd/issues/2382 ; Pelican clients before 7.12.2 cannot handle the change from 200->201.
+---
+ src/XrdHttp/XrdHttpReq.cc | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/src/XrdHttp/XrdHttpReq.cc b/src/XrdHttp/XrdHttpReq.cc
+index dcaed7f98..ec47d763a 100644
+--- a/src/XrdHttp/XrdHttpReq.cc
++++ b/src/XrdHttp/XrdHttpReq.cc
+@@ -2405,7 +2405,8 @@ int XrdHttpReq::PostProcessHTTPReq(bool final_) {
+ 
+         if (ntohs(xrdreq.header.requestid) == kXR_close) {
+           if (xrdresp == kXR_ok) {
+-            prot->SendSimpleResp(201, NULL, NULL, (char *)":-)", 0, keepalive);
++            // The correct response code is 201 (Created) but Pelican clients before 7.12.2 do not treat 201 as success, only 200.
++            prot->SendSimpleResp(200, NULL, NULL, (char *) ":-)", 0, keepalive);
+             return keepalive ? 1 : -1;
+           } else {
+             sendWebdavErrorMessage(xrdresp, xrderrcode, XrdHttpReq::rtPUT,
+-- 
+2.47.1
+

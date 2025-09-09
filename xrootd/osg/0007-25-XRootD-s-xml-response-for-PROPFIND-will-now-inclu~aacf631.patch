@@ -1,0 +1,33 @@
+From 5f77452c7a617219c5bc7a204bcdae6e444df19a Mon Sep 17 00:00:00 2001
+From: Emma Turetsky <turetske@gmail.com>
+Date: Thu, 8 May 2025 10:51:11 -0500
+Subject: [PATCH 7/8] [#25] XRootD's xml response for PROPFIND will now include
+ the resourcetype tag for non-collections
+
+---
+ src/XrdHttp/XrdHttpReq.cc | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/src/XrdHttp/XrdHttpReq.cc b/src/XrdHttp/XrdHttpReq.cc
+index ec47d763a..ec84f9387 100644
+--- a/src/XrdHttp/XrdHttpReq.cc
++++ b/src/XrdHttp/XrdHttpReq.cc
+@@ -2540,6 +2540,7 @@ int XrdHttpReq::PostProcessHTTPReq(bool final_) {
+                 stringresp += "<lp1:resourcetype><D:collection/></lp1:resourcetype>\n";
+                 stringresp += "<lp1:iscollection>1</lp1:iscollection>\n";
+               } else {
++                stringresp += "<lp1:resourcetype/>\n";
+                 stringresp += "<lp1:iscollection>0</lp1:iscollection>\n";
+               }
+ 
+@@ -2656,6 +2657,7 @@ int XrdHttpReq::PostProcessHTTPReq(bool final_) {
+                   stringresp += "<lp1:resourcetype><D:collection/></lp1:resourcetype>\n";
+                   stringresp += "<lp1:iscollection>1</lp1:iscollection>\n";
+                 } else {
++                  stringresp += "<lp1:resourcetype/>\n";
+                   stringresp += "<lp1:iscollection>0</lp1:iscollection>\n";
+                 }
+ 
+-- 
+2.47.1
+

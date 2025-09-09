@@ -1,0 +1,172 @@
+From cf85c3df0f86e8df1087e5b73fcda126e5849a38 Mon Sep 17 00:00:00 2001
+From: Brian Bockelman <bbockelman@morgridge.org>
+Date: Fri, 17 May 2024 15:47:40 +0200
+Subject: [PATCH 2/8] [#4] [XrdTls] Allow disabling of X.509 client auth
+
+The X.509 client auth request is fairly disruptive for communities
+that are browser-based (since this is an extremely uncommon flow
+for users -- and most of them interpret the certificate request
+as an error message) and not using X.509 client auth.
+
+This provides a boolean (defaulting to "on") that allows the administrator
+to turn off X.509 client auth when not needed / desired.
+---
+ src/XrdHttp/XrdHttpProtocol.cc | 26 +++++++++++++++++++++++++-
+ src/XrdHttp/XrdHttpProtocol.hh |  1 +
+ src/XrdTls/XrdTlsContext.cc    | 19 +++++++++++++++++++
+ src/XrdTls/XrdTlsContext.hh    | 21 +++++++++++++++++++++
+ 4 files changed, 66 insertions(+), 1 deletion(-)
+
+diff --git a/src/XrdHttp/XrdHttpProtocol.cc b/src/XrdHttp/XrdHttpProtocol.cc
+index d9ac45594..67f03ae8a 100644
+--- a/src/XrdHttp/XrdHttpProtocol.cc
++++ b/src/XrdHttp/XrdHttpProtocol.cc
+@@ -139,6 +139,7 @@ static const int hsmOn   =  1; // Dual purpose but use a meaningful varname
+ 
+ int  httpsmode = hsmAuto;
+ int  tlsCache  = XrdTlsContext::scOff;
++XrdTlsContext::ClientAuthSetting tlsClientAuth = XrdTlsContext::ClientAuthSetting::kOn;
+ bool httpsspec = false;
+ bool xrdctxVer = false;
+ }
+@@ -510,6 +511,10 @@ int XrdHttpProtocol::Process(XrdLink *lp) // We ignore the argument here
+       if (!ssl) {
+           sbio = CreateBIO(Link);
+           BIO_set_nbio(sbio, 1);
++          if (!xrdctx->SetTlsClientAuth(tlsClientAuth)) {
++            TRACE(ALL, "Failed to configure the TLS client authentication; invalid configuration");
++            return -1;
++          }
+           ssl = (SSL*)xrdctx->Session();
+         }
+ 
+@@ -557,7 +562,7 @@ int XrdHttpProtocol::Process(XrdLink *lp) // We ignore the argument here
+       strcpy(SecEntity.prot, "https");
+ 
+       // Get the voms string and auth information
+-      if (HandleAuthentication(Link)) {
++      if (tlsClientAuth == XrdTlsContext::ClientAuthSetting::kOn && HandleAuthentication(Link)) {
+           SSL_free(ssl);
+           ssl = 0;
+           return -1;
+@@ -1082,6 +1087,7 @@ int XrdHttpProtocol::Config(const char *ConfigFN, XrdOucEnv *myEnv) {
+       else if TS_Xeq("httpsmode", xhttpsmode);
+       else if TS_Xeq("tlsreuse", xtlsreuse);
+       else if TS_Xeq("auth", xauth);
++      else if TS_Xeq("tlsclientauth", xtlsclientauth);
+       else {
+         eDest.Say("Config warning: ignoring unknown directive '", var, "'.");
+         Config.Echo();
+@@ -2965,6 +2971,24 @@ int XrdHttpProtocol::xtlsreuse(XrdOucStream & Config) {
+    return 1;
+ }
+ 
++int XrdHttpProtocol::xtlsclientauth(XrdOucStream &Config) {
++  auto val = Config.GetWord();
++  if (!val || !val[0])
++     {eDest.Emsg("Config", "tlsclientauth argument not specified"); return 1;}
++
++  if (!strcmp(val, "off"))
++     {tlsClientAuth = XrdTlsContext::ClientAuthSetting::kOff;
++      return 0;
++     }
++  if (!strcmp(val, "on"))
++     {tlsClientAuth = XrdTlsContext::ClientAuthSetting::kOn;
++      return 0;
++     }
++
++  eDest.Emsg("config", "invalid tlsclientauth parameter -", val);
++  return 1;
++}
++
+ int XrdHttpProtocol::xauth(XrdOucStream &Config) {
+   char *val = Config.GetWord();
+   if(val) {
+diff --git a/src/XrdHttp/XrdHttpProtocol.hh b/src/XrdHttp/XrdHttpProtocol.hh
+index dcd86e016..3d01b099f 100644
+--- a/src/XrdHttp/XrdHttpProtocol.hh
++++ b/src/XrdHttp/XrdHttpProtocol.hh
+@@ -225,6 +225,7 @@ class XrdHttpProtocol : public XrdProtocol {
+   static int xhttpsmode(XrdOucStream &Config);
+   static int xtlsreuse(XrdOucStream &Config);
+   static int xauth(XrdOucStream &Config);
++  static int xtlsclientauth(XrdOucStream &Config);
+   
+   static bool isRequiredXtractor; // If true treat secxtractor errors as fatal
+   static XrdHttpSecXtractor *secxtractor;
+diff --git a/src/XrdTls/XrdTlsContext.cc b/src/XrdTls/XrdTlsContext.cc
+index 04f82e07f..4ff4489af 100644
+--- a/src/XrdTls/XrdTlsContext.cc
++++ b/src/XrdTls/XrdTlsContext.cc
+@@ -74,6 +74,7 @@ struct XrdTlsContextImpl
+     time_t                        lastCertModTime = 0;
+     int                           sessionCacheOpts = -1;
+     std::string                   sessionCacheId;
++    uint64_t                      opts{0};
+ };
+   
+ /******************************************************************************/
+@@ -595,6 +596,8 @@ XrdTlsContext::XrdTlsContext(const char *cert,  const char *key,
+          SSL_CTX **ctxLoc;
+         } ctx_tracker(&pImpl->ctx);
+ 
++   pImpl->opts = opts;
++
+    static const uint64_t sslOpts = SSL_OP_ALL
+                             | SSL_OP_NO_SSLv2
+                             | SSL_OP_NO_SSLv3
+@@ -1140,3 +1143,19 @@ bool XrdTlsContext::newHostCertificateDetected() {
+     }
+     return false;
+ }
++
++bool XrdTlsContext::SetTlsClientAuth(ClientAuthSetting setting) {
++
++    bool LogVF = (pImpl->opts & logVF) != 0;
++    switch (setting) {
++    case kOn:
++        SSL_CTX_set_verify(pImpl->ctx, SSL_VERIFY_PEER, (LogVF ? VerCB : 0));
++        break;
++    case kOff:
++        SSL_CTX_set_verify(pImpl->ctx, SSL_VERIFY_NONE, 0);
++        break;
++    default:
++        return false;
++    }
++    return true;
++}
+diff --git a/src/XrdTls/XrdTlsContext.hh b/src/XrdTls/XrdTlsContext.hh
+index fab30cb99..b8ece8174 100644
+--- a/src/XrdTls/XrdTlsContext.hh
++++ b/src/XrdTls/XrdTlsContext.hh
+@@ -173,6 +173,27 @@ void            SetDefaultCiphers(const char *ciphers);
+ 
+       bool      SetCrlRefresh(int refsec=-1);
+ 
++enum ClientAuthSetting {
++      kOn,
++      kOff,
++};
++
++//------------------------------------------------------------------------
++//! Indicate how the server should handle TLS client authentication.
++//!
++//! @param  setting kOn:    All clients will be asked to send a TLS client
++//!                         certificate
++//!                 kOff:   No clients will be asked to send a TLS client
++//!                         certificate;
++//! @return True if the client auth was configured; False on failure.
++//!
++//! Note the TLS connection will not fail if the client is asked for a cert
++//! but none are provided.
++//!
++//------------------------------------------------------------------------
++
++      bool      SetTlsClientAuth(ClientAuthSetting setting);
++
+ //------------------------------------------------------------------------
+ //! Check if certificates are being verified.
+ //!
+-- 
+2.47.1
+

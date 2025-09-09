@@ -1,0 +1,131 @@
+From d71928574d59b88e5aa03820d40c9650989965f2 Mon Sep 17 00:00:00 2001
+From: Brian Bockelman <bbockelman@morgridge.org>
+Date: Sun, 6 Apr 2025 13:52:43 -0500
+Subject: [PATCH 8/8] [#32] Enable write-through mode for cache
+
+Allow the PFC to proxy ("write-through") writes when configured
+to do so (default is current behavior of disabling writes).
+
+The implementation is simple -- when writing is enabled, don't
+attach the PFC to the cache object.
+
+Adds a new parameter:
+```
+pfc.writemode [writethrough | off]
+```
+where the default write mode is `off`.
+---
+ src/XrdPfc/XrdPfc.cc              | 10 +++++++++-
+ src/XrdPfc/XrdPfc.hh              |  2 ++
+ src/XrdPfc/XrdPfcConfiguration.cc | 26 ++++++++++++++++++++++++++
+ 3 files changed, 37 insertions(+), 1 deletion(-)
+
+diff --git a/src/XrdPfc/XrdPfc.cc b/src/XrdPfc/XrdPfc.cc
+index 33ea646ef..d2b31c528 100644
+--- a/src/XrdPfc/XrdPfc.cc
++++ b/src/XrdPfc/XrdPfc.cc
+@@ -180,7 +180,11 @@ XrdOucCacheIO *Cache::Attach(XrdOucCacheIO *io, int Options)
+ {
+    const char* tpfx = "Attach() ";
+ 
+-   if (Cache::GetInstance().Decide(io))
++   if (Options & XrdOucCache::optRW)
++   {
++      TRACE(Info, tpfx << "passing through write operation" << obfuscateAuth(io->Path()));
++   }
++   else if (Cache::GetInstance().Decide(io))
+    {
+       TRACE(Info, tpfx << obfuscateAuth(io->Path()));
+ 
+@@ -1071,6 +1075,10 @@ int Cache::Prepare(const char *curl, int oflags, mode_t mode)
+    // Do not allow write access.
+    if ((oflags & O_ACCMODE) != O_RDONLY)
+    {
++      if (Cache::GetInstance().RefConfiguration().m_write_through)
++      {
++         return 0;
++      }
+       TRACE(Warning, "Prepare write access requested on file " << f_name << ". Denying access.");
+       return -EROFS;
+    }
+diff --git a/src/XrdPfc/XrdPfc.hh b/src/XrdPfc/XrdPfc.hh
+index 45c9448b6..4f6cd9de1 100644
+--- a/src/XrdPfc/XrdPfc.hh
++++ b/src/XrdPfc/XrdPfc.hh
+@@ -81,6 +81,7 @@ struct Configuration
+ 
+    bool should_uvkeep_purge(time_t delta) const { return m_cs_UVKeep >= 0 && delta > m_cs_UVKeep; }
+ 
++   bool m_write_through;                //!< flag indicating write-through mode is enabled
+    bool m_hdfsmode;                     //!< flag for enabling block-level operation
+    bool m_allow_xrdpfc_command;         //!< flag for enabling access to /xrdpfc-command/ functionality.
+ 
+@@ -133,6 +134,7 @@ struct TmpConfiguration
+    std::string m_fileUsageNominal;
+    std::string m_fileUsageMax;
+    std::string m_flushRaw;
++   std::string m_writemodeRaw;
+ 
+    TmpConfiguration() :
+       m_diskUsageLWM("0.90"), m_diskUsageHWM("0.95"),
+diff --git a/src/XrdPfc/XrdPfcConfiguration.cc b/src/XrdPfc/XrdPfcConfiguration.cc
+index ddc00334a..5ea632178 100644
+--- a/src/XrdPfc/XrdPfcConfiguration.cc
++++ b/src/XrdPfc/XrdPfcConfiguration.cc
+@@ -31,6 +31,7 @@ using namespace XrdPfc;
+ XrdVERSIONINFO(XrdOucGetCache, XrdPfc);
+ 
+ Configuration::Configuration() :
++   m_write_through(false),
+    m_hdfsmode(false),
+    m_allow_xrdpfc_command(false),
+    m_data_space("public"),
+@@ -608,6 +609,21 @@ bool Cache::Config(const char *config_filename, const char *parameters)
+       }
+    }
+ 
++   // set the write mode
++   if ( ! tmpc.m_writemodeRaw.empty())
++   {
++      if (tmpc.m_writemodeRaw == "writethrough")
++      {
++         m_configuration.m_write_through = true;
++      }
++      else if (tmpc.m_writemodeRaw != "off")
++      {
++         m_log.Emsg("ConfigParameters()", "Unknown value for pfc.writemode (valid values are `writethrough` or `off`): %s",
++                    tmpc.m_writemodeRaw.c_str());
++         return false;
++      }
++   }
++
+    // get number of available RAM blocks after process configuration
+    if (m_configuration.m_RamAbsAvailable == 0)
+    {
+@@ -690,6 +706,7 @@ bool Cache::Config(const char *config_filename, const char *parameters)
+       {
+          loff += snprintf(buff + loff, sizeof(buff) - loff, "       pfc.hdfsmode hdfsbsize %lld\n", m_configuration.m_hdfsbsize);
+       }
++      loff += snprintf(buff + loff, sizeof(buff) - loff, "       pfc.writemode %s\n", m_configuration.m_write_through ? "writethrough" : "off");
+ 
+       if (m_configuration.m_username.empty())
+       {
+@@ -1015,6 +1032,15 @@ bool Cache::ConfigParameters(std::string part, XrdOucStream& config, TmpConfigur
+          }
+       }
+    }
++   else if ( part == "writemode" )
++   {
++      tmpc.m_writemodeRaw = cwg.GetWord();
++      if ( ! cwg.HasLast())
++      {
++          m_log.Emsg("Config", "Error: pfc.writemode requires a parameter.");
++          return false;
++      }
++   }
+    else if ( part == "flush" )
+    {
+       tmpc.m_flushRaw = cwg.GetWord();
+-- 
+2.47.1
+
