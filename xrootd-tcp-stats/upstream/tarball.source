@@ -1,0 +1,13 @@
+xrootd-tcp-stats/1.0.0/xrootd-tcp-stats-1.0.0.tar.gz sha1sum=feafef68d76b636c8e86905fc77d9fdbd532992a
+
+# to create:
+#
+# name=xrootd-tcp-stats
+# version=1.0.0
+# git clone https://github.com/sand-ci/$name
+# cd $name
+# git archive --prefix "${name}-${version}/" -o "${name}-${version}.tar" v${version}
+# git submodule update --init
+# git submodule foreach --recursive "git archive --prefix=${name}-${version}/\$path/ --output=\$sha1.tar HEAD && tar --concatenate --file=$(pwd)/${name}-${version}.tar \$sha1.tar && rm \$sha1.tar"
+# gzip -n ${name}-${version}.tar
+
