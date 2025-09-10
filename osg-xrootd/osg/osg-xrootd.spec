@@ -1,7 +1,7 @@
 Summary: OSG configuration files for XRootD
 Name: osg-xrootd
-Version: 24
-Release: 3%{?dist}
+Version: 25
+Release: 1%{?dist}
 License: ASL 2.0
 BuildArch: noarch
 
@@ -21,7 +21,7 @@ Source13: 50-osg-xrdvoms.cfg
 Source14: 50-osg-scitokens.cfg
 Source15: scitokens.conf
 
-Requires: xrootd >= 1:5.6.0
+Requires: xrootd >= 1:5.8.4
 
 # Necessary for authentication
 Suggests: osg-ca-certs
@@ -96,6 +96,9 @@ mkdir -p /etc/grid-security >/dev/null 2>&1 || :
 [ -e /etc/grid-security/grid-mapfile ] || touch /etc/grid-security/grid-mapfile
 
 %changelog
+* Wed Sep 10 2025 Mátyás Selmeci <mselmeci@wisc.edu> - 25-1
+- Initial OSG 25 release; bump XRootD version to 5.8.4
+
 * Thu Jan 9 2025 Matt Westphall <westphall@wisc.edu> - 24-3
 - Add suggests: osg-ca-certs to satisfy grid-certificates (SOFTWARE-6051)
 
