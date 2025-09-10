@@ -2,7 +2,7 @@ Name:      osg-ce
 Summary:   OSG Compute Element
 # Note: the verison must match the OSG release series
 Version:   25
-Release:   1%{?dist}
+Release:   1.1%{?dist}
 License:   Apache 2.0
 URL:       https://osg-htc.org
 
