@@ -1,0 +1,2 @@
+Sources are available from https://releases.pagure.org/koji
+The spec file is taken from koji.spec inside the tarball, plus OSG modifications.
