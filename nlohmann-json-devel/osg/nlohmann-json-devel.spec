@@ -2,8 +2,8 @@
 %global pkgname %{srcname}
 
 Name:           %{pkgname}
-Version:        3.11.2
-Release:        2%{?dist}
+Version:        3.12.0
+Release:        1%{?dist}
 Summary:        JSON Library for C++
 
 License:        MIT
@@ -44,6 +44,9 @@ cd build
 /usr/share/pkgconfig/nlohmann_json.pc
 
 %changelog
+* Wed Sep 10 2025 Mátyás Selmeci <mselmeci@wisc.edu> - 3.12.0-1
+- Build 3.12.0
+
 * Wed Sep 18 2024 Justin Hiemstra <jhiemstra@wisc.edu> - 3.11.2-2
 - Bump release version for building against aarch64
 
