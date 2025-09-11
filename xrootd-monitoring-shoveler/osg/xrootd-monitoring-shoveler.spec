@@ -1,7 +1,7 @@
 Summary: XRootD Monitoring Shoveler
 Name: xrootd-monitoring-shoveler
 Version: 1.4.0
-Release: 1%{?dist}
+Release: 2%{?dist}
 License: ASL 2.0
 URL: https://github.com/opensciencegrid/xrootd-monitoring-shoveler
 
@@ -26,6 +26,9 @@ This shoveling is used to convert unreliable UDP to reliable message bus.
 %ifarch x86_64
 %setup -q -n %{name}_Linux_x86_64
 %endif
+%ifarch x86_64_v2
+%setup -q -n %{name}_Linux_x86_64
+%endif
 %ifarch aarch64
 %setup -q -n %{name}_Linux_arm64 -T -b 1
 %endif
@@ -38,6 +41,7 @@ exit 0
 install -m 755 -d $RPM_BUILD_ROOT/%{_bindir}/
 install -m 755 %{name} $RPM_BUILD_ROOT/%{_bindir}/
 install -m 755 createtoken $RPM_BUILD_ROOT/%{_bindir}/
+install -m 755 shoveler-status $RPM_BUILD_ROOT/%{_bindir}/
 
 install -m 755 -d $RPM_BUILD_ROOT/%{_unitdir}/
 install -m 644 %{SOURCE2} $RPM_BUILD_ROOT/%{_unitdir}/
@@ -50,6 +54,7 @@ install -m 755 -d $RPM_BUILD_ROOT/%_localstatedir/spool/shoveler-queue
 %files
 %{_bindir}/%{name}
 %{_bindir}/createtoken
+%{_bindir}/shoveler-status
 %{_unitdir}/%{name}.service
 %config(noreplace) %{_sysconfdir}/%{name}/config.yaml
 %dir %_localstatedir/spool/shoveler-queue
@@ -58,6 +63,9 @@ install -m 755 -d $RPM_BUILD_ROOT/%_localstatedir/spool/shoveler-queue
 %doc dependency-licenses.txt
 
 %changelog
+* Thu Sep 11 2025 Mátyás Selmeci <mselmeci@wisc.edu> - 1.4.0-2
+- Add missing shoveler-status binary (SOFTWARE-6212)
+
 * Mon Dec 30 2024 Mátyás Selmeci <matyas@cs.wisc.edu> - 1.4.0-1
 - Update to 1.4.0 (SOFTWARE-6930); make ARM packages too
 
