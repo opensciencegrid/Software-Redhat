@@ -1,3 +1,4 @@
+# We need to keep these around because `osg-build prebuild` can't tell that you're building for OSG 25
 xcache/3.0.0/python-deps/el9/awkward-0.14.0-py2.py3-none-any.whl sha1sum=ec9e0dfc6e0bb92c98afe2d770e7d62a0db574ea
 xcache/3.0.0/python-deps/el9/awkward-2.0.7-py3-none-any.whl sha1sum=11cc4dce628ed932a2e532a3995282eb12af952e
 xcache/3.0.0/python-deps/el9/awkward_cpp-8-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.whl sha1sum=3f5ccff19d99844863ff7a3e44c5f2655faf546a
