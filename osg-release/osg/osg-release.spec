@@ -2,7 +2,7 @@
 
 Name:           osg-release
 Version:        %{series}
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        OSG Software for Enterprise Linux repository configuration
 
 License:        GPL
@@ -63,6 +63,9 @@ install -m 644 *.repo $RPM_BUILD_ROOT%{_sysconfdir}/yum.repos.d
 
 
 %changelog
+* Fri Sep 12 2025 Mátyás Selmeci <mselmeci@wisc.edu> - 25-2
+- Fix URLs in repo files (SOFTWARE-6054)
+
 * Fri Sep 05 2025 Matt Westphall <westphall@wisc.edu> - 25-1
 - Initial OSG 25 release (SOFTWARE-6054)
 
