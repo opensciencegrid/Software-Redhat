@@ -104,23 +104,23 @@ done
 
 # This happens after %%post of this package but before the %%preun of the old
 # package and the removal of its files.
-%%triggerun -n %name -- %old_name < 25
+%%triggerun -n %%name -- %%old_name < 25
 
 # Do nothing if the system was not booted with systemd
 [ -d /run/systemd/system ] || exit 0
 
 
-old_config=/etc/pelican/%{old_name}.yaml
-old_log=/var/log/%{old_name}.log
+old_config=/etc/pelican/%%{old_name}.yaml
+old_log=/var/log/%%{old_name}.log
 old_override_dir=/etc/systemd/system/${old_service}.d
-old_service=%{old_name}.service
-old_sysconfig=/etc/sysconfig/%{old_name}
+old_service=%%{old_name}.service
+old_sysconfig=/etc/sysconfig/%%{old_name}
 
-new_config=/etc/pelican/%{new_name}.yaml
-new_log=/var/log/%{new_name}.log
+new_config=/etc/pelican/%%{new_name}.yaml
+new_log=/var/log/%%{new_name}.log
 new_override_dir=/etc/systemd/system/${new_service}.d
-new_service=%{new_name}.service
-new_sysconfig=/etc/sysconfig/%{new_name}
+new_service=%%{new_name}.service
+new_sysconfig=/etc/sysconfig/%%{new_name}
 
 # Only display this once:
 if [ ! -e %{warning_stamp} ]
