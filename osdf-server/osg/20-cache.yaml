@@ -1,0 +1,12 @@
+#####################################################
+# Cache configuration
+#####################################################
+
+Cache:
+  Port: 8443
+
+  ### Required: Set "StorageLocation" to the absolute path of where the cache
+  ### should store data.
+  ### See https://docs.pelicanplatform.org/parameters#Cache-StorageLocation
+  ###
+  # StorageLocation: /mnt/osdf
