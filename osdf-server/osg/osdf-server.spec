@@ -60,7 +60,7 @@ install -m 0644 %{SOURCE3}                $RPM_BUILD_ROOT/etc/pelican/config.d/
 
 %files
 %ghost /usr/lib/systemd/system/osdf-*.service
-%config /etc/pelican/osdf-*.yaml
+#%config /etc/pelican/osdf-*.yaml
 /usr/share/pelican/config.d/10-osdf-defaults.yaml
 %config(noreplace) /etc/pelican/config.d/15-osdf.yaml
 %config(noreplace) /etc/pelican/config.d/20-cache.yaml
@@ -75,14 +75,14 @@ systemctl daemon-reload
 systemctl daemon-reload
 
 
-%triggerin %name -- xrootd-server
+%triggerin -n %name -- xrootd-server
 for svc in cache origin
 do
     [ ! -d /run/systemd/system ] || systemctl condrestart pelican-${svc}.service
 done
 
 
-%triggerin %name -- pelican-server
+%triggerin -n %name -- pelican-server
 for svc in cache director origin registry
 do
     [ ! -d /run/systemd/system ] || systemctl condrestart pelican-${svc}.service
@@ -92,15 +92,14 @@ done
 %define warning_stamp %{_localstatedir}/lib/rpm-state/%{name}-warning-given
 
 # migrate: A helper macro to get rid of some of the code duplication. This
-# expands to the various sections needed for each pelican services. Add the -x
-# flag for services that use XRootD (the cache and the origin).
+# expands to the various sections needed for each pelican services.
 
 # Other macros will be expanded when subpackage is defined, unless
 # escaped (by doubling up the '%').
 
-%define migrate %{expand:
+%define migrate() %{expand:
 %%define old_name %1
-%%define new_name %%{lua:print((string.gsub("%1", "osdf", "pelican")))}
+%%define new_name %{lua:print((string.gsub("%1", "osdf", "pelican")))}
 
 # This happens after %%post of this package but before the %%preun of the old
 # package and the removal of its files.
