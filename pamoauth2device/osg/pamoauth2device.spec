@@ -5,7 +5,7 @@
 
 Name:    pamoauth2device
 Version: %{_version}
-Release: 1%{?dist}
+Release: 2%{?dist}
 Summary: PAM module for OAuth 2.0 Device flow
 License: Apache-2.0
 URL:     https://github.com/stfc/pam_oauth2_device/
@@ -57,6 +57,9 @@ cp config_template.json ${RPM_BUILD_ROOT}%{_sysconfdir}/pam_oauth2_device/config
 
 
 %changelog
+* Wed Sep 24 2025 Matyas Selmeci <mselmeci@wisc.edu> - 0.1.3.chtc-2
+- Bump to rebuild for x86_64 for EL10
+
 * Mon Aug 7 2023 Brian Lin <blin@cs.wisc.edu> - 0.1.3.chtc
 - Allow the name claim to be configurable (INF-748)
 
