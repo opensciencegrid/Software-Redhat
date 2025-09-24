@@ -2,9 +2,10 @@ Name:      osg-ce
 Summary:   OSG Compute Element
 # Note: the verison must match the OSG release series
 Version:   24
-Release:   4%{?dist}
+Release:   5%{?dist}
 License:   Apache 2.0
 URL:       https://osg-htc.org
+BuildArch: noarch
 
 Source0: 01-osg-ce.conf
 
@@ -142,6 +143,9 @@ sed -e 's/@@SERIES@@/%{version}/' %{SOURCE0} > $RPM_BUILD_ROOT/%{_datadir}/condo
 %files slurm
 
 %changelog
+* Wed Sep 24 2025 Mátyás Selmeci <mselmeci@wisc.edu> - 24-5
+- Rebuild as noarch
+
 * Thu Jan 9 2025 Matt Westphall <westphall@wisc.edu> - 24-4
 - Add suggests: osg-ca-certs to satisfy grid-certificates (SOFTWARE-6051)
 

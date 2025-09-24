@@ -1,7 +1,7 @@
 Summary: Scitokens mapfile for OSG
 Name: osg-scitokens-mapfile
 Version: 15
-Release: 2%{?dist}
+Release: 3%{?dist}
 License: ASL 2.0
 Source0: https://github.com/opensciencegrid/topology/archive/data-%{version}.tar.gz
 Source1: https://vdt.cs.wisc.edu/upstream/osg-scitokens-mapfile/pydeps/icalendar-4.0.7-py2.py3-none-any.whl
@@ -22,6 +22,8 @@ BuildRequires: python3-dateutil
 BuildRequires: python3-pyyaml
 BuildRequires: python3-six
 %endif
+
+BuildArch: noarch
 
 %global debug_package %{nil}
 %global __python /usr/bin/python3
@@ -54,6 +56,9 @@ mv osg-scitokens-mapfile.conf %{buildroot}/usr/share/condor-ce/mapfiles.d/
 
 
 %changelog
+* Wed Sep 24 2025 Mátyás Selmeci <mselmeci@wisc.edu> 15-3
+- Bump to rebuild as noarch
+
 * Thu Jul 24 2025 Matt Westphall <westphall@wisc.edu> 15-1
 - Update to data-15 tag (SOFTWARE-6190)
 
