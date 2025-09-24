@@ -1,7 +1,7 @@
 
 Name: xrootd-multiuser
 Version: 2.2.0
-Release: 1.1%{?dist}
+Release: 1.2%{?dist}
 Summary: Multiuser filesystem writing plugin for xrootd
 
 Group: System Environment/Daemons
@@ -19,7 +19,6 @@ Source0: %{name}-%{version}.tar.gz
 %global __cmake_in_source_build 1
 %endif
 
-BuildRoot: %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 BuildRequires: xrootd-server-libs >= 1:%{xrootd_current_major}
 BuildRequires: xrootd-server-libs <  1:%{xrootd_next_major}
 BuildRequires: xrootd-server-devel >= 1:%{xrootd_current_major}
@@ -47,11 +46,7 @@ Requires: xrootd-server <  1:%{xrootd_next_major}.0.0-1
 make VERBOSE=1 %{?_smp_mflags}
 
 %install
-rm -rf $RPM_BUILD_ROOT
 make install DESTDIR=$RPM_BUILD_ROOT
-
-%clean
-rm -rf $RPM_BUILD_ROOT
 
 %post
 %systemd_post cmsd-privileged@.service
@@ -73,6 +68,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_sysconfdir}/xrootd/config.d/60-osg-multiuser.cfg
 
 %changelog
+* Wed Sep 24 2025 Mátyás Selmeci <mselmeci@wisc.edu> - 2.2.0-1.2
+- Bump to rebuild for x86_64 on EL10
+
 * Fri Aug 09 2024 Mátyás Selmeci <matyas@cs.wisc.edu> - 2.2.0-1.1
 - Bump to rebuild for aarch64
 

@@ -1,6 +1,6 @@
 Name:           pegasus
 Version:        5.1.1
-Release:        1.2%{?dist}
+Release:        1.3%{?dist}
 Summary:        Workflow management system for HTCondor, grids, and clouds
 Group:          Applications/System
 License:        ASL 2.0
@@ -169,6 +169,9 @@ systemctl disable pegasus-service.service
 systemctl daemon-reload
 
 %changelog
+* Wed Sep 24 2025 Mátyás Selmeci <mselmeci@wisc.edu> - 5.1.1-1.3
+- Bump to rebuild for x86_64 for EL10
+
 * Wed Aug 27 2025 Mátyás Selmeci <mselmeci@wisc.edu> - 5.1.1-1.2
 - Do not include wheels for other distros in the SRPM
 

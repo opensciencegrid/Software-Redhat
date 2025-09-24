@@ -1,7 +1,7 @@
 Summary: XRootD plugin to collect TCP stats for xrootd.monitor
 Name: xrootd-tcp-stats
 Version: 1.0.0
-Release: 2%{?dist}
+Release: 3%{?dist}
 License: Apache 2.0
 Url: https://github.com/sand-ci/xrootd-tcp-stats
 Source0: %{name}-%{version}.tar.gz
@@ -51,6 +51,9 @@ BuildRequires: xrootd-server-devel >= 1:5, xrootd-server-devel < 1:6
 
 
 %changelog
+* Wed Sep 24 2025 Mátyás Selmeci <mselmeci@wisc.edu> - 1.0.0-3
+- Bump to rebuild for x86_64 on EL10
+
 * Thu Feb 16 2023 Carl Edquist <edquist@cs.wisc.edu> - 1.0.0-2
 - Bump to rebuild for RPM GPG key (SOFTWARE-5457)
 

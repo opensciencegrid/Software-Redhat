@@ -3,7 +3,7 @@
 
 Name:           %{pkgname}
 Version:        3.12.0
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        JSON Library for C++
 
 License:        MIT
@@ -13,6 +13,8 @@ Source0:        json-%{version}.tar.gz
 
 BuildRequires:  cmake
 BuildRequires:  gcc-c++
+
+BuildArch: noarch
 
 %description
 A JSON library for C++ that attempts to make JSON a first-class type
@@ -44,6 +46,9 @@ cd build
 /usr/share/pkgconfig/nlohmann_json.pc
 
 %changelog
+* Wed Sep 24 2025 Mátyás Selmeci <mselmeci@wisc.edu> - 3.12.0-2
+- Bump to rebuild as noarch
+
 * Wed Sep 10 2025 Mátyás Selmeci <mselmeci@wisc.edu> - 3.12.0-1
 - Build 3.12.0
 

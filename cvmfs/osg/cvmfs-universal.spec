@@ -71,7 +71,7 @@ Summary: CernVM File System
 Name: cvmfs
 Version: 2.13.2
 %global base_version %(echo %{version} | cut -d'~' -f1)
-Release: 2.1%{?dist}
+Release: 2.2%{?dist}
 URL: https://cernvm.cern.ch/fs/
 Source0: https://ecsft.cern.ch/dist/cvmfs/%{name}-%{version}/%{name}-%{version}.tar.gz
 %if 0%{?selinux_cvmfs}
@@ -778,6 +778,9 @@ systemctl daemon-reload
 %endif
 
 %changelog
+* Wed Sep 24 2025 Mátyás Selmeci <mselmeci@wisc.edu> - 2.13.2-2.2.osg
+- Bump to rebuild for x86_64
+
 # - When using fuse3, require at least version 3.3.0 (for premounting).
 * Fri May 23 2025 Valentin Volkl <vavolkl@cern.ch>> - 2.13.0
 - Add logrotate config files and tidy to satisfy rpmlint v2.6

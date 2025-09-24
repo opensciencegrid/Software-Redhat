@@ -44,7 +44,7 @@
 #-------------------------------------------------------------------------------
 Name:		xrootd
 Epoch:		1
-Release:	1.4%{?dist}%{?with_clang:.clang}%{?with_asan:.asan}
+Release:	1.5%{?dist}%{?with_clang:.clang}%{?with_asan:.asan}
 Summary:	Extended ROOT File Server
 Group:		System Environment/Daemons
 License:	LGPL-3.0-or-later AND BSD-2-Clause AND BSD-3-Clause AND curl AND MIT AND Zlib
@@ -968,6 +968,9 @@ fi
 # Changelog
 #-------------------------------------------------------------------------------
 %changelog
+* Wed Sep 24 2025 Mátyás Selmeci <mselmeci@wisc.edu> - 5.8.4-1.5
+- Bump to rebuild for x86_64 on EL10
+
 * Wed Aug 13 2025 Mátyás Selmeci <mselmeci@wisc.edu> - 5.8.4-1.4
 - Add 0012-37-Add-TPC-worker-pool~70720be.patch
 

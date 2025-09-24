@@ -9,7 +9,7 @@
 #############################################
 Name:           %{pkgname}
 Version:        2.3.0
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        JSON Schema Validator
 License:        MIT
 URL:            https://github.com/pboettch/json-schema-validator
@@ -76,6 +76,9 @@ cd build
 # packaging revision.                       #
 #############################################
 %changelog
+* Wed Sep 24 2025 Mátyás Selmeci <mselmeci@wisc.edu> - 2.3.0-2
+- Bump to rebuild for x86_64 on EL10
+
 * Wed Sep 18 2024 Justin Hiemstra <jhiemstra@wisc.edu> - 2.3.0-1
 - CMake/spec file updates to make project more flexible.
 
