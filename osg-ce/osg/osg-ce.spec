@@ -9,10 +9,6 @@ BuildArch: noarch
 
 Source0: 01-osg-ce.conf
 
-# Fail the build if condor and htcondor-ce are not available on this branch
-BuildRequires: condor
-BuildRequires: htcondor-ce
-
 Requires: grid-certificates >= 7
 Suggests: osg-ca-certs
 
