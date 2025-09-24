@@ -1,6 +1,6 @@
 Name:           xrootd-lotman
 Version:        0.0.5
-Release:        1%{?dist}
+Release:        1.1%{?dist}
 Summary:        A purge plugin for XRootD that uses Lotman's tracking for informed cache disk management
 
 License:        Apache-2.0
@@ -36,6 +36,9 @@ This package provides a purge plugin for XRootD that uses Lotman's tracking for 
 %{_includedir}/XrdPurgeLotManUtils.hh
 
 %changelog
+* Wed Sep 24 2025 Mátyás Selmeci <mselmeci@wisc.edu> - 0.0.5-1.1
+- Bump to rebuild for x86_64 on EL10
+
 * Mon Jul 14 2025 Justin Hiemstra <jhiemstra@wisc.edu> - 0.0.5-1
 - Fix broken RPM (forgot to package new header files)
 

@@ -17,7 +17,7 @@
 Summary: Configuration for OpenBao for use with htgettoken client
 Name: htvault-config
 Version: 2.1.0
-Release: 2%{?dist}
+Release: 2.1%{?dist}
 Group: Applications/System
 License: BSD
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -120,6 +120,9 @@ systemctl daemon-reload
 %attr(750, openbao,root) %dir %{_localstatedir}/log/%{name}
 
 %changelog
+* Wed Sep 24 2025 Mátyás Selmeci <mselmeci@wisc.edu> 2.1.0-2.1.osg
+- Bump to rebuild for x86_64 on EL10
+
 * Thu Aug 14 2025 Dave Dykstra <dwd@fnal.gov> 2.1.0-2
 - Also chown files that need it in /var/log/htvault-config, in particular
   the auditlog.

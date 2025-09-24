@@ -5,7 +5,7 @@
 
 Name: %srcname
 Version: 0.0.4
-Release: 1%{?dist}
+Release: 1.1%{?dist}
 Summary: C++ Implementation of the LotMan Library
 License: Apache-2.0
 URL: https://github.com/PelicanPlatform/lotman
@@ -66,6 +66,9 @@ cd build
 %dir %{_includedir}/lotman
 
 %changelog
+* Wed Sep 24 2025 Mátyás Selmeci <mselmeci@wisc.edu> - 0.0.4-1.1
+- Bump to rebuild for x86_64 on EL10
+
 * Wed Sep 18 2024 Justin Hiemstra <jhiemstra@wisc.edu> - 0.0.4-1
 - Add RPM specfile to project
 

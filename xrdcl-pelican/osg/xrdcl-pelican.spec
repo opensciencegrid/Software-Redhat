@@ -1,7 +1,7 @@
 
 Name: xrdcl-pelican
 Version: 1.5.6
-Release: 1%{?dist}
+Release: 1.1%{?dist}
 Summary: A Pelican-specific backend for the XRootD client
 
 Group: System Environment/Daemons
@@ -89,6 +89,9 @@ make install DESTDIR=$RPM_BUILD_ROOT
 %{_sysconfdir}/xrootd/client.plugins.d/s3-plugin.conf
 
 %changelog
+* Wed Sep 24 2025 Mátyás Selmeci <mselmeci@wisc.edu> 1.5.6-1.1
+- Bump to rebuild for x86_64 on EL10
+
 * Mon Sep 22 2025 Brian Bockelman <bbockelman@morgridge.org> 1.5.6-1
 - Fix a bug that could cause the client to stop processing new requests
   if a significant number (approximately 16k) of operations have

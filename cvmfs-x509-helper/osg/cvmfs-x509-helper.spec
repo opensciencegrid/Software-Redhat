@@ -5,7 +5,7 @@ Name: cvmfs-x509-helper
 Version: 2.4
 # The release_prefix macro is used in the OBS prjconf, don't change its name
 %define release_prefix 1
-Release: %{release_prefix}%{?dist}
+Release: %{release_prefix}.1%{?dist}
 Source0: https://ecsft.cern.ch/dist/cvmfs/%{name}-%{version}.tar.gz
 Group: Applications/System
 License: BSD
@@ -71,6 +71,9 @@ rm -rf $RPM_BUILD_ROOT
 %doc COPYING AUTHORS README ChangeLog
 
 %changelog
+* Wed Sep 24 2025 Mátyás Selmeci <mselmeci@wisc.edu> - 2.4-1.1
+- Bump to rebuild for x86_64 on EL10
+
 * Fri Oct 27 2023 Derek Weitzel <dweitzel@unl.edu> - 2.4
 - Fix retrieval of credentials from an unprivileged user namespace on
   recent el8 & el9 kernels.

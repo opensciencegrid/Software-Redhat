@@ -1,7 +1,7 @@
 Name:      xcache
 Summary:   XCache scripts and configurations
 Version:   4.1.0
-Release:   1%{?dist}
+Release:   1.1%{?dist}
 License:   Apache 2.0
 Group:     Grid
 URL:       https://osg-htc.org/docs/
@@ -259,6 +259,9 @@ mkdir -p %{buildroot}%{_sysconfdir}/grid-security/xrd
 %config %{_sysconfdir}/xrootd/config.d/03-redir-tuning.cfg
 
 %changelog
+* Wed Sep 24 2025 Mátyás Selmeci <mselmeci@wisc.edu> - 4.1.0-1.1
+- Bump to rebuild for x86_64 on EL10
+
 * Thu Sep 11 2025 Mátyás Selmeci <mselmeci@wisc.edu> - 4.1.0-1
 - Enable ARM builds (except for xcache-consistency-check) (SOFTWARE-6057)
 - Dummy out xcache-consistency-check on OSG 25 and newer (SOFTWARE-6054)

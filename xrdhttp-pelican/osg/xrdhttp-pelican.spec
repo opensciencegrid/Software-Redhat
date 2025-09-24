@@ -1,7 +1,7 @@
 
 Name: xrdhttp-pelican
 Version: 0.0.7
-Release: 1%{?dist}
+Release: 1.1%{?dist}
 Summary: A Pelican-specific plugin for the XrdHttp server
 
 Group: System Environment/Daemons
@@ -54,6 +54,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/libXrdHttpPelican-*.so
 
 %changelog
+* Wed Sep 24 2025 Mátyás Selmeci <mselmeci@wisc.edu> - 0.0.7-1.1
+- Bump to rebuild for x86_64 on EL10
+
 * Mon Jul 7 2025 Mátyás Selmeci <mselmeci@wisc.edu> - 0.0.7-1
 - Move authfile and SciTokens config file into the directories owned by xrootd user
 
