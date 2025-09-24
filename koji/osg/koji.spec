@@ -84,7 +84,7 @@
 %endif
 Name: koji
 Version: 1.35.3
-Release: %{release}.2%{?dist}
+Release: %{release}.3%{?dist}
 License: LGPL-2.1-only and GPL-2.0-or-later
 # the included arch lib from yum's rpmUtils is GPLv2+
 # rpmdiff lib (from rpmlint) is GPLv2+
@@ -656,6 +656,9 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Wed Sep 24 2025 Mátyás Selmeci <mselmeci@wisc.edu> - 1.35.3-1.3.osg
+- Change distrepos-support-x86_64_v2-arch.patch to avoid mixing x86_64_v2 and x86_64 RPMs in the same repo
+
 * Thu Jun 19 2025 Mátyás Selmeci <mselmeci@wisc.edu> - 1.35.3-1.2.osg
 - Add distrepos-support-x86_64_v2-arch.patch
 
