@@ -1,0 +1,27 @@
+osg-release is the yum repository setup required to install OSG software.
+This release includes:
+ - Production (named 'osg') (default)
+ - Testing
+ - Development
+ - Minefield (Directly off koji)
+ - Pre-Release (Directly off koji)
+ - Upcoming
+ - Upcoming Testing
+ - Upcoming Development
+ - Upcoming Minefield (Directly off koji)
+ - Upcoming Pre-Release (Directly off koji)
+ - Contrib
+ - Empty
+
+By default, only the Production repo is enabled.  This can be changed by
+editing the /etc/yum.repos.d/osg-*.repo files and setting:
+enabled=1
+
+This is an arch-specific fork of osg-release for the x86_64_v2 microarchitecture.
+This is necessary because the arch needs to be hardcoded into the repo files,
+as opposed to relying on the '$basearch' variable, because even on x86_64_v2
+installs, $basearch expands to "x86_64", which is the repository that the
+x86_64 microarch v3 RPMs are kept in (which are not compatible).
+
+This only affects EL10.
+

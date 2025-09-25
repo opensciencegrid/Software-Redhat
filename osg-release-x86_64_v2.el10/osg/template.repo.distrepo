@@ -1,13 +1,13 @@
 [{YUMREPO}]
-name=OSG Software for Enterprise Linux {EL} {TITLE} $basearch
-baseurl=https://koji.osg-htc.org/mnt/koji/repos-dist/osg-{SERIES}-el{EL}-{REPO}/latest/$basearch/
+name=OSG Software for Enterprise Linux {EL} {TITLE} x86_64_v2
+baseurl=https://koji.osg-htc.org/mnt/koji/repos-dist/osg-{SERIES}-el{EL}-{REPO}/latest/x86_64_v2/
 priority=98
 enabled=0
 gpgcheck=1
 gpgkey=file:///etc/pki/rpm-gpg/{GPGKEY}
 
 [{YUMREPO}-source]
-name=OSG Software for Enterprise Linux {EL} {TITLE} $basearch - Source
+name=OSG Software for Enterprise Linux {EL} {TITLE} x86_64_v2 - Source
 baseurl=https://koji.osg-htc.org/mnt/koji/repos-dist/osg-{SERIES}-el{EL}-{REPO}/latest/src/
 priority=98
 enabled=0

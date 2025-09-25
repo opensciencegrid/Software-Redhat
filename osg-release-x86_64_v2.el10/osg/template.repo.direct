@@ -1,0 +1,25 @@
+[{YUMREPO}]
+name=OSG Software for Enterprise Linux {EL} {TITLE} x86_64_v2
+baseurl=https://repo.osg-htc.org/osg/{SERIES}/el{EL}/{REPO}/x86_64_v2
+#mirrorlist=https://repo.osg-htc.org/mirror/osg/{SERIES}/el{EL}/{REPO}/x86_64_v2
+priority=98
+enabled={ENABLED}
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/{GPGKEY}
+
+[{YUMREPO}-source]
+name=OSG Software for Enterprise Linux {EL} {TITLE} x86_64_v2 - Source
+baseurl=https://repo.osg-htc.org/osg/{SERIES}/el{EL}/{REPO}/source/SRPMS
+priority=98
+enabled=0
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/{GPGKEY}
+
+[{YUMREPO}-debuginfo]
+name=OSG Software for Enterprise Linux {EL} {TITLE} x86_64_v2 - Debug
+baseurl=https://repo.osg-htc.org/osg/{SERIES}/el{EL}/{REPO}/x86_64_v2/debug
+priority=98
+enabled=0
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/{GPGKEY}
+

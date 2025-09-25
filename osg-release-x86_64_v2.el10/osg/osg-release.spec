@@ -2,7 +2,7 @@
 
 Name:           osg-release
 Version:        %{series}
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        OSG Software for Enterprise Linux repository configuration
 
 License:        GPL
@@ -26,7 +26,7 @@ Source41:       RPM-GPG-KEY-OSG-%{series}-auto
 Source42:       RPM-GPG-KEY-OSG-%{series}-developer
 
 
-BuildArch:      noarch
+ExclusiveArch:  x86_64_v2
 
 Requires:       redhat-release >= %{rhel}
 
@@ -63,6 +63,9 @@ install -m 644 *.repo $RPM_BUILD_ROOT%{_sysconfdir}/yum.repos.d
 
 
 %changelog
+* Thu Sep 25 2025 Mátyás Selmeci <mselmeci@wisc.edu> - 25-3
+- Build arch-specific variant for x86_64_v2
+
 * Fri Sep 12 2025 Mátyás Selmeci <mselmeci@wisc.edu> - 25-2
 - Fix URLs in repo files (SOFTWARE-6054)
 
