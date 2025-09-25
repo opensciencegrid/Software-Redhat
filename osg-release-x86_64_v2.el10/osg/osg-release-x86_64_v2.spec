@@ -1,6 +1,6 @@
 %define series 25
 
-Name:           osg-release
+Name:           osg-release-x86_64_v2
 Version:        %{series}
 Release:        3%{?dist}
 Summary:        OSG Software for Enterprise Linux repository configuration
@@ -27,6 +27,8 @@ Source42:       RPM-GPG-KEY-OSG-%{series}-developer
 
 
 ExclusiveArch:  x86_64_v2
+
+Provides:       osg-release = %{version}-%{release}
 
 Requires:       redhat-release >= %{rhel}
 
