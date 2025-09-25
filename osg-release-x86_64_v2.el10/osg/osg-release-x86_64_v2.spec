@@ -2,7 +2,7 @@
 
 Name:           osg-release-x86_64_v2
 Version:        %{series}
-Release:        3%{?dist}
+Release:        4%{?dist}
 Summary:        OSG Software for Enterprise Linux repository configuration
 
 License:        GPL
@@ -29,6 +29,7 @@ Source42:       RPM-GPG-KEY-OSG-%{series}-developer
 ExclusiveArch:  x86_64_v2
 
 Provides:       osg-release = %{version}-%{release}
+Obsoletes:      osg-release = %{version}
 
 Requires:       redhat-release >= %{rhel}
 
@@ -65,6 +66,9 @@ install -m 644 *.repo $RPM_BUILD_ROOT%{_sysconfdir}/yum.repos.d
 
 
 %changelog
+* Thu Sep 25 2025 Mátyás Selmeci <mselmeci@wisc.edu> - 25-4
+- Obsolete the standard osg-release to avoid users accidentally updating to it
+
 * Thu Sep 25 2025 Mátyás Selmeci <mselmeci@wisc.edu> - 25-3
 - Build arch-specific variant for x86_64_v2
 
