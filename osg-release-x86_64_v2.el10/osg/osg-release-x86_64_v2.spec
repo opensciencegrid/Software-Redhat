@@ -2,7 +2,7 @@
 
 Name:           osg-release-x86_64_v2
 Version:        %{series}
-Release:        4%{?dist}
+Release:        5%{?dist}
 Summary:        OSG Software for Enterprise Linux repository configuration
 
 License:        GPL
@@ -26,10 +26,15 @@ Source41:       RPM-GPG-KEY-OSG-%{series}-auto
 Source42:       RPM-GPG-KEY-OSG-%{series}-developer
 
 
-ExclusiveArch:  x86_64_v2
+# Build for x86_64_v2 but also for x86_64, so the admin can easily switch
+# if they installed the wrong one.
+ExcludeArch:    aarch64
 
 Provides:       osg-release = %{version}-%{release}
-Obsoletes:      osg-release = %{version}
+%ifarch x86_64_v2
+# Ensure they don't accidentally switch from x86_64_v2 to x86_64
+Obsoletes:      osg-release <= %{version}-99
+%endif
 
 Requires:       redhat-release >= %{rhel}
 
@@ -66,6 +71,9 @@ install -m 644 *.repo $RPM_BUILD_ROOT%{_sysconfdir}/yum.repos.d
 
 
 %changelog
+* Fri Sep 26 2025 Mátyás Selmeci <mselmeci@wisc.edu> - 25-5
+- Also build for x86_64 (but without the Obsoletes) to make switching from osg-release easier
+
 * Thu Sep 25 2025 Mátyás Selmeci <mselmeci@wisc.edu> - 25-4
 - Obsolete the standard osg-release to avoid users accidentally updating to it
 
