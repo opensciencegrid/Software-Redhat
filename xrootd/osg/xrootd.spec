@@ -434,7 +434,7 @@ This package contains compatibility libraries for XRootD 4 clients.
 %package server-compat
 Summary:	XRootD 4 compatibility server binaries
 Group:		System Environment/Daemons
-Requires:	%{name}-libs%{?_isa} = %{epoch}:%{version}-%{release}
+Requires:	%{name}-libs%{?_isa} >= %{epoch}:%{version}
 
 %description server-compat
 This package contains compatibility binaries for XRootD 4 servers.
@@ -481,7 +481,7 @@ cmake  \
     -DINSTALL_PYTHON_BINDINGS:BOOL=FALSE \
     ../
 
-make -i VERBOSE=1 %{?_smp_mflags}
+make -i VERBOSE=1 %{?_smp_mflags} || make -i VERBOSE=1  -j1
 popd
 
 make -C packaging/common -f /usr/share/selinux/devel/Makefile
@@ -502,7 +502,7 @@ cmake  \
       -DENABLE_XRDEC:BOOL=TRUE \
       ../
 
-make -i VERBOSE=1 %{?_smp_mflags}
+make -i VERBOSE=1 %{?_smp_mflags} || make -i VERBOSE=1 -j1
 popd
 popd
 %endif
