@@ -1,7 +1,7 @@
 Name:      osg-wn-client
 Summary:   OSG Worker-Node Client
 Version:   25
-Release:   2%{?dist}
+Release:   3%{?dist}
 License:   Apache 2.0
 URL:       http://www.opensciencegrid.org
 BuildArch: noarch
@@ -23,12 +23,11 @@ Requires: voms-clients-cpp
 
 %if 0%{?rhel} <= 9
 Requires: gfal2
-%endif
-
 Requires: python3-gfal2-util
 Requires: gfal2-plugin-http
 Requires: gfal2-plugin-file
 Requires: gfal2-plugin-xrootd
+%endif
 
 %description
 %{summary}
@@ -50,6 +49,9 @@ EOF
 %config(noreplace) %{_prefix}/etc/globus-user-env.sh
 
 %changelog
+* Thu Oct 2 2025 Matt Westphall <westphall@wisc.edu> - 25-3
+- Remove gfal2-plugin requirements for EL10
+
 * Wed Oct 1 2025 Matt Westphall <westphall@wisc.edu> - 25-2
 - Remove gfal2 requirement for EL10
 
