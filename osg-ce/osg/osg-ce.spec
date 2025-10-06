@@ -2,7 +2,7 @@ Name:      osg-ce
 Summary:   OSG Compute Element
 # Note: the verison must match the OSG release series
 Version:   25
-Release:   2%{?dist}
+Release:   3%{?dist}
 License:   Apache 2.0
 URL:       https://osg-htc.org
 BuildArch: noarch
@@ -30,7 +30,10 @@ Requires: osg-configure-cluster
 Requires: osg-configure-gratia
 
 Requires: osg-configure-squid
+
+%if 0%{?rhel} <= 9
 Requires: frontier-squid
+%endif
 
 Requires: osg-scitokens-mapfile
 
@@ -143,6 +146,9 @@ sed -e 's/@@SERIES@@/%{version}/' %{SOURCE0} > $RPM_BUILD_ROOT/%{_datadir}/condo
 %files slurm
 
 %changelog
+* Mon Oct 6 2025 Matt Westphall <westphall@wisc.edu> - 25-3
+- Remove el10 frontier-squid dependency due to missing upstream
+
 * Wed Sep 24 2025 Mátyás Selmeci <mselmeci@wisc.edu> - 25-2
 - Bump to rebuild as noarch
 
