@@ -1,7 +1,7 @@
 Summary: Service files for Pelican-based OSDF daemons
 Name: osdf-server
 Version: 25
-Release: 0.1%{?dist}
+Release: 1%{?dist}
 License: ASL 2.0
 Url: https://github.com/PelicanPlatform/pelican
 BuildArch: noarch
@@ -18,10 +18,14 @@ Requires: xrootd-multiuser
 %if 0%{?rhel} >= 9
 Requires: xrootd-s3-http >= 0.4.1
 %endif
-Obsoletes: osdf-cache < 25
-Obsoletes: osdf-director < 25
-Obsoletes: osdf-origin < 25
-Obsoletes: osdf-registry < 25
+Obsoletes: osdf-cache < 24
+Obsoletes: osdf-director < 24
+Obsoletes: osdf-origin < 24
+Obsoletes: osdf-registry < 24
+Provides: osdf-registry = %{version}
+Provides: osdf-cache = %{version}
+Provides: osdf-director = %{version}
+Provides: osdf-origin = %{version}
 
 
 %description
@@ -89,7 +93,7 @@ do
 done
 
 
-%define warning_stamp %{_localstatedir}/lib/rpm-state/%{name}-warning-given
+%define warning_file %{_localstatedir}/lib/rpm-state/%{name}-warning-file
 
 # migrate: A helper macro to get rid of some of the code duplication. This
 # expands to the various sections needed for each pelican services.
@@ -99,11 +103,14 @@ done
 
 %define migrate() %{expand:
 %%define old_name %1
-%%define new_name %{lua:print((string.gsub("%1", "osdf", "pelican")))}
+%%define new_name %%{lua:print((string.gsub("%1", "osdf", "pelican")))}
 
 # This happens after %%post of this package but before the %%preun of the old
 # package and the removal of its files.
 %%triggerun -n %%name -- %%old_name < 25
+
+# Do nothing if this is an uninstall, not an upgrade
+[ "$1" = 1 ] || exit 0
 
 # Do nothing if the system was not booted with systemd
 [ -d /run/systemd/system ] || exit 0
@@ -111,80 +118,106 @@ done
 
 old_config=/etc/pelican/%%{old_name}.yaml
 old_log=/var/log/%%{old_name}.log
-old_override_dir=/etc/systemd/system/${old_service}.d
+old_override_dir=/etc/systemd/system/%%{old_name}.service.d
 old_service=%%{old_name}.service
 old_sysconfig=/etc/sysconfig/%%{old_name}
 
 new_config=/etc/pelican/%%{new_name}.yaml
 new_log=/var/log/%%{new_name}.log
-new_override_dir=/etc/systemd/system/${new_service}.d
+new_override_dir=/etc/systemd/system/%%{new_name}.service.d
 new_service=%%{new_name}.service
 new_sysconfig=/etc/sysconfig/%%{new_name}
 
 # Only display this once:
-if [ ! -e %{warning_stamp} ]
+if [ ! -e %{warning_file} ]
 then
-    cat >&2 <<__END__
+    cat > %{warning_file} <<__END__
+
 ****** WARNING ******
 
-The package osdf-service replaced osdf-cache, osdf-director, osdf-origin, and osdf-registry.
-Some paths have changed and migration steps may be necessary, especially if
-you are using configuration management.  See below for details.
+The packages 'osdf-cache', 'osdf-director', 'osdf-origin', and 'osdf-registry'
+have been combined into 'osdf-server'.
+In addition, the paths and service file names have been changed.
+
+The following migration steps were performed -- if you are using
+configuration management, you may need to update your configuration
+to make sure the changes remain applied.
 
 __END__
-    touch %{warning_stamp}
 fi
 
-maybe_move_and_link () {
-    if [ -e "$1" ]
+addwarn () {
+    echo -e "$*" >> %{warning_file}
+}
+
+maybe_move () {
+    if [ -e "${1}" ]
     then
-        if [ ! -e "$2" ]
+        if [ -e "${2}" ]
         then
-            mv "$1" "$2" && ln -s "$(basename "$2")" "$1"
-            echo >&2 "$1 has been moved to $2 and a compatibility symlink has been created."
+            if mv -f "${2}" "${2}.rpmsave"
+            then
+                mv -f "${1}" "${2}"
+                addwarn "*   '${1}' has been moved to '${2}'. '${2}' was backed up as '${2}.rpmsave'"
+                addwarn "    You may need to merge changes from '${2}.rpmsave' into '${2}'"
+            else
+                addwarn "*   '${2}' could not be moved out of the way."
+                addwarn "    You may need to merge changes from '${1}' into '${2}'"
+            fi
         else
-            echo >&2 "$2 already exists - you will need to merge changes from $1."
+            addwarn "*   '${1}' has been moved to '${2}'."
         fi
     fi
 }
 
-maybe_move_and_link "${old_sysconfig}" "${new_sysconfig}"
-maybe_move_and_link "${old_override_dir}" "${new_override_dir}"
-
-# We need to stop/disable the old service and start/enable the new service
-# _before_ the old service files have been replaced by symlinks, otherwise
-# systemd will follow the symlink and the user won't be able to shut the old
-# service off.
+maybe_move "${old_sysconfig}" "${new_sysconfig}"
+maybe_move "${old_override_dir}" "${new_override_dir}"
 
 was_active=$(systemctl is-active ${old_service})
 was_enabled=$(systemctl is-enabled ${old_service})
 
 if [ "${was_active}" = "active" ]
 then
-    echo >&2 "${old_service} is active. Stopping it and starting ${new_service} instead."
-    systemctl stop $old_service
-    systemctl start $new_service
+    if systemctl stop "${old_service}"
+    then
+        if systemctl start "${new_service}"
+        then
+            addwarn "*   '${old_service}' was stopped and '${new_service}' was started instead."
+        else
+            addwarn "*   '${old_service}' was stopped but '${new_service}' could not be started."
+        fi
+    else
+        addwarn "*   '${old_service}' could not be stopped. You must replace it with '${new_service}'."
+    fi
 fi
 if [ "${was_enabled}" = "enabled" ]
 then
-    echo >&2 "${old_service} is enabled. Disabling it and enabling ${new_service} instead."
-    systemctl disable ${old_service}
-    systemctl enable ${new_service}
+    if systemctl disable "${old_service}"
+    then
+        if systemctl enable "${new_service}"
+        then
+            addwarn "*   '${old_service}' was disabled and '${new_service}' was enabled instead."
+        else
+            addwarn "*   '${old_service}' was disabled but '${new_service}' could not be enabled."
+        fi
+    else
+        addwarn "*   '${old_service}' could not be disabled. You must replace it with '${new_service}'."
+    fi
 fi
-mv -f "${old_service}" "${old_service}.rpmsave"
-ln -s "${new_service}" "${old_service}"
-systemctl daemon-reload || :
-echo >&2
-echo >&2 "${old_service} has been replaced by ${new_service}"
-echo >&2 "A compatibility symlink has been created."
-echo >&2 "Run \"systemctl status ${new_service}\" to check that the service is in the expected status."
-echo >&2 "Future logs will be written to ${new_log}"
-echo >&2
+addwarn "*   '${old_service}' has been replaced by '${new_service}'"
+addwarn "    Run 'systemctl status ${new_service}' to check that the service is in"
+addwarn "    the desired state."
+addwarn "*   The default log location has been moved from '${old_log}' to '${new_log}'"
+addwarn ""
 }
 # end of migrate helper macro
 
 %posttrans
-rm -f %{warning_stamp} || :
+if [ -e "%{warning_file}" ]
+then
+    cat >&2 "%{warning_file}"
+    rm -f "%{warning_file}"
+fi
 
 %migrate osdf-cache
 %migrate osdf-director
@@ -193,7 +226,7 @@ rm -f %{warning_stamp} || :
 
 
 %changelog
-* Mon Sep 15 2025 Mátyás Selmeci <mselmeci@wisc.edu> - 25-1
+* Tue Oct 07 2025 Mátyás Selmeci <mselmeci@wisc.edu> - 25-1
 - Replace with metapackage containing configuration for using the pelican-*.service files.
   Includes migration instructions.
 
