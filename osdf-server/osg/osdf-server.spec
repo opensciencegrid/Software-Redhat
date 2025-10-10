@@ -49,11 +49,11 @@ mkdir -p $RPM_BUILD_ROOT/etc/pelican/config.d/
 #ln -s   pelican-director.yaml      $RPM_BUILD_ROOT/etc/pelican/osdf-director.yaml
 #ln -s   pelican-origin.yaml        $RPM_BUILD_ROOT/etc/pelican/osdf-origin.yaml
 #ln -s   pelican-registry.yaml      $RPM_BUILD_ROOT/etc/pelican/osdf-registry.yaml
-install -m 0644 %{SOURCE0}         $RPM_BUILD_ROOT/usr/share/pelican/config.d/
-install -m 0644 %{SOURCE1}         $RPM_BUILD_ROOT/etc/pelican/config.d/
-install -m 0644 %{SOURCE2}         $RPM_BUILD_ROOT/etc/pelican/config.d/
-install -m 0644 %{SOURCE3}         $RPM_BUILD_ROOT/etc/pelican/config.d/
-install -d -o root -g root -m 0755 $RPM_BUILD_ROOT/etc/pelican/certificates/
+install -m 0644 %{SOURCE0}  $RPM_BUILD_ROOT/usr/share/pelican/config.d/
+install -m 0644 %{SOURCE1}  $RPM_BUILD_ROOT/etc/pelican/config.d/
+install -m 0644 %{SOURCE2}  $RPM_BUILD_ROOT/etc/pelican/config.d/
+install -m 0644 %{SOURCE3}  $RPM_BUILD_ROOT/etc/pelican/config.d/
+install -m 0755 -d          $RPM_BUILD_ROOT/etc/pelican/certificates/
 
 
 %files
