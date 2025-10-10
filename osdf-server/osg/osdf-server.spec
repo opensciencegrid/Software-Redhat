@@ -1,7 +1,7 @@
 Summary: Service files for Pelican-based OSDF daemons
 Name: osdf-server
 Version: 25
-Release: 1%{?dist}
+Release: 2%{?dist}
 License: ASL 2.0
 Url: https://github.com/PelicanPlatform/pelican
 BuildArch: noarch
@@ -44,38 +44,34 @@ exit 0
 mkdir -p $RPM_BUILD_ROOT/usr/lib/systemd/system/
 mkdir -p $RPM_BUILD_ROOT/usr/share/pelican/config.d/
 mkdir -p $RPM_BUILD_ROOT/etc/pelican/config.d/
-# ghost files (placeholders that we create in scriptlets)
-# We do it that way because we need the old service file to exist so we can
-# stop and disable it.
-touch  $RPM_BUILD_ROOT/usr/lib/systemd/system/osdf-cache.service
-touch  $RPM_BUILD_ROOT/usr/lib/systemd/system/osdf-director.service
-touch  $RPM_BUILD_ROOT/usr/lib/systemd/system/osdf-origin.service
-touch  $RPM_BUILD_ROOT/usr/lib/systemd/system/osdf-registry.service
 ## Compat symlinks. The targets come from the pelican-service RPM.
-#ln -s           pelican-cache.yaml        $RPM_BUILD_ROOT/etc/pelican/osdf-cache.yaml
-#ln -s           pelican-director.yaml     $RPM_BUILD_ROOT/etc/pelican/osdf-director.yaml
-#ln -s           pelican-origin.yaml       $RPM_BUILD_ROOT/etc/pelican/osdf-origin.yaml
-#ln -s           pelican-registry.yaml     $RPM_BUILD_ROOT/etc/pelican/osdf-registry.yaml
-install -m 0644 %{SOURCE0}                $RPM_BUILD_ROOT/usr/share/pelican/config.d/
-install -m 0644 %{SOURCE1}                $RPM_BUILD_ROOT/etc/pelican/config.d/
-install -m 0644 %{SOURCE2}                $RPM_BUILD_ROOT/etc/pelican/config.d/
-install -m 0644 %{SOURCE3}                $RPM_BUILD_ROOT/etc/pelican/config.d/
+#ln -s   pelican-cache.yaml         $RPM_BUILD_ROOT/etc/pelican/osdf-cache.yaml
+#ln -s   pelican-director.yaml      $RPM_BUILD_ROOT/etc/pelican/osdf-director.yaml
+#ln -s   pelican-origin.yaml        $RPM_BUILD_ROOT/etc/pelican/osdf-origin.yaml
+#ln -s   pelican-registry.yaml      $RPM_BUILD_ROOT/etc/pelican/osdf-registry.yaml
+install -m 0644 %{SOURCE0}         $RPM_BUILD_ROOT/usr/share/pelican/config.d/
+install -m 0644 %{SOURCE1}         $RPM_BUILD_ROOT/etc/pelican/config.d/
+install -m 0644 %{SOURCE2}         $RPM_BUILD_ROOT/etc/pelican/config.d/
+install -m 0644 %{SOURCE3}         $RPM_BUILD_ROOT/etc/pelican/config.d/
+install -d -o root -g root -m 0755 $RPM_BUILD_ROOT/etc/pelican/certificates/
 
 
 %files
-%ghost /usr/lib/systemd/system/osdf-*.service
 #%config /etc/pelican/osdf-*.yaml
 /usr/share/pelican/config.d/10-osdf-defaults.yaml
 %config(noreplace) /etc/pelican/config.d/15-osdf.yaml
 %config(noreplace) /etc/pelican/config.d/20-cache.yaml
 %config(noreplace) /etc/pelican/config.d/50-webui.yaml
+%dir /etc/pelican/certificates
 
 
 %postun
+[ -d /run/systemd/system ] || exit 0
 systemctl daemon-reload
 
 
 %post
+[ -d /run/systemd/system ] || exit 0
 systemctl daemon-reload
 
 
@@ -107,7 +103,7 @@ done
 
 # This happens after %%post of this package but before the %%preun of the old
 # package and the removal of its files.
-%%triggerun -n %%name -- %%old_name < 25
+%%triggerun -n %%name -- %%old_name < 24
 
 # Do nothing if this is an uninstall, not an upgrade
 [ "$1" = 1 ] || exit 0
@@ -121,12 +117,19 @@ old_log=/var/log/%%{old_name}.log
 old_override_dir=/etc/systemd/system/%%{old_name}.service.d
 old_service=%%{old_name}.service
 old_sysconfig=/etc/sysconfig/%%{old_name}
+old_hostcert=/etc/pki/tls/certs/pelican.crt
+old_hostkey=/etc/pki/tls/private/pelican.key
 
 new_config=/etc/pelican/%%{new_name}.yaml
 new_log=/var/log/%%{new_name}.log
 new_override_dir=/etc/systemd/system/%%{new_name}.service.d
 new_service=%%{new_name}.service
 new_sysconfig=/etc/sysconfig/%%{new_name}
+new_hostcert=/etc/pelican/certificates/tls.crt
+new_hostkey=/etc/pelican/certificates/tls.key
+
+# Do nothing if the old service is missing
+[ -e /usr/lib/systemd/system/${old_service} ] || exit 0
 
 # Only display this once:
 if [ ! -e %{warning_file} ]
@@ -165,6 +168,8 @@ maybe_move () {
                 addwarn "    You may need to merge changes from '${1}' into '${2}'"
             fi
         else
+            mkdir -p "$(dirname "${2}")"
+            mv -f "${1}" "${2}"
             addwarn "*   '${1}' has been moved to '${2}'."
         fi
     fi
@@ -172,6 +177,8 @@ maybe_move () {
 
 maybe_move "${old_sysconfig}" "${new_sysconfig}"
 maybe_move "${old_override_dir}" "${new_override_dir}"
+maybe_move "${old_hostcert}" "${new_hostcert}"
+maybe_move "${old_hostkey}" "${new_hostkey}"
 
 was_active=$(systemctl is-active ${old_service})
 was_enabled=$(systemctl is-enabled ${old_service})
@@ -207,7 +214,7 @@ fi
 addwarn "*   '${old_service}' has been replaced by '${new_service}'"
 addwarn "    Run 'systemctl status ${new_service}' to check that the service is in"
 addwarn "    the desired state."
-addwarn "*   The default log location has been moved from '${old_log}' to '${new_log}'"
+addwarn "*   The default log location has changed from '${old_log}' to '${new_log}'"
 addwarn ""
 }
 # end of migrate helper macro
@@ -226,6 +233,9 @@ fi
 
 
 %changelog
+* Fri Oct 10 2025 Mátyás Selmeci <mselmeci@wisc.edu> - 25-2
+- Stop overriding host cert/key locations; migrate existing certs
+
 * Tue Oct 07 2025 Mátyás Selmeci <mselmeci@wisc.edu> - 25-1
 - Replace with metapackage containing configuration for using the pelican-*.service files.
   Includes migration instructions.
