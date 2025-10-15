@@ -1,7 +1,7 @@
-From 02d6a53171686df77f9db27b51159ea796ba52db Mon Sep 17 00:00:00 2001
+From e3016582f7341abd51f90093330721648501e988 Mon Sep 17 00:00:00 2001
 From: Brian Bockelman <bbockelman@morgridge.org>
 Date: Sat, 12 Jul 2025 07:20:21 -0500
-Subject: [PATCH 09/11] [#34] Add S3 as a permitted proxy protocol
+Subject: [PATCH 6/7] [#34] Add S3 as a permitted proxy protocol
 
 ---
  src/XrdApps/XrdCpConfig.cc | 2 ++
@@ -71,5 +71,5 @@ index 42f37534f..1e3241946 100644
     int pTNum = sizeof(pTab)/sizeof(pEnt);
     int xrBeg = 2;
 -- 
-2.47.3
+2.34.1
 
