@@ -44,18 +44,18 @@
 #-------------------------------------------------------------------------------
 Name:		xrootd
 Epoch:		1
-Release:	1.5%{?dist}%{?with_clang:.clang}%{?with_asan:.asan}
+Release:	1.1%{?dist}%{?with_clang:.clang}%{?with_asan:.asan}
 Summary:	Extended ROOT File Server
 Group:		System Environment/Daemons
 License:	LGPL-3.0-or-later AND BSD-2-Clause AND BSD-3-Clause AND curl AND MIT AND Zlib
 URL:		https://xrootd.org
 
 %if !%{with git}
-Version:	5.8.4
+Version:	5.9.0
 Source0:	https://xrootd.web.cern.ch/download/v%{version}/%{name}-%{version}.tar.gz
 %else
 %define git_version %(tar xzf %{_sourcedir}/%{name}.tar.gz -O xrootd/VERSION)
-%define src_version %(sed -e "s/%%(describe)/v5.8-rc%(date +%%Y%%m%%d)/" <<< "%git_version")
+%define src_version %(sed -e "s/%%(describe)/v5.9-rc%(date +%%Y%%m%%d)/" <<< "%git_version")
 %define rpm_version %(sed -e 's/v//; s/-rc/~rc/; s/-g/+git/; s/-/.post/; s/-/./' <<< "%src_version")
 Version:	%rpm_version
 Source0:	%{name}.tar.gz
@@ -67,28 +67,19 @@ Source0:	%{name}.tar.gz
 Source1:   xrootd-%{compat_version}.tar.gz
 
 # PelicanPlatform/xrootd #1 (xrootd/xrootd #1868):
-Patch1: 0001-1-Allow-hostname-used-by-XRootD-to-be-overridden-by~7c119b0.patch
-# PelicanPlatform/xrootd #4 (xrootd/xrootd #2269):
-Patch2: 0002-4-XrdTls-Allow-disabling-of-X.509-client-auth~18e1c81.patch
+Patch1: 0001-1-Allow-hostname-used-by-XRootD-to-be-overridden-by-~8d1252d.patch
 # PelicanPlatform/xrootd #6 (xrootd/xrootd #2397):
-Patch3: 0003-6-XrdSciTokens-Handle-multiple-authorization-token-s~b82ddc3.patch
+Patch2: 0002-6-XrdSciTokens-Handle-multiple-authorization-token-s~a0751f6.patch
 # PelicanPlatform/xrootd #14 (no upstream):
-Patch4: 0004-14-XrdHttp-Undo-HTTP-PUT-response-code-change~43ed40b.patch
-# Next 2: PelicanPlatform/xrootd #23
-Patch5: 0005-23-Re-engineer-concurrency-limits-for-throttles~39fea57.patch
-Patch6: 0006-23-Modify-XrdThrottle-to-be-an-OSS-plugin~921fef5.patch
+Patch3: 0003-14-XrdHttp-Undo-HTTP-PUT-response-code-change~43ed40b.patch
 # PelicanPlatform/xrootd #25
-Patch7: 0007-25-XRootD-s-xml-response-for-PROPFIND-will-now-inclu~aacf631.patch
+Patch4: 0004-25-XRootD-s-xml-response-for-PROPFIND-will-now-inclu~aacf631.patch
 # PelicanPlatform/xrootd #32 (xrootd/xrootd #2472)
-Patch8: 0008-32-Enable-write-through-mode-for-cache~330eac1.patch
+Patch5: 0005-32-Enable-write-through-mode-for-cache~330eac1.patch
 # PelicanPlatform/xrootd #34 (no upstream)
-Patch9: 0009-34-Add-S3-as-a-permitted-proxy-protocol~b36d9b7.patch
+Patch6: 0006-34-Add-S3-as-a-permitted-proxy-protocol~b36d9b7.patch
 # PelicanPlatform/xrootd #36 (no upstream)
-Patch10: 0010-36-Do-a-clean-TLS-shutdown-for-HTTPS~cdc53fe.patch
-# PelicanPlatform/xrootd #35 (xrootd/xrootd #2532)
-Patch11: 0011-35-Make-HTTP-s-maximum-open-delay-configurable~3496b32.patch
-# PelicanPlatform/xrootd #37 (xrootd/xrootd #2525)
-Patch12: 0012-37-Add-TPC-worker-pool~70720be.patch
+Patch7: 0007-37-Add-TPC-worker-pool~0bcba8c.patch
 
 BuildRequires:	cmake
 BuildRequires:	gcc-c++
@@ -829,6 +820,7 @@ fi
 %{_libdir}/libXrdFileCache-5.so
 %{_libdir}/libXrdHttp-5.so
 %{_libdir}/libXrdHttpTPC-5.so
+%{_libdir}/libXrdHttpCors-5.so
 %{_libdir}/libXrdMacaroons-5.so
 %{_libdir}/libXrdN2No2p-5.so
 %{_libdir}/libXrdOfsPrepGPI-5.so
@@ -968,8 +960,23 @@ fi
 # Changelog
 #-------------------------------------------------------------------------------
 %changelog
-* Wed Sep 24 2025 Mátyás Selmeci <mselmeci@wisc.edu> - 5.8.4-1.5
-- Bump to rebuild for x86_64 on EL10
+* Wed Oct 15 2025 Matt Westphall <westphall@wisc.edu> - 5.9.0-1.1
+- Update to XRootD 5.8.4 (SOFTWARE-6187)
+    - Patches added:
+    - Patches kept:
+        - 0001-1-Allow-hostname-used-by-XRootD-to-be-overridden-by~7c119b0.patch -> 0001-1-Allow-hostname-used-by-XRootD-to-be-overridden-by-~8d1252d.patch
+        - 0003-6-XrdSciTokens-Handle-multiple-authorization-token-s~b82ddc3.patch -> 0002-6-XrdSciTokens-Handle-multiple-authorization-token-s~a0751f6.patch
+        - 0004-14-XrdHttp-Undo-HTTP-PUT-response-code-change~43ed40b.patch -> 0003-14-XrdHttp-Undo-HTTP-PUT-response-code-change~43ed40b.patch
+        - 0007-25-XRootD-s-xml-response-for-PROPFIND-will-now-inclu~aacf631.patch -> 0004-25-XRootD-s-xml-response-for-PROPFIND-will-now-inclu~aacf631.patch
+        - 0008-32-Enable-write-through-mode-for-cache~330eac1.patch -> 0005-32-Enable-write-through-mode-for-cache~330eac1.patch
+        - 0009-34-Add-S3-as-a-permitted-proxy-protocol~b36d9b7.patch -> 0006-34-Add-S3-as-a-permitted-proxy-protocol~b36d9b7.patch
+        - 0012-37-Add-TPC-worker-pool~70720be.patch -> 0007-37-Add-TPC-worker-pool~0bcba8c.patch
+    - Patches dropped:
+        - 0002-4-XrdTls-Allow-disabling-of-X.509-client-auth~18e1c81.patch
+        - 0005-23-Re-engineer-concurrency-limits-for-throttles~39fea57.patch
+        - 0006-23-Modify-XrdThrottle-to-be-an-OSS-plugin~921fef5.patch
+        - 0010-36-Do-a-clean-TLS-shutdown-for-HTTPS~cdc53fe.patch
+        - 0011-35-Make-HTTP-s-maximum-open-delay-configurable~3496b32.patch
 
 * Wed Aug 13 2025 Mátyás Selmeci <mselmeci@wisc.edu> - 5.8.4-1.4
 - Add 0012-37-Add-TPC-worker-pool~70720be.patch

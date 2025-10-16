@@ -1,7 +1,7 @@
-From 9526addaafbca245ca7f5b962f208f5a1772847e Mon Sep 17 00:00:00 2001
+From 4444c5ee7fe647e71771e03c2c44400b6a7995a6 Mon Sep 17 00:00:00 2001
 From: Matyas Selmeci <mselmeci@wisc.edu>
 Date: Wed, 13 Aug 2025 13:27:10 -0500
-Subject: [PATCH 12/12] [37] Add TPC worker pool
+Subject: [PATCH 7/7] [37] Add TPC worker pool
 
 Squashed commit of the following:
 
@@ -106,14 +106,14 @@ Date:   Tue May 6 17:37:37 2025 +0200
  src/XrdHttpTpc/XrdHttpTpcPool.cc         | 443 +++++++++++++++++++++++
  src/XrdHttpTpc/XrdHttpTpcPool.hh         | 146 ++++++++
  src/XrdHttpTpc/XrdHttpTpcState.hh        |   4 +-
- src/XrdHttpTpc/XrdHttpTpcTPC.cc          | 287 ++++-----------
+ src/XrdHttpTpc/XrdHttpTpcTPC.cc          | 286 ++++-----------
  src/XrdHttpTpc/XrdHttpTpcTPC.hh          |   9 +-
  src/XrdSys/XrdSysRAtomic.hh              |  22 ++
  tests/TPCTests/CMakeLists.txt            |   1 +
  tests/TPCTests/common.cfg                |   7 +
  tests/TPCTests/test.sh                   |  77 ++--
  tests/TPCTests/test_tpc_cancellations.sh |  81 +++++
- 15 files changed, 859 insertions(+), 264 deletions(-)
+ 15 files changed, 859 insertions(+), 263 deletions(-)
  create mode 100644 src/XrdHttpTpc/XrdHttpTpcPool.cc
  create mode 100644 src/XrdHttpTpc/XrdHttpTpcPool.hh
  create mode 100644 tests/TPCTests/test_tpc_cancellations.sh
@@ -206,7 +206,7 @@ index ad273d331..4d5289814 100644
  }
  
  void PMarkManager::startTransfer() {
-@@ -71,21 +75,21 @@ void PMarkManager::beginPMarks() {
+@@ -71,7 +75,7 @@ void PMarkManager::beginPMarks() {
    if(mPmarkHandles.empty()) {
      // Create the first pmark handle
      std::stringstream ss;
@@ -215,13 +215,7 @@ index ad273d331..4d5289814 100644
      // One has to consider that this server is the client side of a normal HTTP PUT/GET. But unlike normal HTTP PUT and GET requests where clients
      // do not emit a firefly, this server WILL emit a firefly.
      //
-     // For PULL: it is expected that I send a GET request to the remote server
-     // however, it is myself who will emit the firefly, then I should consider that the GET is actually a PUT
-     // that I do on behalf of the remote server... Hence why if the tpc transfer type is Pull, the pmark.appname
-     // will be equal to http-put
-     //
-     // For PUSH: it is expected that I send a PUT request to the remote server.
-     // however, it is myself who will emit the firefly, then I should consider that the PUT is actually a GET
+@@ -85,7 +89,7 @@ void PMarkManager::beginPMarks() {
      // that I do on behalf of the remote server... Hence why if the tpc transfer is Push, the pmark.appname will be equal to http-get.
      << "&" << "pmark.appname=" << ((mTpcType == TPC::TpcType::Pull) ? "http-put" : "http-get");
      SocketInfo & sockInfo = mSocketInfos.front();
@@ -234,7 +228,7 @@ diff --git a/src/XrdHttpTpc/XrdHttpTpcPMarkManager.hh b/src/XrdHttpTpc/XrdHttpTp
 index 45837c4ca..ff91cc6de 100644
 --- a/src/XrdHttpTpc/XrdHttpTpcPMarkManager.hh
 +++ b/src/XrdHttpTpc/XrdHttpTpcPMarkManager.hh
-@@ -66,7 +66,9 @@ class PMarkManager {
+@@ -66,7 +66,9 @@ public:
      XrdSecEntity client;
    };
  
@@ -245,7 +239,7 @@ index 45837c4ca..ff91cc6de 100644
  
    /**
     * Will connect the socket attached to the file descriptor within a certain timeout and add the file descriptor to the.
-@@ -128,9 +130,11 @@ class PMarkManager {
+@@ -128,9 +130,11 @@ private:
    // The map of socket FD and packet marking handles
    std::map<int,std::unique_ptr<XrdNetPMark::Handle>> mPmarkHandles;
    // The instance of the packet marking functionality
@@ -874,7 +868,7 @@ index f65cae7e4..c82b4b440 100644
  // Forward dec'ls
  class XrdSfsFile;
  class XrdHttpExtReq;
-@@ -162,7 +164,7 @@ class State {
+@@ -162,7 +164,7 @@ private:
      bool m_push;  // whether we are transferring in "push-mode"
      bool m_recv_status_line;  // whether we have received a status line in the response from the remote host.
      bool m_recv_all_headers;  // true if we have seen the end of headers.
@@ -884,18 +878,10 @@ index f65cae7e4..c82b4b440 100644
      int m_status_code;  // status code from HTTP response.
      int m_error_code; // error code from underlying stream operations.
 diff --git a/src/XrdHttpTpc/XrdHttpTpcTPC.cc b/src/XrdHttpTpc/XrdHttpTpcTPC.cc
-index 00ed6aca9..961a84e2c 100644
+index 17d61119e..aea5d666e 100644
 --- a/src/XrdHttpTpc/XrdHttpTpcTPC.cc
 +++ b/src/XrdHttpTpc/XrdHttpTpcTPC.cc
-@@ -22,7 +22,6 @@
- #include <sstream>
- #include <stdexcept>
- #include <thread>
--#include <iostream> // Delete later!!!
- 
- #include "XrdHttpTpcState.hh"
- #include "XrdHttpTpcStream.hh"
-@@ -85,74 +84,6 @@ void CurlDeleter::operator()(CURL *curl)
+@@ -85,74 +85,6 @@ void CurlDeleter::operator()(CURL *curl)
      if (curl) curl_easy_cleanup(curl);
  }
  
@@ -970,7 +956,7 @@ index 00ed6aca9..961a84e2c 100644
  
  /******************************************************************************/
  /*                            p r e p a r e U R L                             */
-@@ -291,7 +222,8 @@ TPCHandler::TPCHandler(XrdSysError *log, const char *config, XrdOucEnv *myEnv) :
+@@ -291,7 +223,8 @@ TPCHandler::TPCHandler(XrdSysError *log, const char *config, XrdOucEnv *myEnv) :
          m_timeout(60),
          m_first_timeout(120),
          m_log(log->logger(), "TPC_"),
@@ -980,7 +966,7 @@ index 00ed6aca9..961a84e2c 100644
  {
      if (!Configure(config, myEnv)) {
          throw std::runtime_error("Failed to configure the HTTP third-party-copy handler.");
-@@ -474,11 +406,30 @@ int TPCHandler::GetContentLengthTPCPull(CURL *curl, XrdHttpExtReq &req, uint64_t
+@@ -474,11 +407,30 @@ int TPCHandler::GetContentLengthTPCPull(CURL *curl, XrdHttpExtReq &req, uint64_t
      contentLength = state.GetContentLength();
      return result;
  }
@@ -1013,7 +999,7 @@ index 00ed6aca9..961a84e2c 100644
  int TPCHandler::SendPerfMarker(XrdHttpExtReq &req, TPCLogRecord &rec, TPC::State &state) {
      std::stringstream ss;
      const std::string crlf = "\n";
-@@ -550,170 +501,69 @@ int TPCHandler::SendPerfMarker(XrdHttpExtReq &req, TPCLogRecord &rec, std::vecto
+@@ -550,170 +502,69 @@ int TPCHandler::SendPerfMarker(XrdHttpExtReq &req, TPCLogRecord &rec, std::vecto
  /******************************************************************************/
  /*        T P C H a n d l e r : : R u n C u r l W i t h U p d a t e s         */
  /******************************************************************************/
@@ -1034,9 +1020,6 @@ index 00ed6aca9..961a84e2c 100644
  
 -    //curl_easy_setopt(curl, CURLOPT_BUFFERSIZE, 128*1024);
 +int TPCHandler::RunCurlWithUpdates(CURL *curl, XrdHttpExtReq &req, State &state, TPCLogRecord &rec) {
-+
-+    std::string request_label = TPCRequestManager::TPCRequest::GenerateIdentifier("tpc", req.GetSecEntity().vorg, req.mSciTag);
-+    TPCRequestManager::TPCRequest request(request_label, req.mSciTag, curl);
  
 -    CURLMcode mres;
 -    mres = curl_multi_add_handle(multi_handle, curl);
@@ -1047,6 +1030,9 @@ index 00ed6aca9..961a84e2c 100644
 -        logTransferEvent(LogMask::Error, rec, "CURL_INIT_FAIL", ss.str());
 -        curl_multi_cleanup(multi_handle);
 -        return req.SendSimpleResp(rec.status, NULL, NULL, generateClientErr(ss, rec).c_str(), 0);
++    std::string request_label = TPCRequestManager::TPCRequest::GenerateIdentifier("tpc", req.GetSecEntity().vorg, req.mSciTag);
++    TPCRequestManager::TPCRequest request(request_label, req.mSciTag, curl);
++
 +    if (!m_request_manager.Produce(request)) {
 +        int retval = req.StartChunkedResp(429, "Too Many Requests",
 +                                          "Unable to accept HTTP-TPC requests "
@@ -1142,28 +1128,16 @@ index 00ed6aca9..961a84e2c 100644
 -                curl_multi_remove_handle(multi_handle, easy_handle);
 -            }
 -        } while (msg);
-+    // The transfer will start after this point, notify the packet marking
-+    // manager
- 
+-
 -        int64_t max_sleep_time = next_marker - time(NULL);
 -        if (max_sleep_time <= 0) {
 -            continue;
-+    while ((res = (CURLcode)request.WaitFor(std::chrono::seconds(m_marker_period))) < 0) {
-+        auto now = time(NULL);
-+        std::string conn_desc = request.GetRemoteConnDesc();
-+        off_t bytes_xfer = state.BytesTransferred();
-+        if (bytes_xfer > last_advance_bytes) {
-+            last_advance_bytes = bytes_xfer;
-+            last_advance_time = now;
-         }
+-        }
 -        int fd_count;
 -        mres = curl_multi_wait(multi_handle, NULL, 0, max_sleep_time*1000, &fd_count);
 -        if (mres != CURLM_OK) {
 -            break;
-+        if (SendPerfMarker(req, rec, state, conn_desc)) {
-+            request.Cancel();
-+            logTransferEvent(LogMask::Error, rec, "PERFMARKER_FAIL", "Failed to send a perf marker to the TPC client");
-         }
+-        }
 -    } while (running_handles);
 -
 -    if (mres != CURLM_OK) {
@@ -1173,12 +1147,21 @@ index 00ed6aca9..961a84e2c 100644
 -
 -        curl_multi_remove_handle(multi_handle, curl);
 -        curl_multi_cleanup(multi_handle);
--
++    // The transfer will start after this point, notify the packet marking
++    // manager
+ 
 -        if ((retval = req.ChunkResp(generateClientErr(ss, rec).c_str(), 0))) {
 -            logTransferEvent(LogMask::Error, rec, "RESPONSE_FAIL",
 -                "Failed to send error message to the TPC client");
 -            return retval;
--        }
++    while ((res = (CURLcode)request.WaitFor(std::chrono::seconds(m_marker_period))) < 0) {
++        auto now = time(NULL);
++        std::string conn_desc = request.GetRemoteConnDesc();
++        off_t bytes_xfer = state.BytesTransferred();
++        if (bytes_xfer > last_advance_bytes) {
++            last_advance_bytes = bytes_xfer;
++            last_advance_time = now;
+         }
 -        return req.ChunkResp(NULL, 0);
 -    }
 -
@@ -1191,7 +1174,10 @@ index 00ed6aca9..961a84e2c 100644
 -            CURL *easy_handle = msg->easy_handle;
 -            res = msg->data.result;
 -            curl_multi_remove_handle(multi_handle, easy_handle);
--        }
++        if (SendPerfMarker(req, rec, state, conn_desc)) {
++            request.Cancel();
++            logTransferEvent(LogMask::Error, rec, "PERFMARKER_FAIL", "Failed to send a perf marker to the TPC client");
+         }
 -    } while (msg);
 -
 -    if (!state.GetErrorCode() && res == static_cast<CURLcode>(-1)) { // No transfers returned?!?
@@ -1223,7 +1209,7 @@ index 00ed6aca9..961a84e2c 100644
  
      state.Flush();
  
-@@ -796,13 +646,6 @@ int TPCHandler::ProcessPushReq(const std::string & resource, XrdHttpExtReq &req)
+@@ -796,13 +647,6 @@ int TPCHandler::ProcessPushReq(const std::string & resource, XrdHttpExtReq &req)
      }
      curl_easy_setopt(curl, CURLOPT_NOSIGNAL, 1);
      curl_easy_setopt(curl, CURLOPT_HTTP_VERSION, (long) CURL_HTTP_VERSION_1_1);
@@ -1237,7 +1223,7 @@ index 00ed6aca9..961a84e2c 100644
      curl_easy_setopt(curl, CURLOPT_CONNECTTIMEOUT, CONNECT_TIMEOUT);
      auto query_header = XrdOucTUtils::caseInsensitiveFind(req.headers,"xrd-http-fullresource");
      std::string redirect_resource = req.resource;
-@@ -913,13 +756,7 @@ int TPCHandler::ProcessPullReq(const std::string &resource, XrdHttpExtReq &req)
+@@ -911,13 +755,7 @@ int TPCHandler::ProcessPullReq(const std::string &resource, XrdHttpExtReq &req)
      }
      curl_easy_setopt(curl, CURLOPT_NOSIGNAL, 1);
      curl_easy_setopt(curl, CURLOPT_HTTP_VERSION, (long) CURL_HTTP_VERSION_1_1);
@@ -1263,7 +1249,7 @@ index 0f23f7b38..1816ab703 100644
  
  #include <curl/curl.h>
  
-@@ -55,12 +56,6 @@ class TPCHandler : public XrdHttpExtHandler {
+@@ -55,12 +56,6 @@ public:
      static constexpr std::string_view OSS_TASK_OPAQUE = "oss.task=httptpc";
  private:
  
@@ -1276,7 +1262,7 @@ index 0f23f7b38..1816ab703 100644
  
      struct TPCLogRecord {
  
-@@ -117,6 +112,7 @@ class TPCHandler : public XrdHttpExtHandler {
+@@ -117,6 +112,7 @@ private:
      int SendPerfMarker(XrdHttpExtReq &req, TPCLogRecord &rec, TPC::State &state);
      int SendPerfMarker(XrdHttpExtReq &req, TPCLogRecord &rec, std::vector<State*> &state,
          off_t bytes_transferred);
@@ -1284,7 +1270,7 @@ index 0f23f7b38..1816ab703 100644
  
      // Perform the libcurl transfer, periodically sending back chunked updates.
      int RunCurlWithUpdates(CURL *curl, XrdHttpExtReq &req, TPC::State &state,
-@@ -162,6 +158,7 @@ class TPCHandler : public XrdHttpExtHandler {
+@@ -162,6 +158,7 @@ private:
      XrdSysError m_log;
      XrdSfsFileSystem *m_sfs;
      std::shared_ptr<XrdTlsTempCA> m_ca_file;
@@ -1341,7 +1327,7 @@ index dcf1278a9..8e815a30d 100644
    foreach(config srv1 srv2 common)
      configure_file(${config}.cfg ${CMAKE_CURRENT_BINARY_DIR}/${config}.cfg @ONLY)
 diff --git a/tests/TPCTests/common.cfg b/tests/TPCTests/common.cfg
-index f7a563cc5..4e87d84ae 100644
+index cfe089194..ea37bf485 100644
 --- a/tests/TPCTests/common.cfg
 +++ b/tests/TPCTests/common.cfg
 @@ -30,6 +30,13 @@ ofs.authlib libXrdAccSciTokens.so config=$src/scitokens.cfg
@@ -1372,7 +1358,7 @@ index e65e27077..95cf934a9 100755
  # Check for required commands
  : "${ADLER32:=$(command -v xrdadler32)}"
  : "${CRC32C:=$(command -v xrdcrc32c)}"
-@@ -28,22 +24,22 @@ check_commands() {
+@@ -28,12 +24,12 @@ check_commands() {
  }
  
  function error() {
@@ -1387,9 +1373,7 @@ index e65e27077..95cf934a9 100755
  }
  
  # $1 is expected_value $2 is received value $3 is the error message
- function assert_eq() {
-   [[ "$1" == "$2" ]] || error "$3: expected $1 but received $2"
- }
+@@ -43,7 +39,7 @@ function assert_eq() {
  
  # shellcheck disable=SC2317
  function assert_failure() {
@@ -1398,7 +1382,7 @@ index e65e27077..95cf934a9 100755
  }
  
  check_commands "${ADLER32}" "${CRC32C}" "${XRDCP}" "${XRDFS}" "${OPENSSL}" "${CURL}"
-@@ -65,24 +61,24 @@ declare -a hosts_abbrev=(
+@@ -65,12 +61,12 @@ declare -a hosts_abbrev=(
  )
  
  setup_scitokens() {
@@ -1417,11 +1401,7 @@ index e65e27077..95cf934a9 100755
  }
  
  # Cleanup function
- # shellcheck disable=SC2317
- cleanup() {
-     ## Cleanup empty files
-     src_idx=0
-     dst_idx=1
+@@ -82,7 +78,7 @@ cleanup() {
      src=${hosts_abbrev[${src_idx}]}
      dst=${hosts_abbrev[${dst_idx}]}
      rm "${LCLDATADIR}/${src}_empty.dat" || :
@@ -1438,7 +1418,7 @@ index e65e27077..95cf934a9 100755
  # Set up directories
  RMTDATADIR="/srvdata/tpc"
  LCLDATADIR="${PWD}/localdata/tpc"
-@@ -132,29 +127,48 @@ export BEARER_TOKEN
+@@ -132,7 +127,11 @@ export BEARER_TOKEN
  
  generate_file() {
      local local_file=$1
@@ -1451,11 +1431,7 @@ index e65e27077..95cf934a9 100755
  }
  
  generate_empty_file() {
-     local local_file=$1
-     touch "${local_file}"
- }
- 
- upload_file() {
+@@ -144,17 +143,32 @@ upload_file() {
      local local_file=$1
      local remote_file=$2
      local protocol=$3
@@ -1472,19 +1448,19 @@ index e65e27077..95cf934a9 100755
 +        remote_file="${remote_file/root:\/\//https:\/\/}"
 +        if [[ -n "${scitag_flow}" ]]; then
 +        http_code=$(exec 3>&1; ${CURL} -X PUT -L -s -o /dev/null -w "%{http_code}" \
-             -H "Authorization: Bearer ${BEARER_TOKEN}" \
-             -H "Transfer-Encoding: chunked" \
-+            -H "Scitag: ${scitag_flow}" \
-             --cacert "${BINARY_DIR}/tests/issuer/tlsca.pem" \
-             --data-binary "@${local_file}" "${remote_file}" \
-             2>&1 1>&3 | cat >&2)
-+        else
-+        http_code=$(exec 3>&1; ${CURL} -X PUT -L -s -o /dev/null -w "%{http_code}" \
 +            -H "Authorization: Bearer ${BEARER_TOKEN}" \
 +            -H "Transfer-Encoding: chunked" \
++            -H "Scitag: ${scitag_flow}" \
 +            --cacert "${BINARY_DIR}/tests/issuer/tlsca.pem" \
 +            --data-binary "@${local_file}" "${remote_file}" \
 +            2>&1 1>&3 | cat >&2)
++        else
++        http_code=$(exec 3>&1; ${CURL} -X PUT -L -s -o /dev/null -w "%{http_code}" \
+             -H "Authorization: Bearer ${BEARER_TOKEN}" \
+             -H "Transfer-Encoding: chunked" \
+             --cacert "${BINARY_DIR}/tests/issuer/tlsca.pem" \
+             --data-binary "@${local_file}" "${remote_file}" \
+             2>&1 1>&3 | cat >&2)
 +        fi
  
          echo "$http_code"
@@ -1658,5 +1634,5 @@ index 000000000..f61b4728c
 +
 +set +x
 -- 
-2.47.3
+2.34.1
 

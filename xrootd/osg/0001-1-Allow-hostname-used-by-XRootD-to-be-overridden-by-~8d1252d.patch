@@ -1,7 +1,7 @@
-From ef8761d2416d8c830370899104d846c204c1ed9d Mon Sep 17 00:00:00 2001
+From 39762d5c8aeb1d145ee6c14eab1ac3d63198f39f Mon Sep 17 00:00:00 2001
 From: Brian Bockelman <bbockelman@morgridge.org>
 Date: Wed, 15 Jan 2025 08:01:58 -0600
-Subject: [PATCH 1/8] [#1] Allow hostname used by XRootD to be overridden by
+Subject: [PATCH 1/7] [#1] Allow hostname used by XRootD to be overridden by
  env var.
 
 This affects how the host advertises itself to other servers in a cluster
@@ -21,10 +21,10 @@ especially in Kubernetes-based environments).
  10 files changed, 117 insertions(+), 78 deletions(-)
 
 diff --git a/src/Xrd/XrdConfig.cc b/src/Xrd/XrdConfig.cc
-index ae76a5061..ba05d2389 100644
+index 551b55f90..9f936409a 100644
 --- a/src/Xrd/XrdConfig.cc
 +++ b/src/Xrd/XrdConfig.cc
-@@ -587,24 +587,33 @@ int XrdConfig::Configure(int argc, char **argv)
+@@ -588,11 +588,20 @@ int XrdConfig::Configure(int argc, char **argv)
  // run in v4 mode and that doesn't get set until after the options are scanned.
  //
     static XrdNetAddr *myIPAddr = new XrdNetAddr((int)0);
@@ -47,8 +47,7 @@ index ae76a5061..ba05d2389 100644
     ProtInfo.myAddr = myIPAddr->SockAddr();
     ProtInfo.myInst = XrdOucUtils::InstName(myInsName);
     ProtInfo.myProg = myProg;
- 
- // Set the Environmental variable to hold the instance name
+@@ -601,11 +610,11 @@ int XrdConfig::Configure(int argc, char **argv)
  // XRDINSTANCE=<pgm> <instance name>@<host name>
  //                 XrdOucEnv::Export("XRDINSTANCE")
  //
@@ -62,7 +61,7 @@ index ae76a5061..ba05d2389 100644
     XrdOucEnv::Export("XRDNAME", ProtInfo.myInst);
     XrdOucEnv::Export("XRDPROG", myProg);
  
-@@ -623,7 +632,7 @@ int XrdConfig::Configure(int argc, char **argv)
+@@ -624,7 +633,7 @@ int XrdConfig::Configure(int argc, char **argv)
  // We can't really continue without some kind of name at this point. Note that
  // vriable temp should still be valid from the previous NetAddr call.
  //
@@ -71,7 +70,7 @@ index ae76a5061..ba05d2389 100644
        {Log.Emsg("Config", "Unable to determine host name; ",
                             (temp ? temp : "reason unknown"),
                             "; execution terminated.");
-@@ -648,13 +657,13 @@ int XrdConfig::Configure(int argc, char **argv)
+@@ -649,13 +658,13 @@ int XrdConfig::Configure(int argc, char **argv)
  // Otherwise, determine our domain name.
  //
     if (!myIPAddr->isRegistered())
@@ -88,7 +87,7 @@ index ae76a5061..ba05d2389 100644
                              ", is registered without a domain qualification.");
  
  // Setup the initial required protocol.
-@@ -1962,7 +1971,7 @@ int XrdConfig::xport(XrdSysError *eDest, XrdOucStream &Config)
+@@ -1972,7 +1981,7 @@ int XrdConfig::xport(XrdSysError *eDest, XrdOucStream &Config)
      strncpy(cport, val, sizeof(cport)-1); cport[sizeof(cport)-1] = '\0';
  
      if ((val = Config.GetWord()) && !strcmp("if", val))
@@ -98,7 +97,7 @@ index ae76a5061..ba05d2389 100644
            {if (!rc) Config.noEcho(); return (rc < 0);}
  
 diff --git a/src/Xrd/XrdConfig.hh b/src/Xrd/XrdConfig.hh
-index 504f61b6e..8e4a98978 100644
+index 85567661b..b99dd9fb2 100644
 --- a/src/Xrd/XrdConfig.hh
 +++ b/src/Xrd/XrdConfig.hh
 @@ -30,6 +30,7 @@
@@ -109,9 +108,9 @@ index 504f61b6e..8e4a98978 100644
  
  #include "Xrd/XrdProtLoad.hh"
  #include "Xrd/XrdProtocol.hh"
-@@ -99,7 +100,7 @@ XrdNetSecurity     *Police;
+@@ -98,7 +99,7 @@ static const char  *TraceID;
+ XrdNetSecurity     *Police;
  XrdTcpMonInfo      *tmoInfo;
- XrdMonitor         *theMon;
  const char         *myProg;
 -const char         *myName;
 +std::string         myName;
@@ -137,7 +136,7 @@ diff --git a/src/XrdCms/XrdCmsClientMan.cc b/src/XrdCms/XrdCmsClientMan.cc
 index 9f5294195..677b64da3 100644
 --- a/src/XrdCms/XrdCmsClientMan.cc
 +++ b/src/XrdCms/XrdCmsClientMan.cc
-@@ -323,20 +323,25 @@ int XrdCmsClientMan::Hookup()
+@@ -323,7 +323,7 @@ int XrdCmsClientMan::Hookup()
     EPNAME("Hookup");
     CmsLoginData Data;
     XrdLink *lp;
@@ -146,12 +145,7 @@ index 9f5294195..677b64da3 100644
     kXR_char *envData = 0;
     int rc, oldWait, tries = 12, opts = 0;
  
- // Turn off our debugging and version flags
- //
-    manMutex.Lock();
-    doDebug    &= ~manMask;
-    manMutex.UnLock();
- 
+@@ -336,7 +336,12 @@ int XrdCmsClientMan::Hookup()
  // Report our hostname (there are better ways of doing this)
  //
     const char *hn = getenv("XRDHOST");
@@ -370,7 +364,7 @@ index b36956622..849b67e1d 100644
  
  //------------------------------------------------------------------------------
  //! The XrdNetIF class handles host interfaces. It is used to obtain the
-@@ -89,6 +90,18 @@ class XrdNetIF
+@@ -89,6 +90,18 @@ public:
  
         int  GetDest(char *dest, int dlen, ifType ifT=PublicV6, bool prefn=false);
  
@@ -440,5 +434,5 @@ index b36956622..849b67e1d 100644
  XrdSysError   *eDest;
  static
 -- 
-2.47.1
+2.34.1
 
