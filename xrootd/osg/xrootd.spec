@@ -55,7 +55,7 @@ Version:	5.9.0
 Source0:	https://xrootd.web.cern.ch/download/v%{version}/%{name}-%{version}.tar.gz
 %else
 %define git_version %(tar xzf %{_sourcedir}/%{name}.tar.gz -O xrootd/VERSION)
-%define src_version %(sed -e "s/%%(describe)/v5.8-rc%(date +%%Y%%m%%d)/" <<< "%git_version")
+%define src_version %(sed -e "s/%%(describe)/v5.9-rc%(date +%%Y%%m%%d)/" <<< "%git_version")
 %define rpm_version %(sed -e 's/v//; s/-rc/~rc/; s/-g/+git/; s/-/.post/; s/-/./' <<< "%src_version")
 Version:	%rpm_version
 Source0:	%{name}.tar.gz
@@ -820,6 +820,7 @@ fi
 %{_libdir}/libXrdFileCache-5.so
 %{_libdir}/libXrdHttp-5.so
 %{_libdir}/libXrdHttpTPC-5.so
+%{_libdir}/libXrdHttpCors-5.so
 %{_libdir}/libXrdMacaroons-5.so
 %{_libdir}/libXrdN2No2p-5.so
 %{_libdir}/libXrdOfsPrepGPI-5.so
@@ -976,8 +977,6 @@ fi
         - 0006-23-Modify-XrdThrottle-to-be-an-OSS-plugin~921fef5.patch
         - 0010-36-Do-a-clean-TLS-shutdown-for-HTTPS~cdc53fe.patch
         - 0011-35-Make-HTTP-s-maximum-open-delay-configurable~3496b32.patch
-
-
 
 * Wed Aug 13 2025 Mátyás Selmeci <mselmeci@wisc.edu> - 5.8.4-1.4
 - Add 0012-37-Add-TPC-worker-pool~70720be.patch
