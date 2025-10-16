@@ -1,7 +1,7 @@
-From d71928574d59b88e5aa03820d40c9650989965f2 Mon Sep 17 00:00:00 2001
+From 636b43d02d43ed31e65a42ea3eb1660ccfe87d34 Mon Sep 17 00:00:00 2001
 From: Brian Bockelman <bbockelman@morgridge.org>
 Date: Sun, 6 Apr 2025 13:52:43 -0500
-Subject: [PATCH 8/8] [#32] Enable write-through mode for cache
+Subject: [PATCH 5/7] [#32] Enable write-through mode for cache
 
 Allow the PFC to proxy ("write-through") writes when configured
 to do so (default is current behavior of disabling writes).
@@ -21,7 +21,7 @@ where the default write mode is `off`.
  3 files changed, 37 insertions(+), 1 deletion(-)
 
 diff --git a/src/XrdPfc/XrdPfc.cc b/src/XrdPfc/XrdPfc.cc
-index 33ea646ef..d2b31c528 100644
+index b30de53ec..b3a2f728b 100644
 --- a/src/XrdPfc/XrdPfc.cc
 +++ b/src/XrdPfc/XrdPfc.cc
 @@ -180,7 +180,11 @@ XrdOucCacheIO *Cache::Attach(XrdOucCacheIO *io, int Options)
@@ -37,7 +37,7 @@ index 33ea646ef..d2b31c528 100644
     {
        TRACE(Info, tpfx << obfuscateAuth(io->Path()));
  
-@@ -1071,6 +1075,10 @@ int Cache::Prepare(const char *curl, int oflags, mode_t mode)
+@@ -1072,6 +1076,10 @@ int Cache::Prepare(const char *curl, int oflags, mode_t mode)
     // Do not allow write access.
     if ((oflags & O_ACCMODE) != O_RDONLY)
     {
@@ -49,7 +49,7 @@ index 33ea646ef..d2b31c528 100644
        return -EROFS;
     }
 diff --git a/src/XrdPfc/XrdPfc.hh b/src/XrdPfc/XrdPfc.hh
-index 45c9448b6..4f6cd9de1 100644
+index 70da1d90e..5b407857a 100644
 --- a/src/XrdPfc/XrdPfc.hh
 +++ b/src/XrdPfc/XrdPfc.hh
 @@ -81,6 +81,7 @@ struct Configuration
@@ -60,7 +60,7 @@ index 45c9448b6..4f6cd9de1 100644
     bool m_hdfsmode;                     //!< flag for enabling block-level operation
     bool m_allow_xrdpfc_command;         //!< flag for enabling access to /xrdpfc-command/ functionality.
  
-@@ -133,6 +134,7 @@ struct TmpConfiguration
+@@ -144,6 +145,7 @@ struct TmpConfiguration
     std::string m_fileUsageNominal;
     std::string m_fileUsageMax;
     std::string m_flushRaw;
@@ -69,7 +69,7 @@ index 45c9448b6..4f6cd9de1 100644
     TmpConfiguration() :
        m_diskUsageLWM("0.90"), m_diskUsageHWM("0.95"),
 diff --git a/src/XrdPfc/XrdPfcConfiguration.cc b/src/XrdPfc/XrdPfcConfiguration.cc
-index ddc00334a..5ea632178 100644
+index b01cbac19..2b5ae5c80 100644
 --- a/src/XrdPfc/XrdPfcConfiguration.cc
 +++ b/src/XrdPfc/XrdPfcConfiguration.cc
 @@ -31,6 +31,7 @@ using namespace XrdPfc;
@@ -80,7 +80,7 @@ index ddc00334a..5ea632178 100644
     m_hdfsmode(false),
     m_allow_xrdpfc_command(false),
     m_data_space("public"),
-@@ -608,6 +609,21 @@ bool Cache::Config(const char *config_filename, const char *parameters)
+@@ -638,6 +639,21 @@ bool Cache::Config(const char *config_filename, const char *parameters, XrdOucEn
        }
     }
  
@@ -102,7 +102,7 @@ index ddc00334a..5ea632178 100644
     // get number of available RAM blocks after process configuration
     if (m_configuration.m_RamAbsAvailable == 0)
     {
-@@ -690,6 +706,7 @@ bool Cache::Config(const char *config_filename, const char *parameters)
+@@ -732,6 +748,7 @@ bool Cache::Config(const char *config_filename, const char *parameters, XrdOucEn
        {
           loff += snprintf(buff + loff, sizeof(buff) - loff, "       pfc.hdfsmode hdfsbsize %lld\n", m_configuration.m_hdfsbsize);
        }
@@ -110,7 +110,7 @@ index ddc00334a..5ea632178 100644
  
        if (m_configuration.m_username.empty())
        {
-@@ -1015,6 +1032,15 @@ bool Cache::ConfigParameters(std::string part, XrdOucStream& config, TmpConfigur
+@@ -1110,6 +1127,15 @@ bool Cache::ConfigParameters(std::string part, XrdOucStream& config, TmpConfigur
           }
        }
     }
@@ -127,5 +127,5 @@ index ddc00334a..5ea632178 100644
     {
        tmpc.m_flushRaw = cwg.GetWord();
 -- 
-2.47.1
+2.34.1
 
