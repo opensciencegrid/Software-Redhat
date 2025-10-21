@@ -1,16 +1,19 @@
 # pam_oauth2_device version
-%define _version 0.1.3.chtc
+%define _version 1.03
 %define _lib /lib64
 
 
 Name:    pamoauth2device
 Version: %{_version}
-Release: 1%{?dist}
+Release: 1.1%{?dist}
 Summary: PAM module for OAuth 2.0 Device flow
 License: Apache-2.0
 URL:     https://github.com/stfc/pam_oauth2_device/
 Source0: pam_oauth2_device-v%{_version}.tar.gz
-
+Patch0: 0000-Add-support-for-configurable-name-claim.patch
+Patch1: 0001-INF-2984-drop-unnecessary-token-logging.patch
+Patch2: 0002-Be-more-concrete-in-when-the-user-should-hit-enter.patch
+Patch3: 0003-Build-debug-symbols.patch
 
 # List of build-time dependencies:
 BuildRequires: gcc
@@ -33,7 +36,10 @@ identity provider using OAuth 2.0 Device Flow.
 
 %prep
 %setup -q -n pam_oauth2_device-v%{_version}
-
+%patch -P 0 -p1
+%patch -P 1 -p1
+%patch -P 2 -p1
+%patch -P 3 -p1
 
 %build
 make
@@ -57,6 +63,11 @@ cp config_template.json ${RPM_BUILD_ROOT}%{_sysconfdir}/pam_oauth2_device/config
 
 
 %changelog
+* Fri Oct 3 2025 Brian Lin <brian.lin@wisc.edu> - 1.03-1.1
+- Update to stfc upstream v1.03
+- Prevent package from stomping on existing config
+- Remove unnecessary token logging
+
 * Mon Aug 7 2023 Brian Lin <blin@cs.wisc.edu> - 0.1.3.chtc
 - Allow the name claim to be configurable (INF-748)
 
