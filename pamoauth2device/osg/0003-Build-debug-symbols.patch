@@ -1,0 +1,23 @@
+From 58e675b2e795b1179cd96b2e9802d16ff7b607a1 Mon Sep 17 00:00:00 2001
+From: Brian Lin <blin@cs.wisc.edu>
+Date: Mon, 20 Oct 2025 16:52:42 -0500
+Subject: [PATCH 6/6] Build debug symbols
+
+---
+ Makefile | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/Makefile b/Makefile
+index 62237e6..66eae32 100644
+--- a/Makefile
++++ b/Makefile
+@@ -1,5 +1,5 @@
+ CXXFLAGS=-Wall -fPIC -std=c++11
+-CFLAGS=-Wall -fPIC
++CFLAGS=-Wall -g -fPIC
+ 
+ LDLIBS=-lpam -lcurl -lldap -llber
+ 
+-- 
+2.50.1
+

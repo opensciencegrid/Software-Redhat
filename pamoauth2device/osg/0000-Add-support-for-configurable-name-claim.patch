@@ -1,0 +1,174 @@
+From fd4c9e30a723661c4779e648a084c8ecbebf3456 Mon Sep 17 00:00:00 2001
+From: Brian Lin <blin@cs.wisc.edu>
+Date: Fri, 3 Oct 2025 16:44:08 -0500
+Subject: [PATCH 2/6] Add support for configurable "name" claim
+
+ORCID does not provide the name claim
+---
+ README.md                       |  1 +
+ config_template.json            |  1 +
+ src/include/config.cpp          |  1 +
+ src/include/config.hpp          |  1 +
+ src/pam_oauth2_device.cpp       | 11 ++++++-----
+ src/pam_oauth2_device.hpp       |  3 ++-
+ test/data/template_noldap.json  |  3 ++-
+ test/test_pam_oauth2_device.cpp |  4 +++-
+ test/unit.cpp                   |  3 ++-
+ 9 files changed, 19 insertions(+), 9 deletions(-)
+
+diff --git a/README.md b/README.md
+index 18babc5..e359533 100644
+--- a/README.md
++++ b/README.md
+@@ -127,6 +127,7 @@ Thus, at the top level, there is a single object with a number of entries, descr
+ | oauth | token\_endpoint | String | Y | Token endpoint | https://${url}/token |
+ | oauth | userinfo\_endpoint | String | Y | Userinfo | https://${url}/userinfo |
+ | oauth | username\_attribute | String | Y | Attribute for remote username | |
++| oauth | name\_attribute | String | Y | Attribute for a user's full name | |
+ | oauth | local\_username\_suffix | String | Y | See usernames | |
+ | tls | | Object | Y | | |
+ | tls | ca\_bundle | String | N | Concatenated list of trust anchors | Note 2 |
+diff --git a/config_template.json b/config_template.json
+index a3bad1e..fee2411 100644
+--- a/config_template.json
++++ b/config_template.json
+@@ -9,6 +9,7 @@
+         "token_endpoint": "https://provider.com/token",
+         "userinfo_endpoint": "https://provider.com/userinfo",
+         "username_attribute": "preferred_username",
++        "name_attribute": "name",
+         "local_username_suffix": ""
+     },
+     "tls": {
+diff --git a/src/include/config.cpp b/src/include/config.cpp
+index 3ca87f6..352548a 100644
+--- a/src/include/config.cpp
++++ b/src/include/config.cpp
+@@ -147,6 +147,7 @@ Config::load(const char *path)
+ 	 variable({"oauth","token_endpoint"},value(""), true, token_endpoint),
+ 	 variable({"oauth","userinfo_endpoint"},value(""), true, userinfo_endpoint),
+ 	 variable({"oauth","username_attribute"},value(""),true, username_attribute),
++         variable({"oauth","name_attribute"},value(""),true, name_attribute),
+ 	 variable({"oauth","local_username_suffix"},value(""),false, local_username_suffix),
+ 	 variable({"qr","error_correction_level"},value(-1),false, qr_error_correction_level),
+ 	 variable({"client_debug"},value(false),false, client_debug),
+diff --git a/src/include/config.hpp b/src/include/config.hpp
+index 5a591d3..5628adf 100644
+--- a/src/include/config.hpp
++++ b/src/include/config.hpp
+@@ -16,6 +16,7 @@ public:
+         token_endpoint,
+         userinfo_endpoint,
+         username_attribute,
++        name_attribute,
+         ldap_host,
+         ldap_basedn,
+ 	ldap_scope,
+diff --git a/src/pam_oauth2_device.cpp b/src/pam_oauth2_device.cpp
+index f84de8d..d3b8e8f 100644
+--- a/src/pam_oauth2_device.cpp
++++ b/src/pam_oauth2_device.cpp
+@@ -262,7 +262,8 @@ get_userinfo(const Config &config,
+                   pam_oauth2_log &logger,
+                   std::string const &userinfo_endpoint,
+                   std::string const &token,
+-                  std::string const &username_attribute)
++                  std::string const &username_attribute,
++                  std::string const &name_attribute)
+ {
+     pam_oauth2_curl curl(config);
+ 
+@@ -274,11 +275,11 @@ get_userinfo(const Config &config,
+ 	    logger.log(pam_oauth2_log::log_level_t::DEBUG, "Userinfo token: %s", result.c_str());
+         auto const data = json::parse(result);
+ 	auto const the_end = data.end();
+-	if(data.find("sub") == the_end || data.find("name") == the_end)
+-	    throw "userinfo lacks 'sub' or 'name'";
++	if(data.find("sub") == the_end || data.find(name_attribute) == the_end)
++	    throw "userinfo lacks 'sub' or name_attribute";
+ 	if(data.find(username_attribute) == the_end)
+ 	    throw "username_attribute not found in userinfo object";
+-        Userinfo ui(data.at("sub"), data.at(username_attribute), data.at("name"));
++        Userinfo ui(data.at("sub"), data.at(username_attribute), data.at(name_attribute));
+ 	if(data.find("groups") != the_end)
+ 	    ui.set_groups( data.at("groups").get<std::vector<std::string>>() );
+         return ui;
+@@ -514,7 +515,7 @@ PAM_EXTERN int pam_sm_authenticate(pam_handle_t *pamh, int flags, int argc, cons
+                        config.token_endpoint,
+                        device_auth_response.device_code, token);
+         Userinfo ui{get_userinfo(config, logger, config.userinfo_endpoint, token,
+-				 config.username_attribute)};
++				 config.username_attribute, config.name_attribute)};
+ 	if (is_authorized(config, logger, username_local, ui)) {
+ 	    logger.log(pam_oauth2_log::log_level_t::INFO, "%s is authorised", username_local);
+ 	    return PAM_SUCCESS;
+diff --git a/src/pam_oauth2_device.hpp b/src/pam_oauth2_device.hpp
+index 706e8c8..2eeb17e 100644
+--- a/src/pam_oauth2_device.hpp
++++ b/src/pam_oauth2_device.hpp
+@@ -75,6 +75,7 @@ Userinfo get_userinfo(Config const &config,
+ 		      pam_oauth2_log &logger,
+ 		      std::string const &userinfo_endpoint,
+ 		      std::string const &token,
+-		      std::string const &username_attribute);
++		      std::string const &username_attribute,
++                      std::string const &name_attribute);
+ 
+ #endif // PAM_OAUTH2_DEVICE_HPP
+diff --git a/test/data/template_noldap.json b/test/data/template_noldap.json
+index f6c47d6..798f3f4 100644
+--- a/test/data/template_noldap.json
++++ b/test/data/template_noldap.json
+@@ -8,7 +8,8 @@
+         "device_endpoint":"https://provider.com/devicecode", 
+         "token_endpoint": "https://provider.com/token",
+         "userinfo_endpoint": "https://provider.com/userinfo",
+-        "username_attribute": "preferred_username"
++        "username_attribute": "preferred_username",
++        "name_attribute": "name"
+     },
+     "qr": {
+         "error_correction_level": 0
+diff --git a/test/test_pam_oauth2_device.cpp b/test/test_pam_oauth2_device.cpp
+index 68cc3ef..fd50ca6 100644
+--- a/test/test_pam_oauth2_device.cpp
++++ b/test/test_pam_oauth2_device.cpp
+@@ -6,6 +6,7 @@
+ #define TOKEN_ENDPOINT "http://localhost:8042/token"
+ #define USERINFO_ENDPOINT "http://localhost:8042/userinfo"
+ #define USERNAME_ATTRIBUTE "preferred_username"
++#define NAME_ATTRIBUTE "name"
+ #define CLIENT_ID "client_id"
+ #define CLIENT_SECRET "NDVmODY1ZDczMGIyMTM1MWFlYWM2NmYw"
+ #define SCOPE "openid profile"
+@@ -51,10 +52,11 @@ TEST(PamTest, Userinfo)
+     get_userinfo(USERINFO_ENDPOINT,
+                  ACCESS_TOKEN,
+                  USERNAME_ATTRIBUTE,
++                 NAME_ATTRIBUTE,
+                  &userinfo);
+     EXPECT_EQ(userinfo.sub, "YzQ4YWIzMzJhZjc5OWFkMzgwNmEwM2M5");
+     EXPECT_EQ(userinfo.username, "jdoe");
+     EXPECT_EQ(userinfo.name, "Joe Doe");
+ }
+ 
+-} // namespace
+\ No newline at end of file
++} // namespace
+diff --git a/test/unit.cpp b/test/unit.cpp
+index 4afec11..b4146ee 100644
+--- a/test/unit.cpp
++++ b/test/unit.cpp
+@@ -67,7 +67,8 @@ Userinfo get_userinfo(Config const &config,
+ 		      pam_oauth2_log &logger,
+ 		      std::string const &userinfo_endpoint,
+ 		      std::string const &token,
+-		      std::string const &username_attribute);
++		      std::string const &username_attribute,
++                      std::string const &name_attribute);
+ 
+ void show_prompt(pam_handle_t *pamh,
+ 		 int qr_error_correction_level,
+-- 
+2.50.1
+

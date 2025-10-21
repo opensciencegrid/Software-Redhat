@@ -1,0 +1,31 @@
+From 6c2e4d9890c2b89b8307b82a7f83144a832e1465 Mon Sep 17 00:00:00 2001
+From: Matyas Selmeci <matyas@cs.wisc.edu>
+Date: Mon, 7 Aug 2023 14:58:32 -0500
+Subject: [PATCH 4/6] Be more concrete in when the user should hit enter
+
+The CILogon website says "Please return to your device for further instructions." after authenticating which is confusing if the user is visiting the website from the same computer they are trying to log in from. Since we can't change the website, tell the user what message to expect instead.
+
+(Copied from https://github.com/bbockelm/pam_oauth2_device/pull/1)
+---
+ src/pam_oauth2_device.cpp | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/src/pam_oauth2_device.cpp b/src/pam_oauth2_device.cpp
+index c357601..cc26f16 100644
+--- a/src/pam_oauth2_device.cpp
++++ b/src/pam_oauth2_device.cpp
+@@ -148,9 +148,9 @@ std::string DeviceAuthResponse::get_prompt(const int qr_ecc = 0)
+                << std::endl
+                << getQr((complete_url ? verification_uri_complete : verification_uri).c_str(), qr_ecc)
+                << std::endl
+-               << "Hit enter when you have finished authenticating\n";
++               << "Hit enter when the website tells you to return to your device\n";
+     } else {
+-        prompt << "Hit enter when you have finished authenticating\n";
++        prompt << "Hit enter when the website tells you to return to your device\n";
+     }
+     return prompt.str();
+ }
+-- 
+2.50.1
+
