@@ -1,7 +1,7 @@
 Summary: Scitokens mapfile for OSG
 Name: osg-scitokens-mapfile
-Version: 15
-Release: 3%{?dist}
+Version: 16
+Release: 1%{?dist}
 License: ASL 2.0
 Source0: https://github.com/opensciencegrid/topology/archive/data-%{version}.tar.gz
 Source1: https://vdt.cs.wisc.edu/upstream/osg-scitokens-mapfile/pydeps/icalendar-4.0.7-py2.py3-none-any.whl
@@ -56,6 +56,9 @@ mv osg-scitokens-mapfile.conf %{buildroot}/usr/share/condor-ce/mapfiles.d/
 
 
 %changelog
+* Thu Oct 23 2025 Matt Westphall <westphall@wisc.edu> 16-1
+- Copy JLab-based collabs' scitoken issuers to osg-htc.org (SOFTWARE-6238)
+
 * Wed Sep 24 2025 Mátyás Selmeci <mselmeci@wisc.edu> 15-3
 - Bump to rebuild as noarch
 
