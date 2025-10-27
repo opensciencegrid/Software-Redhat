@@ -1,6 +1,6 @@
 Summary: OASIS server package
 Name: oasis-server
-Version: 3.12
+Version: 3.15
 Release: 1%{?dist} 
 Source0: %{name}-%{version}.tar.gz
 License: Apache 2.0
@@ -10,6 +10,8 @@ Url: http://www.opensciencegrid.org
 
 Obsoletes: oasis-goc
 Requires: python3-lxml
+
+%define cvmfs_version 2.13.3
 
 %description
 This package contains OASIS server software for OSG Operations
@@ -46,8 +48,8 @@ Obsoletes: oasis-goc-zero
 # Require specific versions of packages from osg yum repo so 
 #  they can't be upgraded without being tested first on itb
 Requires: cvmfs-config-osg = 2.5
-Requires: cvmfs = 2.10.1
-Requires: cvmfs-server = 2.10.1
+Requires: cvmfs = %{cvmfs_version}
+Requires: cvmfs-server = %{cvmfs_version}
 
 %description zero
 This package contains files for oasis.opensciencegrid.org
@@ -72,12 +74,12 @@ Obsoletes: oasis-goc-replica
 # Require specific versions of packages from osg yum repo so 
 #  they can't be upgraded without being tested first on itb
 Requires: cvmfs-config-osg = 2.5
-Requires: cvmfs = 2.10.1
-Requires: cvmfs-server = 2.10.1
+Requires: cvmfs = %{cvmfs_version}
+Requires: cvmfs-server = %{cvmfs_version}
 # Using a specific release (e.g. -2.1) requires adding %{?dist} but
 #  that doesn't work because this builds in the devops dist.  Would
 #  have to instead add a specific osg dist name, e.g. .osg36.
-Requires: frontier-squid = 11:5.7
+Requires: frontier-squid = 11:5.9
 
 %description replica
 This package contains files for oasis-replica.opensciencegrid.org
@@ -135,9 +137,22 @@ This package contains files for oasis-login.opensciencegrid.org
 
 
 %changelog
-* Mon Apr 15 2024 Mátyás Selmeci <matyas@cs.wisc.edu> - 3.12-1
-- Update to upstream 3.12 (SOFTWARE-5855):
-  - Add check (-c) option
+* Tue Oct 27 2025 Dave Dykstra <dwd@fnal.gov> - 3.15-1
+- Update to cvmfs and cvmfs-server 2.13.3
+- Change the lock name for generate_replicas to match the script name
+
+* Tue Feb 18 2025 John Thiltges <jthiltges@unl.edu> - 3.14-1
+- Update to cvmfs and cvmfs-server 2.12.6
+
+* Tue May 14 2024 Dave Dykstra <dwd@fnal.gov> - 3.13-1
+- Update to cvmfs and cvmfs-server 2.11.3
+
+* Fri Apr  5 2024 Dave Dykstra <dwd@fnal.gov> - 3.12-1
+- Add the "-i" option cvmfs_server check -a to check the integrity of
+  all files.  That makes the data chunk existense check unnecessary,
+  so also add the "-c" option which greatly speeds up the checks.
+- Update to cvmfs and cvmfs-server 2.11.2
+- Update to frontier-squid 5.9
 
 * Thu Jun 29 2023 Dave Dykstra <dwd@fnal.gov> - 3.11-1
 - Remove the "-c" from manage-replicas in generate_replicas, so it will
