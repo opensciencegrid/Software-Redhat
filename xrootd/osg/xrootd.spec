@@ -961,7 +961,7 @@ fi
 #-------------------------------------------------------------------------------
 %changelog
 * Wed Oct 15 2025 Matt Westphall <westphall@wisc.edu> - 5.9.0-1.1
-- Update to XRootD 5.8.4 (SOFTWARE-6187)
+- Update to XRootD 5.9.0 (SOFTWARE-6187)
     - Patches added:
     - Patches kept:
         - 0001-1-Allow-hostname-used-by-XRootD-to-be-overridden-by~7c119b0.patch -> 0001-1-Allow-hostname-used-by-XRootD-to-be-overridden-by-~8d1252d.patch
