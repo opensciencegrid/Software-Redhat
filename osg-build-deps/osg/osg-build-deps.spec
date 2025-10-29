@@ -1,5 +1,5 @@
 Name:           osg-build-deps
-Version:        6
+Version:        7
 Release:        1%{?dist}
 Summary:        Dependencies for build tools for the OSG
 
@@ -31,6 +31,9 @@ Requires:       subversion
 Requires:       wget
 Requires:       epel-rpm-macros
 Requires:       make
+%if 0%{?el8}
+Requires:       python3-dataclasses
+%endif
 Summary:        osg-build-deps base package, not containing deps for mock or koji modules or koji-based tools
 
 %description base
@@ -82,6 +85,9 @@ install -m 0755 %{SOURCE1} %{buildroot}/usr/sbin/install-osg-build.sh
 
 
 %changelog
+* Wed Oct 29 2025 Mátyás Selmeci <mselmeci@wisc.edu> - 7-1
+- Add python3-dataclasses requirement on EL8 (SOFTWARE-6244)
+
 * Tue Jul 15 2025 Mátyás Selmeci <mselmeci@wisc.edu> - 6-1
 - Update requirements for kerberos-based auth
 - Turn quilt into a soft dependency because it is not yet available on EL10
