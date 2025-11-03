@@ -1,7 +1,7 @@
 Summary: Configuration tool for the OSG Software Stack
 Name: osg-configure
-Version: 4.3.0
-Release: 2%{?dist}
+Version: 4.3.1
+Release: 1%{?dist}
 Source0: %{name}-%{version}.tar.gz
 License: Apache 2.0
 BuildArch: noarch
@@ -38,7 +38,7 @@ Generates CE attributes that will be uploaded to the central collector
 %package libs
 Summary: OSG Configure libraries
 %description libs
-This package containers the Python libraries used by osg-configure
+This package contains the Python libraries used by osg-configure
 
 %package siteinfo
 Summary: OSG configuration file for site information
@@ -255,6 +255,9 @@ touch $RPM_BUILD_ROOT/var/lib/osg/osg-job-environment.conf
 
 
 %changelog
+* Mon Nov 03 2025 Mátyás Selmeci <mselmeci@wisc.edu> 4.3.1-1
+- Support HTCondor bindings v2 (SOFTWARE-6239)
+
 * Tue Sep 09 2025 Mátyás Selmeci <mselmeci@wisc.edu> 4.3.0-2
 - Modernize spec file
 - Drop transitional dummy packages
