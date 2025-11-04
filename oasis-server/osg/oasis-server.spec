@@ -1,6 +1,6 @@
 Summary: OASIS server package
 Name: oasis-server
-Version: 3.15
+Version: 3.16
 Release: 1%{?dist} 
 Source0: %{name}-%{version}.tar.gz
 License: Apache 2.0
@@ -79,7 +79,7 @@ Requires: cvmfs-server = %{cvmfs_version}
 # Using a specific release (e.g. -2.1) requires adding %{?dist} but
 #  that doesn't work because this builds in the devops dist.  Would
 #  have to instead add a specific osg dist name, e.g. .osg36.
-Requires: frontier-squid = 11:5.9
+Requires: frontier-squid = 11:6.13
 
 %description replica
 This package contains files for oasis-replica.opensciencegrid.org
@@ -89,7 +89,6 @@ This package contains files for oasis-replica.opensciencegrid.org
 /etc/init.d/oasis-replica-initclean
 /etc/squid/oasiscustomize.sh
 /etc/httpd/conf.d/cvmfs.conf
-/etc/logrotate.d/cvmfs
 /etc/sysconfig/frontier-squid
 /var/www/html/robots.txt
 /usr/lib/systemd/system/oasis-replica-initclean.service
@@ -137,6 +136,11 @@ This package contains files for oasis-login.opensciencegrid.org
 
 
 %changelog
+* Mon Nov  3 2025 Dave Dykstra <dwd@fnal.gov> - 3.16-1
+- Remove /etc/logrotate.d/cvmfs from oasis-server-replica since it is now
+  supplied by cvmfs-server.
+- Update frontier-squid to 11:6.13
+
 * Tue Oct 27 2025 Dave Dykstra <dwd@fnal.gov> - 3.15-1
 - Update to cvmfs and cvmfs-server 2.13.3
 - Change the lock name for generate_replicas to match the script name
