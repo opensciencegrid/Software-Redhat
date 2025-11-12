@@ -19,8 +19,8 @@
 # ------------------------------------------------------------------------------
 # For Release Candidate builds, check with Software team on release string
 # ------------------------------------------------------------------------------
-%global version 3.10.16
-%global release 1
+%global version 3.10.17
+%global release 0.1.rc1
 
 %global frontend_xml frontend.xml
 %global factory_xml glideinWMS.xml
@@ -885,8 +885,6 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_bindir}/extract_EC2_Address
 %attr(755,root,root) %{_bindir}/find_StartdLogs
 %attr(755,root,root) %{_bindir}/find_logs
-%attr(755,root,root) %{_bindir}/fact_chown
-%attr(755,root,root) %{_bindir}/fact_chown_check
 %attr(755,root,root) %{_bindir}/gwms-logcat.sh
 %attr(755,root,root) %{_bindir}/manual_glidein_submit
 %attr(755,root,root) %{_bindir}/OSG_autoconf
@@ -1133,6 +1131,16 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Wed Nov 12 2025 Marco Mambelli <marcom@fnal.gov> - 3.10.17
+- Glideinwms v3.10.17
+- Release Notes: http://glideinwms.fnal.gov/doc.v3_10_17/history.html
+- Release candidates 3.10.17-01.rc1
+
+* Wed Nov 12 2025 Marco Mambelli <marcom@fnal.gov> - 3.10.17
+- Glideinwms v3.10.17
+- Release Notes: http://glideinwms.fnal.gov/doc.v3_10_17/history.html
+- Release candidates 3.10.17-01.rc1
+
 * Mon Sep 29 2025 Marco Mambelli <marcom@fnal.gov> - 3.10.16
 - Glideinwms v3.10.16
 - Release Notes: http://glideinwms.fnal.gov/doc.v3_10_16/history.html
