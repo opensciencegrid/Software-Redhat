@@ -1,4 +1,4 @@
-From 39762d5c8aeb1d145ee6c14eab1ac3d63198f39f Mon Sep 17 00:00:00 2001
+From bc84907bab2677dc0cabc93be442c829586bd4e8 Mon Sep 17 00:00:00 2001
 From: Brian Bockelman <bbockelman@morgridge.org>
 Date: Wed, 15 Jan 2025 08:01:58 -0600
 Subject: [PATCH 1/7] [#1] Allow hostname used by XRootD to be overridden by
@@ -24,7 +24,7 @@ diff --git a/src/Xrd/XrdConfig.cc b/src/Xrd/XrdConfig.cc
 index 551b55f90..9f936409a 100644
 --- a/src/Xrd/XrdConfig.cc
 +++ b/src/Xrd/XrdConfig.cc
-@@ -588,11 +588,20 @@ int XrdConfig::Configure(int argc, char **argv)
+@@ -588,24 +588,33 @@ int XrdConfig::Configure(int argc, char **argv)
  // run in v4 mode and that doesn't get set until after the options are scanned.
  //
     static XrdNetAddr *myIPAddr = new XrdNetAddr((int)0);
@@ -47,7 +47,8 @@ index 551b55f90..9f936409a 100644
     ProtInfo.myAddr = myIPAddr->SockAddr();
     ProtInfo.myInst = XrdOucUtils::InstName(myInsName);
     ProtInfo.myProg = myProg;
-@@ -601,11 +610,11 @@ int XrdConfig::Configure(int argc, char **argv)
+ 
+ // Set the Environmental variable to hold the instance name
  // XRDINSTANCE=<pgm> <instance name>@<host name>
  //                 XrdOucEnv::Export("XRDINSTANCE")
  //
@@ -136,7 +137,7 @@ diff --git a/src/XrdCms/XrdCmsClientMan.cc b/src/XrdCms/XrdCmsClientMan.cc
 index 9f5294195..677b64da3 100644
 --- a/src/XrdCms/XrdCmsClientMan.cc
 +++ b/src/XrdCms/XrdCmsClientMan.cc
-@@ -323,7 +323,7 @@ int XrdCmsClientMan::Hookup()
+@@ -323,20 +323,25 @@ int XrdCmsClientMan::Hookup()
     EPNAME("Hookup");
     CmsLoginData Data;
     XrdLink *lp;
@@ -145,7 +146,12 @@ index 9f5294195..677b64da3 100644
     kXR_char *envData = 0;
     int rc, oldWait, tries = 12, opts = 0;
  
-@@ -336,7 +336,12 @@ int XrdCmsClientMan::Hookup()
+ // Turn off our debugging and version flags
+ //
+    manMutex.Lock();
+    doDebug    &= ~manMask;
+    manMutex.UnLock();
+ 
  // Report our hostname (there are better ways of doing this)
  //
     const char *hn = getenv("XRDHOST");
@@ -226,7 +232,7 @@ index 3a2a69af3..2bb168961 100644
  // Print herald
  //
 diff --git a/src/XrdCms/XrdCmsNode.cc b/src/XrdCms/XrdCmsNode.cc
-index a7498d06c..d8042ee7f 100644
+index e33d2e80f..b4b702a5e 100644
 --- a/src/XrdCms/XrdCmsNode.cc
 +++ b/src/XrdCms/XrdCmsNode.cc
 @@ -166,6 +166,8 @@ void XrdCmsNode::setName(XrdLink *lnkp, const char *theIF, int port)
@@ -364,7 +370,7 @@ index b36956622..849b67e1d 100644
  
  //------------------------------------------------------------------------------
  //! The XrdNetIF class handles host interfaces. It is used to obtain the
-@@ -89,6 +90,18 @@ public:
+@@ -89,6 +90,18 @@ class XrdNetIF
  
         int  GetDest(char *dest, int dlen, ifType ifT=PublicV6, bool prefn=false);
  
@@ -434,5 +440,5 @@ index b36956622..849b67e1d 100644
  XrdSysError   *eDest;
  static
 -- 
-2.34.1
+2.47.3
 

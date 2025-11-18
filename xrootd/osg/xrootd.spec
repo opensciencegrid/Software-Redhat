@@ -51,7 +51,7 @@ License:	LGPL-3.0-or-later AND BSD-2-Clause AND BSD-3-Clause AND curl AND MIT AN
 URL:		https://xrootd.org
 
 %if !%{with git}
-Version:	5.9.0
+Version:	5.9.1
 Source0:	https://xrootd.web.cern.ch/download/v%{version}/%{name}-%{version}.tar.gz
 %else
 %define git_version %(tar xzf %{_sourcedir}/%{name}.tar.gz -O xrootd/VERSION)
@@ -67,11 +67,11 @@ Source0:	%{name}.tar.gz
 Source1:   xrootd-%{compat_version}.tar.gz
 
 # PelicanPlatform/xrootd #1 (xrootd/xrootd #1868):
-Patch1: 0001-1-Allow-hostname-used-by-XRootD-to-be-overridden-by-~8d1252d.patch
+Patch1: 0001-1-Allow-hostname-used-by-XRootD-to-be-overridden-by~e13587e.patch
 # PelicanPlatform/xrootd #6 (xrootd/xrootd #2397):
-Patch2: 0002-6-XrdSciTokens-Handle-multiple-authorization-token-s~a0751f6.patch
+Patch2: 0002-6-XrdSciTokens-Handle-multiple-authorization-token-s~d8842b6.patch
 # PelicanPlatform/xrootd #14 (no upstream):
-Patch3: 0003-14-XrdHttp-Undo-HTTP-PUT-response-code-change~43ed40b.patch
+Patch3: 0003-14-XrdHttp-Undo-HTTP-PUT-response-code-change~73ddc83.patch
 # PelicanPlatform/xrootd #25
 Patch4: 0004-25-XRootD-s-xml-response-for-PROPFIND-will-now-inclu~aacf631.patch
 # PelicanPlatform/xrootd #32 (xrootd/xrootd #2472)
@@ -79,7 +79,7 @@ Patch5: 0005-32-Enable-write-through-mode-for-cache~330eac1.patch
 # PelicanPlatform/xrootd #34 (no upstream)
 Patch6: 0006-34-Add-S3-as-a-permitted-proxy-protocol~b36d9b7.patch
 # PelicanPlatform/xrootd #36 (no upstream)
-Patch7: 0007-37-Add-TPC-worker-pool~0bcba8c.patch
+Patch7: 0007-37-Add-TPC-worker-pool~31dd3de.patch
 
 BuildRequires:	cmake
 BuildRequires:	gcc-c++
@@ -960,6 +960,19 @@ fi
 # Changelog
 #-------------------------------------------------------------------------------
 %changelog
+* Tue Nov 18 2025 Mátyás Selmeci <mselmeci@wisc.edu> - 5.9.1-1.1
+- Update to XRootD 5.9.1 (SOFTWARE-6260)
+    - Patches added:
+    - Patches kept:
+        - 0001-1-Allow-hostname-used-by-XRootD-to-be-overridden-by-~8d1252d.patch -> 0001-1-Allow-hostname-used-by-XRootD-to-be-overridden-by~e13587e.patch
+        - 0002-6-XrdSciTokens-Handle-multiple-authorization-token-s~a0751f6.patch -> 0002-6-XrdSciTokens-Handle-multiple-authorization-token-s~d8842b6.patch
+        - 0003-14-XrdHttp-Undo-HTTP-PUT-response-code-change~43ed40b.patch -> 0003-14-XrdHttp-Undo-HTTP-PUT-response-code-change~73ddc83.patch
+        - 0004-25-XRootD-s-xml-response-for-PROPFIND-will-now-inclu~aacf631.patch
+        - 0005-32-Enable-write-through-mode-for-cache~330eac1.patch
+        - 0006-34-Add-S3-as-a-permitted-proxy-protocol~b36d9b7.patch
+        - 0007-37-Add-TPC-worker-pool~0bcba8c.patch -> 0007-37-Add-TPC-worker-pool~31dd3de.patch
+    - Patches dropped:
+
 * Wed Oct 15 2025 Matt Westphall <westphall@wisc.edu> - 5.9.0-1.1
 - Update to XRootD 5.9.0 (SOFTWARE-6187)
     - Patches added:
