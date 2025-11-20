@@ -1,0 +1,29 @@
+From 280ee9256e79b7ba3b677959261a3bf8a0c90c9e Mon Sep 17 00:00:00 2001
+From: Patrick Brophy <patrick.brophy2@gmail.com>
+Date: Wed, 19 Nov 2025 21:26:45 +0000
+Subject: [PATCH 8/8] 41-Fix null pointer dereference in ThrottleManager
+
+- Add check for null client pointer
+---
+ src/XrdThrottle/XrdThrottleManager.cc | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/src/XrdThrottle/XrdThrottleManager.cc b/src/XrdThrottle/XrdThrottleManager.cc
+index c3b458f83..aa27f3bc1 100644
+--- a/src/XrdThrottle/XrdThrottleManager.cc
++++ b/src/XrdThrottle/XrdThrottleManager.cc
+@@ -114,6 +114,11 @@ XrdThrottleManager::Init()
+ 
+ std::tuple<std::string, uint16_t>
+ XrdThrottleManager::GetUserInfo(const XrdSecEntity *client) {
++    // client can be null, if so, return nobody
++    if (!client) {
++        return std::make_tuple("nobody", GetUid("nobody"));
++    }
++
+     // Try various potential "names" associated with the request, from the most
+     // specific to most generic.
+     std::string user;
+-- 
+2.47.3
+
