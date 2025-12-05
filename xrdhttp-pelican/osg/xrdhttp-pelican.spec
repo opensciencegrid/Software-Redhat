@@ -1,7 +1,7 @@
 
 Name: xrdhttp-pelican
 Version: 0.0.7
-Release: 1.1%{?dist}
+Release: 2%{?dist}
 Summary: A Pelican-specific plugin for the XrdHttp server
 
 Group: System Environment/Daemons
@@ -12,8 +12,8 @@ URL: https://github.com/pelicanplatform/xrdhttp-pelican
 Source0: %{name}-%{version}.tar.gz
 
 %define xrootd_current_major 5
-%define xrootd_current_minor 8
-%define xrootd_next_minor 9
+%define xrootd_current_minor 9
+%define xrootd_next_minor 10
 
 BuildRoot: %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 # Since we rely on the private headers, we don't want the plugin to cross
@@ -54,6 +54,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/libXrdHttpPelican-*.so
 
 %changelog
+* Fri Dec 05 2025 Mátyás Selmeci <mselmeci@wisc.edu> - 0.0.7-2
+- Rebuild with XRootD 5.9 (SOFTWARE-6266)
+
 * Wed Sep 24 2025 Mátyás Selmeci <mselmeci@wisc.edu> - 0.0.7-1.1
 - Bump to rebuild for x86_64 on EL10
 
