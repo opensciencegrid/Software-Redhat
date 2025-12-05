@@ -1,0 +1,3 @@
+TEMPORARY: scitokens-cpp with a hotfix for https://github.com/scitokens/scitokens-cpp/pull/157
+
+This package should not be shipped, since scitokens-cpp is in EPEL.

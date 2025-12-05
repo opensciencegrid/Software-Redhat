@@ -1,0 +1,51 @@
+From 33d78ab96d0f786ad856529de7bd030f95eb33bc Mon Sep 17 00:00:00 2001
+From: Derek Weitzel <djw8605@gmail.com>
+Date: Thu, 1 May 2025 15:06:35 -0500
+Subject: [PATCH 1/2] Set CURLOPT_NOSIGNAL option in SimpleCurlGet to prevent
+ signal interruptions
+
+Fixes #148
+---
+ src/scitokens_internal.cpp | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/src/scitokens_internal.cpp b/src/scitokens_internal.cpp
+index 60e92e7..bb1aba7 100644
+--- a/src/scitokens_internal.cpp
++++ b/src/scitokens_internal.cpp
+@@ -80,6 +80,12 @@ SimpleCurlGet::GetStatus SimpleCurlGet::perform_start(const std::string &url) {
+     if (rv != CURLE_OK) {
+         throw CurlException("Failed to set CURLOPT_FOLLOWLOCATION.");
+     }
++    // Disable signal handling to avoid issues in multi-threaded contexts.
++    rv = curl_easy_setopt(m_curl.get(), CURLOPT_NOSIGNAL, 1L);
++    if (rv != CURLE_OK) {
++        throw CurlException("Failed to set CURLOPT_NOSIGNAL.");
++    }
++    
+ 
+     auto ca_file = configurer::Configuration::get_tls_ca_file();
+     if (!ca_file.empty()) {
+
+From 0b3181cb1b41dd56afa713aa01a5d258bb5ef869 Mon Sep 17 00:00:00 2001
+From: Derek Weitzel <djw8605@gmail.com>
+Date: Thu, 1 May 2025 15:23:04 -0500
+Subject: [PATCH 2/2] Update src/scitokens_internal.cpp
+
+Co-authored-by: github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>
+---
+ src/scitokens_internal.cpp | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/src/scitokens_internal.cpp b/src/scitokens_internal.cpp
+index bb1aba7..0b37773 100644
+--- a/src/scitokens_internal.cpp
++++ b/src/scitokens_internal.cpp
+@@ -85,7 +85,6 @@ SimpleCurlGet::GetStatus SimpleCurlGet::perform_start(const std::string &url) {
+     if (rv != CURLE_OK) {
+         throw CurlException("Failed to set CURLOPT_NOSIGNAL.");
+     }
+-    
+ 
+     auto ca_file = configurer::Configuration::get_tls_ca_file();
+     if (!ca_file.empty()) {
