@@ -425,6 +425,8 @@ rm -f $RPM_BUILD_ROOT%{python3_sitelib}/glideinwms/creation/create_cvmfsexec_dis
 rm -f $RPM_BUILD_ROOT%{python3_sitelib}/glideinwms/creation/create_frontend
 rm -f $RPM_BUILD_ROOT%{python3_sitelib}/glideinwms/creation/create_glidein
 rm -f $RPM_BUILD_ROOT%{python3_sitelib}/glideinwms/creation/info_glidein
+# TODO: temp line for 3.11.3.rc1 - to remove after
+rm -f $RPM_BUILD_ROOT%{python3_sitelib}/glideinwms/creation/lib/check_python3_expr.py
 rm -rf $RPM_BUILD_ROOT%{python3_sitelib}/glideinwms/plugins
 rm -rf $RPM_BUILD_ROOT%{python3_sitelib}/glideinwms/logserver
 
