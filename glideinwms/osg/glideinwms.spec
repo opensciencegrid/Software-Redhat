@@ -44,7 +44,7 @@
 %global systemctl_bin systemctl
 # Minimum HTCondor and Python required versions
 %global htcss_min_version 8.9.5
-%global python_min_version 3.6
+%global python_min_version 3.9
 
 Name:           glideinwms
 Version:        %{version}
