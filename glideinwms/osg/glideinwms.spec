@@ -20,7 +20,7 @@
 # For Release Candidate builds, check with Software team on release string
 # ------------------------------------------------------------------------------
 %global version 3.11.3
-%global release 0.1.rc1
+%global release 0.2.rc2
 
 %global frontend_xml frontend.xml
 %global factory_xml glideinWMS.xml
@@ -128,7 +128,6 @@ Requires: rrdtool
 Requires: python3-rrdtool
 Requires: python3-scitokens
 Requires: initscripts
-Requires: python3-m2crypto
 Requires(post): systemd
 Requires(post): /usr/sbin/useradd
 Requires(post): /usr/sbin/usermod
@@ -203,7 +202,6 @@ Requires: python3-condor
 Requires: python3-pyyaml
 Requires: python3-jwt
 Requires: python3-cryptography
-Requires: python3-m2crypto
 #Requires: python3-structlog
 Requires: python3-rrdtool
 %description libs
@@ -268,7 +266,6 @@ Requires: python3 >= %{python_min_version}
 # Is this the same? Requires: python36-configargparse
 Requires: javascriptrrd >= 1.1.0
 Requires: initscripts
-Requires: python3-m2crypto
 Requires: python3-requests
 Requires: python3-jwt
 Requires: python3-rrdtool
@@ -425,8 +422,6 @@ rm -f $RPM_BUILD_ROOT%{python3_sitelib}/glideinwms/creation/create_cvmfsexec_dis
 rm -f $RPM_BUILD_ROOT%{python3_sitelib}/glideinwms/creation/create_frontend
 rm -f $RPM_BUILD_ROOT%{python3_sitelib}/glideinwms/creation/create_glidein
 rm -f $RPM_BUILD_ROOT%{python3_sitelib}/glideinwms/creation/info_glidein
-# TODO: temp line for 3.11.3.rc1 - to remove after
-rm -f $RPM_BUILD_ROOT%{python3_sitelib}/glideinwms/creation/lib/check_python3_expr.py
 rm -rf $RPM_BUILD_ROOT%{python3_sitelib}/glideinwms/plugins
 rm -rf $RPM_BUILD_ROOT%{python3_sitelib}/glideinwms/logserver
 
@@ -957,6 +952,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libexecdir}/gwms_renew_proxies
 %attr(-, frontend, frontend) %dir %{_localstatedir}/lib/gwms-frontend
 %attr(-, frontend, frontend) %{_localstatedir}/lib/gwms-frontend/README.md
+%attr(700, frontend, frontend) %{frontend_keys_dir}
 %attr(700, frontend, frontend) %{frontend_token_dir}
 %attr(700, frontend, frontend) %{frontend_passwd_dir}
 %attr(700, frontend, frontend) %{frontend_cache_dir}
