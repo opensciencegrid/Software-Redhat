@@ -1,1 +1,1 @@
-type=github repo=PelicanPlatform/xrdhttp-pelican spec=rpm/xrdhttp-pelican.spec tag=v0.0.9 hash=e18a8a78face41851b4d1fb88c0492ac921e5e99
+type=github repo=PelicanPlatform/xrdhttp-pelican spec=rpm/xrdhttp-pelican.spec tag=v0.0.10 hash=d9d4fb4ea664dab5dcf3ed5639925ef4785f48fc
