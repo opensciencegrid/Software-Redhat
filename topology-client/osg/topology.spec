@@ -2,20 +2,15 @@
 Summary: Client tools for OSG Topology
 Name: topology-client
 Version: 1.69.0
-Release: 2%{?dist}
+Release: 3%{?dist}
 Source: topology-%{version}.tar.gz
 License: Apache 2.0
 BuildArch: noarch
 Url: https://github.com/opensciencegrid/topology/
 BuildRequires: unzip
 BuildRequires: python3-requests
-%if 0%{?el8}
 BuildRequires: python3-gnupg
 Requires: python3-gnupg
-%endif
-# obtained via `python3 -m pip download python-gnupg`
-Source1: https://vdt.cs.wisc.edu/upstream/topology-client/python-deps/python_gnupg-0.5.6-py2.py3-none-any.whl
-Patch0: Find-local-install-of-python-gnupg.patch
 
 Requires: python3-requests
 
@@ -36,9 +31,6 @@ A utility for periodically downloading OSG Topology data.
 
 %prep
 %setup -q -n topology-%{version}
-%if 0%{?el7}
-%patch0 -p1
-%endif
 
 %install
 install -D -m 0755 bin/osg-notify %{buildroot}/%{_bindir}/osg-notify
@@ -46,10 +38,6 @@ install -D -m 0644 src/net_name_addr_utils.py  %{buildroot}/%{python_sitelib}/ne
 install -D -m 0644 src/topology_utils.py %{buildroot}/%{python_sitelib}/topology_utils.py
 install -D -m 0755 src/topology_cacher.py %{buildroot}/%{python_sitelib}/topology_cacher.py
 install -D -m 0644 topology-cacher.cron %{buildroot}/etc/cron.d/topology-cacher.cron
-%if 0%{?el7}
-    unzip %{SOURCE1}
-    install -D -m 0644 gnupg.py %{buildroot}/usr/lib/topology-client/gnupg.py
-%endif
 
 %files
 %{_bindir}/osg-notify
@@ -57,9 +45,6 @@ install -D -m 0644 topology-cacher.cron %{buildroot}/etc/cron.d/topology-cacher.
 %{python_sitelib}/topology_utils.py*
 %{python_sitelib}/__pycache__/net_name_addr_utils*
 %{python_sitelib}/__pycache__/topology_utils*
-%if 0%{?el7}
-    /usr/lib/topology-client/*
-%endif
 
 %files -n topology-cacher
 %{python_sitelib}/topology_cacher.py*
@@ -68,7 +53,10 @@ install -D -m 0644 topology-cacher.cron %{buildroot}/etc/cron.d/topology-cacher.
 
 
 %changelog
-* Tue Jan 27 2026 Matt Westphall <westphall@wisc.edu> - 1.69.0-1
+* Tue Jan 27 2026 Matt Westphall <westphall@wisc.edu> - 1.69.0-3
+- Remove EL7 compatibility macros (SOFTWARE-6278)
+
+* Tue Jan 27 2026 Matt Westphall <westphall@wisc.edu> - 1.69.0-2
 - Rebuild for OSG 25 (SOFTWARE-6278)
 
 * Fri Dec 30 2022 Carl Edquist <edquist@cs.wisc.edu> - 1.22.0-2
