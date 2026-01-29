@@ -1,32 +1,6 @@
-This build includes "compat" packages that are built from the XRootD 4 sources.
-To update the compat packages:
+This package is built from the GitHub repo
+<https://github.com/PelicanPlatform/xrootd>, which is a fork of
+<https://github.com/xrootd/xrootd>, including patches we need for Pelican.
 
-**Steps:**
-- Download the source from xrootd.org: follow the link in the announcement email, then click the "Source" link.
-  Or use http://xrootd.org/download/v${VERSION}/xrootd-${VERSION}.tar.gz
-  (where ${VERSION} is the new version of XRootD 4)
-
-  If you can't use that URL for some reason (e.g. permission denied), download the archive from GitHub
-  by finding the appropriate tag: https://github.com/xrootd/xrootd/tags
-
-- Put the tarball in the usual upstream area and update "xrootd-compat.tarball.source"
-
-- Edit "osg/xrootd.spec" and update the "%define compat_version" line
-
-- Bump the release and add %changelog entry
-
-- Build
-
-
-We sometimes fork their repo and apply commits.  In that case, here's how to build the SRPM:
-
-**Steps:** (for an example v5.4.3-rc4.1 tag)
-# clone the repo, including submodules, and switch to the tag
-# make tags with the same name in submodules src/XrdClHttp and src/XrdCeph
-
-podman run -i -t --rm -v $PWD:/xrootd centos:7 bash
-      yum-config-manager --enablerepo powertools >/dev/null
-      yum install -y epel-release
-      yum install -y rpm-build python-srpm-macros epel-srpm-macros which git
-      cd /xrootd/packaging
-      ./makesrpm.sh --version 5.4.3
+See <https://github.com/PelicanPlatform/xrootd/wiki> for instructions
+on how to update this package.
