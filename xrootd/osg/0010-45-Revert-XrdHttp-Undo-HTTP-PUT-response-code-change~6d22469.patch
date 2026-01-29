@@ -1,0 +1,28 @@
+From c3affcb6bca9eb9033076340dcd7402af69fbc67 Mon Sep 17 00:00:00 2001
+From: Matyas Selmeci <mselmeci@wisc.edu>
+Date: Thu, 29 Jan 2026 12:03:37 -0600
+Subject: [PATCH 10/10] [#45] Revert "[XrdHttp] Undo HTTP PUT response code
+ change"
+
+This reverts commit 890dd567d9a3fcc150f92d8a673b708696cb8f50. [#14]
+---
+ src/XrdHttp/XrdHttpReq.cc | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/src/XrdHttp/XrdHttpReq.cc b/src/XrdHttp/XrdHttpReq.cc
+index 825e7c4da..4aa80a035 100644
+--- a/src/XrdHttp/XrdHttpReq.cc
++++ b/src/XrdHttp/XrdHttpReq.cc
+@@ -2311,8 +2311,7 @@ int XrdHttpReq::PostProcessHTTPReq(bool final_) {
+ 
+         if (ntohs(xrdreq.header.requestid) == kXR_close) {
+           if (xrdresp == kXR_ok) {
+-            // The correct response code is 201 (Created) but Pelican clients before 7.12.2 do not treat 201 as success, only 200.
+-            prot->SendSimpleResp(200, NULL, NULL, (char *) ":-)", 0, keepalive);
++            prot->SendSimpleResp(201, NULL, NULL, (char *)":-)", 0, keepalive);
+             return keepalive ? 1 : -1;
+           } else {
+             prot->SendSimpleResp(httpStatusCode, NULL, NULL, httpErrorBody.c_str(), httpErrorBody.length(), keepalive);
+-- 
+2.47.3
+

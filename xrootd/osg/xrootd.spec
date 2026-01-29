@@ -44,7 +44,7 @@
 #-------------------------------------------------------------------------------
 Name:		xrootd
 Epoch:		1
-Release:	1.2%{?dist}%{?with_clang:.clang}%{?with_asan:.asan}
+Release:	1.3%{?dist}%{?with_clang:.clang}%{?with_asan:.asan}
 Summary:	Extended ROOT File Server
 Group:		System Environment/Daemons
 License:	LGPL-3.0-or-later AND BSD-2-Clause AND BSD-3-Clause AND curl AND MIT AND Zlib
@@ -82,6 +82,10 @@ Patch6: 0006-34-Add-S3-as-a-permitted-proxy-protocol~b36d9b7.patch
 Patch7: 0007-37-Add-TPC-worker-pool~31dd3de.patch
 # PelicanPlatform/xrootd #41 (xrootd/xrootd #2645)
 Patch8: 0008-41-Fix-null-pointer-dereference-in-ThrottleManager~a327e0e.patch
+# PelicanPlatform/xrootd #44 (xrootd/xrootd #2576)
+Patch9: 0009-42-Full-pkcs11-integration~d92e458.patch
+# PelicanPlatform/xrootd #45 (no upstream)
+Patch10: 0010-45-Revert-XrdHttp-Undo-HTTP-PUT-response-code-change~6d22469.patch
 
 BuildRequires:	cmake
 BuildRequires:	gcc-c++
@@ -962,6 +966,10 @@ fi
 # Changelog
 #-------------------------------------------------------------------------------
 %changelog
+* Thu Jan 29 2026 Mátyás Selmeci <mselmeci@wisc.edu> - 5.9.1-1.3
+- Add 0009-42-Full-pkcs11-integration~d92e458.patch (SOFTWARE-6280)
+- Add 0010-45-Revert-XrdHttp-Undo-HTTP-PUT-response-code-change~6d22469.patch (SOFTWARE-6280)
+
 * Thu Nov 20 2025 Mátyás Selmeci <mselmeci@wisc.edu> - 5.9.1-1.2
 - Add 0008-41-Fix-null-pointer-dereference-in-ThrottleManager~a327e0e.patch (SOFTWARE-6260)
 
