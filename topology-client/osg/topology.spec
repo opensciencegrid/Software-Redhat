@@ -1,8 +1,8 @@
 
 Summary: Client tools for OSG Topology
 Name: topology-client
-Version: 1.69.0
-Release: 3%{?dist}
+Version: 1.69.1
+Release: 1%{?dist}
 Source: topology-%{version}.tar.gz
 License: Apache 2.0
 BuildArch: noarch
@@ -53,6 +53,9 @@ install -D -m 0644 topology-cacher.cron %{buildroot}/etc/cron.d/topology-cacher.
 
 
 %changelog
+* Mon Feb 2 2026 Matt Westphall <westphall@wisc.edu> - 1.69.1-1
+- Fix issue with tls client auth config in el9 osg-notify (SOFTWARE-6278)
+
 * Tue Jan 27 2026 Matt Westphall <westphall@wisc.edu> - 1.69.0-3
 - Remove EL7 compatibility macros (SOFTWARE-6278)
 
