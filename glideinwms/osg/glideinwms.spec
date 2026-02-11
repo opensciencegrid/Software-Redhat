@@ -23,7 +23,7 @@
 # For Release Candidate builds, check with Software team on release string
 # ------------------------------------------------------------------------------
 %global version 3.11.3
-%global release 2
+%global release 3
 
 %global frontend_xml frontend.xml
 %global factory_xml glideinWMS.xml
@@ -141,6 +141,7 @@ Requires: rrdtool
 Requires: python3-rrdtool
 Requires: python3-scitokens
 Requires: initscripts
+Requires: python3-m2crypto
 Requires(post): systemd
 Requires(post): /usr/sbin/useradd
 Requires(post): /usr/sbin/usermod
@@ -215,6 +216,7 @@ Requires: python3-condor
 Requires: python3-pyyaml
 Requires: python3-jwt
 Requires: python3-cryptography
+Requires: python3-m2crypto
 #Requires: python3-structlog
 Requires: python3-rrdtool
 %description libs
@@ -280,6 +282,7 @@ Requires: javascriptrrd >= 1.1.0
 Requires: initscripts
 Requires: python3-requests
 Requires: python3-jwt
+Requires: python3-m2crypto
 Requires: python3-rrdtool
 Requires(post): systemd
 Requires(post): /usr/sbin/useradd
