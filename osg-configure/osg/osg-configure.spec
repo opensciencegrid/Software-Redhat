@@ -1,6 +1,6 @@
 Summary: Configuration tool for the OSG Software Stack
 Name: osg-configure
-Version: 4.3.1
+Version: 4.3.2
 Release: 1%{?dist}
 Source0: %{name}-%{version}.tar.gz
 License: Apache 2.0
@@ -255,6 +255,9 @@ touch $RPM_BUILD_ROOT/var/lib/osg/osg-job-environment.conf
 
 
 %changelog
+* Mon Feb 09 2026 Mátyás Selmeci <mselmeci@wisc.edu> 4.3.2-1
+- Fix Python 3.12 (EL10) incompatibility (SOFTWARE-6286)
+
 * Mon Nov 03 2025 Mátyás Selmeci <mselmeci@wisc.edu> 4.3.1-1
 - Support HTCondor bindings v2 (SOFTWARE-6239)
 
